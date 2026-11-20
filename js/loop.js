@@ -11,7 +11,7 @@ function tick(){
   water.position.y=-.8+Math.sin(tAll*.8)*.05;
   if(state==='play')mode==='run'?updateRun(dt):updateAdv(dt);
   if(state==='play'&&mode==='run')updateSnow(dt);
-  updateCpu(dt);
+  updateCpu(dt);poundFx(dt);
   if(state==='play'){
     if(grounded&&!sndG&&sndAir>.15)SFX.land(-sndVy);
     if(!grounded){sndAir+=dt;sndVy=vy}else sndAir=0;
@@ -33,6 +33,7 @@ function tick(){
     if(ATK.t>0){const p=1-ATK.t/ATK.dur,ext=p<.55?Math.sin(Math.min(1,p/.3)*PI/2):1-(p-.55)/.45,e=1-(1-p)*(1-p),spin=ATK.kind!=='combo'||ATK.step===3;
       body.rotation.y=spin?-e*2*PI:(ATK.step===1?-.7:.7)*ext;body.rotation.x=(ATK.kind==='sweep'?.1:.35)*ext;feet[1].position.z=.45*ext;if(ATK.kind==='sweep')body.position.y-=.2}
     else if(CL.on){body.rotation.y=0;body.rotation.x=CL.top?PI:-.35;if(CL.top)body.position.y+=1.45+Math.sin(tAll*3)*.03}
+    else if(GP.st){body.rotation.y=0;body.rotation.x=GP.st===1?(1-GP.t/T.pound.spin)*2*PI:0;if(GP.st===3)body.position.y-=.18*(GP.t/T.pound.recover)}
     else if(SB.anim>0){body.rotation.y=0;body.rotation.x=SB.anim>.18?-.3:.4}
     else{body.rotation.y=0;body.rotation.x=0}
     feet[0].position.z=moving?Math.sin(walk*3)*.22:0;feet[1].position.z=-feet[0].position.z;
@@ -76,7 +77,10 @@ function tick(){
       else if(kd==='combo'){snapY=true;yaw=-e*2*PI;lr=-1.55*ext;lx=.3;zl=-1.25;zr=1.25;ax=ar=-.3;pitch=-.22*ext}
       else if(kd==='sweep'){snapY=true;yaw=-e*2*PI;yo=-.38;pitch=.4;lx=-1.05;lr=-.2;lrz=1.45*ext;ax=-.9;ar=-.4;zl=-.7;zr=.3}
       else{lr=-1.5*ext;lx=.45;ax=ar=.5;zl=-.5;zr=.5;pitch=-.3*ext}}
-    if(SB.anim>0&&!CL.on){const q=1-SB.anim/.3;rate=30;if(q<.4){ar=.9;zr=.25;yaw=.35;hy=-.2}else{ar=-2.5+(q-.4)*2.2;zr=.15;yaw=-.3;hy=.2}}
+    if(GP.st&&!CL.on){rate=26;if(GP.st===1){pitch=(1-GP.t/T.pound.spin)*2*PI;snap=true;roll=0;yaw=0;lx=lr=-1.5;ax=ar=-.4;zl=-.6;zr=.6;hx=-.3}
+      else if(GP.st===2){pitch=0;roll=0;yaw=0;lx=lr=-1.7;ax=ar=-2.9;zl=-.25;zr=.25;hx=.15;yo=.1}
+      else{const k=GP.t/T.pound.recover;pitch=.3*k;yo=-.25*k;lx=lr=-.9*k;ax=ar=.9;zl=-.9;zr=.9;hx=-.2}}
+    else if(SB.anim>0&&!CL.on){const q=1-SB.anim/.3;rate=30;if(q<.4){ar=.9;zr=.25;yaw=.35;hy=-.2}else{ar=-2.5+(q-.4)*2.2;zr=.15;yaw=-.3;hy=.2}}
     if(CL.on&&state!=='menu'){snap=false;snapY=false;rate=12;yaw=0;roll=0;hy=0;hz=0;lrz=0;llz=0;
       if(CL.top){pitch=PI;ax=ar=-3.1;zl=-.15;zr=.15;lx=.4;lr=-.4;roll=Math.sin(tAll*3)*.07;yo=ci===2?.32:.38;hx=-.3}
       else{const c=Math.sin(CL.h*3+CL.ang*2);pitch=-.12;ax=-2.75+c*.45;ar=-2.75-c*.45;zl=-.3;zr=.3;lx=-.95+c*.45;lr=-.95-c*.45;yo=0;hx=.35}}

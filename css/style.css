@@ -150,3 +150,8 @@ button:focus-visible,.padnav button:focus{outline:3px solid #fff;outline-offset:
 @keyframes snowGain{0%{box-shadow:0 0 0 0 rgba(200,240,255,.9);transform:scale(1.08)}100%{box-shadow:0 0 0 12px rgba(200,240,255,0);transform:none}}
 @keyframes snowEmpty{0%,100%{transform:none}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 @media (prefers-reduced-motion:reduce){#snowBox.gain,#snowBox.empty{animation:none}}
+#pb{position:fixed;right:200px;bottom:150px;width:64px;height:64px;padding:0;border-radius:50%;font-size:14px;background:#ffd84a;color:#4a3300;box-shadow:0 5px 0 #b38a00}
+.seg:has(.bind){flex-wrap:nowrap;grid-column:2/-1}.opt.bind{flex:1 1 0;min-width:0;padding:2px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}.opt.bind.none{opacity:.55}.opt.bind.cap{background:#5ff3ff;color:#06222e;animation:capPulse 1s ease-in-out infinite}
+.opt.bind.slotfocus{outline:3px solid #ffd84a;outline-offset:2px}
+.bindHelp{margin:-4px 0 8px;font-size:13px;opacity:.75}
+@keyframes capPulse{50%{opacity:.6}}@media (prefers-reduced-motion:reduce){.opt.bind.cap{animation:none}}

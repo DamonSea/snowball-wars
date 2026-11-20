@@ -28,7 +28,7 @@ function solidAt(x,y,z){
   for(const c of advCol)if(Math.hypot(c.x-x,c.z-z)<c.r*(c.tree?.6:1)&&y<(c.tree?c.top:2.2))return true;
   return false}
 function hitMe(owner,id,bx,bz){
-  if(SB.hitCool>0)return;SB.hitCool=.5;SB.stun=T.snow.stun;ATK.t=0;
+  if(SB.hitCool>0)return;SB.hitCool=.5;SB.stun=T.snow.stun;ATK.t=0;resetPound();
   const dx=P.position.x-bx,dz=P.position.z-bz,d=Math.hypot(dx,dz)||1;
   vel.x=dx/d*T.snow.hitKnock;vel.z=dz/d*T.snow.hitKnock;vy=Math.max(vy,T.snow.hitLift);grounded=false;stand=null;
   if(chars[ci].acro){A.mode='normal';A.flipT=99;A.spd=0}SFX.hurt();
@@ -60,7 +60,7 @@ function updateSnow(dt){
     if(gone){scene.remove(b.m);SB.list.splice(i,1)}}
   for(const s of snowmen())if(!s.up&&(s.t-=dt)<=0){s.up=true;s.g.visible=true;burst(V(s.x,1.2,s.z),0xffffff,10)}
 }
-function clearSnow(){SB.stun=0;if(CPU.a)CPU.a.init=false;myStars.visible=false;SB.list.forEach(b=>scene.remove(b.m));SB.list=[];SB.ammo=T.snow.ammo;SB.regen=0;SB.anim=0;snowHud()}
+function clearSnow(){resetPound();SB.stun=0;if(CPU.a)CPU.a.init=false;myStars.visible=false;SB.list.forEach(b=>scene.remove(b.m));SB.list=[];SB.ammo=T.snow.ammo;SB.regen=0;SB.anim=0;snowHud()}
 // orbs refill snowballs: regular orbs give a few, gold orbs fill you up
 function gainSnow(gold){const was=SB.ammo;SB.ammo=gold?T.snow.ammo:Math.min(T.snow.ammo,SB.ammo+T.snow.orbAmmo);if(SB.ammo>was){snowHud();snowFlash('gain')}}
 function snowFlash(c){const e=$('snowBox');if(!e)return;e.classList.remove('gain','empty');void e.offsetWidth;e.classList.add(c)}

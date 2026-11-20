@@ -29,6 +29,8 @@ building(-12.5,-2,5,6,6,3);building(-20.5,-2,5,6,10,4);building(12.5,-2,5,6,9,2)
   plats.push({k:'c',x,z,r:1.3,top:14.3});}
 // antenna and blinking light on the tallest tower
 add(new THREE.CylinderGeometry(.06,.1,4,6),metal,1.8,16,-15.8,cityW);
+// the antenna is climbable: handstand on the light, 18m up, for the biggest pole-top flip in the park
+advCol.push({x:1.8,z:-15.8,r:.2,tree:true,pole:true,y:14,top:18.25});
 const blink=new THREE.MeshStandardMaterial({color:0xff3b30,emissive:0xff3b30,emissiveIntensity:2});add(new THREE.SphereGeometry(.16,10,8),blink,1.8,18.1,-15.8,cityW);
 // neon sign on the tallest tower's face
 {const cv=document.createElement('canvas');cv.width=512;cv.height=128;const x=cv.getContext('2d');x.fillStyle='#14202b';x.fillRect(0,0,512,128);
@@ -40,7 +42,7 @@ function car(x,z,c,top=1.3,w=2,d=4){const m=mat(c,{roughness:.4,metalness:.2});a
   plats.push({k:'b',x,z,w,d,top})}
 car(4.5,10,0xd83a2e);car(-5,11,0x2f6fd0);car(8,10,0xffcc33,2.6,2.6,7);
 [[-6,-6],[6,-6],[-6,5],[6,5],[-18,6],[18,6]].forEach(([x,z])=>{add(new THREE.CylinderGeometry(.09,.13,4,8),metal,x,2,z,cityW);
-  add(new THREE.SphereGeometry(.28,12,8),new THREE.MeshStandardMaterial({color:0xffe2a8,emissive:0xffc46b,emissiveIntensity:1.4}),x,4.1,z,cityW);advCol.push({x,z,r:.3})});
+  add(new THREE.SphereGeometry(.28,12,8),new THREE.MeshStandardMaterial({color:0xffe2a8,emissive:0xffc46b,emissiveIntensity:1.4}),x,4.1,z,cityW);advCol.push({x,z,r:.3,tree:true,pole:true,y:0,top:4.4})});
 for(let k=-3;k<=3;k++)add(B(.7,.02,3),stripe,k*1.3,.02,-7.5,cityW);
 for(let k=-2;k<=2;k++)add(B(3,.02,.7),stripe,-8,.02,k*1.3+4,cityW);
 add(B(.25,.02,30),yel,0,.015,6,cityW);

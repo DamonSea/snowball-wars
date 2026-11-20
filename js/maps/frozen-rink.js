@@ -21,7 +21,7 @@ boxPlat(-6,-2,2,2,1.1,iceWall,iceTop);boxPlat(6,-2,2,2,1.1,iceWall,iceTop);
 // lamp posts
 const poleM=mat(0x2b2f36),bulbM=new THREE.MeshStandardMaterial({color:0xffe2a8,emissive:0xffc46b,emissiveIntensity:1.4});
 [[-13.2,6.2],[13.2,6.2],[-13.2,-10.2],[13.2,-10.2]].forEach(([x,z])=>{add(new THREE.CylinderGeometry(.1,.14,4.2,8),poleM,x,2.1,z,rinkW);
-  add(new THREE.SphereGeometry(.32,12,8),bulbM,x,4.35,z,rinkW);add(new THREE.CylinderGeometry(.42,.2,.18,10),poleM,x,4.62,z,rinkW);advCol.push({x,z,r:.35})});
+  add(new THREE.SphereGeometry(.32,12,8),bulbM,x,4.35,z,rinkW);add(new THREE.CylinderGeometry(.42,.2,.18,10),poleM,x,4.62,z,rinkW);advCol.push({x,z,r:.35,tree:true,pole:true,y:0,top:4.72})});
 [[-13,3.5,-2],[13,3.5,-2]].forEach(([x,y,z])=>{const l=new THREE.PointLight(0xffc77a,.6,20);l.position.set(x,y,z);rinkW.add(l)});
 // snow fort north: stairs -> tier 1 (anyone) -> tier 2 (backflip / side flip)
 boxPlat(0,-17,10,6,2,snowBlk,snowTop);boxPlat(0,-17.5,4,3,5.4,snowBlk,snowTop);boxPlat(0,-13.25,3,1.5,1,snowBlk,snowTop);

@@ -6,7 +6,7 @@ const swArc=new THREE.Mesh(new THREE.RingGeometry(.7,1.05,20,1,0,PI*.75),swM),sw
 [swArc,swFull].forEach(m=>{m.rotation.order='YXZ';m.visible=false;scene.add(m)});
 const ATKSPEC=T.attacks;
 const atkSpec=()=>ATKSPEC[ATK.kind==='combo'?ATK.step:ATK.kind];
-function inputDir(){const ix=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0)+joy.x+pad.x,iz=(keys.KeyS||keys.ArrowDown?1:0)-(keys.KeyW||keys.ArrowUp?1:0)+joy.z+pad.z;return Math.hypot(ix,iz)>.3?Math.atan2(ix,iz):null}
+function inputDir(){const ix=kbAxisX()+joy.x+pad.x,iz=kbAxisZ()+joy.z+pad.z;return Math.hypot(ix,iz)>.3?Math.atan2(ix,iz):null}
 function attackPress(){
   if(state!=='play'||A.knock>0||CL.on||SB.stun>0)return;
   if(ATK.t>0){if(ATK.kind==='combo'&&ATK.step<3)ATK.queued=true;return}
@@ -36,6 +36,7 @@ function updateAttack(dt){
     m.rotation.set(-PI/2,0,0);m.rotation.y=face-PI*.875+(ATK.step===2?.25:ATK.step===1?-.25:0);if(full)m.scale.setScalar(.7+p*.6)}
 }
 function attackHits(pos,yBase){
+  if(GP.st&&poundHits(pos,yBase??pos.y-.75))return true;
   if(ATK.t<=0)return false;const p=1-ATK.t/ATK.dur;if(p<.18||p>.7)return false;
   const sp=atkSpec(),cx=P.position.x+Math.sin(face)*sp.reach,cz=P.position.z+Math.cos(face)*sp.reach;
   return Math.hypot(pos.x-cx,pos.z-cz)<sp.r+.6&&Math.abs((yBase??pos.y-.75)-py)<1.6;

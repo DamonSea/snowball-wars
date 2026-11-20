@@ -4,11 +4,12 @@
 // Run or jump into a trunk while pushing toward it to grab on. Up/down climbs, left/right circles,
 // Jump leaps off, crouch lets go. At the tip you balance in a handstand; Jump from there to flip.
 const CL={on:false,tree:null,ang:0,h:0,top:false,touch:0,stepT:0,cool:0};
-function rawInput(){let ix=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0)+joy.x+pad.x,iz=(keys.KeyS||keys.ArrowDown?1:0)-(keys.KeyW||keys.ArrowUp?1:0)+joy.z+pad.z;
+function rawInput(){let ix=kbAxisX()+joy.x+pad.x,iz=kbAxisZ()+joy.z+pad.z;
   const m=Math.hypot(ix,iz);if(m>1){ix/=m;iz/=m}return[ix,iz]}
-const leafCol=()=>WIN?0xffffff:0x3fa65a;
+const leafCol=()=>CL.tree&&CL.tree.pole?0xffe2a8:WIN?0xffffff:0x3fa65a;
+const climbName=n=>CL.tree&&CL.tree.pole?n.replace('Tree','Pole'):n;
 function tryGrab(dt){
-  if(CL.on||CL.cool>0||state!=='play'||ATK.t>0||A.knock>0||SB.stun>0||A.mode==='dive'||A.mode==='slide'){CL.touch=0;return}
+  if(CL.on||CL.cool>0||state!=='play'||ATK.t>0||A.knock>0||SB.stun>0||GP.st||A.mode==='dive'||A.mode==='slide'){CL.touch=0;return}
   const[ix,iz]=rawInput(),im=Math.hypot(ix,iz);if(im<.4){CL.touch=0;return}
   for(const c of advCol){if(!c.tree)continue;const dx=c.x-P.position.x,dz=c.z-P.position.z,d=Math.hypot(dx,dz);
     if(d<c.r+.7&&py>=c.y-.1&&py<c.top-1.3&&(ix*dx+iz*dz)/(d*im)>.6){CL.touch+=dt;
@@ -21,11 +22,11 @@ function letGo(){CL.on=false;CL.top=false;CL.cool=T.climb.regrabCooldown}
 function climbStep(dt){
   const c=CL.tree,R=c.r*.7+.35,[ix,iz]=rawInput();
   invuln=Math.max(0,invuln-dt);jumpBuf=Math.max(0,jumpBuf-dt);vel.set(0,0,0);vy=0;grounded=false;stand=null;wallSliding=false;
-  const ck=!!(keys.ShiftLeft||keys.ShiftRight||keys.KeyC||joy.crouch||pad.crouch);
+  const ck=!!(held('crouch')||joy.crouch);
   if(CL.top){
     P.position.set(c.x,0,c.z);py=c.top;if(Math.abs(ix)>.3)face-=ix*2.6*dt;
     if(jumpBuf>0){jumpBuf=0;letGo();const d=inputDir();if(d!==null)face=d;vy=chars[ci].acro?T.climb.topFlipVy:chars[ci].jump*1.15;
-      if(chars[ci].acro){A.spd=5;A.mode='flip';startFlip('x',1);A.canDive=true;addTrick('Tree-top Flip');SFX.flip()}else{vel.x=Math.sin(face)*5;vel.z=Math.cos(face)*5;SFX.jump(2)}
+      if(chars[ci].acro){A.spd=5;A.mode='flip';startFlip('x',1);A.canDive=true;addTrick(climbName('Tree-top Flip'));SFX.flip()}else{vel.x=Math.sin(face)*5;vel.z=Math.cos(face)*5;SFX.jump(2)}
       burst(V(c.x,c.top+.3,c.z),leafCol(),10)}
     else if(iz>.5||ck){CL.top=false;CL.h=c.top-1.35}
     return}
@@ -37,7 +38,7 @@ function climbStep(dt){
   if((CL.stepT+=(Math.abs(iz)+Math.abs(ix)*.6)*dt)>.3){CL.stepT=0;SFX.climb();if(Math.random()<.5)burst(V(P.position.x,py+1.4,P.position.z),leafCol(),3)}
   if(CL.h>=c.top-1.2&&iz<-.3){CL.top=true;SFX.tada();addTrick('Handstand');burst(V(c.x,c.top+.4,c.z),leafCol(),14)}
   if(jumpBuf>0){jumpBuf=0;letGo();face=CL.ang;vy=T.climb.leap.vy;vel.x=Math.sin(face)*T.climb.leap.speed;vel.z=Math.cos(face)*T.climb.leap.speed;
-    if(chars[ci].acro){A.spd=T.climb.leap.speed;A.mode='jump';A.jumpN=0;A.canDive=true}addTrick('Tree Leap');SFX.jump(1)}
+    if(chars[ci].acro){A.spd=T.climb.leap.speed;A.mode='jump';A.jumpN=0;A.canDive=true}addTrick(climbName('Tree Leap'));SFX.jump(1)}
 }
 let onIce=false;const iceV=new THREE.Vector3();
 function stepBody(dt,speed){

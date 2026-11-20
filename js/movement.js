@@ -3,10 +3,11 @@
 const angD=(a,b)=>{const d=a-b;return((d+PI)%(2*PI)+2*PI)%(2*PI)-PI};
 const clamp=(v,a)=>Math.max(-a,Math.min(a,v));
 function move(dt,speed){
-  let ix=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0)+joy.x+pad.x;
-  let iz=(keys.KeyS||keys.ArrowDown?1:0)-(keys.KeyW||keys.ArrowUp?1:0)+joy.z+pad.z;
+  let ix=kbAxisX()+joy.x+pad.x;
+  let iz=kbAxisZ()+joy.z+pad.z;
   const im=Math.hypot(ix,iz);if(im>1){ix/=im;iz/=im}
   speed*=chars[ci].speed;invuln=Math.max(0,invuln-dt);
+  if(poundMove(dt))return;
   if(SB.stun>0){jumpBuf=0;P.position.x+=vel.x*dt;P.position.z+=vel.z*dt;vel.multiplyScalar(Math.exp(-2.5*dt));if(chars[ci].acro){A.spd=0;A.air=!grounded;A.mode='normal'}return}
   if(chars[ci].acro){moveAcro(dt,speed,ix,iz);jumpBuf=Math.max(0,jumpBuf-dt);return}
   if(ATK.t>0&&grounded)speed*=.15;
@@ -29,7 +30,7 @@ function landAcro(){
 }
 function moveAcro(dt,max,ix,iz){
   const im=Math.hypot(ix,iz),ang=Math.atan2(ix,iz);
-  const ck=!!(keys.ShiftLeft||keys.ShiftRight||keys.KeyC||joy.crouch||pad.crouch),edge=ck&&!A.prevC;A.prevC=ck;
+  const ck=!!(held('crouch')||joy.crouch),edge=ck&&!A.prevC;A.prevC=ck;
   if(A.knock>0){A.knock-=dt;P.position.x+=vel.x*dt;P.position.z+=vel.z*dt;vel.multiplyScalar(Math.exp(-3*dt));A.spd=0;A.air=!grounded;return}
   A.landT=Math.max(0,A.landT-dt);A.wallT=grounded?0:Math.max(0,A.wallT-dt);A.lock=Math.max(0,A.lock-dt);
   if(grounded&&A.air)landAcro();
@@ -66,13 +67,13 @@ function moveAcro(dt,max,ix,iz){
     if(A.wallT>0&&jumpBuf>0&&A.mode!=='dive'){face=Math.atan2(A.wnx,A.wnz);A.spd=T.flip.wallJump.speed;vy=T.flip.wallJump.vy;A.mode='jump';A.jumpN=0;A.canCut=false;A.canDive=true;A.flipT=99;A.lock=T.flip.wallJump.lock;A.wallT=0;jumpBuf=0;puff(4);SFX.wallKick();addTrick('Wall Jump')}
     if(edge&&A.canDive&&A.mode!=='dive'){A.mode='dive';A.canDive=false;vy=Math.max(vy*.5,T.flip.dive.minVy);A.spd=Math.max(A.spd,T.flip.dive.speed);A.flipT=99;A.canCut=false;A.twirlT=99;SFX.dive();addTrick('Dive');burst(V(P.position.x,py+.8,P.position.z),0xffffff,10)}
     if(im>.2&&A.mode!=='dive'&&A.mode!=='long'&&A.lock<=0&&!(A.mode==='flip'&&A.spd<0)){face+=clamp(angD(ang,face),T.flip.air.turn*dt);if(A.spd<max*im)A.spd+=T.flip.air.accel*dt}
-    if(A.canCut&&!keys.Space&&!pad.jump&&vy>T.flip.jumpCutAbove){vy*=T.flip.jumpCut;A.canCut=false}
+    if(A.canCut&&!held('jump')&&!joy.jump&&vy>T.flip.jumpCutAbove){vy*=T.flip.jumpCut;A.canCut=false}
     A.flipT+=dt;A.twirlT+=dt;if(A.mode==='long'&&Math.random()<.6)trail(0xffffff);
   }
   vel.x=Math.sin(face)*A.spd;vel.z=Math.cos(face)*A.spd;
   P.position.x+=vel.x*dt;P.position.z+=vel.z*dt;
   walk+=Math.abs(A.spd)*dt*1.6;
 }
-function hurt(x,z,kb){ATK.t=0;CL.on=false;CL.top=false;rumble(220,.9,.5);lives--;invuln=1.6;shake=.35;SFX.hurt();A.knock=chars[ci].acro?T.flip.knockTime:0;A.mode='normal';A.flipT=99;
+function hurt(x,z,kb){ATK.t=0;resetPound();CL.on=false;CL.top=false;rumble(220,.9,.5);lives--;invuln=1.6;shake=.35;SFX.hurt();A.knock=chars[ci].acro?T.flip.knockTime:0;A.mode='normal';A.flipT=99;
   const dx=P.position.x-x,dz=P.position.z-z,d=Math.hypot(dx,dz)||1;vel.x=dx/d*kb;vel.z=dz/d*kb;vy=5;grounded=false;stand=null;hud()}
 function jump(){if(grounded&&state==='play'){vy=chars[ci].jump;grounded=false;stand=null;jumpBuf=0;ci===0?SFX.robotJump():SFX.jump(1)}}

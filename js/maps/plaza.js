@@ -66,7 +66,7 @@ add(B(3.1,.08,.08),woodM,-19.5,10.55,15.6,runW);add(B(.08,.08,3.1),woodM,-18.1,1
 // ---- Boulevard ledges (spawn -> tower) and lamps ----
 [[-3.6,-4.5],[3.6,-4.5]].forEach(([x,z])=>box(x,z,1,4.5,.7,conc,sunP));
 [[-5.5,-8],[5.5,-8],[-6,3],[6,3]].forEach(([x,z])=>{add(new THREE.CylinderGeometry(.09,.13,4,8),ironM,x,2,z,runW);
-  add(new THREE.SphereGeometry(.28,12,8),new THREE.MeshStandardMaterial({color:0xffe2a8,emissive:0xffc46b,emissiveIntensity:1.2}),x,4.1,z,runW);advCol.push({x,z,r:.3})});
+  add(new THREE.SphereGeometry(.28,12,8),new THREE.MeshStandardMaterial({color:0xffe2a8,emissive:0xffc46b,emissiveIntensity:1.2}),x,4.1,z,runW);advCol.push({x,z,r:.3,tree:true,pole:true,y:0,top:4.4})});
 
 // rim trees and rocks (solid)
 for(let a=0;a<PI*2;a+=PI/9){const x=Math.cos(a)*25.5,z=Math.sin(a)*25.5;if(!plats.some(p=>p.top>.5&&inside(p,x,z,2.5)))tree(x,z,.9+((a*7)%.4),runW,advCol,0,Math.round(a*3))}

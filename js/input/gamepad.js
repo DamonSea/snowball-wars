@@ -27,7 +27,7 @@ function pollPad(){
   // pick the most recently active controller, skipping idle virtual devices
   let gp=null;try{const l=navigator.getGamepads?navigator.getGamepads():[];for(const g of l)if(g&&g.connected&&g.buttons.length&&(!gp||g.timestamp>gp.timestamp))gp=g}catch(e){}
   pad.gp=gp;
-  if(!gp){pad.x=pad.z=0;pad.jump=pad.crouch=false;if(pad.connected){pad.connected=false;padChanged()}padPrev=[];return}
+  if(!gp){pad.x=pad.z=0;pad.jump=pad.crouch=false;padNow=[];if(pad.connected){pad.connected=false;padChanged()}padPrev=[];return}
   if(!pad.connected){pad.connected=true;padChanged()}
   const now=readButtons(gp);
   const prev=padPrev,pr=i=>now[i]&&!prev[i];
@@ -37,15 +37,16 @@ function pollPad(){
   const sx=gp.axes[0]||0,sz=gp.axes[1]||0,m=Math.hypot(sx,sz);let x=0,z=0;
   if(m>.2){const k=Math.min(1,(m-.2)/.75)/m;x=sx*k;z=sz*k}
   if(now[14])x=-1;if(now[15])x=1;if(now[12])z=-1;if(now[13])z=1;
-  pad.x=x;pad.z=z;pad.jump=now[0];pad.crouch=now[1]||now[7]||now[6];
+  pad.x=x;pad.z=z;padNow=now;pad.jump=held('jump');pad.crouch=held('crouch');
   // menu directions: D-pad or a flick of the stick
   let sd='';if(Math.abs(sx)>.6||Math.abs(sz)>.6)sd=Math.abs(sx)>Math.abs(sz)?(sx<0?'l':'r'):(sz<0?'u':'d');
   const se=sd&&sd!==padStickPrev?sd:'';padStickPrev=sd;
   if(pr(8)){setMute(!AU.muted);toast(AU.muted?'Sound off':'Sound on');if(setOpen)renderSet()}
   const L=pr(14)||se==='l',R=pr(15)||se==='r',U=pr(12)||se==='u',D=pr(13)||se==='d';
+  if(capPad(pr))return;
   if(setOpen){setNav(L,R,U,D,pr(0),pr(1)||pr(9));return}
   if(state==='play'){
-    if(pr(0))jumpBuf=.15;if(pr(2))attackPress();if(pr(5))throwSnow();if(pr(3))beginTimed();if(pr(9))pause();if(pr(17))setCtl(!ctlHidden);
+    for(const a of ACT)if(BIND.pad[a.id]&&BIND.pad[a.id].some(i=>pr(i))){press(a.id);if(state!=='play')break}if(pr(17))setCtl(!ctlHidden);
   }else if(state==='select'){
     if(L)cycle(-1);if(R)cycle(1);if(U)cycleOutfit(-1);if(D)cycleOutfit(1);
     if(pr(0))confirmChar();else if(pr(1)){$('cs').classList.add('hide');menu()}
@@ -54,7 +55,7 @@ function pollPad(){
     if(L||U||R||D){document.body.classList.add('padnav');i=(L||U)?(i<=0?bs.length-1:i-1):(i+1)%bs.length;bs[i].focus()}
     if(state==='paused'&&pr(17))setCtl(!ctlHidden);
     if(pr(0))(bs[i]||bs[0]).click();
-    else if(pr(9)&&state==='paused')resume();
+    else if(state==='paused'&&(BIND.pad.pause||[]).some(i=>pr(i)))resume();
     else if(pr(1)){if(state==='paused')resume();else{const bk=['alt2','alt3'].map($).find(e=>e.textContent==='Back');bk&&bk.click()}}
   }
 }

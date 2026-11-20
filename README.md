@@ -33,19 +33,21 @@ by files above it. Nothing is bundled.
 | 10 | `js/content-ready.js` | Picks the current level and map once all are registered |
 | 11 | `js/state.js` | Game state, HUD, menus, character select, pause |
 | 12 | `js/trickpark.js` | Trick Park: START pad, combos, orbs, spikeballs, timed runs |
-| 13 | `js/physics.js` | Platform physics, ice, walls, tree climbing |
+| 13 | `js/physics.js` | Platform physics, ice, walls, tree and pole climbing |
 | 14 | `js/adventure.js` | Adventure: cores, checkpoints, tutorial zones, goal |
 | 15 | `js/combat.js` | Three-hit combo, sweep, air kick |
 | 16 | `js/movement.js` | Sunny/Rook controls and Flip's whole moveset |
-| 17 | `js/ui/settings.js` | Settings panel (season, mix, sound styles) |
-| 18 | `js/ui/controls.js` | Controls card, keyboard, touch |
-| 19 | `js/input/gamepad.js` | PS5 / standard controller support |
-| 20 | `js/loop.js` | The frame loop: update, animate, camera, render |
-| 21 | `js/seasons.js` | Snowfall, breath, Winter/Summer switching |
-| 22 | `js/multiplayer.js` | Trick Park multiplayer over the page's room capability |
-| 23 | `js/snowballs.js` | Snowball fights: throwing, ammo (refilled by orbs), snowmen, hits on players (Trick Park only) |
-| 24 | `js/cpu.js` | Computer player for Trick Park (Settings → Computer player) |
-| 25 | `js/main.js` | Startup |
+| 17 | `js/pound.js` | Ground pound for every character: spin, drop, shockwave |
+| 18 | `js/input/bindings.js` | Custom controls: key, mouse and controller bindings, rebinding in Settings |
+| 19 | `js/ui/settings.js` | Settings panel (season, mix, sound styles) |
+| 20 | `js/ui/controls.js` | Controls card, keyboard, touch |
+| 21 | `js/input/gamepad.js` | PS5 / standard controller support |
+| 22 | `js/loop.js` | The frame loop: update, animate, camera, render |
+| 23 | `js/seasons.js` | Snowfall, breath, Winter/Summer switching |
+| 24 | `js/multiplayer.js` | Trick Park multiplayer over the page's room capability |
+| 25 | `js/snowballs.js` | Snowball fights: throwing, ammo (refilled by orbs), snowmen, hits on players (Trick Park only) |
+| 26 | `js/cpu.js` | Computer player for Trick Park (Settings → Computer player) |
+| 27 | `js/main.js` | Startup |
 
 ## Tests
 
@@ -69,6 +71,7 @@ where a region is a box `{x,z,w,d,y}` at a surface height. Taking off from a `fr
 in a `to` region without touching anything in between awards the gap into the combo. First discoveries
 are saved per map and counted in the pause menu. Plaza has 13; Frozen Rink and Rooftops have none yet.
 
-`snowballs-check.js`, `ammo-check.js` and `cpu-check.js` are quick checks of snowball hits, orb refills and the computer
-player: pass a file's contents as the second argument, e.g. `python3 tests/lines.py index.html "$(cat tests/cpu-check.js)"`.
+`snowballs-check.js`, `ammo-check.js`, `cpu-check.js` and `moves-check.js` are quick checks of snowball hits, orb refills,
+the computer player, and ground pound / rebinding / pole climbing: pass a file's contents as the second argument,
+e.g. `python3 tests/lines.py index.html "$(cat tests/moves-check.js)"`.
 
