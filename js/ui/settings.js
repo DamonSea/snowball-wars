@@ -4,6 +4,7 @@ let setOpen=false,setRow=0;const SKEYS=Object.keys(SFXV);
 let sideStyle='somersault';try{if(localStorage.getItem('orbRunSideFlip')==='classic')sideStyle='classic'}catch(e){}
 const LOOK={season:{label:'Season',opts:['Winter','Summer'],get:()=>WIN?0:1,set:i=>setSeason(i===0)},snowfall:{label:'Snowfall',opts:['On','Off'],get:()=>SNOW?0:1,set:i=>setSnow(i===0)},
   sideFlip:{label:'Side flip style',opts:['Somersault','Classic'],get:()=>sideStyle==='classic'?1:0,set:i=>{sideStyle=i?'classic':'somersault';try{localStorage.setItem('orbRunSideFlip',sideStyle)}catch(e){}}},
+  yellow:{label:'Yellow snow',opts:['On','Off'],get:()=>YS.on?0:1,set:i=>setYellow(i===0)},
   cpu:{label:'Computer player',opts:['Off','On'],get:()=>CPU.on?1:0,set:i=>setCpu(i===1)}};
 const ROWS=[...Object.keys(LOOK),...SKEYS,...BIND_ROWS];let setSlot=0;
 function renderSet(){

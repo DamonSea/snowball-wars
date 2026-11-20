@@ -46,8 +46,9 @@ by files above it. Nothing is bundled.
 | 23 | `js/seasons.js` | Snowfall, breath, Winter/Summer switching |
 | 24 | `js/multiplayer.js` | Trick Park multiplayer over the page's room capability |
 | 25 | `js/snowballs.js` | Snowball fights: throwing, ammo (refilled by orbs), snowmen, hits on players (Trick Park only) |
-| 26 | `js/cpu.js` | Computer player for Trick Park (Settings → Computer player) |
-| 27 | `js/main.js` | Startup |
+| 26 | `js/yellowsnow.js` | Yellow snow gag and yellow snowballs (Settings → Yellow snow) |
+| 27 | `js/cpu.js` | Computer player for Trick Park (Settings → Computer player) |
+| 28 | `js/main.js` | Startup |
 
 ## Tests
 

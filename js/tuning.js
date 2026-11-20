@@ -36,9 +36,10 @@ const T={
   combo:{window:1.4,orbExtend:.8},
   tricks:{'Double Jump':50,'Dive':75,'Long Jump':100,'Wall Jump':100,'Tree Leap':75,'Handstand':100,
           'Triple Jump':150,'Backflip':150,'Side Flip':150,'Side Somersault':150,'Smash':150,'Tree-top Flip':250,
-          'Snowman Down':150,'Direct Hit':200,'Ground Pound':100,'Pole Leap':75,'Pole-top Flip':250},
+          'Snowman Down':150,'Direct Hit':200,'Ground Pound':100,'Yellow Snow':25,'Yellow Snowball':300,'Pole Leap':75,'Pole-top Flip':250},
   run:{time:60,goldEvery:6,goldValue:300,goldBonusTime:5,groundOrb:100,orbsOnField:7,
        hazardSpeed:3.4,hazardSpeedUp:.035,hazardsFree:2,hazardsStart:3,hazardsMax:7,hazardEvery:15,smashRespawn:3.5},
+  yellow:{time:1.3,spotLife:30,maxSpots:12},
   pound:{minHeight:1.2,spin:.28,fall:30,recover:.3,radius:3.2},
   snow:{speed:20,lift:4,gravity:18,life:2.5,ammo:6,regen:0,orbAmmo:2,cooldown:.3,hitKnock:9,hitLift:5,stun:.9,snowmanRespawn:8},
   camera:{height:10.5,back:13}

@@ -12,10 +12,10 @@ function setCpu(on){CPU.on=on;try{localStorage.setItem('orbRunCpu',on?'1':'0')}c
 function cpuCatch(p,b){if(!CPU.on||mode!=='run')return false;
   if(Math.hypot(CPU.x-p.x,CPU.z-p.z)>.75||p.y<CPU.y||p.y>CPU.y+2.1)return false;
   if(CPU.stun>T.snow.stun-.5)return true; // already reeling: splat but no second hit
-  cpuKnock(b.vx,b.vz,true);return true}
+  cpuKnock(b.vx,b.vz,true,b.yellow);return true}
 // knock the computer back along (dx,dz) and stun it; a snowball hit also scores a Direct Hit
-function cpuKnock(dx,dz,scored){const d=Math.hypot(dx,dz)||1;CPU.vx=dx/d*T.snow.hitKnock;CPU.vz=dz/d*T.snow.hitKnock;CPU.vy=T.snow.hitLift;CPU.stun=T.snow.stun;CPU.throwT=0;
-  CPU.hits++;if(scored)addTrick('Direct Hit');SFX.hurt()}
+function cpuKnock(dx,dz,scored,yel){const d=Math.hypot(dx,dz)||1;CPU.vx=dx/d*T.snow.hitKnock;CPU.vz=dz/d*T.snow.hitKnock;CPU.vy=T.snow.hitLift;CPU.stun=T.snow.stun;CPU.throwT=0;
+  CPU.hits++;if(scored)addTrick(yel?'Yellow Snowball':'Direct Hit');SFX.hurt()}
 function cpuPose(dt){const t=tAll,mv=Math.hypot(CPU.vx,CPU.vz),air=CPU.y>groundAt(CPU.x,CPU.z,CPU.y).h+.05;
   // [hp.x,hp.y,hp.z, root.y, scaleY, legL.x,legL.z, legR.x,legR.z, armL.x,armL.z, armR.x,armR.z, head.x,head.y,head.z]
   let q=[0,0,0,0,1,0,0,0,0,.05,-.12,-.05,.12,0,0,0];
