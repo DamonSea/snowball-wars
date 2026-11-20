@@ -11,7 +11,7 @@ function tick(){
   water.position.y=-.8+Math.sin(tAll*.8)*.05;
   if(state==='play')mode==='run'?updateRun(dt):updateAdv(dt);
   if(state==='play'&&mode==='run')updateSnow(dt);
-  updateCpu(dt);poundFx(dt);
+  updateCpu(dt);poundFx(dt);updateFlipArrow();
   if(state==='play'){
     if(grounded&&!sndG&&sndAir>.15)SFX.land(-sndVy);
     if(!grounded){sndAir+=dt;sndVy=vy}else sndAir=0;

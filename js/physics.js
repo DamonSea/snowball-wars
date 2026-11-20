@@ -40,6 +40,18 @@ function climbStep(dt){
   if(jumpBuf>0){jumpBuf=0;letGo();face=CL.ang;vy=T.climb.leap.vy;vel.x=Math.sin(face)*T.climb.leap.speed;vel.z=Math.cos(face)*T.climb.leap.speed;
     if(chars[ci].acro){A.spd=T.climb.leap.speed;A.mode='jump';A.jumpN=0;A.canDive=true}addTrick(climbName('Tree Leap'));SFX.jump(1)}
 }
+// Flip-direction arrow: while you balance on a tree or pole top, a glowing arrow shows where your flip
+// (or leap) will go. Same rule as the jump itself: the direction you're pushing, else the way you face.
+const flipArrow=new THREE.Group();flipArrow.visible=false;scene.add(flipArrow);
+const flipArrowM=new THREE.MeshBasicMaterial({color:0xffd84a,transparent:true,opacity:.9,depthWrite:false});
+{const m=flipArrowM;
+  const shaft=new THREE.Mesh(new THREE.BoxGeometry(.16,.06,.6),m);shaft.position.z=.3;flipArrow.add(shaft);
+  const tip=new THREE.Mesh(new THREE.ConeGeometry(.24,.42,4),m);tip.rotation.x=PI/2;tip.position.z=.78;flipArrow.add(tip)}
+const flipDir=()=>{const d=inputDir();return d!==null?d:face};
+function updateFlipArrow(){const on=state==='play'&&CL.on&&CL.top&&!!CL.tree;flipArrow.visible=on;if(!on)return;
+  const c=CL.tree,d=flipDir(),pulse=Math.sin(tAll*7);
+  flipArrow.position.set(c.x+Math.sin(d)*(.75+pulse*.08),c.top+.25,c.z+Math.cos(d)*(.75+pulse*.08));flipArrow.rotation.y=d;
+  flipArrowM.opacity=.75+pulse*.2}
 let onIce=false;const iceV=new THREE.Vector3();
 function stepBody(dt,speed){
   CL.cool=Math.max(0,CL.cool-dt);if(CL.on){onIce=false;climbStep(dt);return true}
