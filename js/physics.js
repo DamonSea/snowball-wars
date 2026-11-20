@@ -24,8 +24,8 @@ function climbStep(dt){
   invuln=Math.max(0,invuln-dt);jumpBuf=Math.max(0,jumpBuf-dt);vel.set(0,0,0);vy=0;grounded=false;stand=null;wallSliding=false;
   const ck=!!(held('crouch')||joy.crouch);
   if(CL.top){
-    P.position.set(c.x,0,c.z);py=c.top;if(Math.abs(ix)>.3)face-=ix*2.6*dt;
-    if(jumpBuf>0){jumpBuf=0;letGo();const d=inputDir();if(d!==null)face=d;vy=chars[ci].acro?T.climb.topFlipVy:chars[ci].jump*1.15;
+    P.position.set(c.x,0,c.z);py=c.top;{const ax=Math.abs(ix);if(ax>.25)face-=Math.sign(ix)*Math.min(1,(ax-.25)/.6)*2.8*dt}
+    if(jumpBuf>0){jumpBuf=0;letGo();vy=chars[ci].acro?T.climb.topFlipVy:chars[ci].jump*1.15;
       if(chars[ci].acro){A.spd=5;A.mode='flip';startFlip('x',1);A.canDive=true;addTrick(climbName('Tree-top Flip'));SFX.flip()}else{vel.x=Math.sin(face)*5;vel.z=Math.cos(face)*5;SFX.jump(2)}
       burst(V(c.x,c.top+.3,c.z),leafCol(),10)}
     else if(iz>.5||ck){CL.top=false;CL.h=c.top-1.35}
@@ -41,15 +41,14 @@ function climbStep(dt){
     if(chars[ci].acro){A.spd=T.climb.leap.speed;A.mode='jump';A.jumpN=0;A.canDive=true}addTrick(climbName('Tree Leap'));SFX.jump(1)}
 }
 // Flip-direction arrow: while you balance on a tree or pole top, a glowing arrow shows where your flip
-// (or leap) will go. Same rule as the jump itself: the direction you're pushing, else the way you face.
+// (or leap) will go: the way you face. Left/right rotate it; the flip goes exactly where it points.
 const flipArrow=new THREE.Group();flipArrow.visible=false;scene.add(flipArrow);
 const flipArrowM=new THREE.MeshBasicMaterial({color:0xffd84a,transparent:true,opacity:.9,depthWrite:false});
 {const m=flipArrowM;
   const shaft=new THREE.Mesh(new THREE.BoxGeometry(.16,.06,.6),m);shaft.position.z=.3;flipArrow.add(shaft);
   const tip=new THREE.Mesh(new THREE.ConeGeometry(.24,.42,4),m);tip.rotation.x=PI/2;tip.position.z=.78;flipArrow.add(tip)}
-const flipDir=()=>{const d=inputDir();return d!==null?d:face};
 function updateFlipArrow(){const on=state==='play'&&CL.on&&CL.top&&!!CL.tree;flipArrow.visible=on;if(!on)return;
-  const c=CL.tree,d=flipDir(),pulse=Math.sin(tAll*7);
+  const c=CL.tree,d=face,pulse=Math.sin(tAll*7);
   flipArrow.position.set(c.x+Math.sin(d)*(.75+pulse*.08),c.top+.25,c.z+Math.cos(d)*(.75+pulse*.08));flipArrow.rotation.y=d;
   flipArrowM.opacity=.75+pulse*.2}
 let onIce=false;const iceV=new THREE.Vector3();
