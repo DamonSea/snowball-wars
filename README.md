@@ -1,5 +1,7 @@
 # Snowball Wars
 
+### [▶ Play Snowball Wars](https://damonsea.github.io/snowball-wars/)
+
 A 3D winter trick-platformer for the browser, starring Flip the stunt pilot. Chain flips, dives and wall jumps
 into combos in Trick Park (Plaza, Frozen Rink, Rooftops), discover named gaps, have snowball fights, or play
 the Adventure levels. Built with three.js; open `index.html` in a browser to play (multiplayer works only in the
