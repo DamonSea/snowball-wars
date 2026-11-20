@@ -34,7 +34,7 @@ function tick(){
       body.rotation.y=spin?-e*2*PI:(ATK.step===1?-.7:.7)*ext;body.rotation.x=(ATK.kind==='sweep'?.1:.35)*ext;feet[1].position.z=.45*ext;if(ATK.kind==='sweep')body.position.y-=.2}
     else if(CL.on){body.rotation.y=0;body.rotation.x=CL.top?PI:-.35;if(CL.top)body.position.y+=1.45+Math.sin(tAll*3)*.03}
     else if(GP.st){body.rotation.y=0;body.rotation.x=GP.st===1?(1-GP.t/T.pound.spin)*2*PI:0;if(GP.st===3)body.position.y-=.18*(GP.t/T.pound.recover)}
-    else if(YS.t>0){body.rotation.y=0;body.rotation.x=0;body.rotation.z=YS.t<.3?Math.sin(tAll*42)*.09:0}
+    else if(YS.spray||YS.t>0){body.rotation.y=0;body.rotation.x=-.1;body.rotation.z=YS.spray?0:Math.sin(tAll*42)*.09}
     else if(SB.anim>0){body.rotation.y=0;body.rotation.x=SB.anim>.18?-.3:.4}
     else{body.rotation.y=0;body.rotation.x=0}
     feet[0].position.z=moving?Math.sin(walk*3)*.22:0;feet[1].position.z=-feet[0].position.z;
@@ -84,8 +84,8 @@ function tick(){
     if(GP.st&&!CL.on){rate=26;if(GP.st===1){pitch=(1-GP.t/T.pound.spin)*2*PI;snap=true;roll=0;yaw=0;lx=lr=-1.5;ax=ar=-.4;zl=-.6;zr=.6;hx=-.3}
       else if(GP.st===2){pitch=0;roll=0;yaw=0;lx=lr=-1.7;ax=ar=-2.9;zl=-.25;zr=.25;hx=.15;yo=.1}
       else{const k=GP.t/T.pound.recover;pitch=.3*k;yo=-.25*k;lx=lr=-.9*k;ax=ar=.9;zl=-.9;zr=.9;hx=-.2}}
-    // yellow snow: back to the camera, still, head tipped back in relief, then a little shiver
-    else if(YS.t>0&&!CL.on){rate=10;const p=1-YS.t/T.yellow.time;lx=lr=-.1;ax=ar=-.5;zl=-.05;zr=.05;hx=p<.75?-.3:.1;pitch=-.04;if(p>.8)roll=Math.sin(tAll*42)*.07}
+    // yellow snow: hands low in front, hips forward, head tipped back in relief (legs keep walking); a shiver to finish
+    else if((YS.spray||YS.t>0)&&!CL.on){rate=12;ax=ar=-.55;zl=-.08;zr=.08;hx=-.25;pitch=-.08;if(!run){lx=lr=-.08}if(!YS.spray)roll=Math.sin(tAll*42)*.07}
     else if(SB.anim>0&&!CL.on){const q=1-SB.anim/.3;rate=30;if(q<.4){ar=.9;zr=.25;yaw=.35;hy=-.2}else{ar=-2.5+(q-.4)*2.2;zr=.15;yaw=-.3;hy=.2}}
     if(CL.on&&state!=='menu'){snap=false;snapY=false;rate=12;yaw=0;roll=0;hy=0;hz=0;lrz=0;llz=0;
       if(CL.top){pitch=PI;ax=ar=-3.1;zl=-.15;zr=.15;lx=.4;lr=-.4;roll=Math.sin(tAll*3)*.07;yo=H.hsYo??(ci>=2?.32:.38);hx=-.3}

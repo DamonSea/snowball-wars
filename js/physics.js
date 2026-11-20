@@ -9,7 +9,7 @@ function rawInput(){let ix=kbAxisX()+joy.x+pad.x,iz=kbAxisZ()+joy.z+pad.z;
 const leafCol=()=>CL.tree&&CL.tree.pole?0xffe2a8:WIN?0xffffff:0x3fa65a;
 const climbName=n=>CL.tree&&CL.tree.pole?n.replace('Tree','Pole'):n;
 function tryGrab(dt){
-  if(CL.on||CL.cool>0||state!=='play'||ATK.t>0||A.knock>0||SB.stun>0||GP.st||YS.t>0||A.mode==='dive'||A.mode==='slide'){CL.touch=0;return}
+  if(CL.on||CL.cool>0||state!=='play'||ATK.t>0||A.knock>0||SB.stun>0||GP.st||YS.t>0||YS.spray||A.mode==='dive'||A.mode==='slide'){CL.touch=0;return}
   const[ix,iz]=rawInput(),im=Math.hypot(ix,iz);if(im<.4){CL.touch=0;return}
   for(const c of advCol){if(!c.tree)continue;const dx=c.x-P.position.x,dz=c.z-P.position.z,d=Math.hypot(dx,dz);
     if(d<c.r+.7&&py>=c.y-.1&&py<c.top-1.3&&(ix*dx+iz*dz)/(d*im)>.6){CL.touch+=dt;

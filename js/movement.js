@@ -8,7 +8,7 @@ function move(dt,speed){
   const im=Math.hypot(ix,iz);if(im>1){ix/=im;iz/=im}
   speed*=chars[ci].speed;invuln=Math.max(0,invuln-dt);
   if(poundMove(dt))return;
-  if(YS.t>0){jumpBuf=0;return}
+  if(YS.spray||YS.t>0){yellowMove(dt,ix,iz);return}
   if(SB.stun>0){jumpBuf=0;P.position.x+=vel.x*dt;P.position.z+=vel.z*dt;vel.multiplyScalar(Math.exp(-2.5*dt));if(chars[ci].acro){A.spd=0;A.air=!grounded;A.mode='normal'}return}
   if(chars[ci].acro){moveAcro(dt,speed,ix,iz);jumpBuf=Math.max(0,jumpBuf-dt);return}
   if(ATK.t>0&&grounded)speed*=.15;

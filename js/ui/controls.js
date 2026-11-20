@@ -10,7 +10,7 @@ function renderControls(){
   const mv=T_?'Joystick':P?'L-stick / D-pad':(()=>{const ks=['up','left','down','right'].map(id=>BIND.kb[id][0]);
     const n=ks.map(c=>c?keyName(c):'?');return(n.every(x=>x.length===1)?k(n.join('')):n.map(k).join(' '))+' / '+k('Arrows')})();
   const rows=[[mv,'Move'],[L('jump'),'Jump (hold for full height)'],[L('attack'),'Attack (tap \u00d73 for a combo)'],['In the air: '+L('attack'),'Flying kick'],
-    ['In the air: '+L('pound'),'Ground pound'],...(YS.on&&WIN?[['Standing: '+L('pound'),'Make yellow snow']]:[]),[L('pause'),'Pause']];
+    ['In the air: '+L('pound'),'Ground pound'],...(YS.on&&WIN?[['Standing: hold '+L('pound'),'Yellow snow (walk to aim)']]:[]),[L('pause'),'Pause']];
   if(!T_)rows.push([P?b('Create'):k('M'),'Sound on/off'],[P?b('Touchpad'):k('H'),'Hide this panel']);
   if(chars[ci].acro)rows.splice(2,0,[L('crouch'),'Crouch (move to crouch-walk)'],['Crouch + '+L('attack'),'Sweep kick'],
     ['Run + crouch + Jump','Long jump'],['Still + crouch + Jump','Backflip'],['Run into a tree or pole','Climb it (Jump at the top: flip)'],
@@ -49,6 +49,7 @@ $('sb').addEventListener('click',()=>{$('sb').blur();beginTimed()});
 $('snowBtn').addEventListener('pointerdown',e=>{e.preventDefault();throwSnow()});
 $('hb').addEventListener('pointerdown',e=>{e.preventDefault();attackPress()});
 $('jb').addEventListener('pointerdown',e=>{e.preventDefault();jumpBuf=.15;joy.jump=true});
-$('pb').addEventListener('pointerdown',e=>{e.preventDefault();poundOrSnow()});
+$('pb').addEventListener('pointerdown',e=>{e.preventDefault();joy.pound=true;poundOrSnow()});
+['pointerup','pointercancel','pointerleave'].forEach(t=>$('pb').addEventListener(t,()=>joy.pound=false));
 ['pointerup','pointercancel','pointerleave'].forEach(t=>{$('jb').addEventListener(t,()=>joy.jump=false);$('cb').addEventListener(t,()=>joy.crouch=false)});
 $('cb').addEventListener('pointerdown',e=>{e.preventDefault();joy.crouch=true});

@@ -10,7 +10,7 @@ function launchSnowball(o,own,owner,id,yellow=false){
   const m=new THREE.Mesh(sbGeo,yellow?sbYellow:sbMat);m.castShadow=true;m.position.set(o[0],o[1],o[2]);scene.add(m);
   SB.list.push({m,vx:o[3],vy:o[4],vz:o[5],t:0,own,owner,id,yellow})}
 function throwSnow(){
-  if(mode!=='run'||state!=='play'||CL.on||SB.cool>0||SB.stun>0||YS.t>0)return;
+  if(mode!=='run'||state!=='play'||CL.on||SB.cool>0||SB.stun>0||YS.t>0||YS.spray)return;
   if(SB.ammo<1){SFX.deny();if(!SB.told){SB.told=true;toast('Out of snowballs: grab orbs to refill')}snowFlash('empty');return}
   SB.ammo--;SB.cool=T.snow.cooldown;SB.anim=.3;snowHud();
   const d=inputDir();if(d!==null&&ATK.t<=0)face=d;

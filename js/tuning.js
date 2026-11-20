@@ -39,7 +39,7 @@ const T={
           'Snowman Down':150,'Direct Hit':200,'Ground Pound':100,'Yellow Snow':25,'Yellow Snowball':300,'Pole Leap':75,'Pole-top Flip':250},
   run:{time:60,goldEvery:6,goldValue:300,goldBonusTime:5,groundOrb:100,orbsOnField:7,
        hazardSpeed:3.4,hazardSpeedUp:.035,hazardsFree:2,hazardsStart:3,hazardsMax:7,hazardEvery:15,smashRespawn:3.5},
-  yellow:{time:1.3,spotLife:30,maxSpots:12},
+  yellow:{tank:4,refill:30,rate:45,speed:4.2,lift:2.2,gravity:14,walk:2.2,finish:.45,sessionLife:40,maxSessions:6,maxMarks:350},
   pound:{minHeight:1.2,spin:.28,fall:30,recover:.3,radius:3.2},
   snow:{speed:20,lift:4,gravity:18,life:2.5,ammo:6,regen:0,orbAmmo:2,cooldown:.3,hitKnock:9,hitLift:5,stun:.9,snowmanRespawn:8},
   camera:{height:10.5,back:13}

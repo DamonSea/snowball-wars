@@ -124,7 +124,7 @@ const SFX={
   grab(){noise(.12,{f:1800,f2:900,q:.8,vol:.07});tone(220,330,.08,{vol:.06})},
   climb(){noise(.09,{f:WIN?3200:2200,f2:WIN?1800:1200,q:.9,vol:.045})},
   tada(){[784,1175,1568].forEach((f,i)=>tone(f,0,.22,{type:'triangle',vol:.07,delay:i*.07}));tone(500,900,.18,{vol:.06})},
-  yellow(){noise(1,{f:3400,f2:2600,q:2.5,vol:.035});tone(440,330,.5,{type:'sine',vol:.035});setTimeout(()=>tone(700,560,.12,{type:'triangle',vol:.03}),1050)},
+  yellowEnd(){tone(440,330,.35,{type:'sine',vol:.035});setTimeout(()=>tone(700,560,.12,{type:'triangle',vol:.03}),180)},
   poundSpin(){tone(300,900,.22,{type:'triangle',vol:.06});noise(.2,{f:700,f2:2200,q:1,vol:.04})},
   pound(){noise(.35,{ft:'lowpass',f:900,f2:120,vol:.32});tone(110,40,.3,{vol:.28});tone(70,35,.4,{type:'square',vol:.05})},
   snowThrow(){noise(.12,{f:900,f2:2600,q:1.2,vol:.06});tone(260,420,.08,{vol:.05})},
