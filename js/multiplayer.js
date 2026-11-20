@@ -29,7 +29,7 @@ const mapCount=i=>MP.on&&MP.lobby?MP.lobby.peers().filter(p=>!p.sameTab&&p.prese
 // --- remote avatars ---
 function tagCanvas(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;return c}
 function makeAv(ch){const g=new THREE.Group();scene.add(g);
-  const rig=ch===0?buildBot(g):ch===1?buildRook(g):buildChibi(g,ch===3);
+  const rig=ch===0?buildBot(g):ch===1?buildRook(g):ch===3?buildNova(g):buildChibi(g);
   const tc=tagCanvas(320,96),tt=new THREE.CanvasTexture(tc),tag=new THREE.Sprite(new THREE.SpriteMaterial({map:tt,transparent:true,depthWrite:false}));tag.scale.set(2.6,.78,1);tag.position.y=2.75;g.add(tag);
   const kc=tagCanvas(320,72),kt=new THREE.CanvasTexture(kc),trick=new THREE.Sprite(new THREE.SpriteMaterial({map:kt,transparent:true,depthWrite:false,opacity:0}));trick.scale.set(2.6,.58,1);trick.position.y=3.5;g.add(trick);
   return{g,rig,ch,of:-1,tc,tt,tag,kc,kt,trick,txt:'',tn:null,tt0:0,init:false,lx:0,lz:0}}

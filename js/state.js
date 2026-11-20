@@ -28,7 +28,7 @@ $('go').addEventListener('click',()=>onGo&&onGo());$('alt2').addEventListener('c
 function menu(){chars.forEach((c,i)=>{if(c.outs&&!unlocked(OFI[i],c.outs)){OFI[i]=0;applyOutfitTo(c.rig.mats,0,c.outs)}});
 
   state='menu';mode='run';ci=2;wave=1.6;setWorld('run');resetRun();hint('');hud();freeUI();
-  overlay(true,'Snowball Wars','Meet Flip and his sister Skye, pint-sized stunt pilots with momentum to burn. Trick Park: chain flips, dives and wall jumps into combos, grab orbs for snowballs and pelt your rivals. Adventure: handmade levels to conquer.','Trick Park','Adventure',()=>parkMenu(),()=>levelMenu());
+  overlay(true,'Snowball Wars','Meet Flip the stunt pilot and Nova the snowboarder, two daredevils with momentum to burn. Trick Park: chain flips, dives and wall jumps into combos, grab orbs for snowballs and pelt your rivals. Adventure: handmade levels to conquer.','Trick Park','Adventure',()=>parkMenu(),()=>levelMenu());
   $('ov').classList.add('menu');
 }
 function parkMenu(){const lab=(n,i)=>{const c=mapCount(i);return c?`${n} \u00b7 ${c} here`:n};
@@ -38,7 +38,7 @@ let pickMode='run',pickLevel=0,lockChar=false;
 function select(m,lv=0){
   pickMode=m;pickLevel=lv;if(m==='run'&&lv!==runIdx){useRunMap(lv);setWorld('run');resetRun()}lockChar=m==='adv'&&!!levels[lv].flipOnly;ci=lockChar&&!chars[pickCi].acro?2:pickCi;state='select';overlay(false);$('cs').classList.remove('hide');
   P.position.set(0,0,0);py=0;vel.set(0,0,0);
-  $('csMode').textContent=m==='run'?`Trick Park \u00b7 ${RUNMAPS[lv].name}`:`Adventure · ${levels[lv].name}${lockChar?' · Flip and Skye only':''}`;showChar();setTimeout(()=>$('csGo').focus(),50);
+  $('csMode').textContent=m==='run'?`Trick Park \u00b7 ${RUNMAPS[lv].name}`:`Adventure · ${levels[lv].name}${lockChar?' · Flip and Nova only':''}`;showChar();setTimeout(()=>$('csGo').focus(),50);
 }
 function showChar(){
   const c=chars[ci];$('csName').textContent=c.name;$('csDesc').textContent=c.desc;
@@ -58,7 +58,7 @@ function setOutfit(i){const c=chars[ci],L=c.outs;if(!L)return;if(!unlocked(i,L))
   OFI[ci]=i;applyOutfit(i);try{localStorage.setItem(c.ofKey,i)}catch(e){}renderOutfits();wave=1.6;SFX.ui(i+2)}
 function cycleOutfit(d){const L=chars[ci].outs;if(!L)return;let i=OFI[ci];for(let n=0;n<L.length;n++){i=(i+d+L.length)%L.length;if(unlocked(i,L))break}setOutfit(i)}
 $('outfits').addEventListener('click',e=>{const b=e.target.closest('.sw');if(b)setOutfit(+b.dataset.o)});
-// levels marked flipOnly need the acrobat moveset, so only Flip and Skye can be picked there
+// levels marked flipOnly need the acrobat moveset, so only Flip and Nova can be picked there
 const pickOrder=()=>lockChar?ORDER.filter(i=>chars[i].acro):ORDER;
 function cycle(d){const O=pickOrder();ci=O[(O.indexOf(ci)+d+O.length)%O.length];showChar();SFX.ui(ci)}
 function confirmChar(){$('cs').classList.add('hide');document.activeElement&&document.activeElement.blur&&document.activeElement.blur();if(pickMode==='run'){useRunMap(pickLevel);startRun()}else startAdv(pickLevel)}
