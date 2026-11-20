@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Snowball Wars</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="stage"></div>
+<header class="hud">
+  <div class="brand">Snowball Wars<small id="mname"></small></div>
+  <div class="stats"><button class="pz snd" id="gear" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.5 7.5 0 0 0-1.7-1L15 3.3h-4l-.4 2.6a7.5 7.5 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1c.5.4 1.1.7 1.7 1l.4 2.6h4l.4-2.6c.6-.3 1.2-.6 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" transform="translate(-1 0)"/></svg></button><button class="pz snd" id="snd" aria-label="Toggle sound (M)" aria-pressed="false"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path class="w" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="x" d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button><button class="pz" id="pz" aria-label="Pause (P)" title="Pause (P)"><i></i><i></i></button>
+    <div><span class="k" id="k1">Orbs</span><b id="v1">0</b></div>
+    <div><span class="k">Time</span><b id="v2">45</b></div>
+    <div><span class="k">Lives</span><span id="lv" class="pips"></span></div>
+    <div id="snowBox" style="display:none"><span class="k">Snow</span><span id="snowAmmo" class="pips snow"></span></div>
+  </div>
+</header>
+<div id="hint" class="hint"></div>
+<div id="frost" class="frost" aria-hidden="true"></div>
+<div id="toast" class="toast" role="status"></div>
+<div id="mpList" class="mpList" aria-label="Players"></div>
+<div id="combo" class="combo" aria-live="polite"><div class="cTop"><b id="cMult"></b><span id="cPts"></span></div><div id="cNames" class="cNames"></div></div>
+<div id="cPop" class="cPop" aria-live="polite"></div>
+<section class="ctl" id="ctl" aria-label="Controls"><h3><span>Controls</span><button class="alt mini" id="ctlHide" aria-label="Hide controls (H)">Hide <kbd>H</kbd></button></h3><dl id="ctlList"></dl></section>
+<button class="alt mini ctlBtn" id="ctlShow">Controls <kbd>H</kbd></button>
+<div id="ov" class="ov">
+  <div class="card">
+    <h1 id="ovT">Snowball Wars</h1>
+    <p id="ovP"></p>
+    <ul class="keys ktip"><li><kbd>WASD</kbd> or <kbd>Arrows</kbd> move</li><li><kbd>Space</kbd> jump</li><li><kbd>P</kbd> pause</li><li><kbd>H</kbd> controls</li><li><kbd>M</kbd> sound</li></ul>
+    <div class="btns"><button id="go">Run mode</button><button id="alt" class="alt">Adventure</button><button id="alt2" class="alt"></button><button id="alt3" class="alt"></button></div>
+    <p class="best" id="best"></p>
+    <p class="best" id="online"></p>
+    <p class="best" id="padInfo"></p>
+  </div>
+</div>
+<div id="cs" class="cs hide">
+  <h1 class="cstitle">Choose your character</h1>
+  <div class="cspanel">
+    <div class="csrow">
+      <button class="arrow" id="prev" aria-label="Previous character">&lsaquo;</button>
+      <div class="csinfo"><span class="k" id="csMode">Run mode</span><h2 id="csName">Sunny</h2><p id="csDesc"></p>
+        <div class="bars"><div><span>Speed</span><i><b id="bSp"></b></i></div><div><span>Jump</span><i><b id="bJp"></b></i></div><div><span>Agility</span><i><b id="bAg"></b></i></div></div>
+        <p class="moves" id="csMoves"></p>
+      </div>
+      <button class="arrow" id="next" aria-label="Next character">&rsaquo;</button>
+    </div>
+    <div class="btns"><button id="csGo">Play</button><button id="csBack" class="alt">Back</button></div>
+    <div class="outfits" id="outfits"></div>
+    <div class="dots" id="dots"></div>
+  </div>
+</div>
+<div id="set" class="ov hide" aria-hidden="true"><div class="card setcard" role="dialog" aria-modal="true" aria-labelledby="setT">
+  <h1 id="setT">Settings</h1>
+  <p class="setsub">Pick the season, set the mix, then pick a style for each sound. Choosing one plays it; <span aria-hidden="true">&#9654;</span> replays it.</p>
+  <div class="vol"><label for="volr">Master</label><input type="range" id="volr" min="0" max="100" step="5"><button id="setMute" class="alt mini"></button></div>
+  <div class="vols"><div class="vol"><label for="v-vMus">Music</label><input type="range" id="v-vMus" data-k="vMus" min="0" max="100" step="5"></div><div class="vol"><label for="v-vSfx">Effects</label><input type="range" id="v-vSfx" data-k="vSfx" min="0" max="100" step="5"></div><div class="vol"><label for="v-vAmb">Ambience</label><input type="range" id="v-vAmb" data-k="vAmb" min="0" max="100" step="5"></div></div>
+  <div id="setList" class="setlist"></div>
+  <div class="btns"><button id="setClose">Done</button><button id="setReset" class="alt">Reset to defaults</button></div>
+  <p class="best" id="setPad"></p>
+</div></div>
+<div id="touch"><div id="joy"><div id="knob"></div></div><button id="sb" class="alt" aria-label="Start timed run">Start</button><button id="snowBtn" aria-label="Throw a snowball">Snow</button><button id="hb" aria-label="Attack">Hit</button><button id="cb" class="alt na" aria-label="Crouch">Duck</button><button id="jb" aria-label="Jump">Jump</button></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="js/tuning.js"></script>
+<script src="js/core.js"></script>
+<script src="js/characters.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/audio/sfx.js"></script>
+<script src="js/audio/music.js"></script>
+<script src="js/levels/engine.js"></script>
+<script src="js/levels/lighthouse-isles.js"></script>
+<script src="js/levels/sky-gauntlet.js"></script>
+<script src="js/maps/plaza.js"></script>
+<script src="js/maps/frozen-rink.js"></script>
+<script src="js/maps/rooftops.js"></script>
+<script src="js/content-ready.js"></script>
+<script src="js/state.js"></script>
+<script src="js/trickpark.js"></script>
+<script src="js/physics.js"></script>
+<script src="js/adventure.js"></script>
+<script src="js/combat.js"></script>
+<script src="js/movement.js"></script>
+<script src="js/ui/settings.js"></script>
+<script src="js/ui/controls.js"></script>
+<script src="js/input/gamepad.js"></script>
+<script src="js/loop.js"></script>
+<script src="js/seasons.js"></script>
+<script src="js/multiplayer.js"></script>
+<script src="js/snowballs.js"></script>
+<script src="js/cpu.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
