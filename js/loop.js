@@ -54,7 +54,10 @@ function tick(){
       else if(m==='long'){pitch=.25;lx=-1.3;lr=.9;ax=ar=1.1;zl=-.55;zr=.55;hx=-.15}
       else if(m==='jump'&&A.jumpN===2&&A.twirlT<.55){const p=A.twirlT/.55,e=1-(1-p)*(1-p);yaw=e*2*PI;snapY=true;lx=-.55;lr=.55;ax=ar=-.2;zl=-1.45;zr=1.45;hx=-.1}
       else if(A.flipT<.75){const p=A.flipT/.75,e=p<.5?2*p*p:1-2*(1-p)*(1-p);lx=lr=-1.6;ax=ar=-1.1;snap=true;
-        if(A.flipAxis==='x')pitch=A.flipDir*e*2*PI;else roll=e*2*PI}
+        if(A.flipAxis==='x')pitch=A.flipDir*e*2*PI;
+        else if(sideStyle==='classic')roll=e*2*PI;
+        // side somersault: turn side-on, open into a straddle with arms out, rotate through the direction of travel
+        else{const tw=Math.min(1,p/.15,(1-p)/.15);yaw=tw*PI/2;snapY=true;roll=e*2*PI;lx=lr=0;llz=-.75;skz=.75;ax=ar=0;zl=-1.5;zr=1.5;hx=0}}
       else{lx=-.8;lr=.35;ax=.5+Math.sin(tAll*7)*.12;ar=-2.7+Math.sin(tAll*7+1)*.12;zl=-.35;zr=.2;hx=vy>0?-.15:.15}
     }else if(acro&&m==='skid'){rate=16;pitch=-.4;lx=-.9;lr=.3;ax=ar=.7;zl=-.85;zr=.85;roll=Math.sin(tAll*38)*.05;hx=.25}
     else if(acro&&m==='crouch'){rate=14;yo=-.2;pitch=.45;lx=lr=-.9;ax=ar=-.6;zl=-.3;zr=.3;hx=-.3;

@@ -39,7 +39,7 @@ function moveAcro(dt,max,ix,iz){
   if(grounded){
     if(A.mode==='slide'){A.t-=dt;A.spd*=Math.exp(-T.flip.dive.slideDecay*dt);puff();if(A.t<=0)A.mode=ck?'crouch':'normal'}
     else if(A.mode==='skid'){A.t-=dt;A.spd=Math.max(0,A.spd-T.flip.skid.decel*dt);puff(onIce?4:2);
-      if(jumpBuf>0){face=A.skidTo;A.spd=T.flip.sideFlip.speed;vy=T.flip.sideFlip.vy;A.mode='flip';startFlip('z',1);leave();SFX.flip();addTrick('Side Flip')}
+      if(jumpBuf>0){face=A.skidTo;A.spd=T.flip.sideFlip.speed;vy=T.flip.sideFlip.vy;A.mode='flip';startFlip('z',1);leave();SFX.flip();addTrick(sideStyle==='classic'?'Side Flip':'Side Somersault')}
       else if(A.t<=0){A.mode='normal';face=A.skidTo;A.spd=T.flip.skid.exitSpeed}}
     else if(ck){if(A.mode!=='crouch'&&A.mode!=='slide')SFX.crouch();A.mode='crouch';const cw=im>.2?T.flip.crouch.crawlSpeed*im:0;
       if(A.spd>cw)A.spd=Math.max(cw,A.spd*Math.exp(-T.flip.crouch.decay*dt));else A.spd=Math.min(cw,A.spd+T.flip.crouch.accel*dt);
