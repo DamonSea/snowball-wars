@@ -37,7 +37,6 @@ for(let k=0;k<3;k++)add(B(6.02,.18,.02),tealP,0,3+k*.8,-12.49,runW);
 box(11.25,-12,2.5,6,8,concDk,blueP);box(16.75,-12,2.5,6,8,concDk,blueP);   // gap x 12.5..15.5
 [-1,1].forEach(s=>{for(let k=0;k<3;k++)add(B(.06,6.5,.18),mat(0x3f8a3c),14+s*1.47,4.4,-10+k*-1.9,runW)});
 box(13.9,-19.5,9,6,8,concDk,blueP);                    // Sky Deck x 9.4..18.4, z -16.5..-22.5
-for(let k=-3;k<=3;k++)add(B(.5,.5,.5),sunP,13.9+k*1.2,8.25,-22.2,runW);   // deck edge blocks (decor)
 
 // ---- The Runway and the Perch ----
 box(-13,1.5,4,12,2.2,conc,coralP);                     // Runway x -15..-11, z 7.5..-4.5

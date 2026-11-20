@@ -2,7 +2,7 @@
 
 ### [▶ Play Snowball Wars](https://damonsea.github.io/snowball-wars/)
 
-A 3D winter trick-platformer for the browser, starring Flip the stunt pilot. Chain flips, dives and wall jumps
+A 3D winter trick-platformer for the browser, starring Flip the stunt pilot and his sister Skye. Chain flips, dives and wall jumps
 into combos in Trick Park (Plaza, Frozen Rink, Rooftops), discover named gaps, have snowball fights, or play
 the Adventure levels. Built with three.js; open `index.html` in a browser to play (multiplayer works only in the
 claude.ai version).
@@ -23,7 +23,7 @@ by files above it. Nothing is bundled.
 |---|---|---|
 | 1 | `js/tuning.js` | **Every gameplay number**: gravity, jumps, speeds, ice, climbing, attacks, combo, scoring, camera |
 | 2 | `js/core.js` | Renderer, scene, lights, material helpers, season registry, trees/rocks/flowers |
-| 3 | `js/characters.js` | Sunny, Rook and Flip rigs, Flip's wardrobe, character table |
+| 3 | `js/characters.js` | Sunny, Rook, Flip and Skye rigs, their wardrobes, character table |
 | 4 | `js/fx.js` | Spikeball model, particle bursts, collision push-out |
 | 5 | `js/audio/sfx.js` | Sound engine and the configurable sound-effect library |
 | 6 | `js/audio/music.js` | Music tracks, ambience, spikeball rolling sound |
@@ -71,7 +71,7 @@ where a region is a box `{x,z,w,d,y}` at a surface height. Taking off from a `fr
 in a `to` region without touching anything in between awards the gap into the combo. First discoveries
 are saved per map and counted in the pause menu. Plaza has 13; Frozen Rink and Rooftops have none yet.
 
-`snowballs-check.js`, `ammo-check.js`, `cpu-check.js` and `moves-check.js` are quick checks of snowball hits, orb refills,
+`snowballs-check.js`, `ammo-check.js`, `cpu-check.js`, `moves-check.js` and `skye-check.js` are quick checks of snowball hits, orb refills,
 the computer player, and ground pound / rebinding / pole climbing: pass a file's contents as the second argument,
 e.g. `python3 tests/lines.py index.html "$(cat tests/moves-check.js)"`.
 

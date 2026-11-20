@@ -38,7 +38,7 @@ function tick(){
     else{body.rotation.y=0;body.rotation.x=0}
     feet[0].position.z=moving?Math.sin(walk*3)*.22:0;feet[1].position.z=-feet[0].position.z;
   }else{
-    const H=ci===1?R:F,m=A.mode,playing=state==='play',acro=ci===2&&playing,chibi=ci===2;
+    const H=chars[ci].rig,m=A.mode,playing=state==='play',acro=!!chars[ci].acro&&playing,chibi=ci>=2;
     const sp=acro?Math.abs(A.spd):Math.hypot(vel.x,vel.z),run=moving&&grounded,ph=walk*2.2;
     // lean into turns
     const dF=angD(face,lastFace)/Math.max(dt,1e-3);lastFace=face;
@@ -82,7 +82,7 @@ function tick(){
       else{const k=GP.t/T.pound.recover;pitch=.3*k;yo=-.25*k;lx=lr=-.9*k;ax=ar=.9;zl=-.9;zr=.9;hx=-.2}}
     else if(SB.anim>0&&!CL.on){const q=1-SB.anim/.3;rate=30;if(q<.4){ar=.9;zr=.25;yaw=.35;hy=-.2}else{ar=-2.5+(q-.4)*2.2;zr=.15;yaw=-.3;hy=.2}}
     if(CL.on&&state!=='menu'){snap=false;snapY=false;rate=12;yaw=0;roll=0;hy=0;hz=0;lrz=0;llz=0;
-      if(CL.top){pitch=PI;ax=ar=-3.1;zl=-.15;zr=.15;lx=.4;lr=-.4;roll=Math.sin(tAll*3)*.07;yo=ci===2?.32:.38;hx=-.3}
+      if(CL.top){pitch=PI;ax=ar=-3.1;zl=-.15;zr=.15;lx=.4;lr=-.4;roll=Math.sin(tAll*3)*.07;yo=ci>=2?.32:.38;hx=-.3}
       else{const c=Math.sin(CL.h*3+CL.ang*2);pitch=-.12;ax=-2.75+c*.45;ar=-2.75-c*.45;zl=-.3;zr=.3;lx=-.95+c*.45;lr=-.95-c*.45;yo=0;hx=.35}}
     if(wave>0&&!air&&!moving){zr=2.5+Math.sin(wave*14)*.35;ar=0;hz=-.1}
     if(state==='select')hy=Math.sin(tAll*1.3)*.25;
@@ -100,6 +100,10 @@ function tick(){
     if(H.scarf){const fl=Math.min(1.25,sp*.11)+(air?.35:0)+(state==='select'?.15:0);
       H.scarf.forEach((g,i)=>{L(g.rotation,'x',(i?fl*.12:.25+fl)+Math.sin(tAll*(6+sp)-i*1.1)*(.08+fl*.12),.25);
         L(g.rotation,'z',Math.sin(tAll*(4+sp*.5)-i*.9)*(.06+fl*.08)-bank*.3,.25)})}
+    // Skye's ponytail streams back with speed, bounces with steps, flips up when falling
+    if(H.pony){const fl=Math.min(1,sp*.08)+(air?(vy<0?.7:.3):0)+(state==='select'?.1:0),bob=run?Math.sin(ph*2)*.12:0;
+      H.pony.forEach((g,i)=>{L(g.rotation,'x',(i?.12+fl*.22:.45+fl*.75)+bob+Math.sin(tAll*(5+sp*.6)-i*1.2)*(.05+fl*.08),.22);
+        L(g.rotation,'z',Math.sin(tAll*(3.5+sp*.4)-i*.8)*(.05+fl*.06)-bank*.5,.22)})}
     if(H.eyes){const b=tAll%3.7<.13?.12:1;H.eyes.forEach((e,i)=>L(e.scale,'y',(i%2?1:1.25)*b,.6))}
   }
   P.visible=!(invuln>0&&state==='play'&&Math.floor(invuln*12)%2);

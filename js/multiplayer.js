@@ -29,7 +29,7 @@ const mapCount=i=>MP.on&&MP.lobby?MP.lobby.peers().filter(p=>!p.sameTab&&p.prese
 // --- remote avatars ---
 function tagCanvas(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;return c}
 function makeAv(ch){const g=new THREE.Group();scene.add(g);
-  const rig=ch===0?buildBot(g):ch===1?buildRook(g):buildChibi(g);
+  const rig=ch===0?buildBot(g):ch===1?buildRook(g):buildChibi(g,ch===3);
   const tc=tagCanvas(320,96),tt=new THREE.CanvasTexture(tc),tag=new THREE.Sprite(new THREE.SpriteMaterial({map:tt,transparent:true,depthWrite:false}));tag.scale.set(2.6,.78,1);tag.position.y=2.75;g.add(tag);
   const kc=tagCanvas(320,72),kt=new THREE.CanvasTexture(kc),trick=new THREE.Sprite(new THREE.SpriteMaterial({map:kt,transparent:true,depthWrite:false,opacity:0}));trick.scale.set(2.6,.58,1);trick.position.y=3.5;g.add(trick);
   return{g,rig,ch,of:-1,tc,tt,tag,kc,kt,trick,txt:'',tn:null,tt0:0,init:false,lx:0,lz:0}}
@@ -42,7 +42,7 @@ function drawTag(a,name,sc,free){const t=name+'|'+sc+'|'+free;if(t===a.txt)retur
 function showTrickTag(a,s){const x=a.kc.getContext('2d');x.clearRect(0,0,320,72);x.textAlign='center';x.textBaseline='middle';x.font='800 36px "Baloo 2", system-ui, sans-serif';
   x.lineWidth=6;x.strokeStyle='rgba(60,30,0,.9)';x.strokeText(s,160,36);x.fillStyle='#ffd84a';x.fillText(s,160,36);a.kt.needsUpdate=true;a.tt0=1.3}
 function poseOf(){if(ci===0)return[body.position.y,body.rotation.x,body.rotation.y,body.rotation.z,feet[0].position.z,feet[1].position.z].map(f2);
-  const H=ci===1?R:F;return[H.hp.rotation.x,H.hp.rotation.y,H.hp.rotation.z,H.root.position.y,H.root.scale.y,H.legL.rotation.x,H.legL.rotation.z,H.legR.rotation.x,H.legR.rotation.z,
+  const H=chars[ci].rig;return[H.hp.rotation.x,H.hp.rotation.y,H.hp.rotation.z,H.root.position.y,H.root.scale.y,H.legL.rotation.x,H.legL.rotation.z,H.legR.rotation.x,H.legR.rotation.z,
     H.armL.rotation.x,H.armL.rotation.z,H.armR.rotation.x,H.armR.rotation.z,H.head.rotation.x,H.head.rotation.y,H.head.rotation.z].map(f2)}
 function applyPose(a,q,k){const Lr=(o,p,v)=>{if(typeof v!=='number')return;const d=v-o[p];o[p]=Math.abs(d)>PI?v:o[p]+d*k};
   if(a.ch===0){const b=a.rig.body;Lr(b.position,'y',q[0]);Lr(b.rotation,'x',q[1]);Lr(b.rotation,'y',q[2]);Lr(b.rotation,'z',q[3]);Lr(a.rig.feet[0].position,'z',q[4]);Lr(a.rig.feet[1].position,'z',q[5]);return}
@@ -56,14 +56,15 @@ function updAvatars(dt){
   const seen=new Set(),k=1-Math.exp(-14*dt);
   for(const peer of MP.room.peers()){if(peer.sameTab)continue;const pr=peer.presence||{},p=pr.p;
     if(!Array.isArray(p)||p.length<4||!p.every(v=>typeof v==='number'&&isFinite(v)))continue;
-    seen.add(peer.peer);const ch=[0,1,2].includes(pr.ch)?pr.ch:2;let a=MP.av.get(peer.peer);
+    seen.add(peer.peer);const ch=[0,1,2,3].includes(pr.ch)?pr.ch:2;let a=MP.av.get(peer.peer);
     if(a&&a.ch!==ch){dropAv(a);a=null}
     if(!a){a=makeAv(ch);MP.av.set(peer.peer,a)}
-    if(ch===2&&Number.isInteger(pr.of)&&OUTFITS[pr.of]&&pr.of!==a.of){applyOutfitTo(a.rig.mats,pr.of);a.of=pr.of}
+    {const L=chars[ch].outs;if(L&&Number.isInteger(pr.of)&&L[pr.of]&&pr.of!==a.of){applyOutfitTo(a.rig.mats,pr.of,L);a.of=pr.of}}
     const G=a.g.position;if(!a.init){G.set(p[0],p[1],p[2]);a.init=true}
     const ox=G.x,oz=G.z;G.x+=(p[0]-G.x)*k;G.y+=(p[1]-G.y)*k;G.z+=(p[2]-G.z)*k;a.g.rotation.y+=angD(p[3],a.g.rotation.y)*k;
     if(Array.isArray(pr.q))applyPose(a,pr.q,Math.min(1,k*1.6));
     const sp=Math.hypot(G.x-ox,G.z-oz)/Math.max(dt,1e-3);
+    if(a.rig.pony){const fl=Math.min(1,sp*.08);a.rig.pony.forEach((g,i)=>{g.rotation.x=(i?.12+fl*.22:.45+fl*.75)+Math.sin(tAll*(5+sp*.6)-i*1.2)*(.05+fl*.08)})}
     if(a.rig.scarf){const fl=Math.min(1.25,sp*.11);a.rig.scarf.forEach((g,i)=>{g.rotation.x=(i?fl*.12:.25+fl)+Math.sin(tAll*(6+sp)-i*1.1)*(.08+fl*.12)})}
     snowFromPeer(peer,a);
     drawTag(a,nameOf(peer),Number.isFinite(pr.sc)?Math.floor(pr.sc):0,!!pr.fr);
@@ -95,7 +96,7 @@ function mpFrame(dt){
   const want=wantRoom();if(want!==MP.roomName&&!MP.joining&&now>MP.retryAt)switchRoom(want);
   electHost();updAvatars(dt);
   if(MP.room&&now-MP.lastSend>50){MP.lastSend=now;
-    const pr={nm:MP.myName||'Player',ch:ci,of:outfit,p:[P.position.x,py,P.position.z,face].map(f2),q:poseOf(),sc:score,fr:runFree?1:0,t:[MP.tr.n,MP.tr.s],c:[MP.cl.n,MP.cl.o,MP.cl.k],sb:SB.sent,hb:SB.hits,z:SB.stun>0?1:0,H:null};
+    const pr={nm:MP.myName||'Player',ch:ci,of:OFI[ci]??0,p:[P.position.x,py,P.position.z,face].map(f2),q:poseOf(),sc:score,fr:runFree?1:0,t:[MP.tr.n,MP.tr.s],c:[MP.cl.n,MP.cl.o,MP.cl.k],sb:SB.sent,hb:SB.hits,z:SB.stun>0?1:0,H:null};
     if(MP.host)pr.H={o:orbs.map(o=>[o.id,f2(o.g.position.x),f2(o.y),f2(o.g.position.z),o.gold?1:0,o.v,o.ring.visible?0:1,o.beam?1:0]),h:runHz.filter(h=>!h.dead).map(h=>[h.id,f2(h.g.position.x),f2(h.g.position.z)])};
     MP.room.presence(pr).catch(()=>{})}
   if(now-MP.lastList>250){MP.lastList=now;mpList()}

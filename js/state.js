@@ -25,10 +25,10 @@ function overlay(show,t,p,goTxt,altTxt,go,alt,alt2Txt='',alt2=null,alt3Txt='',al
   setTimeout(()=>$('go').focus(),50);
 }
 $('go').addEventListener('click',()=>onGo&&onGo());$('alt2').addEventListener('click',()=>onAlt2&&onAlt2());$('alt3').addEventListener('click',()=>onAlt3&&onAlt3());$('alt').addEventListener('click',()=>onAlt&&onAlt());
-function menu(){if(!unlocked(outfit)){outfit=0;applyOutfit(0)}
+function menu(){chars.forEach((c,i)=>{if(c.outs&&!unlocked(OFI[i],c.outs)){OFI[i]=0;applyOutfitTo(c.rig.mats,0,c.outs)}});
 
   state='menu';mode='run';ci=2;wave=1.6;setWorld('run');resetRun();hint('');hud();freeUI();
-  overlay(true,'Snowball Wars','Meet Flip, a pint-sized stunt pilot with momentum to burn. Trick Park: chain flips, dives and wall jumps into combos, grab orbs for snowballs and pelt your rivals. Adventure: handmade levels to conquer.','Trick Park','Adventure',()=>parkMenu(),()=>levelMenu());
+  overlay(true,'Snowball Wars','Meet Flip and his sister Skye, pint-sized stunt pilots with momentum to burn. Trick Park: chain flips, dives and wall jumps into combos, grab orbs for snowballs and pelt your rivals. Adventure: handmade levels to conquer.','Trick Park','Adventure',()=>parkMenu(),()=>levelMenu());
   $('ov').classList.add('menu');
 }
 function parkMenu(){const lab=(n,i)=>{const c=mapCount(i);return c?`${n} \u00b7 ${c} here`:n};
@@ -36,30 +36,31 @@ function parkMenu(){const lab=(n,i)=>{const c=mapCount(i);return c?`${n} \u00b7 
 function levelMenu(){overlay(true,'Adventure','Lighthouse Isles: hop across islands and light the lighthouse. Sky Gauntlet: a climb through sky ruins that needs every one of Flip’s tricks, wall jumps included.','Lighthouse Isles','Sky Gauntlet',()=>select('adv',0),()=>select('adv',1),'Back',()=>menu())}
 let pickMode='run',pickLevel=0,lockChar=false;
 function select(m,lv=0){
-  pickMode=m;pickLevel=lv;if(m==='run'&&lv!==runIdx){useRunMap(lv);setWorld('run');resetRun()}lockChar=m==='adv'&&!!levels[lv].flipOnly;ci=lockChar?2:pickCi;
-  $('prev').style.visibility=$('next').style.visibility=lockChar?'hidden':'';state='select';overlay(false);$('cs').classList.remove('hide');
+  pickMode=m;pickLevel=lv;if(m==='run'&&lv!==runIdx){useRunMap(lv);setWorld('run');resetRun()}lockChar=m==='adv'&&!!levels[lv].flipOnly;ci=lockChar&&!chars[pickCi].acro?2:pickCi;state='select';overlay(false);$('cs').classList.remove('hide');
   P.position.set(0,0,0);py=0;vel.set(0,0,0);
-  $('csMode').textContent=m==='run'?`Trick Park \u00b7 ${RUNMAPS[lv].name}`:`Adventure · ${levels[lv].name}${lockChar?' · built for Flip':''}`;showChar();setTimeout(()=>$('csGo').focus(),50);
+  $('csMode').textContent=m==='run'?`Trick Park \u00b7 ${RUNMAPS[lv].name}`:`Adventure · ${levels[lv].name}${lockChar?' · Flip and Skye only':''}`;showChar();setTimeout(()=>$('csGo').focus(),50);
 }
 function showChar(){
   const c=chars[ci];$('csName').textContent=c.name;$('csDesc').textContent=c.desc;
   $('bSp').style.width=c.sp*20+'%';$('bJp').style.width=c.jp*20+'%';$('bAg').style.width=c.ag*20+'%';
   renderOutfits();
   $('csMoves').textContent=c.moves||'';$('cb').classList.toggle('na',!c.acro);
-  $('dots').style.display=lockChar?'none':'';$('dots').innerHTML=ORDER.map(i=>`<i class="${i===ci?'on':''}"></i>`).join('');
+  $('dots').innerHTML=pickOrder().map(i=>`<i class="${i===ci?'on':''}"></i>`).join('');
   wave=1.6;if(!lockChar){pickCi=ci;try{localStorage.setItem('orbRunPick',ci)}catch(e){}}
 }
 function renderOutfits(){
-  if(!chars[ci].acro){$('outfits').innerHTML='';return}
-  const o=OUTFITS[outfit],hex=n=>'#'+n.toString(16).padStart(6,'0');
+  if(!chars[ci].outs){$('outfits').innerHTML='';return}
+  const L=chars[ci].outs,cur=OFI[ci],o=L[cur],hex=n=>'#'+n.toString(16).padStart(6,'0');
   $('outfits').innerHTML=`<span class="on">Outfit: <b>${o.name}</b>${touchUI||pad.connected?'':' <kbd>\u2191</kbd><kbd>\u2193</kbd>'}${pad.connected?' D-pad \u2191\u2193':''}</span>`+
-    OUTFITS.map((q,i)=>`<button class="sw${i===outfit?' cur':''}${unlocked(i)?'':' locked'}" data-o="${i}" aria-label="${q.name}${unlocked(i)?'':' (locked: '+q.lock+')'}" title="${unlocked(i)?q.name:q.lock}" style="background:linear-gradient(135deg,${hex(q.jacket)} 55%,${hex(q.scarf)} 55%)"></button>`).join('');
+    L.map((q,i)=>`<button class="sw${i===cur?' cur':''}${unlocked(i,L)?'':' locked'}" data-o="${i}" aria-label="${q.name}${unlocked(i,L)?'':' (locked: '+q.lock+')'}" title="${unlocked(i,L)?q.name:q.lock}" style="background:linear-gradient(135deg,${hex(q.jacket)} 55%,${hex(q.scarf)} 55%)"></button>`).join('');
 }
-function setOutfit(i){if(!unlocked(i)){toast(OUTFITS[i].lock);SFX.deny();return}
-  outfit=i;applyOutfit(i);try{localStorage.setItem('orbRunOutfit',i)}catch(e){}renderOutfits();wave=1.6;SFX.ui(i+2)}
-function cycleOutfit(d){if(!chars[ci].acro)return;let i=outfit;for(let n=0;n<OUTFITS.length;n++){i=(i+d+OUTFITS.length)%OUTFITS.length;if(unlocked(i))break}setOutfit(i)}
+function setOutfit(i){const c=chars[ci],L=c.outs;if(!L)return;if(!unlocked(i,L)){toast(L[i].lock);SFX.deny();return}
+  OFI[ci]=i;applyOutfit(i);try{localStorage.setItem(c.ofKey,i)}catch(e){}renderOutfits();wave=1.6;SFX.ui(i+2)}
+function cycleOutfit(d){const L=chars[ci].outs;if(!L)return;let i=OFI[ci];for(let n=0;n<L.length;n++){i=(i+d+L.length)%L.length;if(unlocked(i,L))break}setOutfit(i)}
 $('outfits').addEventListener('click',e=>{const b=e.target.closest('.sw');if(b)setOutfit(+b.dataset.o)});
-function cycle(d){if(lockChar)return;ci=ORDER[(ORDER.indexOf(ci)+d+ORDER.length)%ORDER.length];showChar();SFX.ui(ci)}
+// levels marked flipOnly need the acrobat moveset, so only Flip and Skye can be picked there
+const pickOrder=()=>lockChar?ORDER.filter(i=>chars[i].acro):ORDER;
+function cycle(d){const O=pickOrder();ci=O[(O.indexOf(ci)+d+O.length)%O.length];showChar();SFX.ui(ci)}
 function confirmChar(){$('cs').classList.add('hide');document.activeElement&&document.activeElement.blur&&document.activeElement.blur();if(pickMode==='run'){useRunMap(pickLevel);startRun()}else startAdv(pickLevel)}
 $('prev').addEventListener('click',()=>cycle(-1));$('next').addEventListener('click',()=>cycle(1));
 $('csGo').addEventListener('click',confirmChar);

@@ -11,7 +11,7 @@ window.__step=n=>{for(let i=0;i<n;i++){const q=window.__raf.splice(0);for(const 
 HOOK="""window.__G=()=>({state,mode,ci,runIdx,curIdx,py:+py.toFixed(3),x:+P.position.x.toFixed(3),z:+P.position.z.toFixed(3),face:+face.toFixed(3),
 score,am:A.mode,jn:A.jumpN,orbs:orbs.length,hz:runHz.length,lives,runFree,cores:coreCount,time:+time.toFixed(2),win:WIN,climb:CL.on,top:CL.top,ice:onIce,
 hint:document.getElementById('hint').textContent,ov:!document.getElementById('ov').classList.contains('hide'),ovT:document.getElementById('ovT').textContent,
-set:!document.getElementById('set').classList.contains('hide'),outfit,tAll:+tAll.toFixed(3)});"""
+set:!document.getElementById('set').classList.contains('hide'),outfit:OFI[2],tAll:+tAll.toFixed(3)});"""
 # The scripted session: (action, arg)
 def S():
   s=[]
