@@ -8,7 +8,7 @@ const ATKSPEC=T.attacks;
 const atkSpec=()=>ATKSPEC[ATK.kind==='combo'?ATK.step:ATK.kind];
 function inputDir(){const ix=kbAxisX()+joy.x+pad.x,iz=kbAxisZ()+joy.z+pad.z;return Math.hypot(ix,iz)>.3?Math.atan2(ix,iz):null}
 function attackPress(){
-  if(state!=='play'||A.knock>0||CL.on||SB.stun>0||YS.t>0||YS.spray)return;
+  if(state!=='play'||A.knock>0||CL.on||SB.stun>0||YS.t>0||YS.spray||SA.t>0)return;
   if(ATK.t>0){if(ATK.kind==='combo'&&ATK.step<3)ATK.queued=true;return}
   if(ATK.cool>0)return;
   const crouched=chars[ci].acro&&A.mode==='crouch'&&grounded;

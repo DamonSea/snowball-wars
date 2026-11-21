@@ -11,7 +11,7 @@ function tick(){
   water.position.y=-.8+Math.sin(tAll*.8)*.05;
   if(state==='play')mode==='run'?updateRun(dt):updateAdv(dt);
   if(state==='play'&&mode==='run')updateSnow(dt);
-  updateCpu(dt);poundFx(dt);updateYellow(dt);updateFlipArrow();
+  updateCpu(dt);poundFx(dt);updateYellow(dt);updateAngels(dt);updateRollers(dt);updateFlipArrow();
   if(state==='play'){
     if(grounded&&!sndG&&sndAir>.15)SFX.land(-sndVy);
     if(!grounded){sndAir+=dt;sndVy=vy}else sndAir=0;
@@ -33,6 +33,7 @@ function tick(){
     if(ATK.t>0){const p=1-ATK.t/ATK.dur,ext=p<.55?Math.sin(Math.min(1,p/.3)*PI/2):1-(p-.55)/.45,e=1-(1-p)*(1-p),spin=ATK.kind!=='combo'||ATK.step===3;
       body.rotation.y=spin?-e*2*PI:(ATK.step===1?-.7:.7)*ext;body.rotation.x=(ATK.kind==='sweep'?.1:.35)*ext;feet[1].position.z=.45*ext;if(ATK.kind==='sweep')body.position.y-=.2}
     else if(CL.on){body.rotation.y=0;body.rotation.x=CL.top?PI:-.35;if(CL.top)body.position.y+=1.45+Math.sin(tAll*3)*.03}
+    else if(SA.t>0){const e=angelPhase().lie;body.rotation.y=0;body.rotation.x=-PI/2*e;body.position.y-=.3*e}
     else if(GP.st){body.rotation.y=0;body.rotation.x=GP.st===1?(1-GP.t/T.pound.spin)*2*PI:0;if(GP.st===3)body.position.y-=.18*(GP.t/T.pound.recover)}
     else if(YS.spray||YS.t>0){body.rotation.y=0;body.rotation.x=-.1;body.rotation.z=YS.spray?0:Math.sin(tAll*42)*.09}
     else if(SB.anim>0){body.rotation.y=0;body.rotation.x=SB.anim>.18?-.3:.4}
@@ -86,10 +87,17 @@ function tick(){
       else{const k=GP.t/T.pound.recover;pitch=.3*k;yo=-.25*k;lx=lr=-.9*k;ax=ar=.9;zl=-.9;zr=.9;hx=-.2}}
     // yellow snow: hands low in front, hips forward, head tipped back in relief (legs keep walking); a shiver to finish
     else if((YS.spray||YS.t>0)&&!CL.on){rate=12;ax=ar=-.55;zl=-.08;zr=.08;hx=-.25;pitch=-.08;if(!run){lx=lr=-.08}if(!YS.spray)roll=Math.sin(tAll*42)*.07}
+    // snow angel: lie back, sweep arms overhead and legs apart; push pose for rolling snowballs
+    else if(SA.t>0&&!CL.on){const k=angelPhase(),e=k.lie;rate=18;snap=true;pitch=-PI/2*e;yo=-(H.hp.position.y-.3)*e;roll=0;yaw=0;hx=.1*e;ax=ar=0;zl=-.15-k.sweep*2.6*e;zr=-zl;lx=lr=0;llz=-k.sweep*.55*e;lrz=k.sweep*.55*e}
+    else if(RS.pushing&&grounded&&!CL.on&&ATK.t<=0){ax=ar=-1.35;zl=-.25;zr=.25;pitch+=.22;hx=-.1}
     else if(SB.anim>0&&!CL.on){const q=1-SB.anim/.3;rate=30;if(q<.4){ar=.9;zr=.25;yaw=.35;hy=-.2}else{ar=-2.5+(q-.4)*2.2;zr=.15;yaw=-.3;hy=.2}}
     if(CL.on&&state!=='menu'){snap=false;snapY=false;rate=12;yaw=0;roll=0;hy=0;hz=0;lrz=0;llz=0;
       if(CL.top){pitch=PI;ax=ar=-3.1;zl=-.15;zr=.15;lx=.4;lr=-.4;roll=Math.sin(tAll*3)*.07;yo=H.hsYo??(ci>=2?.32:.38);hx=-.3}
       else{const c=Math.sin(CL.h*3+CL.ang*2);pitch=-.12;ax=-2.75+c*.45;ar=-2.75-c*.45;zl=-.3;zr=.3;lx=-.95+c*.45;lr=-.95-c*.45;yo=0;hx=.35}}
+    // ledge hang: arms straight up gripping the edge, legs dangling (they swing as you shimmy); pull-up bends the arms
+    if(LH.on&&state!=='menu'){snap=false;snapY=false;rate=16;yaw=0;roll=0;hy=0;hz=0;lrz=0;llz=0;hx=-.25;const sw=Math.sin(walk*2.2);
+      if(LH.up>0){const k=1-LH.up/T.hang.climbTime;ax=ar=-3+k*1.9;zl=-.2;zr=.2;lx=lr=-.4-k*.9;pitch=.2+k*.4;yo=k*1.1}
+      else{ax=-3+sw*.18;ar=-3-sw*.18;zl=-.18;zr=.18;lx=.08+sw*.12;lr=.08-sw*.12;pitch=.04;yo=0}}
     if(wave>0&&!air&&!moving){zr=2.5+Math.sin(wave*14)*.35;ar=0;hz=-.1}
     if(state==='select')hy=Math.sin(tAll*1.3)*.25;
     roll+=bank;hz-=bank*.5;

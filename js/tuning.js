@@ -6,7 +6,7 @@ const T={
   stepUp:.5,              // how far above your feet a surface can be and still be stepped onto
   footMargin:.15,         // how far past a platform edge you can still stand
   wallMargin:.35,         // how close to a wall your centre can get
-  bodyRadius:.55,         // push-out radius against trees, rocks, posts
+  bodyH:1.7,bodyRadius:.55,         // push-out radius against trees, rocks, posts
   fallDeath:-2.5,         // below this height you've fallen in the water (Adventure)
 
   speed:{adventure:8,trickPark:9},
@@ -36,13 +36,18 @@ const T={
   combo:{window:1.4,orbExtend:.8},
   tricks:{'Double Jump':50,'Dive':75,'Long Jump':100,'Wall Jump':100,'Tree Leap':75,'Handstand':100,
           'Triple Jump':150,'Backflip':150,'Side Flip':150,'Side Somersault':150,'Smash':150,'Tree-top Flip':250,
-          'Snowman Down':150,'Direct Hit':200,'Ground Pound':100,'Yellow Snow':25,'Stomp':150,'Yellow Snowball':300,'Pole Leap':75,'Pole-top Flip':250},
+          'Snowman Down':150,'Direct Hit':200,'Ground Pound':100,'Pound Jump':150,'Ledge Climb':50,'Ledge Hop':75,'Hand Over Hand':200,'Bounce':50,'Super Bounce':200,'Snow Angel':100,'Bowled Over':200,'Giant Snowball':250,'Yellow Snow':25,'Stomp':150,'Yellow Snowball':300,'Pole Leap':75,'Pole-top Flip':250},
   run:{time:60,goldEvery:6,goldValue:300,goldBonusTime:5,groundOrb:100,orbsOnField:7,
        hazardSpeed:3.4,hazardSpeedUp:.035,hazardsFree:2,hazardsStart:3,hazardsMax:7,hazardEvery:15,smashRespawn:3.5},
   foes:{goonSight:16,goonKeep:9,goonSpeed:1.7,goonEvery:2.8,penguinSight:18,penguinWalk:1.3,penguinWindup:.75,penguinSlide:1.5,penguinSlideSpeed:11,penguinDizzy:1.4,penguinRest:2.5,
         impSight:20,impSpeed:5.5,impHopEvery:.5,impHopTime:.3,impFlee:6.5,impFleeTime:4,impSteals:2,stompBounce:11},
   yellow:{tank:4,refill:30,rate:45,speed:4.2,lift:2.2,gravity:14,walk:2.2,finish:.45,sessionLife:40,maxSessions:6,maxMarks:350},
-  pound:{minHeight:1.2,spin:.28,fall:30,recover:.3,radius:3.2},
+  pound:{minHeight:1.2,spin:.28,fall:30,recover:.3,radius:3.2,jumpVy:17},
+  // ledge hang: grab when a ledge top passes your hands (min..max above your feet) while falling, facing it
+  hang:{min:1.3,max:1.95,reach:.8,off:.42,drop:1.6,shimmy:2.4,climbTime:.32,hopVy:10,overHand:5},
+  bounce:{vy:17,poundVy:22},
+  angel:{time:2.6,life:45},
+  roll:{r0:.35,rMax:1.5,grow:.045,push:4.2,friction:.55,iceFriction:.2,bounce:.4,bowl:1.8},
   snow:{speed:20,lift:4,gravity:18,life:2.5,ammo:6,regen:0,orbAmmo:2,cooldown:.3,hitKnock:9,hitLift:5,stun:.9,snowmanRespawn:8},
   camera:{height:10.5,back:13}
 };

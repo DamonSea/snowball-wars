@@ -125,6 +125,8 @@ const SFX={
   climb(){noise(.09,{f:WIN?3200:2200,f2:WIN?1800:1200,q:.9,vol:.045})},
   tada(){[784,1175,1568].forEach((f,i)=>tone(f,0,.22,{type:'triangle',vol:.07,delay:i*.07}));tone(500,900,.18,{vol:.06})},
   yellowEnd(){tone(440,330,.35,{type:'sine',vol:.035});setTimeout(()=>tone(700,560,.12,{type:'triangle',vol:.03}),180)},
+  angel(){noise(.9,{f:1800,f2:900,q:.8,vol:.05});setTimeout(()=>noise(.7,{f:1600,f2:1100,q:.8,vol:.04}),900)},
+  boing(big){tone(big?180:240,big?900:640,big?.3:.2,{type:'sine',vol:.09});tone(big?360:480,big?1400:980,.15,{type:'triangle',vol:.04})},
   squawk(){tone(950,620,.12,{type:'square',vol:.035});setTimeout(()=>tone(900,560,.14,{type:'square',vol:.035}),140)},
   whoosh(){noise(.6,{f:1600,f2:500,q:1,vol:.06})},
   impGiggle(){[0,90,180].forEach((d,i)=>setTimeout(()=>tone(1100+i*180,1400+i*180,.07,{type:'triangle',vol:.04}),d))},

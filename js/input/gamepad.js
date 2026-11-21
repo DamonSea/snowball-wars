@@ -51,12 +51,12 @@ function pollPad(){
     if(L)cycle(-1);if(R)cycle(1);if(U)cycleOutfit(-1);if(D)cycleOutfit(1);
     if(pr(0))confirmChar();else if(pr(1)){$('cs').classList.add('hide');menu()}
   }else if(!$('ov').classList.contains('hide')){
-    const bs=['go','alt','alt2','alt3'].map($).filter(e=>e.textContent);let i=bs.indexOf(document.activeElement);
+    const bs=['go','alt','alt2','alt3','alt4'].map($).filter(e=>e.textContent);let i=bs.indexOf(document.activeElement);
     if(L||U||R||D){document.body.classList.add('padnav');i=(L||U)?(i<=0?bs.length-1:i-1):(i+1)%bs.length;bs[i].focus()}
     if(state==='paused'&&pr(17))setCtl(!ctlHidden);
     if(pr(0))(bs[i]||bs[0]).click();
     else if(state==='paused'&&(BIND.pad.pause||[]).some(i=>pr(i)))resume();
-    else if(pr(1)){if(state==='paused')resume();else{const bk=['alt2','alt3'].map($).find(e=>e.textContent==='Back');bk&&bk.click()}}
+    else if(pr(1)){if(state==='paused')resume();else{const bk=['alt2','alt3','alt4'].map($).find(e=>e.textContent==='Back');bk&&bk.click()}}
   }
 }
 addEventListener('gamepadconnected',()=>pollPad());addEventListener('gamepaddisconnected',()=>pollPad());

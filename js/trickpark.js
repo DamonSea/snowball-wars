@@ -51,7 +51,7 @@ function popScore(t,bad){const e=$('cPop');e.textContent=t;e.classList.toggle('b
 function bankCombo(){if(!TR.mult)return;const total=TR.pts*TR.mult;score+=total;bestCombo=Math.max(bestCombo,total);
   popScore(TR.mult>1?`+${total}  (${TR.pts} × ${TR.mult})`:`+${total}`);if(TR.mult>=3)SFX.ready();Object.assign(TR,{pts:0,mult:0,names:[],t:0});showCombo();hud()}
 function dropCombo(){if(!TR.mult)return;popScore('Combo dropped',true);Object.assign(TR,{pts:0,mult:0,names:[],t:0});showCombo()}
-const inPlat=(x,z,m)=>runL.plats.some(p=>p.top>.5&&inside(p,x,z,m));
+const inPlat=(x,z,m)=>runL.plats.some(p=>p.top>.5&&(p.bot===undefined||p.bot<1.8)&&!p.roller&&inside(p,x,z,m));
 function freeSpot(minP=4){for(let t=0;t<80;t++){const a=Math.random()*PI*2,r=Math.sqrt(Math.random())*24,x=Math.cos(a)*r,z=Math.sin(a)*r;
   if(!inPlat(x,z,1.3)&&runL.advCol.every(c=>Math.hypot(c.x-x,c.z-z)>c.r+1.4)&&Math.hypot(P.position.x-x,P.position.z-z)>minP)return{x,z}}return{x:0,z:5}}
 function pickSpot(){const pool=runL.spots.filter(s=>(chars[ci].acro||s.any)&&!orbs.some(o=>o.spot===s)&&Math.hypot(s.x-P.position.x,s.z-P.position.z)>5);
@@ -68,7 +68,7 @@ function spawnRunHz(kind=pickKind()){const f=makeFoe(kind,runL.grp),{x,z}=freeSp
   runHz.push(Object.assign(f,{vx:Math.cos(a)*sp,vz:Math.sin(a)*sp,id:mkId('h'+(++hzSeq)),st:'walk',t:1+Math.random()*2,face:a,wa:a,cool:2+Math.random()*2,robbed:0,mine:0}))}
 function resetRun(){[...orbs,...runHz].forEach(o=>rmObj(o.g));orbs=[];runHz=[];runQ=[];ATK.t=0;spawnCount=0;score=0;time=T.run.time;runT=0;bestCombo=0;lives=3;invuln=0;resetAcro();
   ({plats,advCol}=runL);clearSnow();Object.assign(GAP,{from:null,take:null,wasSup:true});CL.on=false;CL.top=false;stand=null;iceV.set(0,0,0);onIce=false;Object.assign(TR,{pts:0,mult:0,names:[],t:0});showCombo();
-  P.position.set(0,0,0);vel.set(0,0,0);vy=py=0;grounded=true;for(let i=0;i<T.run.orbsOnField;i++)spawnOrb();for(let i=0;i<T.run.hazardsStart;i++)spawnRunHz()}
+  P.position.set(0,0,0);vel.set(0,0,0);vy=py=0;grounded=true;for(let i=0;i<T.run.orbsOnField;i++)spawnOrb();for(let i=0;i<T.run.hazardsStart;i++)spawnRunHz();spawnRollers()}
 function startRun(free=true){mode='run';setWorld('run');resetRun();runFree=free;runCD=0;padHold=0;state='play';overlay(false);hud();SFX.start();freeUI();renderControls();
   const t=free?FREE_HINT:'Trick Park: chain tricks for a combo multiplier. Higher orbs are worth more!';hint(t);clearTimeout(hintTimer);
   if(!free)hintTimer=setTimeout(()=>{if($('hint').textContent===t)hint('')},6000)}

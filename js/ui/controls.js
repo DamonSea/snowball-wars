@@ -10,7 +10,7 @@ function renderControls(){
   const mv=T_?'Joystick':P?'L-stick / D-pad':(()=>{const ks=['up','left','down','right'].map(id=>BIND.kb[id][0]);
     const n=ks.map(c=>c?keyName(c):'?');return(n.every(x=>x.length===1)?k(n.join('')):n.map(k).join(' '))+' / '+k('Arrows')})();
   const rows=[[mv,'Move'],[L('jump'),'Jump (hold for full height)'],[L('attack'),'Attack (tap \u00d73 for a combo)'],['In the air: '+L('attack'),'Flying kick'],
-    ['In the air: '+L('pound'),'Ground pound'],...(YS.on&&WIN?[['Standing: hold '+L('pound'),'Yellow snow (walk to aim)']]:[]),[L('pause'),'Pause']];
+    ['In the air: '+L('pound'),'Ground pound'],...(WIN?[[(chars[ci].name==='Nova'?'Standing: ':'Crouch + ')+L('pound'),'Snow angel']]:[]),...(YS.on&&WIN&&chars[ci].name!=='Nova'?[['Standing: hold '+L('pound'),'Yellow snow (walk to aim)']]:[]),...(mode==='run'?[['Walk into a small snowball','Roll it bigger']]:[]),[L('pause'),'Pause']];
   if(!T_)rows.push([P?b('Create'):k('M'),'Sound on/off'],[P?b('Touchpad'):k('H'),'Hide this panel']);
   if(chars[ci].acro)rows.splice(2,0,[L('crouch'),'Crouch (move to crouch-walk)'],['Crouch + '+L('attack'),'Sweep kick'],
     ['Run + crouch + Jump','Long jump'],['Still + crouch + Jump','Backflip'],['Run into a tree or pole','Climb it (Jump at the top: flip)'],

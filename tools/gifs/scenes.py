@@ -34,6 +34,23 @@ __run(s=>{if(s.ph===0){__k({KeyA:true});if(CL.on){s.ph=1}}
  else if(s.ph===4){if(grounded&&++s.w>6)__k({})}});""",120)
 S['frozen-rink']=(C+"""__go(3,1);__at(-9,1,Math.PI/2);
 __run(s=>{const t=s.f;if(t<80)__k({KeyD:true});else if(t<140)__k({});else if(t<210)__k({KeyA:true,KeyW:true});else if(t<250)__k({});else if(t===250){__k({ShiftLeft:true})}else if(t===253){jumpBuf=.15;keys.Space=true}else if(t>258)__k({})});""",80)
+S["monkey-bars"]=(C+"""__go(2,3);__at(5,1.6,-Math.PI);
+__run(s=>{if(s.ph===0){if(++s.w===8){__k({KeyW:true,Space:true});jumpBuf=.15;s.ph=1}}
+ else if(s.ph===1){if(LH.on){__k({});s.ph=2;s.w=0}}
+ else if(s.ph===2){if(++s.w===10)__k({KeyD:true});if(P.position.x>11.4){__k({KeyW:true});s.ph=3;s.w=0}}
+ else if(s.ph===3){if(!LH.on&&++s.w>6){__k({KeyD:true});s.ph=4}}
+ else if(s.ph===4){if(P.position.x>13.6){__k({});s.ph=5}}});""",110)
+S['pound-peak']=(C+"""__go(2,3);__at(14,-.2,-Math.PI,3.4);
+__run(s=>{if(s.ph===0){if(++s.w===10){jumpBuf=.15;keys.Space=true;s.ph=1;s.w=0}}
+ else if(s.ph===1){if(++s.w===24){keys.Space=false;groundPound();s.ph=2}}
+ else if(s.ph===2){if(GP.st===3){jumpBuf=.15;keys.Space=true;s.ph=3;s.w=0}}
+ else if(s.ph===3){if(++s.w===8)__k({KeyW:true,Space:true});if(grounded&&py>8.9){__k({});s.ph=4;s.w=0}}
+ else if(s.ph===4){if(++s.w===14){face=-Math.PI/2;P.position.x=15.1;}if(s.w===20)__k({KeyA:true,Space:true});if(s.w>20&&P.position.x<13.1){jumpBuf=.15;s.ph=5}}
+ else if(s.ph===5){if(grounded&&py<6){__k({});s.ph=6}}});""",105)
+S['winter-fun']=(C+"""__go(3,3);__at(-7,18,Math.PI/2);const b=RS.list[0];b.x=-4.6;b.z=18;b.r=T.roll.r0;b.vx=b.vz=0;syncRoller(b);
+__run(s=>{if(s.ph===0){if(++s.w===10){poundOrSnow();s.ph=1}}
+ else if(s.ph===1){if(SA.t<=0&&++s.w>20){__k({KeyD:true});s.ph=2;s.w=0}}
+ else if(s.ph===2){if(++s.w>200){__k({});s.ph=3}}});""",110)
 async def main(names):
   for n in names:
     js,fr=S[n];await gif(n,js,fr)

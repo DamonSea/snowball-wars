@@ -3,6 +3,22 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.5.0] - 2026-11-20 — Jungle Gym
+### Added
+- **Jungle Gym**, a fourth Trick Park map: one connected playground built so each structure hands you to the next.
+  A two-level fort on posts you can run under, a tire run, a fireman pole, monkey bars to the East Tower, Pound Peak,
+  trampolines up to the North Deck, a wall-jump canyon with a lookout, and a swing set. 12 named gaps.
+- **Ledge hang**: grab a ledge as you fall past it facing it. Shimmy left/right (Hand Over Hand for 5 m), push toward
+  it to pull up, Jump to hop up, crouch or push away to drop.
+- **Pound Jump**: press Jump right as a ground pound lands to launch straight up (about three times a normal jump).
+- **Trampolines** (Bounce), and a ground pound onto one for a **Super Bounce**.
+- **Snow angels**: Crouch + Ground pound while standing in snow; leaves an angel imprint (Snow Angel).
+- **Rolling snowballs**: push the small snowballs around Trick Park; they grow as they roll, bowl over enemies and
+  snowmen (Bowled Over), reach Giant size, and can be stood on or smashed.
+- Platforms can now have open space underneath (decks, bars, bridges), and you bonk your head on their undersides.
+### Changed
+- Nova no longer does yellow snow: her Ground pound on the ground makes a snow angel.
+
 ## [2.4.0] - 2026-11-20 — The winter crew
 ### Added
 - New enemies replace the spikeballs in Trick Park and Adventure:

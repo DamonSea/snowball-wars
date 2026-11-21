@@ -8,9 +8,11 @@ const YS={on:true,spray:false,t:0,tank:0,used:0,armed:false,drops:[],sess:[],cur
 try{YS.on=localStorage.getItem('orbRunYellow')!=='0'}catch(e){}
 const ysDropGeo=new THREE.SphereGeometry(.045,6,4),ysDropM=new THREE.MeshBasicMaterial({color:0xf5dc52}),ysMarkGeo=new THREE.CircleGeometry(.1,10);
 YS.tank=T.yellow.tank;
-function poundOrSnow(){if(grounded&&state==='play')startYellow();else groundPound()}
+// on the ground: Crouch + Ground pound makes a snow angel; Ground pound alone is yellow snow (Nova always makes angels)
+const isNova=()=>chars[ci].name==='Nova';
+function poundOrSnow(){if(grounded&&state==='play'){if(isNova()||held('crouch')||joy.crouch)startAngel();else startYellow()}else groundPound()}
 function startYellow(){
-  if(!YS.on||YS.spray||YS.t>0||CL.on||SB.stun>0||ATK.t>0||GP.st||!grounded)return;
+  if(isNova()||SA.t>0||!YS.on||YS.spray||YS.t>0||CL.on||SB.stun>0||ATK.t>0||GP.st||!grounded)return;
   if(chars[ci].acro&&A.mode!=='normal'&&A.mode!=='crouch')return;
   if(!WIN){toast('No snow to write your name in. Try winter.');return}
   if(YS.tank<.4){toast('Nothing left. Give it a minute.');SFX.deny();return}

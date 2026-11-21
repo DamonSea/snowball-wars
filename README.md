@@ -3,7 +3,7 @@
 ### [▶ Play Snowball Wars](https://damonsea.github.io/snowball-wars/)
 
 A 3D winter trick-platformer for the browser, starring Flip the stunt pilot and Nova the snowboarder. Chain flips, dives and wall jumps
-into combos in Trick Park (Plaza, Frozen Rink, Rooftops), discover named gaps, have snowball fights, or play
+into combos in Trick Park (Plaza, Frozen Rink, Rooftops, Jungle Gym), discover named gaps, have snowball fights, or play
 the Adventure levels. Built with three.js; open `index.html` in a browser to play (multiplayer works only in the
 claude.ai version).
 
@@ -18,17 +18,24 @@ Pick **Flip** the stunt pilot or **Nova** the snowboarder for the full acrobat m
 and **Rook** (a quick explorer) for simpler controls. Flip and Nova each have five outfits; Golden Ace / Gold Rush
 unlocks by beating Sky Gauntlet.
 
-Double and triple jumps, a skid into a side somersault, backflips, long jumps, dives, wall jumps and a ground pound,
-all chaining into combos.
+Double and triple jumps, a skid into a side somersault, backflips, long jumps, dives, wall jumps, a ground pound and
+**Pound Jump** (Jump right after a ground pound to rocket straight up), plus **ledge hang**: grab edges as you fall past,
+shimmy along them and pull up. Everything chains into combos.
 
 ![Triple jump, side somersault and backflip](docs/media/tricks.gif)
 
 ### Trick Park
-Three maps to skate, flip and wall-jump around, with free roam until you step on the START pad for a 60-second
+Four maps to skate, flip and wall-jump around, with free roam until you step on the START pad for a 60-second
 scored run. Higher orbs are worth more, combos multiply, and **named gaps** reward clean lines.
 - **Plaza:** a skatepark built around trick lines: tower and crown, runway, chimney, pillars, treehouse, fountain.
 - **Frozen Rink:** real ice physics: build speed, glide, drift and bounce off the boards.
 - **Rooftops:** a vertical city made for wall jumps, topped by a climbable antenna 18 m up.
+- **Jungle Gym:** one connected playground built to use every move: a two-level fort, tire run, fireman pole,
+  monkey bars, Pound Peak, trampolines and a wall-jump canyon, with 12 named gaps.
+
+![The Jungle Gym](docs/media/jungle-gym.png)
+![Monkey bars: hang, shimmy hand over hand, pull up](docs/media/monkey-bars.gif)
+![Ground pound, Pound Jump onto Pound Peak, then the Peak Plunge to the fort roof](docs/media/pound-peak.gif)
 
 ![Long jump plus a late dive across the runway gap](docs/media/runway.gif)
 ![Skating on Frozen Rink](docs/media/frozen-rink.gif)
@@ -41,9 +48,16 @@ Run into a tree, lamp post or antenna to grab on, climb to a handstand, aim with
 ### Snowball fights
 Throw snowballs (F / R1 / touch) at friends, snowmen and enemies. A hit knocks the target back and stuns it with
 dizzy stars; orbs refill your snowballs. Turn on the **computer player** in Settings for someone to fight solo.
-Optional silliness: hold the Ground pound button while standing for **yellow snow** (and a yellow snowball).
+Optional silliness: hold the Ground pound button while standing for **yellow snow** (and a yellow snowball). Nova doesn't.
 
 ![A snowball duel with the computer player](docs/media/snowball-fight.gif)
+
+### Winter activities
+- **Snow angels:** Crouch + Ground pound while standing in snow (Nova: just Ground pound). Lie back, sweep, leave an angel.
+- **Rolling snowballs:** walk into one of the small snowballs around each Trick Park map to push it. It grows as it rolls,
+  bowls over enemies and snowmen, and a big one is something to stand on. Smash it to start over.
+
+![Nova makes a snow angel, then rolls a snowball bigger](docs/media/winter-fun.gif)
 
 ### The winter crew
 ![Snow goon, penguin slider and frost imp](docs/media/winter-crew.png)
@@ -88,11 +102,11 @@ by files above it. Nothing is bundled.
 | 7 | `js/enemies.js` | Enemies: snow goons, penguin sliders, frost imps (AI, stomps, theft) and the Spikeballs toggle |
 | 8 | `js/levels/engine.js` | Level/map builders and collision queries (how to add maps is documented at the top) |
 | 9 | `js/levels/*.js` | Adventure levels: Lighthouse Isles, Sky Gauntlet |
-| 10 | `js/maps/*.js` | Trick Park maps: Plaza, Frozen Rink, Rooftops |
+| 10 | `js/maps/*.js` | Trick Park maps: Plaza, Frozen Rink, Rooftops, Jungle Gym |
 | 11 | `js/content-ready.js` | Picks the current level and map once all are registered |
 | 12 | `js/state.js` | Game state, HUD, menus, character select, pause |
 | 13 | `js/trickpark.js` | Trick Park: START pad, combos, orbs, spikeballs, timed runs |
-| 14 | `js/physics.js` | Platform physics, ice, walls, tree and pole climbing |
+| 14 | `js/physics.js` | Platform physics, ice, walls, tree and pole climbing, ledge hang, trampolines, raised decks |
 | 15 | `js/adventure.js` | Adventure: cores, checkpoints, tutorial zones, goal |
 | 16 | `js/combat.js` | Three-hit combo, sweep, air kick |
 | 17 | `js/movement.js` | Sunny/Rook controls and Flip's whole moveset |
@@ -106,8 +120,9 @@ by files above it. Nothing is bundled.
 | 25 | `js/multiplayer.js` | Trick Park multiplayer over the page's room capability |
 | 26 | `js/snowballs.js` | Snowball fights: throwing, ammo (refilled by orbs), snowmen, hits on players (Trick Park only) |
 | 27 | `js/yellowsnow.js` | Yellow snow: hold-to-spray stream that marks the snow, yellow snowballs (Settings → Yellow snow) |
-| 28 | `js/cpu.js` | Computer player for Trick Park (Settings → Computer player) |
-| 29 | `js/main.js` | Startup |
+| 28 | `js/winterfun.js` | Snow angels and rolling snowballs that grow |
+| 29 | `js/cpu.js` | Computer player for Trick Park (Settings → Computer player) |
+| 30 | `js/main.js` | Startup |
 
 ## Tests
 

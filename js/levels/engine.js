@@ -23,6 +23,15 @@ function cylPlat(x,z,r,top){const h=top+3;add(new THREE.CylinderGeometry(r+.3,r-
   add(new THREE.CylinderGeometry(r,r,.3,40),grassM,x,top-.15,z,advW).castShadow=false;plats.push({k:'c',x,z,r,top})}
 function boxPlat(x,z,w,d,top,sm=stoneM,tm=grassM){const h=top+3;add(new THREE.BoxGeometry(w,h,d),sm,x,top-h/2,z,advW);
   if(tm)add(new THREE.BoxGeometry(w+.1,.12,d+.1),tm,x,top-.04,z,advW);plats.push({k:'b',x,z,w,d,top})}
+// raised deck / beam / bar with open space below (bot = underside)
+function floatPlat(x,z,w,d,top,th=.4,sm=slabM,tm=null){add(new THREE.BoxGeometry(w,th,d),sm,x,top-th/2,z,advW);
+  if(tm)add(new THREE.BoxGeometry(w+.06,.1,d+.06),tm,x,top-.03,z,advW);const p={k:'b',x,z,w,d,top,bot:top-th};plats.push(p);return p}
+// trampoline: land on it from the air to bounce high (ground pound onto it for a super bounce)
+function bouncePad(x,z,r,top,frameM){const legM=mat(0x3a3f47,{roughness:.5,metalness:.3});
+  for(let k=0;k<4;k++){const a=k*PI/2+PI/4;add(new THREE.CylinderGeometry(.06,.06,top,6),legM,x+Math.cos(a)*r*.85,top/2,z+Math.sin(a)*r*.85,advW)}
+  add(new THREE.TorusGeometry(r,.12,8,28),frameM,x,top,z,advW).rotation.x=PI/2;
+  const m=add(new THREE.CylinderGeometry(r-.05,r-.05,.05,28),mat(0x22262b,{roughness:.8}),x,top-.02,z,advW);
+  const p={k:'c',x,z,r,top,bounce:true,m};plats.push(p);return p}
 function movPlat(x,z,w,d,top,ax,az,amp,sp,ph){const m=add(new THREE.BoxGeometry(w,.5,d),slabM,x,top-.25,z,advW);
   plats.push({k:'b',x,z,w,d,top,m,dx:0,dz:0,mv:{x0:x,z0:z,ax,az,amp,sp,ph}})}
 // path enemies: a penguin (patrol) or imp (circler), with the classic spikeball inside for the Enemies toggle
@@ -42,4 +51,5 @@ function makePad(x,z,y){const padM=new THREE.MeshBasicMaterial({color:0xffcc33,t
 
 function inside(p,x,z,m){return p.k==='c'?Math.hypot(x-p.x,z-p.z)<p.r+m:Math.abs(x-p.x)<p.w/2+m&&Math.abs(z-p.z)<p.d/2+m}
 function groundAt(x,z,y){let h=-Infinity,on=null;for(const p of plats)if(p.top<=y+T.stepUp&&p.top>h&&inside(p,x,z,T.footMargin)){h=p.top;on=p}return{h,on}}
-const blocked=(x,z,y)=>plats.some(p=>p.top>y+T.stepUp&&inside(p,x,z,T.wallMargin));
+// a platform with a bottom (bot) only blocks you where your body overlaps it, so you can walk under decks and bars
+const blocked=(x,z,y)=>plats.some(p=>p.top>y+T.stepUp&&(p.bot===undefined||y+T.bodyH>p.bot)&&inside(p,x,z,T.wallMargin));

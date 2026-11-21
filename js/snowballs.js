@@ -10,7 +10,7 @@ function launchSnowball(o,own,owner,id,yellow=false){
   const m=new THREE.Mesh(sbGeo,yellow?sbYellow:sbMat);m.castShadow=true;m.position.set(o[0],o[1],o[2]);scene.add(m);
   SB.list.push({m,vx:o[3],vy:o[4],vz:o[5],t:0,own,owner,id,yellow,chunk:owner==='chunk'})}
 function throwSnow(){
-  if(mode!=='run'||state!=='play'||CL.on||SB.cool>0||SB.stun>0||YS.t>0||YS.spray)return;
+  if(mode!=='run'||state!=='play'||CL.on||SB.cool>0||SB.stun>0||YS.t>0||YS.spray||SA.t>0)return;
   if(SB.ammo<1){SFX.deny();if(!SB.told){SB.told=true;toast('Out of snowballs: grab orbs to refill')}snowFlash('empty');return}
   SB.ammo--;SB.cool=T.snow.cooldown;SB.anim=.3;snowHud();
   const d=inputDir();if(d!==null&&ATK.t<=0)face=d;
@@ -25,7 +25,7 @@ const hitsSpike=(h,p)=>{const g=h.g.position;return Math.hypot(g.x-p.x,g.z-p.z)<
 function splat(p,big,yel){burst(p.clone(),yel?0xf2d64b:0xffffff,big?16:9);SFX.splat(big)}
 // does a point sit inside something solid?
 function solidAt(x,y,z){
-  for(const p of plats)if(p.top>y&&inside(p,x,z,.05)&&!(p.k==='c'&&p.r>20&&y>p.top-.05))return true;
+  for(const p of plats)if(p.top>y&&(p.bot===undefined||y>p.bot)&&inside(p,x,z,.05)&&!(p.k==='c'&&p.r>20&&y>p.top-.05))return true;
   for(const c of advCol)if(Math.hypot(c.x-x,c.z-z)<c.r*(c.tree?.6:1)&&y<(c.tree?c.top:2.2))return true;
   return false}
 function hitMe(owner,id,bx,bz,yel){
@@ -65,7 +65,7 @@ function updateSnow(dt){
     else if(chars[ci].acro&&(A.mode==='dive'||A.mode==='slide')&&d<1.15){shake=Math.max(shake,.2);rumble(120,.6,.8);SFX.splat(true);knockSnowman(s)}}
   for(const s of snowmen())if(!s.up&&(s.t-=dt)<=0){s.up=true;s.g.visible=true;burst(V(s.x,1.2,s.z),0xffffff,10)}
 }
-function clearSnow(){clearYellow();resetPound();SB.stun=0;if(CPU.a)CPU.a.init=false;myStars.visible=false;SB.list.forEach(b=>scene.remove(b.m));SB.list=[];SB.ammo=T.snow.ammo;SB.regen=0;SB.anim=0;snowHud()}
+function clearSnow(){clearAngels();clearRollers();clearYellow();resetPound();SB.stun=0;if(CPU.a)CPU.a.init=false;myStars.visible=false;SB.list.forEach(b=>scene.remove(b.m));SB.list=[];SB.ammo=T.snow.ammo;SB.regen=0;SB.anim=0;snowHud()}
 // orbs refill snowballs: regular orbs give a few, gold orbs fill you up
 function gainSnow(gold){const was=SB.ammo;SB.ammo=gold?T.snow.ammo:Math.min(T.snow.ammo,SB.ammo+T.snow.orbAmmo);if(SB.ammo>was){snowHud();snowFlash('gain')}}
 function snowFlash(c){const e=$('snowBox');if(!e)return;e.classList.remove('gain','empty');void e.offsetWidth;e.classList.add(c)}
@@ -81,7 +81,7 @@ function snowFromPeer(peer,a){const pr=peer.presence||{};yellowFromPeer(pr,a);
     const yel=YS.yIds.has(h[1]);addTrick(yel?'Yellow Snowball':'Direct Hit');toast(yel?`Yellow snowball on ${nameOf(peer)}!`:`Direct hit on ${nameOf(peer)}!`);SFX.splat(true)}
 }
 // ----- snowmen targets, per map -----
-const SNOWMEN_AT={Plaza:[[6,10],[-3,13],[9,-4],[-19,-4]],'Frozen Rink':[[-7,9],[7,9.5],[-9,-12],[17,10]],Rooftops:[[-6,9],[3,15],[-19,7],[14,7]]};
+const SNOWMEN_AT={Plaza:[[6,10],[-3,13],[9,-4],[-19,-4]],'Frozen Rink':[[-7,9],[7,9.5],[-9,-12],[17,10]],Rooftops:[[-6,9],[3,15],[-19,7],[14,7]],'Jungle Gym':[[-15,14],[17,13],[-17,-15],[19,-13]]};
 function makeSnowman(grp,x,z,i){const g=new THREE.Group();g.position.set(x,0,z);grp.add(g);
   const coal=mat(0x1d1a18),carrot=mat(0xff8a3d),stick=mat(0x6b4226),scarfC=mat([0xd83a2e,0x2f6fd0,0x2bb3a8,0xffd84a][i%4]);
   add(new THREE.SphereGeometry(.72,14,10),snowM,0,.62,0,g);add(new THREE.SphereGeometry(.52,14,10),snowM,0,1.5,0,g);add(new THREE.SphereGeometry(.36,14,10),snowM,0,2.16,0,g);

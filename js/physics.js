@@ -9,7 +9,7 @@ function rawInput(){let ix=kbAxisX()+joy.x+pad.x,iz=kbAxisZ()+joy.z+pad.z;
 const leafCol=()=>CL.tree&&CL.tree.pole?0xffe2a8:WIN?0xffffff:0x3fa65a;
 const climbName=n=>CL.tree&&CL.tree.pole?n.replace('Tree','Pole'):n;
 function tryGrab(dt){
-  if(CL.on||CL.cool>0||state!=='play'||ATK.t>0||A.knock>0||SB.stun>0||GP.st||YS.t>0||YS.spray||A.mode==='dive'||A.mode==='slide'){CL.touch=0;return}
+  if(CL.on||CL.cool>0||state!=='play'||ATK.t>0||A.knock>0||SB.stun>0||GP.st||YS.t>0||YS.spray||SA.t>0||A.mode==='dive'||A.mode==='slide'){CL.touch=0;return}
   const[ix,iz]=rawInput(),im=Math.hypot(ix,iz);if(im<.4){CL.touch=0;return}
   for(const c of advCol){if(!c.tree)continue;const dx=c.x-P.position.x,dz=c.z-P.position.z,d=Math.hypot(dx,dz);
     if(d<c.r+.7&&py>=c.y-.1&&py<c.top-1.3&&(ix*dx+iz*dz)/(d*im)>.6){CL.touch+=dt;
@@ -51,9 +51,42 @@ function updateFlipArrow(){const on=state==='play'&&CL.on&&CL.top&&!!CL.tree;fli
   const c=CL.tree,d=face,pulse=Math.sin(tAll*7);
   flipArrow.position.set(c.x+Math.sin(d)*(.75+pulse*.08),c.top+.25,c.z+Math.cos(d)*(.75+pulse*.08));flipArrow.rotation.y=d;
   flipArrowM.opacity=.75+pulse*.2}
+// ---------- ledge hang ----------
+// Falling past a box ledge while facing it grabs on (hands at the top). Left/right shimmy along it,
+// push toward it to pull up, Jump to hop up onto it, crouch or push away to let go.
+const LH={on:false,p:null,ax:'x',s:1,up:0,cool:0,dist:0,awarded:false};
+function tryHang(){
+  if(LH.cool>0||grounded||vy>0||CL.on||GP.st||SA.t>0||SB.stun>0||A.knock>0||A.mode==='dive'||A.mode==='slide'||YS.spray||YS.t>0||state!=='play')return false;
+  const x=P.position.x,z=P.position.z,fx=Math.sin(face),fz=Math.cos(face),H=T.hang;
+  for(const p of plats){if(p.k!=='b'||p.mv)continue;const rel=p.top-py;if(rel<H.min||rel>H.max)continue;
+    const hw=p.w/2,hd=p.d/2,dx=x-p.x,dz=z-p.z;let ax=null,s=0;
+    if(Math.abs(dz)<hd-.1&&Math.abs(dx)>hw-.05&&Math.abs(dx)<hw+H.reach){ax='x';s=Math.sign(dx)}
+    else if(Math.abs(dx)<hw-.1&&Math.abs(dz)>hd-.05&&Math.abs(dz)<hd+H.reach){ax='z';s=Math.sign(dz)}
+    if(!ax)continue;const nx=ax==='x'?-s:0,nz=ax==='z'?-s:0;if(fx*nx+fz*nz<.5)continue;
+    // room to pull up: nothing solid sitting on the ledge right there
+    const lx=ax==='x'?p.x+s*(hw-.3):x,lz=ax==='z'?p.z+s*(hd-.3):z;
+    if(plats.some(q=>q!==p&&q.top>p.top+.3&&(q.bot===undefined||q.bot<p.top+1.6)&&inside(q,lx,lz,0)))continue;
+    Object.assign(LH,{on:true,p,ax,s,up:0,dist:0,awarded:false});
+    if(ax==='x')P.position.x=p.x+s*(hw+H.off);else P.position.z=p.z+s*(hd+H.off);
+    py=p.top-H.drop;vy=0;vel.set(0,0,0);A.spd=0;A.mode='normal';A.flipT=99;A.twirlT=99;face=Math.atan2(nx,nz);jumpBuf=0;SFX.grab();return true}
+  return false}
+function hangStep(dt){const p=LH.p,H=T.hang,[ix,iz]=rawInput();vy=0;vel.set(0,0,0);grounded=false;stand=null;invuln=Math.max(0,invuln-dt);wallSliding=false;
+  const nx=LH.ax==='x'?-LH.s:0,nz=LH.ax==='z'?-LH.s:0;face=Math.atan2(nx,nz);py=p.top-H.drop;
+  if(LH.up>0){LH.up-=dt;if(LH.up<=0){LH.on=false;LH.cool=.25;P.position.x+=nx*(H.off+.4);P.position.z+=nz*(H.off+.4);py=p.top;grounded=true;stand=p;addTrick('Ledge Climb')}return}
+  const toward=ix*nx+iz*nz,along=LH.ax==='x'?iz:ix,ck=held('crouch')||joy.crouch;
+  if(ck||toward<-.6){LH.on=false;LH.cool=.35;return}
+  // Jump: spring up over the edge onto the ledge with a little hop
+  if(jumpBuf>0){jumpBuf=0;LH.on=false;LH.cool=.3;P.position.x+=nx*(H.off+.45);P.position.z+=nz*(H.off+.45);py=p.top+.02;vy=H.hopVy*.6;vel.set(0,0,0);if(chars[ci].acro){A.mode='jump';A.jumpN=0;A.spd=0;A.canDive=true;A.canCut=false}SFX.jump(1);addTrick('Ledge Hop');return}
+  if(toward>.6){LH.up=H.climbTime;SFX.climb();return}
+  if(Math.abs(along)>.25){const lim=(LH.ax==='x'?p.d:p.w)/2-.3,st=along*H.shimmy*dt;
+    if(LH.ax==='x')P.position.z=Math.max(p.z-lim,Math.min(p.z+lim,P.position.z+st));else P.position.x=Math.max(p.x-lim,Math.min(p.x+lim,P.position.x+st));
+    LH.dist+=Math.abs(st);walk+=Math.abs(st)*2;if((LH.stepT=(LH.stepT||0)+dt)>.28){LH.stepT=0;SFX.climb()}
+    if(!LH.awarded&&LH.dist>=H.overHand){LH.awarded=true;addTrick('Hand Over Hand')}}
+}
 let onIce=false;const iceV=new THREE.Vector3();
 function stepBody(dt,speed){
-  CL.cool=Math.max(0,CL.cool-dt);if(CL.on){onIce=false;climbStep(dt);return true}
+  CL.cool=Math.max(0,CL.cool-dt);LH.cool=Math.max(0,LH.cool-dt);if(CL.on){onIce=false;climbStep(dt);return true}
+  if(LH.on){onIce=false;hangStep(dt);return true}
   for(const p of plats)if(p.mv){const v=p.mv,s=Math.sin(advT*v.sp+v.ph)*v.amp,nx=v.x0+v.ax*s,nz=v.z0+v.az*s;p.dx=nx-p.x;p.dz=nz-p.z;p.x=nx;p.z=nz;p.m.position.x=nx;p.m.position.z=nz}
   if(stand&&stand.mv){P.position.x+=stand.dx;P.position.z+=stand.dz}
   // horizontal move with step/wall checks
@@ -74,7 +107,15 @@ function stepBody(dt,speed){
   wallSliding=false;
   if(chars[ci].acro&&A.wallT>0&&!grounded&&vy<T.flip.wallJump.slideFall&&A.mode!=='dive'){vy=T.flip.wallJump.slideFall;wallSliding=true;if(Math.random()<.3)puff()}
   py+=vy*dt;
+  // bonk your head on the underside of a deck or bar
+  if(vy>0)for(const p of plats)if(p.bot!==undefined&&prev+T.bodyH<=p.bot+.02&&py+T.bodyH>p.bot&&inside(p,P.position.x,P.position.z,-.05)){py=p.bot-T.bodyH;vy=0;A.canCut=false;break}
   const g=groundAt(P.position.x,P.position.z,prev);
-  if(py<=g.h){py=g.h;vy=0;grounded=true;stand=g.on}else{grounded=false;stand=null}
+  if(py<=g.h){const vin=vy;py=g.h;vy=0;grounded=true;stand=g.on;
+    // trampolines: landing from the air bounces you; a ground pound onto one is a super bounce
+    if(stand&&stand.bounce&&(vin<-2||GP.st===2)){const sup=GP.st===2;vy=sup?T.bounce.poundVy:T.bounce.vy;grounded=false;stand=null;if(sup)GP.st=0,A.mode='normal';
+      if(chars[ci].acro){A.mode=sup?'flip':'jump';A.jumpN=0;A.canDive=true;A.canCut=false;if(sup)startFlip('x',1)}
+      SFX.boing(sup);burst(V(P.position.x,py+.1,P.position.z),0xffffff,sup?16:8);addTrick(sup?'Super Bounce':'Bounce')}}
+  else{grounded=false;stand=null}
+  if(!grounded&&tryHang())return true;
   return py>=T.fallDeath;
 }
