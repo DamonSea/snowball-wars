@@ -79,6 +79,11 @@ Optional silliness: hold the Ground pound button while standing for **yellow sno
 
 ![Nova makes a snow angel, then rolls a snowball bigger](docs/media/winter-fun.gif)
 
+- **Butt slide:** hold Crouch on a slope, like the Big Slide in the Plaza, to sit down and slide. Steer with the stick,
+  Jump to hop off with your speed.
+
+![Vex butt-slides down the Big Slide](docs/media/big-slide.gif)
+
 ### The winter crew
 ![Snow goon, penguin slider and frost imp](docs/media/winter-crew.png)
 

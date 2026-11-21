@@ -3,6 +3,15 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.10.0] - 2026-11-20 — The Big Slide
+### Added
+- **The Big Slide** in the Plaza (front right): a 6-high tower with steps and a long railed chute back toward the middle.
+- **Butt slide** for every character: hold Crouch on a slope to sit down and slide. The slope speeds you up, the stick
+  steers, Jump hops off with your speed (Slide Hop), and letting go of Crouch stands you up. Butt Slide scores in combos.
+- Ramps in the level engine: surfaces that rise along their length, with open space under the high end.
+### Fixed
+- Walking down a slope keeps you on the ground instead of hopping into the air every frame.
+
 ## [2.9.1] - 2026-11-20 — Controller-friendly menus
 ### Added
 - Button prompts whenever a controller is connected: ✕ Play, △ Customize, ○ Back / Done, and L1 / R1 beside tabs.

@@ -50,6 +50,11 @@ function makePad(x,z,y){const padM=new THREE.MeshBasicMaterial({color:0xffcc33,t
   const pad=new THREE.Mesh(new THREE.RingGeometry(1.1,1.6,32),padM);pad.rotation.x=-PI/2;pad.position.set(x,y+.04,z);advW.add(pad);return{pad,padM}}
 
 function inside(p,x,z,m){return p.k==='c'?Math.hypot(x-p.x,z-p.z)<p.r+m:Math.abs(x-p.x)<p.w/2+m&&Math.abs(z-p.z)<p.d/2+m}
-function groundAt(x,z,y){let h=-Infinity,on=null;for(const p of plats)if(p.top<=y+T.stepUp&&p.top>h&&inside(p,x,z,T.footMargin)){h=p.top;on=p}return{h,on}}
+// ramps (slides): p.ramp={ax:'x'|'z',a0,a1,lo,hi,th}. The surface rises from lo at coordinate a0 to hi at a1;
+// p.top is the high end (for coarse checks) and th is the slab's thickness, so you can walk under the high part.
+function topOf(p,x,z){const r=p.ramp;if(!r)return p.top;const c=r.ax==='x'?x:z,t=Math.max(0,Math.min(1,(c-r.a0)/(r.a1-r.a0)));return r.lo+(r.hi-r.lo)*t}
+const botOf=(p,x,z)=>p.ramp?topOf(p,x,z)-p.ramp.th:p.bot;
+function rampPlat(ax,a0,a1,c,width,lo,hi,th){const L=Math.abs(a1-a0),mid=(a0+a1)/2,p={k:'b',x:ax==='x'?mid:c,z:ax==='x'?c:mid,w:ax==='x'?L:width,d:ax==='x'?width:L,top:Math.max(lo,hi),ramp:{ax,a0,a1,lo,hi,th}};plats.push(p);return p}
+function groundAt(x,z,y){let h=-Infinity,on=null;for(const p of plats){const t=topOf(p,x,z);if(t<=y+T.stepUp&&t>h&&inside(p,x,z,T.footMargin)){h=t;on=p}}return{h,on}}
 // a platform with a bottom (bot) only blocks you where your body overlaps it, so you can walk under decks and bars
-const blocked=(x,z,y)=>plats.some(p=>p.top>y+T.stepUp&&(p.bot===undefined||y+T.bodyH>p.bot)&&inside(p,x,z,T.wallMargin));
+const blocked=(x,z,y)=>plats.some(p=>{if(!inside(p,x,z,T.wallMargin))return false;const t=topOf(p,x,z),b=botOf(p,x,z);return t>y+T.stepUp&&(b===undefined||y+T.bodyH>b)});

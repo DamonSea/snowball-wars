@@ -67,6 +67,23 @@ add(B(3.1,.08,.08),woodM,-19.5,10.55,15.6,runW);add(B(.08,.08,3.1),woodM,-18.1,1
 [[-5.5,-8],[5.5,-8],[-6,3],[6,3]].forEach(([x,z])=>{add(new THREE.CylinderGeometry(.09,.13,4,8),ironM,x,2,z,runW);
   add(new THREE.SphereGeometry(.28,12,8),new THREE.MeshStandardMaterial({color:0xffe2a8,emissive:0xffc46b,emissiveIntensity:1.2}),x,4.1,z,runW);advCol.push({x,z,r:.3,tree:true,pole:true,y:0,top:4.4})});
 
+// ---- The Big Slide (front right) ----
+// A 6-high tower with steps up its south side and a 14.5-long chute running west back toward the middle.
+// Crouch on the chute to butt-slide down it; the rails keep you in.
+{const tx=17,tz=19,top=6,lo=.3,x0=1,x1=15.5,cz=19,wid=2.4,ang=Math.atan2(top-lo,x1-x0),len=Math.hypot(top-lo,x1-x0);
+  const slideM=seas(mat(0x37a6e8,{roughness:.35}),0x6fc3f0),railM=sunP;
+  box(tx,tz,3,3,top,concDk,coralP);
+  [[16.75,4.8],[15.25,3.6],[13.75,2.4],[12.25,1.2]].forEach(([z,t])=>box(tx,z,3,1.5,t,conc,tealP));      // steps
+  [[tz+1.35,'z'],[tx+1.35,'x']].forEach(([c,ax])=>{const r=add(new THREE.BoxGeometry(ax==='z'?3:.2,.12,ax==='z'?.2:3),railM,ax==='z'?tx:c,top+.7,ax==='z'?c:tz,runW);
+    plats.push({k:'b',x:ax==='z'?tx:c,z:ax==='z'?c:tz,w:ax==='z'?3:.3,d:ax==='z'?.3:3,top:top+.75,bot:top+.05})});
+  // chute: tilted slab, side walls, rails, legs
+  const s=add(new THREE.BoxGeometry(len,.35,wid),slideM,(x0+x1)/2,(lo+top)/2-.175/Math.cos(ang),cz,runW);s.rotation.z=ang;
+  [-1,1].forEach(k=>{const w=add(new THREE.BoxGeometry(len,.55,.18),slideM,(x0+x1)/2,(lo+top)/2+.08,cz+k*(wid/2+.09),runW);w.rotation.z=ang;
+    const r=add(new THREE.BoxGeometry(len,.1,.14),railM,(x0+x1)/2,(lo+top)/2+.4,cz+k*(wid/2+.09),runW);r.rotation.z=ang;
+    rampPlat('x',x0,x1,cz+k*(wid/2+.09),.3,lo+.6,top+.6,1.05)});
+  for(const x of[4.5,8.5,12.5]){const h=lo+(top-lo)*(x-x0)/(x1-x0)-.3;[-1,1].forEach(k=>add(new THREE.CylinderGeometry(.09,.11,h,8),ironM,x,h/2,cz+k*(wid/2-.15),runW))}
+  rampPlat('x',x0,x1,cz,wid,lo,top,.4)}
+
 // rim trees and rocks (solid)
 for(let a=0;a<PI*2;a+=PI/9){const x=Math.cos(a)*25.5,z=Math.sin(a)*25.5;if(!plats.some(p=>p.top>.5&&inside(p,x,z,2.5)))tree(x,z,.9+((a*7)%.4),runW,advCol,0,Math.round(a*3))}
 [[21,-6],[-6,21],[5,-24]].forEach(([x,z],i)=>rock(x,z,.6+i*.1,runW,advCol));
@@ -98,5 +115,6 @@ RUNMAPS.push({name:'Plaza',grp:runW,plats,advCol,spad:{x:0,z:5},key:'orbRunPlaza
   {x:2,z:-15,y:5.4,v:250},{x:0,z:-17.5,y:7.4,v:400},{x:14,z:-20,y:8,v:350},{x:11,z:-21,y:8,v:350},
   {x:14,z:-12,y:4.5,v:250,air:1},{x:14,z:-12,y:7.5,v:300,air:1},
   {x:-12.5,z:-8,y:3,v:250,air:1},{x:-12,z:-13,y:2.6,v:250,air:1},{x:5.5,z:-17.5,y:9,v:300,air:1},
-  {x:17.6,z:7.6,y:3.8,v:200},{x:19.9,z:9.9,y:4.8,v:300}]});
+  {x:17.6,z:7.6,y:3.8,v:200},{x:19.9,z:9.9,y:4.8,v:300},
+  {x:17,z:19,y:6,v:200,any:1},{x:12,z:19,y:4.62,v:150},{x:6,z:19,y:2.27,v:150}]});
 }

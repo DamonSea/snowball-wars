@@ -59,7 +59,7 @@ try{LH.enabled=localStorage.getItem('orbRunHang')!=='0'}catch(e){}
 function tryHang(){
   if(!LH.enabled||LH.cool>0||grounded||vy>0||CL.on||GP.st||SA.t>0||SB.stun>0||A.knock>0||A.mode==='dive'||A.mode==='slide'||YS.spray||YS.t>0||state!=='play')return false;
   const x=P.position.x,z=P.position.z,fx=Math.sin(face),fz=Math.cos(face),H=T.hang;
-  for(const p of plats){if(p.k!=='b'||p.mv)continue;const rel=p.top-py;if(rel<H.min||rel>H.max)continue;
+  for(const p of plats){if(p.k!=='b'||p.mv||p.ramp)continue;const rel=p.top-py;if(rel<H.min||rel>H.max)continue;
     const hw=p.w/2,hd=p.d/2,dx=x-p.x,dz=z-p.z;let ax=null,s=0;
     if(Math.abs(dz)<hd-.1&&Math.abs(dx)>hw-.05&&Math.abs(dx)<hw+H.reach){ax='x';s=Math.sign(dx)}
     else if(Math.abs(dx)<hw-.1&&Math.abs(dz)>hd-.05&&Math.abs(dz)<hd+H.reach){ax='z';s=Math.sign(dz)}
@@ -117,13 +117,15 @@ function stepBody(dt,speed){
   if(chars[ci].acro&&A.wallT>0&&!grounded&&vy<T.flip.wallJump.slideFall&&A.mode!=='dive'){vy=T.flip.wallJump.slideFall;wallSliding=true;if(Math.random()<.3)puff()}
   py+=vy*dt;
   // bonk your head on the underside of a deck or bar
-  if(vy>0)for(const p of plats)if(p.bot!==undefined&&prev+T.bodyH<=p.bot+.02&&py+T.bodyH>p.bot&&inside(p,P.position.x,P.position.z,-.05)){py=p.bot-T.bodyH;vy=0;A.canCut=false;break}
+  if(vy>0)for(const p of plats){const b=botOf(p,P.position.x,P.position.z);if(b!==undefined&&prev+T.bodyH<=b+.02&&py+T.bodyH>b&&inside(p,P.position.x,P.position.z,-.05)){py=b-T.bodyH;vy=0;A.canCut=false;break}}
   const g=groundAt(P.position.x,P.position.z,prev);
   if(py<=g.h){const vin=vy;py=g.h;vy=0;grounded=true;stand=g.on;
     // trampolines: landing from the air bounces you; a ground pound onto one is a super bounce
     if(stand&&stand.bounce&&(vin<-2||GP.st===2)){const sup=GP.st===2;vy=sup?T.bounce.poundVy:T.bounce.vy;grounded=false;stand=null;if(sup)GP.st=0,A.mode='normal';
       if(chars[ci].acro){A.mode=sup?'flip':'jump';A.jumpN=0;A.canDive=true;A.canCut=false;if(sup)startFlip('x',1)}
       SFX.boing(sup);burst(V(P.position.x,py+.1,P.position.z),0xffffff,sup?16:8);addTrick(sup?'Super Bounce':'Bounce')}}
+  // going down a slope: stay on it instead of skipping into the air every frame
+  else if(grounded&&vy<=0&&g.on&&((stand&&stand.ramp)||g.on.ramp)&&prev-g.h<.6){py=g.h;vy=0;stand=g.on}
   else{grounded=false;stand=null}
   if(!grounded&&tryHang())return true;
   return py>=T.fallDeath;

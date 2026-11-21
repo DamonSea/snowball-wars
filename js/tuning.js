@@ -34,7 +34,7 @@ const T={
   attacks:{1:{dur:.26,reach:.95,r:.9},2:{dur:.26,reach:.95,r:.9},3:{dur:.44,reach:1,r:1.35},sweep:{dur:.5,reach:0,r:1.75},air:{dur:.42,reach:.85,r:1.1}},
 
   combo:{window:1.4,orbExtend:.8},
-  tricks:{'Double Jump':50,'Dive':75,'Long Jump':100,'Wall Jump':100,'Tree Leap':75,'Handstand':100,
+  tricks:{'Butt Slide':150,'Slide Hop':100,'Double Jump':50,'Dive':75,'Long Jump':100,'Wall Jump':100,'Tree Leap':75,'Handstand':100,
           'Triple Jump':150,'Backflip':150,'Side Flip':150,'Side Somersault':150,'Smash':150,'Tree-top Flip':250,
           'Snowman Down':150,'Direct Hit':200,'Ground Pound':100,'Pound Jump':150,'Ledge Climb':50,'Ledge Hop':75,'Hand Over Hand':200,'Bounce':50,'Super Bounce':200,'Snow Angel':100,'Bowled Over':200,'Giant Snowball':250,'Yellow Snow':25,'Stomp':150,'Yellow Snowball':300,'Pole Leap':75,'Pole-top Flip':250},
   run:{time:60,goldEvery:6,goldValue:300,goldBonusTime:5,groundOrb:100,orbsOnField:7,
@@ -45,6 +45,9 @@ const T={
   pound:{minHeight:1.2,spin:.28,fall:30,recover:.3,radius:3.2,jumpVy:17},
   // ledge hang: grab when a ledge top passes your hands (min..max above your feet) while falling, facing it
   hang:{min:1.3,max:1.95,reach:.8,off:.42,drop:1.6,shimmy:2.4,climbTime:.5,hopTime:.24,hopVy:10,overHand:5},
+  // butt slide: crouch on a slope. accel = how hard the slope pulls (scaled by its steepness); friction on the slope and
+  // on flat ground; steer = sideways control; stop = speed where you get up on flat ground
+  butt:{accel:30,friction:.3,flatFriction:1.7,steer:5,max:17,stop:1.4,hopVy:11,minTrick:5},
   bounce:{vy:17,poundVy:22},
   angel:{time:2.6,life:45},
   roll:{r0:.35,rMax:1.5,grow:.045,push:4.2,friction:.55,iceFriction:.2,bounce:.4,bowl:1.8},

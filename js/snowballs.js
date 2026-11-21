@@ -25,7 +25,7 @@ const hitsSpike=(h,p)=>{const g=h.g.position;return Math.hypot(g.x-p.x,g.z-p.z)<
 function splat(p,big,yel){burst(p.clone(),yel?0xf2d64b:0xffffff,big?16:9);SFX.splat(big)}
 // does a point sit inside something solid?
 function solidAt(x,y,z){
-  for(const p of plats)if(p.top>y&&(p.bot===undefined||y>p.bot)&&inside(p,x,z,.05)&&!(p.k==='c'&&p.r>20&&y>p.top-.05))return true;
+  for(const p of plats)if(inside(p,x,z,.05)&&topOf(p,x,z)>y&&(botOf(p,x,z)===undefined||y>botOf(p,x,z))&&!(p.k==='c'&&p.r>20&&y>p.top-.05))return true;
   for(const c of advCol)if(Math.hypot(c.x-x,c.z-z)<c.r*(c.tree?.6:1)&&y<(c.tree?c.top:2.2))return true;
   return false}
 function hitMe(owner,id,bx,bz,yel){
