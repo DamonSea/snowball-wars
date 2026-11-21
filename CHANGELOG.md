@@ -18,6 +18,7 @@ Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub
 - Platforms can now have open space underneath (decks, bars, bridges), and you bonk your head on their undersides.
 ### Changed
 - Nova no longer does yellow snow: her Ground pound on the ground makes a snow angel.
+- Settings → Ledge hang: On / Off (next to Yellow snow: On / Off).
 
 ## [2.4.0] - 2026-11-20 — The winter crew
 ### Added

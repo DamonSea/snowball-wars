@@ -54,9 +54,10 @@ function updateFlipArrow(){const on=state==='play'&&CL.on&&CL.top&&!!CL.tree;fli
 // ---------- ledge hang ----------
 // Falling past a box ledge while facing it grabs on (hands at the top). Left/right shimmy along it,
 // push toward it to pull up, Jump to hop up onto it, crouch or push away to let go.
-const LH={on:false,p:null,ax:'x',s:1,up:0,cool:0,dist:0,awarded:false};
+const LH={on:false,p:null,ax:'x',s:1,up:0,cool:0,dist:0,awarded:false,enabled:true};
+try{LH.enabled=localStorage.getItem('orbRunHang')!=='0'}catch(e){}
 function tryHang(){
-  if(LH.cool>0||grounded||vy>0||CL.on||GP.st||SA.t>0||SB.stun>0||A.knock>0||A.mode==='dive'||A.mode==='slide'||YS.spray||YS.t>0||state!=='play')return false;
+  if(!LH.enabled||LH.cool>0||grounded||vy>0||CL.on||GP.st||SA.t>0||SB.stun>0||A.knock>0||A.mode==='dive'||A.mode==='slide'||YS.spray||YS.t>0||state!=='play')return false;
   const x=P.position.x,z=P.position.z,fx=Math.sin(face),fz=Math.cos(face),H=T.hang;
   for(const p of plats){if(p.k!=='b'||p.mv)continue;const rel=p.top-py;if(rel<H.min||rel>H.max)continue;
     const hw=p.w/2,hd=p.d/2,dx=x-p.x,dz=z-p.z;let ax=null,s=0;
