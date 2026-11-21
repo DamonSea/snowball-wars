@@ -136,6 +136,7 @@ const SFX={
   snowThrow(){noise(.12,{f:900,f2:2600,q:1.2,vol:.06});tone(260,420,.08,{vol:.05})},
   splat(big){noise(big?.22:.14,{ft:'lowpass',f:2400,f2:500,vol:big?.16:.1});tone(140,70,.08,{vol:big?.12:.06})},
   board(v){const s=Math.min(1,v/12);tone(120,60,.12,{vol:.1+s*.15});noise(.1,{ft:'lowpass',f:1400,vol:.06+s*.08})},
+  gumPop(){noise(.05,{f:3200,f2:1400,q:1.2,vol:.09});tone(900,300,.05,{type:'triangle',vol:.05})},
   ui(i=0){tone(620+i*70,0,.05,{type:'triangle',vol:.05})},
   deny(){tone(180,140,.12,{type:'square',vol:.04})},
   start(){tone(523,0,.1,{type:'triangle',vol:.07});tone(784,0,.16,{type:'triangle',vol:.07,delay:.08})},

@@ -7,22 +7,33 @@ into combos in Trick Park (Plaza, Frozen Rink, Rooftops, Jungle Gym), discover n
 the Adventure levels. Built with three.js; open `index.html` in a browser to play (multiplayer works only in the
 claude.ai version).
 
-![The cast: Sunny, Rook, Flip and Nova](docs/media/characters.png)
+![The cast: Sunny, Rook, Flip, Nova and Vex](docs/media/characters.png)
 
 **What's new:** see the [changelog](CHANGELOG.md).
 
 ## Features
 
 ### A cast with a real moveset
-Pick **Flip** the stunt pilot or **Nova** the snowboarder for the full acrobat moveset, or **Sunny** (a bouncy robot)
-and **Rook** (a quick explorer) for simpler controls. Flip and Nova each have five outfits; Golden Ace / Gold Rush
-unlocks by beating Sky Gauntlet.
+Pick **Flip** the stunt pilot, **Nova** the snowboarder or **Vex** the skate punk for the full acrobat moveset, or
+**Sunny** (a bouncy robot) and **Rook** (a quick explorer) for simpler controls. Flip, Nova and Vex each have five
+outfits; the gold one unlocks by beating Sky Gauntlet.
 
 Double and triple jumps, a skid into a side somersault, backflips, long jumps, dives, wall jumps, a ground pound and
 **Pound Jump** (Jump right after a ground pound to rocket straight up), plus **ledge hang**: grab edges as you fall past,
 shimmy along them and pull up. Everything chains into combos.
 
 ![Triple jump, side somersault and backflip](docs/media/tricks.gif)
+
+**Vex** brings the attitude: half-lidded side-eye, a smirk with a snaggletooth, and a pink mohawk. His bandana tails,
+mohawk and wallet chain run on springs, so they whip when he stops, flop when he lands and swing as he turns. Leave him
+standing and he crosses his arms and blows bubble gum until it pops.
+
+![Vex runs, stops, lands, then crosses his arms and blows a bubble](docs/media/vex.gif)
+
+**Settings → Squash & stretch → Exaggerated** turns every move into a cartoon: tall stretchy jumps, splat landings that
+wobble back, punches that reach, and ground pounds that ball up, stretch down and squash flat.
+
+![Exaggerated squash and stretch: jump, punch combo, ground pound](docs/media/squash-stretch.gif)
 
 ### Trick Park
 Four maps to skate, flip and wall-jump around, with free roam until you step on the START pad for a 60-second
@@ -108,7 +119,7 @@ by files above it. Nothing is bundled.
 |---|---|---|
 | 1 | `js/tuning.js` | **Every gameplay number**: gravity, jumps, speeds, ice, climbing, attacks, combo, scoring, camera |
 | 2 | `js/core.js` | Renderer, scene, lights, material helpers, season registry, trees/rocks/flowers |
-| 3 | `js/characters.js` | Sunny, Rook, Flip and Nova rigs, their wardrobes, character table |
+| 3 | `js/characters.js` | Sunny, Rook, Flip, Nova and Vex rigs, their wardrobes, spring physics for dangly bits, character table |
 | 4 | `js/fx.js` | Spikeball model, particle bursts, collision push-out |
 | 5 | `js/audio/sfx.js` | Sound engine and the configurable sound-effect library |
 | 6 | `js/audio/music.js` | Music tracks, ambience, spikeball rolling sound |

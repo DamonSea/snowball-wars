@@ -3,6 +3,16 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.7.0] - 2026-11-20 — Vex
+### Added
+- **Vex**, a new acrobat with Flip's full moveset: a mouthy skate punk with a pink mohawk, half-lidded side-eye, a
+  smirk with a snaggletooth, a bandaged cheek, an oversized hoodie with glowing bolts, studded wristbands and high-tops.
+  Five outfits (Street Punk, Toxic, Bubblegum, Blackout, and Gold Tooth after Sky Gauntlet).
+- Spring physics for Vex's bandana tails, mohawk and wallet chain: they react to speeding up, stopping, turning and landing.
+- Vex's idle: arms crossed, weight on one hip, and a bubble-gum bubble that pops.
+- **Settings → Squash & stretch: Normal / Exaggerated**. Exaggerated springs the body around jumps, landings, attacks,
+  ground pounds, dives, long jumps, crouches, skids, wall slides and snowball throws (every character, Sunny included).
+
 ## [2.6.0] - 2026-11-20 — Map Builder
 ### Added
 - **Map Builder**: a top-down editor for your own Trick Park maps, with an asset library (blocks, walls, raised decks,

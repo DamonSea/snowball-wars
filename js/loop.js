@@ -3,6 +3,38 @@
 const clock=new THREE.Clock();let tAll=0;
 const camPos=V(0,14,22),look=V(0,0,0);
 let wasPlaying=null,wallSliding=false,sndG=true,sndAir=0,sndVy=0,stepPh=0;
+// spring physics input: how the character's velocity changed this frame, in their own frame (f forward, s right, u up)
+const pv={x:0,y:0,z:0},dvL={f:0,s:0,u:0};let idleT=0;
+// Settings → Squash & stretch: Exaggerated springs the whole body around every move (TS = spring state per rig)
+let TOON=false;try{TOON=localStorage.getItem('orbRunSquash')==='big'}catch(e){}
+function setToon(on){TOON=on;try{localStorage.setItem('orbRunSquash',on?'big':'normal')}catch(e){}}
+const TS=new Map();
+// target body scale for the current move: [x (side), y (up), z (forward)]
+function toonTarget(air,m){const acro=!!chars[ci].acro;
+  if(GP.st===1)return[1.2,.72,1.2];
+  if(GP.st===2)return[.72,1.6,.72];
+  if(GP.st===3){const k=GP.t/T.pound.recover;return[1+.6*k,1-.55*k,1+.6*k]}
+  if(ATK.t>0){const p=1-ATK.t/ATK.dur,ext=p<.55?Math.sin(Math.min(1,p/.3)*PI/2):1-(p-.55)/.45;
+    if(p<.1)return[1.12,.86,.78];
+    if(ATK.kind==='sweep')return[1.3,.7,1.3];
+    if(ATK.kind==='combo'&&ATK.step===3)return[1.25,.78,1.25];
+    return[1-.12*ext,1-.12*ext,1+.55*ext]}
+  if(SB.anim>0){const q=1-SB.anim/.3;return q<.4?[1.1,.88,.8]:[.9,1.05,1.35]}
+  if(acro&&(m==='dive'||m==='slide'))return[.82,.82,1.5];
+  if(acro&&m==='long')return[.85,.85,1.4];
+  if(acro&&m==='skid')return[1.15,.88,.72];
+  if(acro&&m==='crouch')return[1.18,.74,1.18];
+  if(acro&&A.wallT>0&&air&&vy<=0)return[1.15,1.1,.7];
+  if(acro&&air&&A.flipT<.75)return[1.1,.82,1.1];
+  if(air&&vy>0){const y=1+Math.min(vy/28,.5);return[1/Math.sqrt(y),y,1/Math.sqrt(y)]}
+  if(air&&vy<-6){const y=1+Math.min((-vy-6)/50,.22);return[1/Math.sqrt(y),y,1/Math.sqrt(y)]}
+  if(squash>0){const q=squash;return[1+.6*q,1-.72*q,1+.6*q]}
+  return[1,1,1]}
+function toonScale(o,dt,air,m,tookOff){let S=TS.get(o);if(!S){S={x:1,y:1,z:1,vx:0,vy:0,vz:0};TS.set(o,S)}
+  const t=toonTarget(air,m);if(tookOff){S.vy+=7;S.vx-=3;S.vz-=3}
+  [['x',0],['y',1],['z',2]].forEach(([a,i])=>{const v='v'+a;S[v]+=((t[i]-S[a])*230-S[v]*11)*dt;S[a]=Math.max(.35,Math.min(2,S[a]+S[v]*dt))});
+  o.scale.set(S.x,S.y,S.z)}
+const playingToon=()=>TOON&&(state==='play'||state==='paused');
 function tick(){
   pollPad();if(!$('ov').classList.contains('hide'))updatePadInfo();
   const pl=state==='play';if(pl!==wasPlaying){wasPlaying=pl;document.body.classList.toggle('playing',pl);if(pl)renderControls();freeUI()}
@@ -28,6 +60,11 @@ function tick(){
   const moving=Math.hypot(vel.x,vel.z)>.5&&state==='play';
   chars.forEach((c,i)=>c.g.visible=i===ci);wave=Math.max(0,wave-dt);
   const air=!grounded&&state==='play';
+  {const pl=state==='play',dx=pl?vel.x-pv.x:0,dz=pl?vel.z-pv.z:0,sf=Math.sin(face),cf=Math.cos(face);
+    dvL.f=dx*sf+dz*cf;dvL.s=dx*cf-dz*sf;dvL.u=pl?vy-pv.y:0;pv.x=vel.x;pv.y=vy;pv.z=vel.z;
+    const busy=moving||air||ATK.t>0||GP.st||YS.spray||YS.t>0||SA.t>0||SB.anim>0||LH.on||CL.on||RS.pushing||wave>0||(chars[ci].acro&&A.mode!=='normal');
+    idleT=(state==='play'||state==='select'||state==='menu')&&!busy?idleT+dt:0}
+  const tookOff=state==='play'&&wasG&&!grounded&&vy>3;
   if(ci===0){
     body.position.y=(moving&&grounded&&!onIce?Math.abs(Math.sin(walk*3))*.12:Math.sin(tAll*3)*.04)+(wave>1.2?Math.sin((1.6-wave)*PI/.4)*.35:0);
     body.rotation.z=moving?Math.sin(walk*3)*.08:0;
@@ -40,6 +77,8 @@ function tick(){
     else if(SB.anim>0){body.rotation.y=0;body.rotation.x=SB.anim>.18?-.3:.4}
     else{body.rotation.y=0;body.rotation.x=0}
     feet[0].position.z=moving?Math.sin(walk*3)*.22:0;feet[1].position.z=-feet[0].position.z;
+    if(playingToon())toonScale(body,dt,air,'normal',tookOff);else body.scale.set(1,1,1);
+    if(state==='play'&&grounded&&!wasG)squash=Math.min(1,Math.max(.65,-airVy/12));if(!grounded)airVy=vy;wasG=grounded;squash=Math.max(0,squash-dt*4.5);
   }else{
     const H=chars[ci].rig,m=A.mode,playing=state==='play',acro=!!chars[ci].acro&&playing,chibi=ci>=2;
     const sp=acro?Math.abs(A.spd):Math.hypot(vel.x,vel.z),run=moving&&grounded,ph=walk*2.2;
@@ -47,7 +86,7 @@ function tick(){
     const dF=angD(face,lastFace)/Math.max(dt,1e-3);lastFace=face;
     bank+=(clamp(-dF*.045*Math.min(1,sp/7),.32)*(playing?1:0)-bank)*(1-Math.exp(-7*dt));
     // squash on landing
-    if(playing&&grounded&&!wasG)squash=Math.min(1,Math.max(.35,-airVy/15));
+    if(playing&&grounded&&!wasG)squash=TOON?Math.min(1,Math.max(.65,-airVy/12)):Math.min(1,Math.max(.35,-airVy/15));
     if(!grounded)airVy=vy;wasG=grounded;squash=Math.max(0,squash-dt*4.5);
     const br=Math.sin(tAll*2.2);
     let lx=0,lr=0,ax=.05*br,ar=-.05*br,zl=-.12-br*.04,zr=.12+br*.04,pitch=0,roll=0,yaw=0,yo=br*.012,hx=Math.sin(tAll*1.1)*.05,hz=0,hy=0,snap=false,snapY=false,rate=10,llz=0,skz=0;
@@ -99,6 +138,7 @@ function tick(){
     if(LH.on&&state!=='menu'){snap=false;snapY=false;rate=16;yaw=0;roll=0;hy=0;hz=0;lrz=0;llz=0;hx=-.25;const sw=Math.sin(walk*2.2);
       if(LH.up>0){const k=1-LH.up/LH.upT;rate=22;ax=ar=-3+Math.min(1,k*1.4)*2.6;zl=-.25;zr=.25;lx=-1.3*Math.sin(PI*Math.min(1,k*1.15));lr=-.9*Math.sin(PI*Math.min(1,k*1.25));pitch=.45*Math.sin(PI*k);yo=0}
       else{ax=-3+sw*.18;ar=-3-sw*.18;zl=-.18;zr=.18;lx=.08+sw*.12;lr=.08-sw*.12;pitch=.04;yo=0}}
+    if(H.attitude&&idleT>.4&&!CL.on&&!LH.on){const k=Math.min(1,(idleT-.4)*3);rate=8;ax=-1.5*k;ar=-1.38*k;zl=.74*k;zr=-.7*k;lx=-.06;lr=.1;roll=.07*k;yo=0;pitch=-.04*k;hx=-.14*k;hy=.3*k+Math.sin(tAll*.6)*.05;hz=.13*k}
     if(wave>0&&!air&&!moving){zr=2.5+Math.sin(wave*14)*.35;ar=0;hz=-.1}
     if(state==='select')hy=Math.sin(tAll*1.3)*.25;
     roll+=bank;hz-=bank*.5;
@@ -111,7 +151,8 @@ function tick(){
     L(H.head.rotation,'x',hx,kh);L(H.head.rotation,'y',hy,kh);L(H.head.rotation,'z',hz,kh);
     // squash and stretch
     const st=air&&vy>0?1+Math.min(vy/70,.13):1,sy=(1-.26*squash*squash)*st,sxz=1/Math.sqrt(sy);
-    L(H.root.scale,'y',sy,.5);L(H.root.scale,'x',sxz,.5);L(H.root.scale,'z',sxz,.5);
+    if(playingToon())toonScale(H.root,dt,air,m,tookOff);else{L(H.root.scale,'y',sy,.5);L(H.root.scale,'x',sxz,.5);L(H.root.scale,'z',sxz,.5)}
+    if(H.tails)vexPhysics(H,dt,dvL,sp,air,run,ph,bank,idleT>1.2&&state!=='menu');
     if(H.scarf){const fl=Math.min(1.25,sp*.11)+(air?.35:0)+(state==='select'?.15:0);
       H.scarf.forEach((g,i)=>{L(g.rotation,'x',(i?fl*.12:.25+fl)+Math.sin(tAll*(6+sp)-i*1.1)*(.08+fl*.12),.25);
         L(g.rotation,'z',Math.sin(tAll*(4+sp*.5)-i*.9)*(.06+fl*.08)-bank*.3,.25)})}

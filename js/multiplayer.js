@@ -30,7 +30,7 @@ const mapCount=i=>{const M=RUNMAPS[i];return M&&MP.on&&MP.lobby?MP.lobby.peers()
 // --- remote avatars ---
 function tagCanvas(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;return c}
 function makeAv(ch){const g=new THREE.Group();scene.add(g);
-  const rig=ch===0?buildBot(g):ch===1?buildRook(g):ch===3?buildNova(g):buildChibi(g);
+  const rig=ch===0?buildBot(g):ch===1?buildRook(g):ch===3?buildNova(g):ch===4?buildVex(g):buildChibi(g);
   const tc=tagCanvas(320,96),tt=new THREE.CanvasTexture(tc),tag=new THREE.Sprite(new THREE.SpriteMaterial({map:tt,transparent:true,depthWrite:false}));tag.scale.set(2.6,.78,1);tag.position.y=2.75;g.add(tag);
   const kc=tagCanvas(320,72),kt=new THREE.CanvasTexture(kc),trick=new THREE.Sprite(new THREE.SpriteMaterial({map:kt,transparent:true,depthWrite:false,opacity:0}));trick.scale.set(2.6,.58,1);trick.position.y=3.5;g.add(trick);
   return{g,rig,ch,of:-1,tc,tt,tag,kc,kt,trick,txt:'',tn:null,tt0:0,init:false,lx:0,lz:0}}
@@ -66,6 +66,7 @@ function updAvatars(dt){
     if(Array.isArray(pr.q))applyPose(a,pr.q,Math.min(1,k*1.6));
     const sp=Math.hypot(G.x-ox,G.z-oz)/Math.max(dt,1e-3);
     if(a.rig.pony){const fl=Math.min(1,sp*.08);a.rig.pony.forEach((g,i)=>{g.rotation.x=(i?.12+fl*.22:.45+fl*.75)+Math.sin(tAll*(5+sp*.6)-i*1.2)*(.05+fl*.08)})}
+    if(a.rig.tails){const fl=Math.min(1,sp*.09);a.rig.tails.forEach((c,j)=>c.forEach((g,i)=>{g.rotation.x=(i?.15+fl*.22:.35+fl*.85)+Math.sin(tAll*(5+sp*.7)-i*1.3+j*1.7)*(.03+fl*.09)}));a.rig.hawk.forEach((g,i)=>g.rotation.x=g._b-fl*.22*(i+1)/5)}
     if(a.rig.scarf){const fl=Math.min(1.25,sp*.11);a.rig.scarf.forEach((g,i)=>{g.rotation.x=(i?fl*.12:.25+fl)+Math.sin(tAll*(6+sp)-i*1.1)*(.08+fl*.12)})}
     snowFromPeer(peer,a);
     drawTag(a,nameOf(peer),Number.isFinite(pr.sc)?Math.floor(pr.sc):0,!!pr.fr);
