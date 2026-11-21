@@ -29,7 +29,7 @@ function buildGoon(parent){const g=new THREE.Group();parent.add(g);const body=ne
   return{g,body,head,arms}}
 function buildPenguin(parent){const g=new THREE.Group();parent.add(g);const body=new THREE.Group();body.position.y=.55;g.add(body);
   const blk=mat(0x1f2430,{roughness:.5}),wht=mat(0xf4f6f8),org=mat(0xff9a2e),red=mat(0xd83a2e);
-  add(Sph(.45,14,10),blk,0,0,0,body).scale.set(1,1.3,.92);add(Sph(.37,14,10),wht,0,-.06,.16,body).scale.set(.95,1.2,.6);
+  add(Sph(.45,14,10),blk,0,0,0,body).scale.set(1,1.3,.92);add(Sph(.37,14,10),wht,0,-.06,.2,body).scale.set(.95,1.2,.72);
   const head=new THREE.Group();head.position.y=.62;body.add(head);add(Sph(.3,14,10),blk,0,0,0,head);
   [-1,1].forEach(s=>{add(Sph(.075,8,6),wht,s*.11,.05,.24,head);add(Sph(.04,6,5),mat(0x111111),s*.11,.04,.31,head);
     const b=add(B(.13,.035,.03),mat(0x111111),s*.11,.15,.27,head);b.rotation.z=s*.45});

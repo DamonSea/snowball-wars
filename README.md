@@ -7,6 +7,64 @@ into combos in Trick Park (Plaza, Frozen Rink, Rooftops), discover named gaps, h
 the Adventure levels. Built with three.js; open `index.html` in a browser to play (multiplayer works only in the
 claude.ai version).
 
+![The cast: Sunny, Rook, Flip and Nova](docs/media/characters.png)
+
+**What's new:** see the [changelog](CHANGELOG.md).
+
+## Features
+
+### A cast with a real moveset
+Pick **Flip** the stunt pilot or **Nova** the snowboarder for the full acrobat moveset, or **Sunny** (a bouncy robot)
+and **Rook** (a quick explorer) for simpler controls. Flip and Nova each have five outfits; Golden Ace / Gold Rush
+unlocks by beating Sky Gauntlet.
+
+Double and triple jumps, a skid into a side somersault, backflips, long jumps, dives, wall jumps and a ground pound,
+all chaining into combos.
+
+![Triple jump, side somersault and backflip](docs/media/tricks.gif)
+
+### Trick Park
+Three maps to skate, flip and wall-jump around, with free roam until you step on the START pad for a 60-second
+scored run. Higher orbs are worth more, combos multiply, and **named gaps** reward clean lines.
+- **Plaza:** a skatepark built around trick lines: tower and crown, runway, chimney, pillars, treehouse, fountain.
+- **Frozen Rink:** real ice physics: build speed, glide, drift and bounce off the boards.
+- **Rooftops:** a vertical city made for wall jumps, topped by a climbable antenna 18 m up.
+
+![Long jump plus a late dive across the runway gap](docs/media/runway.gif)
+![Skating on Frozen Rink](docs/media/frozen-rink.gif)
+
+### Climb trees and poles
+Run into a tree, lamp post or antenna to grab on, climb to a handstand, aim with the glowing arrow and flip off.
+
+![Climbing the big tree and flipping to the Crow's Nest](docs/media/climb.gif)
+
+### Snowball fights
+Throw snowballs (F / R1 / touch) at friends, snowmen and enemies. A hit knocks the target back and stuns it with
+dizzy stars; orbs refill your snowballs. Turn on the **computer player** in Settings for someone to fight solo.
+Optional silliness: hold the Ground pound button while standing for **yellow snow** (and a yellow snowball).
+
+![A snowball duel with the computer player](docs/media/snowball-fight.gif)
+
+### The winter crew
+![Snow goon, penguin slider and frost imp](docs/media/winter-crew.png)
+
+- **Snow goons** keep their distance and lob snowballs.
+- **Penguin sliders** flap a red "!" and belly-slide at you, then sit dizzy.
+- **Frost imps** steal your snowballs; smack them before they escape.
+
+Punch, kick, snowball, dive, ground-pound or **stomp** them. Prefer the classics? Settings → Enemies → Spikeballs.
+
+![Penguin slide, imp theft and a goon going down](docs/media/winter-crew.gif)
+
+### Adventure
+Hand-built levels with cores to collect, checkpoints and a goal: **Lighthouse Isles**, and **Sky Gauntlet**, which
+needs Flip's or Nova's full moveset (and guard rails help).
+
+### Play your way
+- **Multiplayer** (in the claude.ai version): play Trick Park with friends, with shared orbs and enemies, name tags and trick callouts.
+- **Controls:** keyboard & mouse, PS5 / standard controllers and touch; rebind anything in Settings → Controls.
+- **Settings:** Winter or Summer look, snowfall, a sound style for every move, music, ambience and volume mix, enemy style, side flip style.
+
 ## Project guide
 
 (Formerly "Orb Run", then briefly "Frosty Falls". Saved data keeps its `orbRun…` storage keys so scores, gaps and unlocks carry over.)
