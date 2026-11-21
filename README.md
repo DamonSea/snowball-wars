@@ -27,28 +27,29 @@ by files above it. Nothing is bundled.
 | 4 | `js/fx.js` | Spikeball model, particle bursts, collision push-out |
 | 5 | `js/audio/sfx.js` | Sound engine and the configurable sound-effect library |
 | 6 | `js/audio/music.js` | Music tracks, ambience, spikeball rolling sound |
-| 7 | `js/levels/engine.js` | Level/map builders and collision queries (how to add maps is documented at the top) |
-| 8 | `js/levels/*.js` | Adventure levels: Lighthouse Isles, Sky Gauntlet |
-| 9 | `js/maps/*.js` | Trick Park maps: Plaza, Frozen Rink, Rooftops |
-| 10 | `js/content-ready.js` | Picks the current level and map once all are registered |
-| 11 | `js/state.js` | Game state, HUD, menus, character select, pause |
-| 12 | `js/trickpark.js` | Trick Park: START pad, combos, orbs, spikeballs, timed runs |
-| 13 | `js/physics.js` | Platform physics, ice, walls, tree and pole climbing |
-| 14 | `js/adventure.js` | Adventure: cores, checkpoints, tutorial zones, goal |
-| 15 | `js/combat.js` | Three-hit combo, sweep, air kick |
-| 16 | `js/movement.js` | Sunny/Rook controls and Flip's whole moveset |
-| 17 | `js/pound.js` | Ground pound for every character: spin, drop, shockwave |
-| 18 | `js/input/bindings.js` | Custom controls: key, mouse and controller bindings, rebinding in Settings |
-| 19 | `js/ui/settings.js` | Settings panel (season, mix, sound styles) |
-| 20 | `js/ui/controls.js` | Controls card, keyboard, touch |
-| 21 | `js/input/gamepad.js` | PS5 / standard controller support |
-| 22 | `js/loop.js` | The frame loop: update, animate, camera, render |
-| 23 | `js/seasons.js` | Snowfall, breath, Winter/Summer switching |
-| 24 | `js/multiplayer.js` | Trick Park multiplayer over the page's room capability |
-| 25 | `js/snowballs.js` | Snowball fights: throwing, ammo (refilled by orbs), snowmen, hits on players (Trick Park only) |
-| 26 | `js/yellowsnow.js` | Yellow snow: hold-to-spray stream that marks the snow, yellow snowballs (Settings → Yellow snow) |
-| 27 | `js/cpu.js` | Computer player for Trick Park (Settings → Computer player) |
-| 28 | `js/main.js` | Startup |
+| 7 | `js/enemies.js` | Enemies: snow goons, penguin sliders, frost imps (AI, stomps, theft) and the Spikeballs toggle |
+| 8 | `js/levels/engine.js` | Level/map builders and collision queries (how to add maps is documented at the top) |
+| 9 | `js/levels/*.js` | Adventure levels: Lighthouse Isles, Sky Gauntlet |
+| 10 | `js/maps/*.js` | Trick Park maps: Plaza, Frozen Rink, Rooftops |
+| 11 | `js/content-ready.js` | Picks the current level and map once all are registered |
+| 12 | `js/state.js` | Game state, HUD, menus, character select, pause |
+| 13 | `js/trickpark.js` | Trick Park: START pad, combos, orbs, spikeballs, timed runs |
+| 14 | `js/physics.js` | Platform physics, ice, walls, tree and pole climbing |
+| 15 | `js/adventure.js` | Adventure: cores, checkpoints, tutorial zones, goal |
+| 16 | `js/combat.js` | Three-hit combo, sweep, air kick |
+| 17 | `js/movement.js` | Sunny/Rook controls and Flip's whole moveset |
+| 18 | `js/pound.js` | Ground pound for every character: spin, drop, shockwave |
+| 19 | `js/input/bindings.js` | Custom controls: key, mouse and controller bindings, rebinding in Settings |
+| 20 | `js/ui/settings.js` | Settings panel (season, mix, sound styles) |
+| 21 | `js/ui/controls.js` | Controls card, keyboard, touch |
+| 22 | `js/input/gamepad.js` | PS5 / standard controller support |
+| 23 | `js/loop.js` | The frame loop: update, animate, camera, render |
+| 24 | `js/seasons.js` | Snowfall, breath, Winter/Summer switching |
+| 25 | `js/multiplayer.js` | Trick Park multiplayer over the page's room capability |
+| 26 | `js/snowballs.js` | Snowball fights: throwing, ammo (refilled by orbs), snowmen, hits on players (Trick Park only) |
+| 27 | `js/yellowsnow.js` | Yellow snow: hold-to-spray stream that marks the snow, yellow snowballs (Settings → Yellow snow) |
+| 28 | `js/cpu.js` | Computer player for Trick Park (Settings → Computer player) |
+| 29 | `js/main.js` | Startup |
 
 ## Tests
 

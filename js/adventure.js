@@ -22,9 +22,12 @@ function updateAdv(dt){
   advT+=dt;const shown=Math.floor(atime);atime+=dt;if(Math.floor(atime)!==shown)hud();
   if(!stepBody(dt,T.speed.adventure)){fall();return}
   // hazards
-  for(const h of advHz){const p=h.g.position,ox=p.x,oz=p.z,[x,z]=h.f(advT);p.x=x;p.z=z;roll(h.g,(x-ox)/dt,(z-oz)/dt,dt);
+  for(const h of advHz){const p=h.g.position,ox=p.x,oz=p.z,[x,z]=h.f(advT);p.x=x;p.z=z;advFoeFrame(h,dt,x-ox,z-oz);
     if(h.dead>0){h.dead-=dt;if(h.dead<=0){h.g.visible=true;burst(p.clone(),0x9aa3a8,8)}continue}
-    if(attackHits(p,h.y-.75)){smash(p);h.dead=5;h.g.visible=false;continue}
+    if(attackHits(p,h.y-.75)){if(FOE_STYLE==='spike')smash(p);else{foeFx({...h,kind:h.kind,g:{position:V(p.x,h.y-.75,p.z)}});ATK.hits++;hitStop=.07;shake=Math.max(shake,.18);SFX.hit()}h.dead=5;h.g.visible=false;continue}
+    // stomp: land on a penguin or imp from above
+    if(FOE_STYLE!=='spike'&&!grounded&&vy<-1){const k=FOE[h.kind],b=h.y-.75;if(Math.hypot(x-P.position.x,z-P.position.z)<k.r+.15&&py>=b+k.top-.5&&py<=b+k.top+.8){
+      foeFx({kind:h.kind,g:{position:V(p.x,b,p.z)}});vy=T.foes.stompBounce;if(chars[ci].acro){A.mode='jump';A.jumpN=0;A.canCut=true;A.canDive=true}SFX.stomp();h.dead=5;h.g.visible=false;continue}}
     if(!invuln&&Math.abs(py-(h.y-.75))<1&&Math.hypot(x-P.position.x,z-P.position.z)<1.2){hurt(x,z,9);if(lives<=0){beep(140,.4,'sawtooth',.1);respawn();return}}}
   // cores
   for(const c of cores)if(!c.got&&Math.abs(py-c.y)<2&&Math.hypot(c.g.position.x-P.position.x,c.g.position.z-P.position.z)<1.2){

@@ -63,7 +63,9 @@ function makeOrb(s,gold,id){const col=gold?0xffcc33:0x5ff3ff;
   const ring=new THREE.Mesh(ringGeo,new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.45,side:THREE.DoubleSide}));ring.rotation.x=-PI/2;ring.position.y=.03;ring.visible=!s.air;g.add(ring);
   if(s.v>=200&&!s.rand){const b=new THREE.Mesh(new THREE.CylinderGeometry(.08,.08,14,6,1,true),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.18,depthWrite:false,blending:THREE.AdditiveBlending}));b.position.y=7;g.add(b)}
   orbs.push({g,m,ring,gold,t:Math.random()*6,spot:s.rand?null:s,y:s.y,v:gold?T.run.goldValue:s.v,id,beam:s.v>=200&&!s.rand})}
-function spawnRunHz(){const g=spikeball(runL.grp),{x,z}=freeSpot(12);g.position.set(x,.75,z);const a=Math.random()*PI*2,sp=T.run.hazardSpeed+runT*T.run.hazardSpeedUp;runHz.push({g,vx:Math.cos(a)*sp,vz:Math.sin(a)*sp,id:mkId('h'+(++hzSeq))})}
+// enemies: winter crew or classic spikeballs (see enemies.js)
+function spawnRunHz(kind=pickKind()){const f=makeFoe(kind,runL.grp),{x,z}=freeSpot(12);f.g.position.set(x,kind==='spike'?.75:0,z);const a=Math.random()*PI*2,sp=kind==='spike'?T.run.hazardSpeed+runT*T.run.hazardSpeedUp:0;
+  runHz.push(Object.assign(f,{vx:Math.cos(a)*sp,vz:Math.sin(a)*sp,id:mkId('h'+(++hzSeq)),st:'walk',t:1+Math.random()*2,face:a,wa:a,cool:2+Math.random()*2,robbed:0,mine:0}))}
 function resetRun(){[...orbs,...runHz].forEach(o=>rmObj(o.g));orbs=[];runHz=[];runQ=[];ATK.t=0;spawnCount=0;score=0;time=T.run.time;runT=0;bestCombo=0;lives=3;invuln=0;resetAcro();
   ({plats,advCol}=runL);clearSnow();Object.assign(GAP,{from:null,take:null,wasSup:true});CL.on=false;CL.top=false;stand=null;iceV.set(0,0,0);onIce=false;Object.assign(TR,{pts:0,mult:0,names:[],t:0});showCombo();
   P.position.set(0,0,0);vel.set(0,0,0);vy=py=0;grounded=true;for(let i=0;i<T.run.orbsOnField;i++)spawnOrb();for(let i=0;i<T.run.hazardsStart;i++)spawnRunHz()}
@@ -79,7 +81,7 @@ function beginTimed(){if(mode!=='run'||!runFree||runCD>0||state!=='play')return;
 function backToFree(){startRun(true)}
 function endRun(){bankCombo();state='over';const bk=runL.key,nb=score>(bestR[bk]||0);if(nb){bestR[bk]=score;try{localStorage.setItem(bk,score)}catch(e){}}
   beep(220,.4,'sawtooth',.08);hint('');
-  overlay(true,lives<=0?'Spiked!':'Time’s up!',`Score ${score} · best combo ${bestCombo}.${nb?' New best!':''}`,'Play again','Free roam',()=>startRun(false),()=>backToFree(),'Menu',()=>menu())}
+  overlay(true,lives<=0?(FOE_STYLE==='spike'?'Spiked!':'Wiped out!'):'Time’s up!',`Score ${score} · best combo ${bestCombo}.${nb?' New best!':''}`,'Play again','Free roam',()=>startRun(false),()=>backToFree(),'Menu',()=>menu())}
 function updateRun(dt){
   advT+=dt;
   if(runCD>0){const a=Math.ceil(runCD);runCD-=dt;const b=Math.ceil(runCD);
@@ -104,21 +106,27 @@ function updateRun(dt){
       SFX.orb(o.gold);rmObj(o.g);orbs.splice(orbs.indexOf(o),1);if(MP.client){MP.gone.add(o.id);claim('o',o.id)}else spawnOrb();hud()}
   }
   if(MP.client){const k=1-Math.exp(-12*dt);
-    for(const h of runHz){if(h.dead)continue;const p=h.g.position,ox=p.x,oz=p.z;p.x+=(h.tx-p.x)*k;p.z+=(h.tz-p.z)*k;roll(h.g,(p.x-ox)/dt,(p.z-oz)/dt,dt);
-      if(attackHits(p)||h.sbHit){smash(p);addTrick('Smash');h.dead=true;rmObj(h.g);MP.gone.add(h.id);claim('k',h.id);continue}
-      if(!invuln&&py<1&&Math.hypot(p.x-P.position.x,p.z-P.position.z)<1.2){dropCombo();hurt(p.x,p.z,14);if(lives<=0){if(runFree||runCD>0){lives=3;hud()}else{endRun();return}}}}
+    for(const h of runHz){if(h.dead)continue;const p=h.g.position,ox=p.x,oz=p.z;p.x+=(h.tx-p.x)*k;p.z+=(h.tz-p.z)*k;if(h.kind==='spike')roll(h.g,(p.x-ox)/dt,(p.z-oz)/dt,dt);else foeAnim(h,dt);
+      h.robbed=Math.max(0,(h.robbed||0)-dt);const how=foeHit(h)?'hit':foeStomp(h)?'stomp':null;
+      if(how){killFoe(h,how);h.dead=true;rmObj(h.g);MP.gone.add(h.id);claim('k',h.id);continue}
+      const c=foeTouch(h);if(c==='steal')impSteal(h);
+      else if(c==='hurt'&&!invuln){dropCombo();hurt(p.x,p.z,14);if(lives<=0){if(runFree||runCD>0){lives=3;hud()}else{endRun();return}}}}
     return}
   const want=runCD>0?0:runFree?T.run.hazardsFree:Math.min(T.run.hazardsStart+Math.floor(runT/T.run.hazardEvery),T.run.hazardsMax);while(runHz.length+runQ.length<want)spawnRunHz();
   for(let i=runQ.length-1;i>=0;i--){runQ[i]-=dt;if(runQ[i]<=0){runQ.splice(i,1);spawnRunHz()}}
   for(const h of runHz){if(h.dead)continue;
     const p=h.g.position,ox=p.x,oz=p.z;
-    p.x+=h.vx*dt;if(inPlat(p.x,p.z,.7)){p.x=ox;h.vx*=-1}
-    p.z+=h.vz*dt;if(inPlat(p.x,p.z,.7)){p.z=oz;h.vz*=-1}
+    if(h.kind!=='spike')foeThink(h,dt);
+    if(h.escape){foeFx(h);if(h.mine>0)toast('The imp got away with your snowballs!');h.dead=true;rmObj(h.g);runQ.push(T.run.smashRespawn);continue}
+    p.x+=h.vx*dt;if(inPlat(p.x,p.z,.7)){p.x=ox;h.vx*=-1;if(h.kind==='goon')h.t=Math.min(h.t,.2)}
+    p.z+=h.vz*dt;if(inPlat(p.x,p.z,.7)){p.z=oz;h.vz*=-1;if(h.kind==='goon')h.t=Math.min(h.t,.2)}
     const r=Math.hypot(p.x,p.z);
     if(r>ARENA-.5){const nx=p.x/r,nz=p.z/r,d=h.vx*nx+h.vz*nz;if(d>0){h.vx-=2*d*nx;h.vz-=2*d*nz}p.x=nx*(ARENA-.5);p.z=nz*(ARENA-.5)}
     const n=pushOut(p,.7,runL.advCol);if(n){const d=h.vx*n.x+h.vz*n.z;if(d<0){h.vx-=2*d*n.x;h.vz-=2*d*n.z}}
-    roll(h.g,h.vx,h.vz,dt);
-    if(attackHits(p)||h.sbHit){smash(p);addTrick('Smash');h.dead=true;rmObj(h.g);runQ.push(T.run.smashRespawn);continue}
-    if(!invuln&&py<1&&Math.hypot(p.x-P.position.x,p.z-P.position.z)<1.2){dropCombo();hurt(p.x,p.z,14);if(lives<=0){if(runFree||runCD>0){lives=3;hud()}else{endRun();return}}}
+    if(h.kind==='spike')roll(h.g,h.vx,h.vz,dt);else{if(h.st==='slide')h.face=Math.atan2(h.vx,h.vz);foeAnim(h,dt)}
+    h.robbed=Math.max(0,(h.robbed||0)-dt);const how=foeHit(h)?'hit':foeStomp(h)?'stomp':null;
+    if(how){killFoe(h,how);h.dead=true;rmObj(h.g);runQ.push(T.run.smashRespawn);continue}
+    const c=foeTouch(h);if(c==='steal')impSteal(h);
+    else if(c==='hurt'&&!invuln){if(h.kind==='penguin'&&h.st==='slide'){h.st='dizzy';h.t=T.foes.penguinDizzy;h.vx=h.vz=0}dropCombo();hurt(p.x,p.z,14);if(lives<=0){if(runFree||runCD>0){lives=3;hud()}else{endRun();return}}}
   }
 }

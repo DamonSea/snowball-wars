@@ -85,7 +85,7 @@ function audioFrame(dt){
   // rolling spikeballs
   startRoll();if(ROLL.prev.size>120)ROLL.prev.clear();const sel=selOf('roll');let best=null,bd=14,bs=0;
   const list=state==='play'||state==='paused'?(mode==='run'?runHz:advHz):[];
-  for(const h of list){if(h.dead)continue;const p=h.g.position,d=Math.hypot(p.x-P.position.x,p.z-P.position.z,(p.y-.75-py)*.6);
+  for(const h of list){if(h.dead||(mode==='run'?h.kind!=='spike':FOE_STYLE!=='spike'))continue;const p=h.g.position,d=Math.hypot(p.x-P.position.x,p.z-P.position.z,(p.y-.75-py)*.6);
     const pr=ROLL.prev.get(h),sp=pr?Math.hypot(p.x-pr.x,p.z-pr.z)/Math.max(dt,1e-3):0;ROLL.prev.set(h,{x:p.x,z:p.z});if(d<bd){bd=d;best=h;bs=sp}}
   const prox=best&&state==='play'&&sel>=0?Math.pow(1-bd/14,2):0;
   ROLL.g.gain.setTargetAtTime(prox*.22,c.currentTime,.06);ROLL.fl.frequency.setTargetAtTime(160+bs*45,c.currentTime,.1);

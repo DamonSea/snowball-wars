@@ -25,8 +25,9 @@ function boxPlat(x,z,w,d,top,sm=stoneM,tm=grassM){const h=top+3;add(new THREE.Bo
   if(tm)add(new THREE.BoxGeometry(w+.1,.12,d+.1),tm,x,top-.04,z,advW);plats.push({k:'b',x,z,w,d,top})}
 function movPlat(x,z,w,d,top,ax,az,amp,sp,ph){const m=add(new THREE.BoxGeometry(w,.5,d),slabM,x,top-.25,z,advW);
   plats.push({k:'b',x,z,w,d,top,m,dx:0,dz:0,mv:{x0:x,z0:z,ax,az,amp,sp,ph}})}
-function patrol(ax,az,bx,bz,y,speed){const g=spikeball(advW);advHz.push({g,y:y+.75,f:t=>{const L=Math.hypot(bx-ax,bz-az),u=.5-.5*Math.cos(t*speed/L*PI);return[ax+(bx-ax)*u,az+(bz-az)*u]}})}
-function circler(cx,cz,r,y,sp,ph){const g=spikeball(advW);advHz.push({g,y:y+.75,f:t=>[cx+Math.cos(t*sp+ph)*r,cz+Math.sin(t*sp+ph)*r]})}
+// path enemies: a penguin (patrol) or imp (circler), with the classic spikeball inside for the Enemies toggle
+function patrol(ax,az,bx,bz,y,speed){advHz.push({...advFoe('penguin'),y:y+.75,f:t=>{const L=Math.hypot(bx-ax,bz-az),u=.5-.5*Math.cos(t*speed/L*PI);return[ax+(bx-ax)*u,az+(bz-az)*u]}})}
+function circler(cx,cz,r,y,sp,ph){advHz.push({...advFoe('imp'),y:y+.75,f:t=>[cx+Math.cos(t*sp+ph)*r,cz+Math.sin(t*sp+ph)*r]})}
 const coreGeo=new THREE.OctahedronGeometry(.5,0);
 function addCore(x,z,y){const g=new THREE.Group();g.position.set(x,y,z);advW.add(g);
   const m=new THREE.Mesh(coreGeo,new THREE.MeshStandardMaterial({color:0xffcc33,emissive:0xffaa00,emissiveIntensity:1,flatShading:true}));m.castShadow=true;g.add(m);

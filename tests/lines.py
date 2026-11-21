@@ -33,7 +33,7 @@ window.__tests={
  'Pillars: standing hop P1 -> P2 (y 2.8)':()=>{__place(13,3,1.8,Math.PI/4);__k({KeyD:true,KeyS:true});jumpBuf=.15;keys.Space=true;__step(2);return __land()},
  'Pillars: P3 -> P4 (y 4.8)':()=>{__place(17.6,7.6,3.8,Math.PI/4);__k({KeyS:true,KeyD:true});jumpBuf=.15;keys.Space=true;__step(2);return __land()},
  "Treehouse: tree-top flip -> Crow's Nest (y 9.5)":()=>{const c=advCol.find(c=>c.tree&&Math.abs(c.x+15)<.1&&Math.abs(c.z-12)<.1);__place(c.x,c.z,c.top,0);
-   Object.assign(CL,{on:true,tree:c,top:true,ang:0,h:c.top});grounded=false;GAP.from={x:c.x,z:c.z,y:c.top};GAP.wasSup=true;__step(2);__k({KeyA:true,KeyS:true});jumpBuf=.15;keys.Space=true;__step(2);return __land()},
+   Object.assign(CL,{on:true,tree:c,top:true,ang:0,h:c.top});grounded=false;GAP.from={x:c.x,z:c.z,y:c.top};GAP.wasSup=true;__step(2);face=Math.atan2(-4.5,5);__step(1);__k({KeyA:true,KeyS:true});jumpBuf=.15;keys.Space=true;__step(2);return __land()},
  'Fountain: ring -> spout (y 2.6)':()=>{__place(-7,4.25,1,0);__k({KeyS:true});jumpBuf=.15;keys.Space=true;__step(2);return __land()},
 };
 """

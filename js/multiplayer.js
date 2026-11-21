@@ -97,7 +97,7 @@ function mpFrame(dt){
   electHost();updAvatars(dt);
   if(MP.room&&now-MP.lastSend>50){MP.lastSend=now;
     const pr={nm:MP.myName||'Player',ch:ci,of:OFI[ci]??0,p:[P.position.x,py,P.position.z,face].map(f2),q:poseOf(),sc:score,fr:runFree?1:0,t:[MP.tr.n,MP.tr.s],c:[MP.cl.n,MP.cl.o,MP.cl.k],sb:SB.sent,hb:SB.hits,yw:YS.spray?1:0,z:SB.stun>0?1:0,H:null};
-    if(MP.host)pr.H={o:orbs.map(o=>[o.id,f2(o.g.position.x),f2(o.y),f2(o.g.position.z),o.gold?1:0,o.v,o.ring.visible?0:1,o.beam?1:0]),h:runHz.filter(h=>!h.dead).map(h=>[h.id,f2(h.g.position.x),f2(h.g.position.z)])};
+    if(MP.host)pr.H={o:orbs.map(o=>[o.id,f2(o.g.position.x),f2(o.y),f2(o.g.position.z),o.gold?1:0,o.v,o.ring.visible?0:1,o.beam?1:0]),h:runHz.filter(h=>!h.dead).map(h=>[h.id,f2(h.g.position.x),f2(h.g.position.z),KINDS.indexOf(h.kind),Math.max(0,FSTATES.indexOf(h.st)),f2(h.face||0)]),g:FX.sent};
     MP.room.presence(pr).catch(()=>{})}
   if(now-MP.lastList>250){MP.lastList=now;mpList()}
 }
@@ -112,7 +112,7 @@ function hostClaims(){
   for(const p of MP.room.peers()){if(p.sameTab)continue;const c=p.presence&&p.presence.c;if(!Array.isArray(c))continue;
     const[_,os,ks]=c;
     if(Array.isArray(os))for(const id of os){if(typeof id!=='string'||MP.done.has(id))continue;MP.done.add(id);const o=orbs.find(x=>x.id===id);if(o){rmObj(o.g);orbs.splice(orbs.indexOf(o),1);spawnOrb()}}
-    if(Array.isArray(ks))for(const id of ks){if(typeof id!=='string'||MP.done.has(id))continue;MP.done.add(id);const h=runHz.find(x=>x.id===id);if(h&&!h.dead){burst(h.g.position.clone(),0xff5a4e,12);h.dead=true;rmObj(h.g);runQ.push(T.run.smashRespawn)}}}
+    if(Array.isArray(ks))for(const id of ks){if(typeof id!=='string'||MP.done.has(id))continue;MP.done.add(id);const h=runHz.find(x=>x.id===id);if(h&&!h.dead){foeFx(h);h.dead=true;rmObj(h.g);runQ.push(T.run.smashRespawn)}}}
 }
 function syncFromHost(){
   const H=MP.hostPeer&&MP.hostPeer.presence&&MP.hostPeer.presence.H;if(!H||!Array.isArray(H.o)||!Array.isArray(H.h))return;
@@ -123,7 +123,10 @@ function syncFromHost(){
   const hid=new Set(H.h.map(e=>e[0]));
   for(const h of [...runHz])if(!hid.has(h.id)){rmObj(h.g);runHz.splice(runHz.indexOf(h),1)}
   for(const e of H.h){if(typeof e[0]!=='string'||!Number.isFinite(e[1])||!Number.isFinite(e[2]))continue;let h=runHz.find(q=>q.id===e[0]);
-    if(!h){if(MP.gone.has(e[0]))continue;const g=spikeball(runL.grp);g.position.set(e[1],.75,e[2]);h={g,id:e[0],vx:0,vz:0,tx:e[1],tz:e[2]};runHz.push(h)}
-    h.tx=e[1];h.tz=e[2]}
+    if(!h){if(MP.gone.has(e[0]))continue;const f=makeFoe(KINDS[e[3]]||'spike',runL.grp);f.g.position.set(e[1],f.kind==='spike'?.75:0,e[2]);h=Object.assign(f,{id:e[0],vx:0,vz:0,tx:e[1],tz:e[2],face:0,st:'walk'});runHz.push(h)}
+    h.tx=e[1];h.tz=e[2];if(Number.isInteger(e[4])&&FSTATES[e[4]]&&!(h.st==='flee'&&h.robbed>0))h.st=FSTATES[e[4]];if(Number.isFinite(e[5]))h.face=e[5]}
+  // the host's snow goons throw at everyone: start throws we haven't seen
+  if(Array.isArray(H.g)){if(!MP.goonSeen){MP.goonSeen=new Set(H.g.map(s=>Array.isArray(s)&&s[0]))}
+    else for(const s of H.g){if(!Array.isArray(s)||s.length<7||MP.goonSeen.has(s[0])||!s.slice(1).every(Number.isFinite))continue;MP.goonSeen.add(s[0]);launchSnowball(s.slice(1,7),false,'goon',-s[0])}}
   for(const id of [...MP.gone])if(!oid.has(id)&&!hid.has(id))MP.gone.delete(id);
 }
