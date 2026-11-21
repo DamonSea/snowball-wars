@@ -102,8 +102,9 @@ Build your own Trick Park maps: Trick Park → **More maps & builder** (or **Map
 
 ![Map settings, the spawn point, checkpoints and the finish flag](docs/media/map-settings.png)
 
-- **Asset library:** blocks, walls, raised decks, monkey bars, stairs, tire stacks, ice, trampolines, climbing poles,
-  lamp posts, trees, rocks, orbs, snowman targets, rolling snowballs and the START pad.
+- **Asset library:** blocks, walls, raised decks, monkey bars, stairs, ramps, tire stacks, ice, slides, trampolines,
+  climbing poles, lamp posts, trees, rocks, orbs, snowman targets, rolling snowballs, the spawn point, the START pad,
+  and checkpoint and finish flags.
 - **Edit:** click to place, drag to move, then resize, raise, recolor, rotate, duplicate or delete in the inspector.
   Undo/redo, keyboard shortcuts, and drafts that save as you go.
 - **Test:** play the map with the full moveset, then pause → Back to builder.
