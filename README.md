@@ -70,6 +70,19 @@ Punch, kick, snowball, dive, ground-pound or **stomp** them. Prefer the classics
 
 ![Penguin slide, imp theft and a goon going down](docs/media/winter-crew.gif)
 
+### Map Builder
+Build your own Trick Park maps: Trick Park → **More maps & builder** (or **Map Builder** on the main menu).
+
+![The Map Builder: asset library on the left, inspector on the right](docs/media/map-builder.png)
+
+- **Asset library:** blocks, walls, raised decks, monkey bars, stairs, tire stacks, ice, trampolines, climbing poles,
+  lamp posts, trees, rocks, orbs, snowman targets, rolling snowballs and the START pad.
+- **Edit:** click to place, drag to move, then resize, raise, recolor, rotate, duplicate or delete in the inspector.
+  Undo/redo, keyboard shortcuts, and drafts that save as you go.
+- **Test:** play the map with the full moveset, then pause → Back to builder.
+- **Publish** (claude.ai version): the map joins the More maps list for everyone who opens the game.
+  Anywhere else, **Export / Import** map files.
+
 ### Adventure
 Hand-built levels with cores to collect, checkpoints and a goal: **Lighthouse Isles**, and **Sky Gauntlet**, which
 needs Flip's or Nova's full moveset (and guard rails help).
@@ -122,7 +135,10 @@ by files above it. Nothing is bundled.
 | 27 | `js/yellowsnow.js` | Yellow snow: hold-to-spray stream that marks the snow, yellow snowballs (Settings → Yellow snow) |
 | 28 | `js/winterfun.js` | Snow angels and rolling snowballs that grow |
 | 29 | `js/cpu.js` | Computer player for Trick Park (Settings → Computer player) |
-| 30 | `js/main.js` | Startup |
+| 30 | `js/builder/maps.js` | Map Builder asset library, map cleaning, and turning a saved map into a playable Trick Park map |
+| 31 | `js/builder/editor.js` | Map Builder editor: top-down camera, placing, selecting, dragging, inspector, undo, test play |
+| 32 | `js/builder/community.js` | Drafts, publishing to the shared map list, More maps panel, export and import |
+| 33 | `js/main.js` | Startup |
 
 ## Tests
 

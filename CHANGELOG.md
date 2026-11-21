@@ -3,6 +3,19 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.6.0] - 2026-11-20 — Map Builder
+### Added
+- **Map Builder**: a top-down editor for your own Trick Park maps, with an asset library (blocks, walls, raised decks,
+  monkey bars, stairs, tire stacks, ice, trampolines, poles, lamp posts, trees, rocks, orbs, snowman targets, rolling
+  snowballs, START pad), an inspector for size, height and color, rotate, duplicate, delete, undo/redo and autosaved drafts.
+- **Test play** straight from the editor; the pause menu offers Back to builder.
+- **Publish**: in the claude.ai version, published maps appear under Trick Park → More maps for everyone.
+  Authors (and the owner) can update or unpublish them; others can play them or edit a copy.
+- **Export / Import** maps as `.snowmap.json` files.
+- Trick Park menu: **More maps & builder**; main menu: **Map Builder**.
+### Changed
+- Multiplayer rooms are keyed by map, so friends on the same custom map play together.
+
 ## [2.5.1] - 2026-11-20
 ### Added
 - **Settings** button in the pause menu.

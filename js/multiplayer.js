@@ -25,7 +25,8 @@ function lobbyUI(){const e=$('online');if(!e)return;
   if(!MP.on||!MP.lobby){e.textContent='';return}
   const ps=MP.lobby.peers();if(ps.length<2){e.textContent='Multiplayer: share this game from claude.ai to invite friends. Anyone on the same Trick Park map plays with you.';return}
   e.textContent='Online now: '+ps.map(p=>(p.sameTab?'You':nameOf(p))+(p.sameTab?'':(' ('+(whereName(p.presence.w)||'here')+')'))).join(', ')}
-const mapCount=i=>MP.on&&MP.lobby?MP.lobby.peers().filter(p=>!p.sameTab&&p.presence&&p.presence.w==='p'+i).length:0;
+// players are matched by map key (custom maps sit at different list positions on different screens)
+const mapCount=i=>{const M=RUNMAPS[i];return M&&MP.on&&MP.lobby?MP.lobby.peers().filter(p=>!p.sameTab&&p.presence&&p.presence.w==='p'+M.key).length:0};
 // --- remote avatars ---
 function tagCanvas(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;return c}
 function makeAv(ch){const g=new THREE.Group();scene.add(g);
@@ -73,7 +74,7 @@ function updAvatars(dt){
   for(const[id,a]of MP.av)if(!seen.has(id)){dropAv(a);MP.av.delete(id)}
 }
 // --- room membership, host election, presence ---
-function wantRoom(){return MP.on&&mode==='run'&&(state==='play'||state==='paused'||state==='over')?'tp-'+runIdx:''}
+function wantRoom(){return MP.on&&mode==='run'&&(state==='play'||state==='paused'||state==='over')?'tp-'+runL.key:''}
 async function switchRoom(want){MP.joining=true;try{
   if(MP.room){const r=MP.room;MP.room=null;MP.roomName='';clearAv();try{await r.leave()}catch(e){}}
   MP.gone.clear();MP.done.clear();MP.client=false;MP.host=true;MP.hostPeer=null;
@@ -91,7 +92,7 @@ function electHost(){
 function mpFrame(dt){
   if(!MP.on)return;const now=performance.now();
   // lobby presence: where you are
-  const w=state==='menu'||state==='select'?'menu':mode==='run'?'p'+runIdx:'adv';
+  const w=state==='menu'||state==='select'||state==='build'?'menu':mode==='run'?'p'+runL.key:'adv';
   if(w!==MP.lastWhere){MP.lastWhere=w;MP.lobby.presence({w,nm:MP.myName||'Player'}).catch(()=>{});lobbyUI()}
   const want=wantRoom();if(want!==MP.roomName&&!MP.joining&&now>MP.retryAt)switchRoom(want);
   electHost();updAvatars(dt);

@@ -68,7 +68,9 @@ function spawnRunHz(kind=pickKind()){const f=makeFoe(kind,runL.grp),{x,z}=freeSp
   runHz.push(Object.assign(f,{vx:Math.cos(a)*sp,vz:Math.sin(a)*sp,id:mkId('h'+(++hzSeq)),st:'walk',t:1+Math.random()*2,face:a,wa:a,cool:2+Math.random()*2,robbed:0,mine:0}))}
 function resetRun(){[...orbs,...runHz].forEach(o=>rmObj(o.g));orbs=[];runHz=[];runQ=[];ATK.t=0;spawnCount=0;score=0;time=T.run.time;runT=0;bestCombo=0;lives=3;invuln=0;resetAcro();
   ({plats,advCol}=runL);clearSnow();Object.assign(GAP,{from:null,take:null,wasSup:true});CL.on=false;CL.top=false;stand=null;iceV.set(0,0,0);onIce=false;Object.assign(TR,{pts:0,mult:0,names:[],t:0});showCombo();
-  P.position.set(0,0,0);vel.set(0,0,0);vy=py=0;grounded=true;for(let i=0;i<T.run.orbsOnField;i++)spawnOrb();for(let i=0;i<T.run.hazardsStart;i++)spawnRunHz();spawnRollers()}
+  P.position.set(0,0,0);vel.set(0,0,0);vy=py=0;grounded=true;
+  if(runL.custom){P.position.set(runL.spad.x,0,runL.spad.z);if(runL.spad.x||runL.spad.z)face=Math.atan2(-runL.spad.x,-runL.spad.z)}   // custom maps: start on the START pad, facing the middle
+  for(let i=0;i<T.run.orbsOnField;i++)spawnOrb();for(let i=0;i<T.run.hazardsStart;i++)spawnRunHz();spawnRollers()}
 function startRun(free=true){mode='run';setWorld('run');resetRun();runFree=free;runCD=0;padHold=0;state='play';overlay(false);hud();SFX.start();freeUI();renderControls();
   const t=free?FREE_HINT:'Trick Park: chain tricks for a combo multiplier. Higher orbs are worth more!';hint(t);clearTimeout(hintTimer);
   if(!free)hintTimer=setTimeout(()=>{if($('hint').textContent===t)hint('')},6000)}

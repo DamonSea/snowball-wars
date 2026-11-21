@@ -156,3 +156,39 @@ button:focus-visible,.padnav button:focus{outline:3px solid #fff;outline-offset:
 .bindHelp{margin:-4px 0 8px;font-size:13px;opacity:.75}
 @keyframes capPulse{50%{opacity:.6}}@media (prefers-reduced-motion:reduce){.opt.bind.cap{animation:none}}
 .frost.yellow{background:radial-gradient(ellipse at center,rgba(255,240,150,0) 35%,rgba(242,214,75,.8) 100%)}
+
+/* ----- Map Builder ----- */
+body.building .hud .stats>div,body.building #mpList,body.building #combo,body.building #cPop,body.building #touch,body.building #ctl,body.building #ctlShow,body.building #hint{display:none!important}
+#bld{position:fixed;inset:0;pointer-events:none;z-index:4;font:500 14px "Inter",system-ui,sans-serif;color:var(--ink)}
+#bld>*{pointer-events:auto}
+#bld.hide{display:none}
+.bTop{position:absolute;top:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:center;
+  background:rgba(12,34,48,.88);padding:8px 10px;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.25);max-width:calc(100vw - 20px)}
+.bTop button{min-height:34px;padding:2px 12px;font-size:14px}
+#bName{font:700 15px "Baloo 2",system-ui,sans-serif;background:#0e2a3a;color:#fff;border:2px solid #2b5a72;border-radius:10px;padding:5px 10px;width:170px}
+.bSave{font-size:12px;opacity:.7;min-width:50px}
+.bLib{position:absolute;left:10px;top:76px;bottom:10px;width:172px;overflow:auto;background:rgba(12,34,48,.88);border-radius:14px;padding:8px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.bLib h4{margin:10px 4px 4px;font:700 12px "Inter",sans-serif;letter-spacing:.06em;text-transform:uppercase;opacity:.65}
+.bTool{display:flex;align-items:center;gap:8px;width:100%;min-height:32px;margin:2px 0;padding:3px 8px;border-radius:9px;background:#1b3a4b;color:var(--ink);font:600 13px "Inter",sans-serif;text-align:left;box-shadow:none}
+.bTool i{font-style:normal;width:20px;text-align:center;font-size:16px}
+.bTool.on{background:#ffd84a;color:#3a2c00}
+.bInsp{position:absolute;right:10px;top:76px;width:250px;max-height:calc(100vh - 90px);overflow:auto;background:rgba(12,34,48,.88);border-radius:14px;padding:12px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.bInsp h3{margin:0 0 4px;font:700 17px "Baloo 2",sans-serif}.bInsp h3 i{font-style:normal}
+.bHelp{font-size:13px;opacity:.8;margin:6px 0;line-height:1.35}
+.bRow{display:grid;grid-template-columns:70px 30px 1fr 30px;gap:4px;align-items:center;margin:5px 0}
+.bRow input{width:100%;min-width:0;background:#0e2a3a;color:#fff;border:1px solid #2b5a72;border-radius:8px;padding:4px 6px;font:600 14px "Inter",sans-serif}
+.bStep,.bTog{min-height:30px;padding:0;border-radius:8px;background:#1b3a4b;color:var(--ink);box-shadow:none}
+.bTog{grid-column:2/-1}
+.bSw{grid-column:2/-1;display:flex;flex-wrap:wrap;gap:4px}.bSw .sw{display:block!important;width:24px;height:24px;min-height:0;padding:0;border-radius:50%;border:2px solid rgba(255,255,255,.25);box-shadow:none}.bSw .sw.cur{border-color:#ffd84a;transform:scale(1.15)}
+.bBtns{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.bBtns button{min-height:32px;padding:2px 10px;font-size:13px}
+.bDel{background:var(--bad)!important;color:#fff!important}
+.bHint{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);background:rgba(12,34,48,.75);padding:4px 10px;border-radius:9px;font:600 12px "Inter",monospace;pointer-events:none}
+.bHint:empty{display:none}
+@media(max-width:760px){.bLib{width:130px}.bInsp{width:200px;top:auto;bottom:10px;max-height:45vh}}
+/* ----- More maps panel ----- */
+#maps{z-index:4}
+.mapscard{width:min(620px,100%)}
+.mHead{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:8px 0}
+.mRow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 10px;margin:4px 0;border-radius:12px;background:#1b3a4b}
+.mRow small{display:block;opacity:.7;font-size:12px}.mRow span{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.mRow button{min-height:32px;padding:2px 12px;font-size:13px}.mDel{min-width:36px}

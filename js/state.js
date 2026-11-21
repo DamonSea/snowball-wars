@@ -17,22 +17,22 @@ function hud(){
   $('mname').textContent=state==='menu'?'':mode==='run'?runL.name:'Adventure';
 }
 function hint(t){const h=$('hint');if(h.textContent===t)return;h.textContent=t;h.classList.remove('pop');void h.offsetWidth;if(t)h.classList.add('pop')}
-let onGo=null,onAlt=null,onAlt2=null,onAlt3=null,onAlt4=null;
-function overlay(show,t,p,goTxt,altTxt,go,alt,alt2Txt='',alt2=null,alt3Txt='',alt3=null,alt4Txt='',alt4=null){
+let onGo=null,onAlt=null,onAlt2=null,onAlt3=null,onAlt4=null,onAlt5=null;
+function overlay(show,t,p,goTxt,altTxt,go,alt,alt2Txt='',alt2=null,alt3Txt='',alt3=null,alt4Txt='',alt4=null,alt5Txt='',alt5=null){
   $('ov').classList.toggle('hide',!show);$('ov').classList.remove('menu');if(!show){document.activeElement&&document.activeElement.blur&&document.activeElement.blur();return}
-  $('ovT').textContent=t;$('ovT').classList.toggle('logo',t==='Snowball Wars');$('ovP').textContent=p;$('go').textContent=goTxt;$('alt').textContent=altTxt;onGo=go;onAlt=alt;$('alt2').textContent=alt2Txt;onAlt2=alt2;$('alt3').textContent=alt3Txt;onAlt3=alt3;$('alt4').textContent=alt4Txt;onAlt4=alt4;
-  $('best').textContent=RUNMAPS.map(M=>`${M.name}: ${bestR[M.key]||'not yet'}`).join(' \u00b7 ')+levels.map(L=>` · ${L.name}: ${bestA[L.key]?fmt(bestA[L.key]):'not yet'}`).join('');
+  $('ovT').textContent=t;$('ovT').classList.toggle('logo',t==='Snowball Wars');$('ovP').textContent=p;$('go').textContent=goTxt;$('alt').textContent=altTxt;onGo=go;onAlt=alt;$('alt2').textContent=alt2Txt;onAlt2=alt2;$('alt3').textContent=alt3Txt;onAlt3=alt3;$('alt4').textContent=alt4Txt;onAlt4=alt4;$('alt5').textContent=alt5Txt;onAlt5=alt5;
+  $('best').textContent=RUNMAPS.filter(M=>!M.custom).map(M=>`${M.name}: ${bestR[M.key]||'not yet'}`).join(' \u00b7 ')+levels.map(L=>` · ${L.name}: ${bestA[L.key]?fmt(bestA[L.key]):'not yet'}`).join('');
   setTimeout(()=>$('go').focus(),50);
 }
-$('go').addEventListener('click',()=>onGo&&onGo());$('alt2').addEventListener('click',()=>onAlt2&&onAlt2());$('alt3').addEventListener('click',()=>onAlt3&&onAlt3());$('alt4').addEventListener('click',()=>onAlt4&&onAlt4());$('alt').addEventListener('click',()=>onAlt&&onAlt());
-function menu(){chars.forEach((c,i)=>{if(c.outs&&!unlocked(OFI[i],c.outs)){OFI[i]=0;applyOutfitTo(c.rig.mats,0,c.outs)}});
+$('go').addEventListener('click',()=>onGo&&onGo());$('alt2').addEventListener('click',()=>onAlt2&&onAlt2());$('alt3').addEventListener('click',()=>onAlt3&&onAlt3());$('alt4').addEventListener('click',()=>onAlt4&&onAlt4());$('alt5').addEventListener('click',()=>onAlt5&&onAlt5());$('alt').addEventListener('click',()=>onAlt&&onAlt());
+function menu(){BLD.testing=false;if(typeof closeMapsPanel==='function')closeMapsPanel();chars.forEach((c,i)=>{if(c.outs&&!unlocked(OFI[i],c.outs)){OFI[i]=0;applyOutfitTo(c.rig.mats,0,c.outs)}});
 
   state='menu';mode='run';ci=2;wave=1.6;setWorld('run');resetRun();hint('');hud();freeUI();
-  overlay(true,'Snowball Wars','Meet Flip the stunt pilot and Nova the snowboarder, two daredevils with momentum to burn. Trick Park: chain flips, dives and wall jumps into combos, grab orbs for snowballs and pelt your rivals. Adventure: handmade levels to conquer.','Trick Park','Adventure',()=>parkMenu(),()=>levelMenu());
+  overlay(true,'Snowball Wars','Meet Flip the stunt pilot and Nova the snowboarder, two daredevils with momentum to burn. Trick Park: chain flips, dives and wall jumps into combos, grab orbs for snowballs and pelt your rivals. Adventure: handmade levels to conquer.','Trick Park','Adventure',()=>parkMenu(),()=>levelMenu(),'Map Builder',()=>openMapsPanel());
   $('ov').classList.add('menu');
 }
 function parkMenu(){const lab=(n,i)=>{const c=mapCount(i);return c?`${n} \u00b7 ${c} here`:n};
-  overlay(true,'Trick Park','Plaza: a skatepark built around trick lines, with named gaps to discover. Frozen Rink: skate on slippery ice, then trick off the snow fort and candy canes. Rooftops: a vertical city of wall-jump alleys and rooftop orbs. Jungle Gym: one connected playground of forts, monkey bars, trampolines and a wall-jump canyon, built to use every move.'+(MP.on?' Friends on the same map play together.':''),lab('Plaza',0),lab('Frozen Rink',1),()=>select('run',0),()=>select('run',1),lab('Rooftops',2),()=>select('run',2),lab('Jungle Gym',3),()=>select('run',3),'Back',()=>menu())}
+  overlay(true,'Trick Park','Plaza: a skatepark built around trick lines, with named gaps to discover. Frozen Rink: skate on slippery ice, then trick off the snow fort and candy canes. Rooftops: a vertical city of wall-jump alleys and rooftop orbs. Jungle Gym: one connected playground of forts, monkey bars, trampolines and a wall-jump canyon, built to use every move.'+(MP.on?' Friends on the same map play together.':''),lab('Plaza',0),lab('Frozen Rink',1),()=>select('run',0),()=>select('run',1),lab('Rooftops',2),()=>select('run',2),lab('Jungle Gym',3),()=>select('run',3),'More maps & builder',()=>openMapsPanel(),'Back',()=>menu())}
 function levelMenu(){overlay(true,'Adventure','Lighthouse Isles: hop across islands and light the lighthouse. Sky Gauntlet: a climb through sky ruins that needs every one of Flip’s tricks, wall jumps included.','Lighthouse Isles','Sky Gauntlet',()=>select('adv',0),()=>select('adv',1),'Back',()=>menu())}
 let pickMode='run',pickLevel=0,lockChar=false;
 function select(m,lv=0){
@@ -69,5 +69,5 @@ function setWorld(m){RUNMAPS.forEach(M=>M.grp.visible=m==='run'&&M===runL);level
 function resume(){state='play';overlay(false)}
 function retry(){mode==='run'?startRun(runFree):startAdv(curIdx)}
 function pause(){if(state!=='play')return;state='paused';
-  if(mode==='run'&&runFree){overlay(true,'Free roam','Practice as long as you like.'+gapText(),'Resume','Start timed run',resume,()=>{resume();beginTimed()},'Settings',()=>openSet(),'Quit to menu',()=>menu());return}
-  overlay(true,'Paused',mode==='run'?(FOE_STYLE==='spike'?'Take a breather. The spikeballs will wait.':'Take a breather. The bad guys will wait.')+gapText():`${curL.name} \u00b7 ${fmt(atime)} \u00b7 ${coreCount}/3 cores`,'Resume','Retry',resume,retry,'Settings',()=>openSet(),'Quit to menu',()=>menu())}
+  if(mode==='run'&&runFree){overlay(true,'Free roam','Practice as long as you like.'+gapText(),'Resume','Start timed run',resume,()=>{resume();beginTimed()},'Settings',()=>openSet(),...(BLD.testing?['Back to builder',()=>backToBuilder()]:['Quit to menu',()=>menu()]));return}
+  overlay(true,'Paused',mode==='run'?(FOE_STYLE==='spike'?'Take a breather. The spikeballs will wait.':'Take a breather. The bad guys will wait.')+gapText():`${curL.name} \u00b7 ${fmt(atime)} \u00b7 ${coreCount}/3 cores`,'Resume','Retry',resume,retry,'Settings',()=>openSet(),...(BLD.testing?['Back to builder',()=>backToBuilder()]:['Quit to menu',()=>menu()]))}

@@ -7,6 +7,7 @@ function tick(){
   pollPad();if(!$('ov').classList.contains('hide'))updatePadInfo();
   const pl=state==='play';if(pl!==wasPlaying){wasPlaying=pl;document.body.classList.toggle('playing',pl);if(pl)renderControls();freeUI()}
   let dt=Math.min(clock.getDelta(),.05);if(hitStop>0){hitStop-=dt;dt*=.12}tAll+=dt;
+  if(state==='build'){builderFrame(dt);renderer.render(scene,cam);requestAnimationFrame(tick);return}   // Map Builder: its own camera, no game updates
   if(state==='play')updateAttack(dt);
   water.position.y=-.8+Math.sin(tAll*.8)*.05;
   if(state==='play')mode==='run'?updateRun(dt):updateAdv(dt);

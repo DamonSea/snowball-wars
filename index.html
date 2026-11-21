@@ -32,7 +32,7 @@
     <h1 id="ovT">Snowball Wars</h1>
     <p id="ovP"></p>
     <ul class="keys ktip"><li><kbd>WASD</kbd> or <kbd>Arrows</kbd> move</li><li><kbd>Space</kbd> jump</li><li><kbd>P</kbd> pause</li><li><kbd>H</kbd> controls</li><li><kbd>M</kbd> sound</li></ul>
-    <div class="btns"><button id="go">Run mode</button><button id="alt" class="alt">Adventure</button><button id="alt2" class="alt"></button><button id="alt3" class="alt"></button><button id="alt4" class="alt"></button></div>
+    <div class="btns"><button id="go">Run mode</button><button id="alt" class="alt">Adventure</button><button id="alt2" class="alt"></button><button id="alt3" class="alt"></button><button id="alt4" class="alt"></button><button id="alt5" class="alt"></button></div>
     <p class="best" id="best"></p>
     <p class="best" id="online"></p>
     <p class="best" id="padInfo"></p>
@@ -53,6 +53,19 @@
     <div class="outfits" id="outfits"></div>
     <div class="dots" id="dots"></div>
   </div>
+</div>
+<div id="maps" class="ov hide" aria-label="More maps"><div class="card setcard mapscard" role="dialog" aria-modal="true" aria-labelledby="mapsT">
+  <h1 id="mapsT">More maps</h1><p class="bHelp" style="text-align:center">Build your own Trick Park maps, play them, and publish them into the game.</p><div id="mapsList"></div></div></div>
+<div id="bld" class="hide" aria-label="Map builder">
+  <div class="bTop"><input id="bName" maxlength="32" aria-label="Map name" placeholder="Map name">
+    <button id="bUndo" class="alt" title="Undo (Ctrl+Z)">Undo</button><button id="bRedo" class="alt" title="Redo (Ctrl+Y)">Redo</button>
+    <button id="bTest" title="Play your map">▶ Test</button><button id="bPub" title="Put this map into the game for everyone">Publish</button>
+    <button id="bExport" class="alt" title="Download the map as a file">Export</button><button id="bImport" class="alt" title="Open a map file">Import</button>
+    <button id="bExit" class="alt">Exit</button><span id="bSave" class="bSave"></span></div>
+  <nav class="bLib" id="bLib" aria-label="Asset library"></nav>
+  <aside class="bInsp" id="bInsp" aria-label="Inspector"></aside>
+  <div class="bHint" id="bHint"></div>
+  <input type="file" id="bFile" accept=".json,application/json" hidden>
 </div>
 <div id="set" class="ov hide" aria-hidden="true"><div class="card setcard" role="dialog" aria-modal="true" aria-labelledby="setT">
   <h1 id="setT">Settings</h1>
@@ -99,6 +112,9 @@
 <script src="js/yellowsnow.js"></script>
 <script src="js/winterfun.js"></script>
 <script src="js/cpu.js"></script>
+<script src="js/builder/maps.js"></script>
+<script src="js/builder/editor.js"></script>
+<script src="js/builder/community.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
