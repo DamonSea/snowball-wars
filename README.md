@@ -47,7 +47,7 @@ Your look shows up for friends in multiplayer.
 ### Trick Park
 Four maps to skate, flip and wall-jump around, with free roam until you step on the START pad for a 60-second
 scored run. Higher orbs are worth more, combos multiply, and **named gaps** reward clean lines.
-- **Plaza:** a skatepark built around trick lines: tower and crown, runway, chimney, pillars, treehouse, fountain.
+- **Plaza:** a skatepark built around trick lines: tower and crown, runway, chimney, pillars, treehouse, fountain, and the Big Slide.
 - **Frozen Rink:** real ice physics: build speed, glide, drift and bounce off the boards.
 - **Rooftops:** a vertical city made for wall jumps, topped by a climbable antenna 18 m up.
 - **Jungle Gym:** one connected playground built to use every move: a two-level fort, tire run, fireman pole,
