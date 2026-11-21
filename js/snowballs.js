@@ -8,7 +8,7 @@ const sbGeo=new THREE.SphereGeometry(.18,10,8),sbMat=new THREE.MeshStandardMater
 const sbYellow=new THREE.MeshStandardMaterial({color:0xf2d64b,roughness:.9});
 function launchSnowball(o,own,owner,id,yellow=false){
   const m=new THREE.Mesh(sbGeo,yellow?sbYellow:sbMat);m.castShadow=true;m.position.set(o[0],o[1],o[2]);scene.add(m);
-  SB.list.push({m,vx:o[3],vy:o[4],vz:o[5],t:0,own,owner,id,yellow})}
+  SB.list.push({m,vx:o[3],vy:o[4],vz:o[5],t:0,own,owner,id,yellow,chunk:owner==='chunk'})}
 function throwSnow(){
   if(mode!=='run'||state!=='play'||CL.on||SB.cool>0||SB.stun>0||YS.t>0||YS.spray)return;
   if(SB.ammo<1){SFX.deny();if(!SB.told){SB.told=true;toast('Out of snowballs: grab orbs to refill')}snowFlash('empty');return}
@@ -54,14 +54,14 @@ function updateSnow(dt){
       // other players: splat for show; the hit only counts once they confirm it
       if(!gone&&cpuCatch(p,b)){splat(p,true,b.yellow);gone=true}
       if(!gone)for(const a of MP.av.values()){const g=a.g.position;if(Math.hypot(g.x-p.x,g.z-p.z)<.75&&p.y>g.y&&p.y<g.y+2.1){splat(p,true);gone=true;break}}
-    }else if(!gone){
+    }else if(!gone&&!b.chunk){
       if(Math.hypot(P.position.x-p.x,P.position.z-p.z)<.75&&p.y>py&&p.y<py+2.1){hitMe(b.owner,b.id,p.x-b.vx*.05,p.z-b.vz*.05,b.yellow);gone=true}
       else for(const h of runHz)if(!h.dead&&hitsSpike(h,p)){splat(p,false);gone=true;break}
     }
     if(gone){scene.remove(b.m);SB.list.splice(i,1)}}
   // punches, kicks, dives and belly slides smash snowmen too
   for(const s of snowmen()){if(!s.up||py>2.6)continue;const d=Math.hypot(s.x-P.position.x,s.z-P.position.z);
-    if(attackHits(V(s.x,.75,s.z),0)){smash(V(s.x,1.2,s.z));knockSnowman(s)}
+    if(attackHits(V(s.x,.75,s.z),0)){ATK.hits++;hitStop=.07;shake=Math.max(shake,.18);rumble(120,.7,.9);SFX.hit();knockSnowman(s)}
     else if(chars[ci].acro&&(A.mode==='dive'||A.mode==='slide')&&d<1.15){shake=Math.max(shake,.2);rumble(120,.6,.8);SFX.splat(true);knockSnowman(s)}}
   for(const s of snowmen())if(!s.up&&(s.t-=dt)<=0){s.up=true;s.g.visible=true;burst(V(s.x,1.2,s.z),0xffffff,10)}
 }
@@ -92,7 +92,12 @@ function makeSnowman(grp,x,z,i){const g=new THREE.Group();g.position.set(x,0,z);
   return{g,x,z,up:true,t:0}}
 RUNMAPS.forEach(M=>{M.snowmen=(SNOWMEN_AT[M.name]||[]).map(([x,z],i)=>makeSnowman(M.grp,x,z,i))});
 const snowmen=()=>runL.snowmen||[];
-function knockSnowman(s){s.up=false;s.t=T.snow.snowmanRespawn;s.g.visible=false;burst(V(s.x,1.4,s.z),0xffffff,22);burst(V(s.x,2.1,s.z),0xff8a3d,4);addTrick('Snowman Down')}
+// snowmen burst into snow: a puff from each body ball, plus a few chunks that tumble out and splat
+function knockSnowman(s){s.up=false;s.t=T.snow.snowmanRespawn;s.g.visible=false;
+  [[.62,16],[1.5,14],[2.16,10]].forEach(([y,n])=>{burst(V(s.x,y,s.z),0xffffff,n);burst(V(s.x,y,s.z),0xdff4ff,Math.round(n/2))});
+  for(let i=0;i<5;i++){const a=Math.random()*PI*2,sp=2.5+Math.random()*2.5;
+    launchSnowball([s.x,1+Math.random(),s.z,Math.cos(a)*sp,3+Math.random()*3,Math.sin(a)*sp].map(f2),false,'chunk',-1)}
+  SFX.splat(true);addTrick('Snowman Down')}
 // ----- dizzy stars over a stunned player's head -----
 function makeStars(){const g=new THREE.Group(),m=new THREE.MeshBasicMaterial({color:0xffe066});
   for(let i=0;i<4;i++){const s=new THREE.Mesh(new THREE.OctahedronGeometry(.13,0),m);const a=i/4*PI*2;s.position.set(Math.cos(a)*.5,Math.sin(a*2)*.06,Math.sin(a)*.5);g.add(s)}
