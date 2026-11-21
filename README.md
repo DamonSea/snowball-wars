@@ -138,7 +138,7 @@ by files above it. Nothing is bundled.
 |---|---|---|
 | 1 | `js/tuning.js` | **Every gameplay number**: gravity, jumps, speeds, ice, climbing, attacks, combo, scoring, camera |
 | 2 | `js/core.js` | Renderer, scene, lights, material helpers, season registry, trees/rocks/flowers |
-| 3 | `js/characters.js` | Sunny, Rook, Flip, Nova and Vex rigs, their wardrobes, spring physics for dangly bits, character table |
+| 3 | `js/characters.js` | Rigs and wardrobes for Flip, Nova and Tuk (plus benched Sunny, Rook and Vex), spring physics for dangly bits, character table and roster |
 | 4 | `js/fx.js` | Spikeball model, particle bursts, collision push-out |
 | 5 | `js/audio/sfx.js` | Sound engine and the configurable sound-effect library |
 | 6 | `js/audio/music.js` | Music tracks, ambience, spikeball rolling sound |
