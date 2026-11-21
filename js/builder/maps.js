@@ -13,8 +13,10 @@ const ASSETS={
   deck:{label:'Raised deck',icon:'▭',cat:'Structures',def:{w:4,d:4,h:2.4,th:.4,c:2,posts:1},f:['w','d','h','th','c','posts'],tip:'Floating platform you can run under'},
   bars:{label:'Monkey bars',icon:'☰',cat:'Structures',def:{w:6,d:.9,h:3.4,c:3},f:['w','d','h','c'],tip:'Hang and shimmy, or balance on top'},
   stairs:{label:'Stairs',icon:'⊿',cat:'Structures',def:{w:2,d:3,h:1.6,steps:4,c:7,dir:0},f:['w','d','h','steps','c'],tip:'Steps up; Rotate turns them'},
+  ramp:{label:'Ramp',icon:'◺',cat:'Structures',def:{w:3,d:5,h:2,c:2,dir:0},f:['w','d','h','c'],tip:'Solid slope up from the ground (crouch on it to butt-slide); Rotate turns it'},
   tires:{label:'Tire stack',icon:'◎',cat:'Structures',def:{r:.8,h:1.6,c:5},f:['r','h','c'],tip:'Round pillar with a tire on top'},
   ice:{label:'Ice patch',icon:'❄',cat:'Structures',def:{w:6,d:6},f:['w','d'],tip:'Slippery skating ice'},
+  slide:{label:'Slide',icon:'⟋',cat:'Play',def:{w:2.4,d:10,h:4,c:5,dir:0},f:['w','d','h','c'],tip:'Railed chute: crouch on it to butt-slide down. Rotate turns it; put stairs or a deck at the top'},
   pad:{label:'Trampoline',icon:'⤒',cat:'Play',def:{r:1.15,c:6},f:['r','c'],tip:'Bounce! Ground pound onto it for a super bounce'},
   pole:{label:'Climbing pole',icon:'❘',cat:'Play',def:{h:5,c:2},f:['h','c'],tip:'Climb, handstand, flip'},
   lamp:{label:'Lamp post',icon:'†',cat:'Play',def:{},f:[],tip:'A climbable lamp'},
@@ -68,6 +70,11 @@ function buildCustom(map){const m=cleanMap(map);
     case'stairs':{const n=it.steps,along=it.dir%2===0,L=along?it.d:it.w,sgn=it.dir===0||it.dir===3?-1:1,step=L/n;
       for(let k=0;k<n;k++){const o=(-L/2+step*(k+.5))*sgn,top=it.h*(k+1)/n;boxPlat(along?x:x+o,along?z+o:z,along?it.w:step,along?step:it.d,top,side,col(it.c))}
       topSpot(along?x:x+(L/2-step/2)*sgn,along?z+(L/2-step/2)*sgn:z,it.h);break}
+    case'ramp':case'slide':{const along=it.dir%2===0,L=along?it.d:it.w,wid=along?it.w:it.d,sgn=it.dir===0||it.dir===3?-1:1,ax=along?'z':'x',
+        cc=along?x:z,ca=along?z:x,high=ca+sgn*L/2,low=ca-sgn*L/2;
+      if(it.t==='ramp')wedgeRamp(ax,low,high,cc,wid,it.h,side,col(it.c),grp);
+      else slideChute(ax,low,high,cc,wid,.3,it.h,col(it.c),mat(0xffd84a),steel,grp);
+      const hx=along?x:high-sgn*.6,hz=along?high-sgn*.6:z;topSpot(hx,hz,it.h);break}
     case'tires':add(new THREE.CylinderGeometry(it.r,it.r,it.h,16),col(it.c),x,it.h/2,z,grp);add(new THREE.TorusGeometry(it.r*.78,it.r*.25,8,20),mat(0x22262b,{roughness:.9}),x,it.h,z,grp).rotation.x=PI/2;
       plats.push({k:'c',x,z,r:it.r,top:it.h});topSpot(x,z,it.h);break;
     case'ice':add(B(it.w,.24,it.d),mat(0xa9d8ea,{roughness:.3}),x,0,z,grp);add(B(it.w,.02,it.d),new THREE.MeshStandardMaterial({color:0xd4f0fb,roughness:.06,metalness:.12}),x,.125,z,grp).receiveShadow=true;

@@ -55,6 +55,26 @@ function inside(p,x,z,m){return p.k==='c'?Math.hypot(x-p.x,z-p.z)<p.r+m:Math.abs
 function topOf(p,x,z){const r=p.ramp;if(!r)return p.top;const c=r.ax==='x'?x:z,t=Math.max(0,Math.min(1,(c-r.a0)/(r.a1-r.a0)));return r.lo+(r.hi-r.lo)*t}
 const botOf=(p,x,z)=>p.ramp?topOf(p,x,z)-p.ramp.th:p.bot;
 function rampPlat(ax,a0,a1,c,width,lo,hi,th){const L=Math.abs(a1-a0),mid=(a0+a1)/2,p={k:'b',x:ax==='x'?mid:c,z:ax==='x'?c:mid,w:ax==='x'?L:width,d:ax==='x'?width:L,top:Math.max(lo,hi),ramp:{ax,a0,a1,lo,hi,th}};plats.push(p);return p}
+// A playground slide chute along axis ax from coordinate `low` (surface lo) to `high` (surface hi); c is the other
+// coordinate. Tilted slab, low side walls with rails (solid, so you stay in), support legs, open underneath.
+function slideChute(ax,low,high,c,wid,lo,hi,slideM,railM,legM,grp=advW){
+  const L=Math.abs(high-low),mid=(low+high)/2,ang=Math.atan2(hi-lo,L),len=Math.hypot(hi-lo,L),up=Math.sign(high-low)||1;
+  const G=(l,h,t)=>ax==='x'?new THREE.BoxGeometry(l,h,t):new THREE.BoxGeometry(t,h,l);
+  const put=(m,off,y)=>{m.position.set(ax==='x'?mid:c+off,y,ax==='x'?c+off:mid);if(ax==='x')m.rotation.z=ang*up;else m.rotation.x=-ang*up;return m};
+  put(add(G(len,.35,wid),slideM,0,0,0,grp),0,(lo+hi)/2-.175/Math.cos(ang));
+  [-1,1].forEach(k=>{const o=k*(wid/2+.09);put(add(G(len,.55,.18),slideM,0,0,0,grp),o,(lo+hi)/2+.08);put(add(G(len,.1,.14),railM,0,0,0,grp),o,(lo+hi)/2+.4);
+    rampPlat(ax,low,high,c+o,.3,lo+.6,hi+.6,1.05)});
+  for(const f of[.24,.52,.79]){const a=low+(high-low)*f,h=lo+(hi-lo)*f-.3;if(h<.4)continue;
+    [-1,1].forEach(k=>{const o=k*(wid/2-.15);add(new THREE.CylinderGeometry(.09,.11,h,8),legM,ax==='x'?a:c+o,h/2,ax==='x'?c+o:a,grp)})}
+  return rampPlat(ax,low,high,c,wid,lo,hi,.4)}
+// A solid ramp (wedge) from the ground at `low` up to height hi at `high`.
+function wedgeRamp(ax,low,high,c,wid,hi,sideM,topM,grp=advW){const L=Math.abs(high-low),mid=(low+high)/2,ang=Math.atan2(hi,L),len=Math.hypot(hi,L),up=Math.sign(high-low)||1;
+  const g=ax==='x'?new THREE.BoxGeometry(L,hi,wid):new THREE.BoxGeometry(wid,hi,L),P=g.attributes&&g.attributes.position;
+  if(P){for(let i=0;i<P.count;i++){const a=ax==='x'?P.getX(i):P.getZ(i);if(P.getY(i)>0&&Math.sign(a)===-up)P.setY(i,-hi/2+.01)}P.needsUpdate=true;g.computeVertexNormals()}
+  add(g,sideM,ax==='x'?mid:c,hi/2,ax==='x'?c:mid,grp);
+  const t=add(ax==='x'?new THREE.BoxGeometry(len,.08,wid+.04):new THREE.BoxGeometry(wid+.04,.08,len),topM,ax==='x'?mid:c,hi/2,ax==='x'?c:mid,grp);
+  if(ax==='x')t.rotation.z=ang*up;else t.rotation.x=-ang*up;
+  return rampPlat(ax,low,high,c,wid,0,hi,hi+3)}
 function groundAt(x,z,y){let h=-Infinity,on=null;for(const p of plats){const t=topOf(p,x,z);if(t<=y+T.stepUp&&t>h&&inside(p,x,z,T.footMargin)){h=t;on=p}}return{h,on}}
 // a platform with a bottom (bot) only blocks you where your body overlaps it, so you can walk under decks and bars
 const blocked=(x,z,y)=>plats.some(p=>{if(!inside(p,x,z,T.wallMargin))return false;const t=topOf(p,x,z),b=botOf(p,x,z);return t>y+T.stepUp&&(b===undefined||y+T.bodyH>b)});

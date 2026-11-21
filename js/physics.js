@@ -130,3 +130,12 @@ function stepBody(dt,speed){
   if(!grounded&&tryHang())return true;
   return py>=T.fallDeath;
 }
+// Safety net: if the body ends up overlapping something solid (a corner, a moving platform, overlapping pieces in a
+// custom map), nudge it out to the nearest open spot after a moment; if there isn't one nearby, pop it on top.
+let stuckT=0;
+function bodyInSolid(x,z,y){return plats.find(p=>inside(p,x,z,-.05)&&topOf(p,x,z)>y+.55&&(botOf(p,x,z)===undefined||y+T.bodyH>botOf(p,x,z)+.1))}
+function unstick(dt){if(state!=='play'||CL.on||LH.on){stuckT=0;return}const x=P.position.x,z=P.position.z,s=bodyInSolid(x,z,py);
+  if(!s){stuckT=0;return}if((stuckT+=dt)<.2)return;stuckT=0;
+  for(let r=.25;r<=3.01;r+=.25)for(let k=0;k<16;k++){const a=k/16*2*PI,nx=x+Math.sin(a)*r,nz=z+Math.cos(a)*r;
+    if(!blocked(nx,nz,py)&&!bodyInSolid(nx,nz,py)){P.position.x=nx;P.position.z=nz;vel.set(0,0,0);if(chars[ci].acro)A.spd=0;return}}
+  const g=groundAt(x,z,1e9);if(g.on){py=g.h;vy=0;grounded=true;stand=g.on}}

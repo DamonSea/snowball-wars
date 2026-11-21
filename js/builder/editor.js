@@ -38,7 +38,7 @@ function delSel(){const it=BLD.map.items[BLD.sel];if(!it)return;if(ASSETS[it.t].
   pushUndo();BLD.map.items.splice(BLD.sel,1);BLD.sel=-1;changed();SFX.ui(1)}
 function dupSel(){const it=BLD.map.items[BLD.sel];if(!it||ASSETS[it.t].unique)return;if(BLD.map.items.length>=MAP_LIMIT)return;
   pushUndo();BLD.map.items.push({...it,x:it.x+1,z:it.z+1});BLD.sel=BLD.map.items.length-1;changed();SFX.ui(3)}
-function rotSel(){const it=BLD.map.items[BLD.sel];if(!it||!('w' in it))return;pushUndo();[it.w,it.d]=[it.d,it.w];if(it.t==='stairs')it.dir=(it.dir+1)%4;changed();SFX.ui(2)}
+function rotSel(){const it=BLD.map.items[BLD.sel];if(!it||!('w' in it))return;pushUndo();[it.w,it.d]=[it.d,it.w];if('dir' in it)it.dir=(it.dir+1)%4;changed();SFX.ui(2)}
 function setField(k,v){const it=BLD.map.items[BLD.sel];if(!it)return;pushUndo();it[k]=v;changed()}
 function nudge(dx,dz){const it=BLD.map.items[BLD.sel];if(!it)return;pushUndo();it.x=snap(it.x+dx);it.z=snap(it.z+dz);changed()}
 function raise(d){const it=BLD.map.items[BLD.sel];if(!it)return;const k='h' in it?'h':'y' in it?'y':null;if(!k)return;const F=FIELDS[k];pushUndo();it[k]=Math.max(F[1],Math.min(F[2],+(it[k]+d).toFixed(2)));changed()}

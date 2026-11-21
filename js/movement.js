@@ -11,7 +11,7 @@ function move(dt,speed){
   if(YS.spray||YS.t>0){yellowMove(dt,ix,iz);return}
   if(SA.t>0){angelMove(dt);return}
   if(SB.stun>0){jumpBuf=0;P.position.x+=vel.x*dt;P.position.z+=vel.z*dt;vel.multiplyScalar(Math.exp(-2.5*dt));if(chars[ci].acro){A.spd=0;A.air=!grounded;A.mode='normal'}return}
-  if(BS.on||wantButt()){if(!BS.on)startButt();if(buttMove(dt,ix,iz)){jumpBuf=Math.max(0,jumpBuf-dt);return}}
+  if(BS.on||wantButt(ix,iz)){if(!BS.on)startButt();if(buttMove(dt,ix,iz)){jumpBuf=Math.max(0,jumpBuf-dt);return}}
   if(chars[ci].acro){moveAcro(dt,speed,ix,iz);jumpBuf=Math.max(0,jumpBuf-dt);return}
   if(ATK.t>0&&grounded)speed*=.15;
   const k=1-Math.exp(-(ATK.t>0&&grounded?6:T.walkAccel)*dt);vel.x+=(ix*speed-vel.x)*k;vel.z+=(iz*speed-vel.z)*k;

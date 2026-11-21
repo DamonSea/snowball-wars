@@ -5,7 +5,11 @@ const BS={on:false,dist:0,t:0};
 const rampDown=p=>{const r=p.ramp,s=Math.sign(r.a0-r.a1);return r.ax==='x'?{x:s,z:0}:{x:0,z:s}};
 const rampSlope=p=>{const r=p.ramp;return Math.abs(r.hi-r.lo)/Math.abs(r.a1-r.a0)};
 const crouchHeld=()=>!!(held('crouch')||joy.crouch);
-function wantButt(){return state==='play'&&grounded&&!!(stand&&stand.ramp)&&crouchHeld()&&!GP.st&&SA.t<=0&&ATK.t<=0&&!LH.on&&!CL.on}
+// start only when heading downhill (moving or pushing that way) or sitting still on the slope; crawling up or across
+// a slope's lip stays a normal crouch, so you can't get caught in a slide-off / crawl-back loop at the bottom
+function wantButt(ix=0,iz=0){if(!(state==='play'&&grounded&&stand&&stand.ramp&&crouchHeld()&&!GP.st&&SA.t<=0&&ATK.t<=0&&!LH.on&&!CL.on))return false;
+  const d=rampDown(stand),vd=vel.x*d.x+vel.z*d.z,id=ix*d.x+iz*d.z,still=Math.hypot(vel.x,vel.z)<.4&&Math.hypot(ix,iz)<.2;
+  return vd>.4||id>.25||still}
 function startButt(){BS.on=true;BS.dist=0;BS.t=0;if(chars[ci].acro){A.mode='normal';A.flipT=99}SFX.slide();burst(V(P.position.x,py+.1,P.position.z),0xffffff,5)}
 function endButt(){if(!BS.on)return;BS.on=false;const sp=Math.hypot(vel.x,vel.z);
   if(sp>.5)face=Math.atan2(vel.x,vel.z);if(chars[ci].acro){A.spd=sp;A.mode=crouchHeld()&&grounded?'crouch':'normal'}

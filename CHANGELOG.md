@@ -3,6 +3,20 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.10.1] - 2026-11-21 — Slides in the Map Builder, stuck fixes
+### Added
+- Map Builder: **Slide** (a railed chute you can butt-slide down and walk under) and **Ramp** (a solid slope that
+  launches you off the top). Both rotate four ways like Stairs.
+- A safety net: if your character ever ends up overlapping something solid, the game nudges you out to open space
+  (or onto the top if there's none nearby).
+### Fixed
+- **Stuck crouch on Mac:** keys pressed while Cmd was held (Cmd+C, the Cmd+Shift+4 screenshot shortcut) never sent a
+  key-up, so C or Shift (Crouch) stayed held, even through menus. Cmd shortcuts are now ignored, and all keys release
+  when Cmd is let go or the tab is hidden.
+- **Stuck at the bottom of the slide:** crouch-walking into the chute's low lip started a butt slide, slid you off,
+  and crawled you back on in a loop. A butt slide now only starts when heading downhill or sitting still on a slope.
+- `tools/perf`: random-input stress tests (keyboard and simulated DualSense) that look for stuck states.
+
 ## [2.10.0] - 2026-11-20 — The Big Slide
 ### Added
 - **The Big Slide** in the Plaza (front right): a 6-high tower with steps and a long railed chute back toward the middle.

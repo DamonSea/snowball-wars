@@ -25,7 +25,10 @@ function setCtl(h){ctlHidden=h;document.body.classList.toggle('ctlHidden',h);try
 $('ctlHide').addEventListener('click',()=>setCtl(true));$('ctlShow').addEventListener('click',()=>setCtl(false));
 setCtl(ctlHidden);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pause()});
-addEventListener('keydown',e=>{if(capKey(e))return;keys[e.code]=true;
+// On a Mac, keys pressed while Cmd is held never send a key-up (Cmd+C, Cmd+Shift+4...), so they'd stay "held" forever:
+// ignore them, and let go of everything when Cmd is released or the page loses focus.
+const releaseAll=()=>{for(const k in keys)keys[k]=false};
+addEventListener('keydown',e=>{if(capKey(e))return;if(e.metaKey){if(e.key!=='Meta')return}else keys[e.code]=true;
   if(setOpen){if(e.code==='Escape')closeSet();return}
   const acts=actsOfKey(e.code==='NumpadEnter'?'Enter':e.code);
   if(!e.repeat)for(const id of acts)if(state==='play'||(id==='pause'&&state==='paused'))press(id);
@@ -37,8 +40,8 @@ addEventListener('keydown',e=>{if(capKey(e))return;keys[e.code]=true;
   if(e.code==='Escape'&&!acts.includes('pause')){if(state==='play')pause();else if(state==='paused')resume()}
   if(e.code==='KeyM'&&!e.repeat){setMute(!AU.muted);toast(AU.muted?'Sound off':'Sound on');if(!AU.muted)SFX.ui(3)}
   if(e.code==='KeyH'&&(state==='play'||state==='paused'))setCtl(!ctlHidden)});
-addEventListener('keyup',e=>keys[e.code]=false);
-addEventListener('blur',()=>{for(const k in keys)keys[k]=false});
+addEventListener('keyup',e=>{keys[e.code]=false;if(e.key==='Meta'||e.code==='MetaLeft'||e.code==='MetaRight')releaseAll()});
+addEventListener('blur',releaseAll);document.addEventListener('visibilitychange',()=>{if(document.hidden)releaseAll()});
 const J=$('joy'),K=$('knob');let jid=null;
 J.addEventListener('pointerdown',e=>{jid=e.pointerId;J.setPointerCapture(jid);moveJoy(e)});
 J.addEventListener('pointermove',e=>{if(e.pointerId===jid)moveJoy(e)});
