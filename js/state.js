@@ -19,7 +19,7 @@ function hud(){
 function hint(t){const h=$('hint');if(h.textContent===t)return;h.textContent=t;h.classList.remove('pop');void h.offsetWidth;if(t)h.classList.add('pop')}
 let onGo=null,onAlt=null,onAlt2=null,onAlt3=null,onAlt4=null,onAlt5=null;
 function overlay(show,t,p,goTxt,altTxt,go,alt,alt2Txt='',alt2=null,alt3Txt='',alt3=null,alt4Txt='',alt4=null,alt5Txt='',alt5=null){
-  $('ov').classList.toggle('hide',!show);$('ov').classList.remove('menu');if(!show){document.activeElement&&document.activeElement.blur&&document.activeElement.blur();return}
+  $('ov').classList.toggle('hide',!show);$('ov').classList.remove('menu','pausem');if(!show){document.activeElement&&document.activeElement.blur&&document.activeElement.blur();return}
   $('ovT').textContent=t;$('ovT').classList.toggle('logo',t==='Snowball Wars');$('ovP').textContent=p;$('go').textContent=goTxt;$('alt').textContent=altTxt;onGo=go;onAlt=alt;$('alt2').textContent=alt2Txt;onAlt2=alt2;$('alt3').textContent=alt3Txt;onAlt3=alt3;$('alt4').textContent=alt4Txt;onAlt4=alt4;$('alt5').textContent=alt5Txt;onAlt5=alt5;
   $('best').textContent=RUNMAPS.filter(M=>!M.custom).map(M=>`${M.name}: ${bestR[M.key]||'not yet'}`).join(' \u00b7 ')+levels.map(L=>` · ${L.name}: ${bestA[L.key]?fmt(bestA[L.key]):'not yet'}`).join('');
   setTimeout(()=>$('go').focus(),50);
@@ -67,8 +67,12 @@ function setWorld(m){RUNMAPS.forEach(M=>M.grp.visible=m==='run'&&M===runL);level
 function resume(){state='play';overlay(false)}
 function retry(){mode==='run'?startRun(runFree):startAdv(curIdx)}
 function pause(){if(state!=='play')return;state='paused';wave=1.6;idleT=0;
+  // one vertical column: Resume, then this mode's actions, then Settings and Quit (the character waves on the left)
+  const quit=BLD.testing?['Back to builder',()=>backToBuilder()]:['Quit to menu',()=>menu()],set=['Settings',()=>openSet()];
   if(mode==='run'&&runFree){const race=FR.on&&!FR.done,b=FR.on?raceBest():null;
-    overlay(true,FR.on?'Flag race':'Free roam',FR.on?(FR.done?'Finished! Keep exploring, or race again.':`Race time ${fmtRace(FR.t)}${b?' · best '+fmtRace(b):''}. Checkpoints ${FR.reached}/${runL.cps.length}.`):'Practice as long as you like.'+gapText(),
-      'Resume',runL.spad?'Start orb run':FR.on?'Restart race':'',resume,runL.spad?()=>{resume();beginTimed()}:()=>startRun(true),'Settings',()=>openSet(),
-      ...(BLD.testing?['Back to builder',()=>backToBuilder()]:['Quit to menu',()=>menu()]),race&&FR.reached?'Last checkpoint':'',()=>{resume();frRespawn()},runL.spad&&FR.on?'Restart race':'',()=>startRun(true));return}
-  overlay(true,'Paused',mode==='run'?(FOE_STYLE==='spike'?'Take a breather. The spikeballs will wait.':'Take a breather. The bad guys will wait.')+gapText():`${curL.name} \u00b7 ${fmt(atime)} \u00b7 ${coreCount}/3 cores`,'Resume','Retry',resume,retry,'Settings',()=>openSet(),...(BLD.testing?['Back to builder',()=>backToBuilder()]:['Quit to menu',()=>menu()]))}
+    const acts=[runL.spad?['Start game',()=>{resume();beginTimed()}]:null,race&&FR.reached?['Last checkpoint',()=>{resume();frRespawn()}]:null,FR.on?['Restart race',()=>startRun(true)]:null].filter(Boolean);
+    const[a1,a2,a3]=[acts[0]||['',null],acts[1]||['',null],acts[2]||['',null]];
+    overlay(true,FR.on?'Flag race':runL.custom?runL.name:'Trick Park',FR.on?(FR.done?'Finished! Keep exploring, or race again.':`Race time ${fmtRace(FR.t)}${b?' · best '+fmtRace(b):''} · checkpoints ${FR.reached}/${runL.cps.length}`):'',
+      'Resume',a1[0],resume,a1[1],a2[0],a2[1],a3[0],a3[1],...set,...quit)}
+  else overlay(true,mode==='run'?'Trick Park':curL.name,mode==='run'?'':`${fmt(atime)} \u00b7 ${coreCount}/3 cores`,'Resume','Retry',resume,retry,...set,...quit);
+  $('ov').classList.add('menu','pausem')}

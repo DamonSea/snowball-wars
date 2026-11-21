@@ -3,6 +3,12 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.13.1] - 2026-11-21 — Vertical pause menu
+### Changed
+- The pause menu is one vertical column like the main menu: Resume, the mode's actions (Start game; in a flag race,
+  Last checkpoint and Restart race), Settings, Quit to menu. Titled "Trick Park" (or the custom map's name), with no
+  paragraph; flag races keep one line with the race time.
+
 ## [2.13.0] - 2026-11-21 — Simpler menus
 ### Changed
 - **Main menu:** just the title and three buttons (Trick Park, Adventure, Map Builder) beside Flip; the intro
