@@ -3,6 +3,13 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.14.0] - 2026-11-21 — Tuk
+### Added
+- **Tuk**, a new acrobat with Flip's full moveset: a yeti cub with big round eyes, rosy cheeks, buck teeth, little
+  curved horns, huge paws and a hand-knit zigzag sweater and scarf. Floppy ears, head tuft and scarf tail on springs;
+  his belly jiggles when he lands; idle, he catches snowflakes on his tongue. Five outfits (Cozy, Glacier, Berry,
+  Midnight, and Golden Fleece after Sky Gauntlet), with every part paintable in Customize.
+
 ## [2.13.1] - 2026-11-21 — Vertical pause menu
 ### Changed
 - The pause menu is one vertical column like the main menu: Resume, the mode's actions (Start game; in a flag race,

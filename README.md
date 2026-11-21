@@ -7,16 +7,16 @@ into combos in Trick Park (Plaza, Frozen Rink, Rooftops, Jungle Gym), discover n
 the Adventure levels. Built with three.js; open `index.html` in a browser to play (multiplayer works only in the
 claude.ai version).
 
-![The cast: Sunny, Rook, Flip, Nova and Vex](docs/media/characters.png)
+![The cast: Sunny, Rook, Flip, Nova, Vex and Tuk](docs/media/characters.png)
 
 **What's new:** see the [changelog](CHANGELOG.md).
 
 ## Features
 
 ### A cast with a real moveset
-Pick **Flip** the stunt pilot, **Nova** the snowboarder or **Vex** the skate punk for the full acrobat moveset, or
-**Sunny** (a bouncy robot) and **Rook** (a quick explorer) for simpler controls. Flip, Nova and Vex each have five
-outfits; the gold one unlocks by beating Sky Gauntlet.
+Pick **Flip** the stunt pilot, **Nova** the snowboarder, **Vex** the skate punk or **Tuk** the yeti cub for the full
+acrobat moveset, or **Sunny** (a bouncy robot) and **Rook** (a quick explorer) for simpler controls. The acrobats
+each have five outfits; the gold one unlocks by beating Sky Gauntlet.
 
 Double and triple jumps, a skid into a side somersault, backflips, long jumps, dives, wall jumps, a ground pound and
 **Pound Jump** (Jump right after a ground pound to rocket straight up), plus **ledge hang**: grab edges as you fall past,
@@ -29,6 +29,11 @@ mohawk and wallet chain run on springs, so they whip when he stops, flop when he
 standing and he crosses his arms and blows bubble gum until it pops.
 
 ![Vex runs, stops, lands, then crosses his arms and blows a bubble](docs/media/vex.gif)
+
+**Tuk** is a yeti cub in a hand-knit sweater: floppy ears, a tuft of fur and a scarf on springs, and a round belly
+that jiggles when he lands. Leave him alone and he tips his head back to catch snowflakes on his tongue.
+
+![Tuk hops, lands with a jiggle, then catches snowflakes](docs/media/tuk.gif)
 
 **Settings → Game → Squash & stretch** is a slider from Default to Max; turned up, it makes every move a cartoon: tall stretchy jumps, splat landings that
 wobble back, punches that reach, and ground pounds that ball up, stretch down and squash flat.
