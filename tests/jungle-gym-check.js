@@ -7,7 +7,7 @@ __place(-6.6,3.4,2.4,E);__k({KeyD:true,Space:true});jumpBuf=.15;res('Tire Run: T
 // 2 Tire hops T1->T2->T3 standing hops
 __place(-7.6,9,.8,Math.atan2(-1.6,-1.8));__k({KeyW:true,KeyA:true,Space:true});jumpBuf=.15;res('Tire hop T1 -> T2',1.6,land());
 // 3 Fort Climb by ledge hang: Deck 1 below the roof's south face (z=1.2), face north, jump, grab, pull up
-__place(0,2.2,2.4,N);__k({KeyW:true,Space:true});jumpBuf=.15;__until(()=>LH.on,80);const g=LH.on;__k({KeyW:true});__step(30);__k({});__step(5);
+__place(0,2.2,2.4,N);__k({KeyW:true,Space:true});jumpBuf=.15;__until(()=>LH.on,80);const g=LH.on;__k({KeyW:true});__step(45);__k({});__step(5);
 out.push((g&&Math.abs(py-5.4)<.05?'OK  ':'FAIL')+' Fort Climb by ledge hang -> grabbed='+g+' y='+py.toFixed(2)+' | '+TR.names.join(','));
 // 4 Fort Climb by backflip: face south near the roof, backflip goes north onto it
 __place(0,2.6,2.4,S);__step(2);keys.ShiftLeft=true;__step(3);jumpBuf=.15;keys.Space=true;__step(3);keys.ShiftLeft=false;res('Fort Climb by backflip',5.4,land());
@@ -16,7 +16,7 @@ __place(5.6,5.6,0,Math.atan2(-1,-1));__k({KeyW:true,KeyA:true});__until(()=>CL.o
 face=Math.atan2(0-4.6,-1-4.6);__step(3);jumpBuf=.15;keys.Space=true;res('Fireman Flip: pole -> roof',5.4,land());
 // 6 Monkey bars: jump from the ground at the bars' south side, hang, shimmy east, pull up, walk onto the tower
 __place(5,1.2,0,N);__k({KeyW:true,Space:true});jumpBuf=.15;__until(()=>LH.on,80);const gb=LH.on;__k({KeyD:true});__step(170);__k({});const hx=P.position.x;
-__k({KeyW:true});__step(25);__k({KeyD:true});__until(()=>P.position.x>13.2,120);__k({});__step(10);
+__k({KeyW:true});__step(40);__k({KeyD:true});__until(()=>P.position.x>13.2,120);__k({});__step(10);
 out.push((gb&&Math.abs(py-3.4)<.05&&P.position.x>12?'OK  ':'FAIL')+' Monkey bars: grabbed='+gb+' shimmied to x='+hx.toFixed(1)+' then tower y='+py.toFixed(2)+' x='+P.position.x.toFixed(1)+' | '+TR.names.join(','));
 // 7 Pound Peak: on the tower, jump, pound, Pound Jump drifting north
 __place(14,-1.5,3.4,N);__step(2);jumpBuf=.15;keys.Space=true;__step(24);keys.Space=false;groundPound();__until(()=>GP.st===3,120);jumpBuf=.15;keys.Space=true;__step(8);__k({KeyW:true,Space:true});res('Pound Peak: tower -> peak',9,land());__k({});__step(10);
@@ -27,7 +27,7 @@ __place(2.8,-9.2,1.4,N);grounded=false;__k({Space:true});__until(()=>vy>12,60);_
 // 10 Super bounce: ground pound onto a pad
 __place(-2.8,-9.2,0,N);__step(2);jumpBuf=.15;keys.Space=true;__step(22);groundPound();let pk=0;for(let i=0;i<140;i++){__step(1);pk=Math.max(pk,py)}out.push((pk>9?'OK  ':'FAIL')+' Super Bounce peak '+pk.toFixed(2)+' | '+TR.names.join(','));
 // 11 Wall Hop: North Deck -> canyon east wall top (jump or hang+climb)
-__place(4,-12.5,5.8,W);__k({KeyA:true,Space:true});__until(()=>P.position.x<-4.6,90);jumpBuf=.15;let r=land();if(r.hang){__k({KeyA:true});__step(25);__k({});__step(3);r.y=+py.toFixed(2)}res('Wall Hop: North Deck -> canyon top',8,r);
+__place(4,-12.5,5.8,W);__k({KeyA:true,Space:true});__until(()=>P.position.x<-4.6,90);jumpBuf=.15;let r=land();if(r.hang){__k({KeyA:true});__step(45);__k({});__step(3);r.y=+py.toFixed(2)}res('Wall Hop: North Deck -> canyon top',8,r);
 // 12 Canyon climb: wall-jump bot
 __place(-12.5,-9,0,E);let dir=1;__k({KeyD:true});jumpBuf=.15;keys.Space=true;__step(3);
 for(let i=0;i<600;i++){if(LH.on){__k({[dir>0?'KeyD':'KeyA']:true});__step(30);break}if(A.wallT>0&&!grounded&&vy<4){jumpBuf=.15;keys.Space=true;dir=-dir;__k(dir>0?{KeyD:true}:{KeyA:true})}__step(1);if(grounded&&py>7)break;if(grounded&&i>20&&py<.1)break}

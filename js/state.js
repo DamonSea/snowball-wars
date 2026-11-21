@@ -69,5 +69,5 @@ function setWorld(m){RUNMAPS.forEach(M=>M.grp.visible=m==='run'&&M===runL);level
 function resume(){state='play';overlay(false)}
 function retry(){mode==='run'?startRun(runFree):startAdv(curIdx)}
 function pause(){if(state!=='play')return;state='paused';
-  if(mode==='run'&&runFree){overlay(true,'Free roam','Practice as long as you like.'+gapText(),'Resume','Start timed run',resume,()=>{resume();beginTimed()},'Quit to menu',()=>menu());$('ovP').textContent+=' Sound settings: the gear in the top bar.';return}
-  overlay(true,'Paused',mode==='run'?(FOE_STYLE==='spike'?'Take a breather. The spikeballs will wait.':'Take a breather. The bad guys will wait.')+gapText():`${curL.name} \u00b7 ${fmt(atime)} \u00b7 ${coreCount}/3 cores`,'Resume','Retry',resume,retry,'Quit to menu',()=>menu());$('ovP').textContent+=' Sound settings: the gear in the top bar.'}
+  if(mode==='run'&&runFree){overlay(true,'Free roam','Practice as long as you like.'+gapText(),'Resume','Start timed run',resume,()=>{resume();beginTimed()},'Settings',()=>openSet(),'Quit to menu',()=>menu());return}
+  overlay(true,'Paused',mode==='run'?(FOE_STYLE==='spike'?'Take a breather. The spikeballs will wait.':'Take a breather. The bad guys will wait.')+gapText():`${curL.name} \u00b7 ${fmt(atime)} \u00b7 ${coreCount}/3 cores`,'Resume','Retry',resume,retry,'Settings',()=>openSet(),'Quit to menu',()=>menu())}

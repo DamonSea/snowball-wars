@@ -3,6 +3,12 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.5.1] - 2026-11-20
+### Added
+- **Settings** button in the pause menu.
+### Fixed
+- Ledge pull-up and ledge hop no longer snap up at the end (the camera jumped); you now rise and step onto the ledge smoothly.
+
 ## [2.5.0] - 2026-11-20 — Jungle Gym
 ### Added
 - **Jungle Gym**, a fourth Trick Park map: one connected playground built so each structure hands you to the next.

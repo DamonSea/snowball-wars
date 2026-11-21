@@ -96,7 +96,7 @@ function tick(){
       else{const c=Math.sin(CL.h*3+CL.ang*2);pitch=-.12;ax=-2.75+c*.45;ar=-2.75-c*.45;zl=-.3;zr=.3;lx=-.95+c*.45;lr=-.95-c*.45;yo=0;hx=.35}}
     // ledge hang: arms straight up gripping the edge, legs dangling (they swing as you shimmy); pull-up bends the arms
     if(LH.on&&state!=='menu'){snap=false;snapY=false;rate=16;yaw=0;roll=0;hy=0;hz=0;lrz=0;llz=0;hx=-.25;const sw=Math.sin(walk*2.2);
-      if(LH.up>0){const k=1-LH.up/T.hang.climbTime;ax=ar=-3+k*1.9;zl=-.2;zr=.2;lx=lr=-.4-k*.9;pitch=.2+k*.4;yo=k*1.1}
+      if(LH.up>0){const k=1-LH.up/LH.upT;rate=22;ax=ar=-3+Math.min(1,k*1.4)*2.6;zl=-.25;zr=.25;lx=-1.3*Math.sin(PI*Math.min(1,k*1.15));lr=-.9*Math.sin(PI*Math.min(1,k*1.25));pitch=.45*Math.sin(PI*k);yo=0}
       else{ax=-3+sw*.18;ar=-3-sw*.18;zl=-.18;zr=.18;lx=.08+sw*.12;lr=.08-sw*.12;pitch=.04;yo=0}}
     if(wave>0&&!air&&!moving){zr=2.5+Math.sin(wave*14)*.35;ar=0;hz=-.1}
     if(state==='select')hy=Math.sin(tAll*1.3)*.25;

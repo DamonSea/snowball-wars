@@ -3,7 +3,7 @@
 __place(3.5,-9.75,0,Math.PI);__k({KeyW:true,Space:true});jumpBuf=.15;let grabbed=false;for(let i=0;i<60&&!grabbed;i++){__step(1);grabbed=LH.on}
 out.push('hang: grabbed='+grabbed+' hands at top='+(py+T.hang.drop).toFixed(2)+' (deck 2.2)');
 __k({KeyD:true});runN(40);__k({});out.push('shimmy right 0.66s: x 3.5 -> '+P.position.x.toFixed(2)+', still hanging='+LH.on);
-__k({KeyW:true});runN(30);__k({});out.push('push toward ledge: pulled up='+(!LH.on&&grounded&&Math.abs(py-2.2)<.01)+' combo='+TR.names.join(','));runN(30);
+__k({KeyW:true});runN(45);__k({});out.push('push toward ledge: pulled up='+(!LH.on&&grounded&&Math.abs(py-2.2)<.01)+' combo='+TR.names.join(','));runN(30);
 // drop with crouch
 __place(-3.5,-9.75,0,Math.PI);__k({KeyW:true,Space:true});jumpBuf=.15;for(let i=0;i<60&&!LH.on;i++)__step(1);__k({ShiftLeft:true});runN(3);__k({});runN(40);out.push('crouch lets go: hanging='+LH.on+' on ground='+(grounded&&py<.01));
 // hop up with Jump

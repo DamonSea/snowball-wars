@@ -72,13 +72,21 @@ function tryHang(){
     py=p.top-H.drop;vy=0;vel.set(0,0,0);A.spd=0;A.mode='normal';A.flipT=99;A.twirlT=99;face=Math.atan2(nx,nz);jumpBuf=0;SFX.grab();return true}
   return false}
 function hangStep(dt){const p=LH.p,H=T.hang,[ix,iz]=rawInput();vy=0;vel.set(0,0,0);grounded=false;stand=null;invuln=Math.max(0,invuln-dt);wallSliding=false;
-  const nx=LH.ax==='x'?-LH.s:0,nz=LH.ax==='z'?-LH.s:0;face=Math.atan2(nx,nz);py=p.top-H.drop;
-  if(LH.up>0){LH.up-=dt;if(LH.up<=0){LH.on=false;LH.cool=.25;P.position.x+=nx*(H.off+.4);P.position.z+=nz*(H.off+.4);py=p.top;grounded=true;stand=p;addTrick('Ledge Climb')}return}
+  const nx=LH.ax==='x'?-LH.s:0,nz=LH.ax==='z'?-LH.s:0;face=Math.atan2(nx,nz);
+  if(LH.up>0){ // rise first, then step in over the edge (smoothstep), so the body and camera move continuously
+    LH.up=Math.max(0,LH.up-dt);const k=1-LH.up/LH.upT,sm=t=>t*t*(3-2*t),rise=sm(Math.min(1,k/.75)),step=sm(Math.max(0,(k-.35)/.65));
+    py=p.top-H.drop+H.drop*rise+(LH.hop?.25*Math.sin(PI*Math.min(1,k/.75)):0);P.position.x=LH.sx+(LH.ex-LH.sx)*step;P.position.z=LH.sz+(LH.ez-LH.sz)*step;
+    if(LH.up<=0){LH.on=false;LH.cool=.25;py=p.top;P.position.x=LH.ex;P.position.z=LH.ez;
+      if(LH.hop){vy=H.hopVy*.55;grounded=false;stand=null;if(chars[ci].acro){A.mode='jump';A.jumpN=0;A.spd=0;A.canDive=true;A.canCut=false}SFX.jump(1);addTrick('Ledge Hop')}
+      else{grounded=true;stand=p;addTrick('Ledge Climb')}}
+    return}
+  py=p.top-H.drop;
+  const startUp=(hop)=>{Object.assign(LH,{hop,upT:hop?H.hopTime:H.climbTime,up:hop?H.hopTime:H.climbTime,sx:P.position.x,sz:P.position.z,ex:P.position.x+nx*(H.off+.4),ez:P.position.z+nz*(H.off+.4)});if(!hop)SFX.climb()};
   const toward=ix*nx+iz*nz,along=LH.ax==='x'?iz:ix,ck=held('crouch')||joy.crouch;
   if(ck||toward<-.6){LH.on=false;LH.cool=.35;return}
-  // Jump: spring up over the edge onto the ledge with a little hop
-  if(jumpBuf>0){jumpBuf=0;LH.on=false;LH.cool=.3;P.position.x+=nx*(H.off+.45);P.position.z+=nz*(H.off+.45);py=p.top+.02;vy=H.hopVy*.6;vel.set(0,0,0);if(chars[ci].acro){A.mode='jump';A.jumpN=0;A.spd=0;A.canDive=true;A.canCut=false}SFX.jump(1);addTrick('Ledge Hop');return}
-  if(toward>.6){LH.up=H.climbTime;SFX.climb();return}
+  // Jump: a quick spring up over the edge that ends in a little hop; pushing toward the ledge climbs up
+  if(jumpBuf>0){jumpBuf=0;startUp(true);return}
+  if(toward>.6){startUp(false);return}
   if(Math.abs(along)>.25){const lim=(LH.ax==='x'?p.d:p.w)/2-.3,st=along*H.shimmy*dt;
     if(LH.ax==='x')P.position.z=Math.max(p.z-lim,Math.min(p.z+lim,P.position.z+st));else P.position.x=Math.max(p.x-lim,Math.min(p.x+lim,P.position.x+st));
     LH.dist+=Math.abs(st);walk+=Math.abs(st)*2;if((LH.stepT=(LH.stepT||0)+dt)>.28){LH.stepT=0;SFX.climb()}

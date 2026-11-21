@@ -44,7 +44,7 @@ const T={
   yellow:{tank:4,refill:30,rate:45,speed:4.2,lift:2.2,gravity:14,walk:2.2,finish:.45,sessionLife:40,maxSessions:6,maxMarks:350},
   pound:{minHeight:1.2,spin:.28,fall:30,recover:.3,radius:3.2,jumpVy:17},
   // ledge hang: grab when a ledge top passes your hands (min..max above your feet) while falling, facing it
-  hang:{min:1.3,max:1.95,reach:.8,off:.42,drop:1.6,shimmy:2.4,climbTime:.32,hopVy:10,overHand:5},
+  hang:{min:1.3,max:1.95,reach:.8,off:.42,drop:1.6,shimmy:2.4,climbTime:.5,hopTime:.24,hopVy:10,overHand:5},
   bounce:{vy:17,poundVy:22},
   angel:{time:2.6,life:45},
   roll:{r0:.35,rMax:1.5,grow:.045,push:4.2,friction:.55,iceFriction:.2,bounce:.4,bowl:1.8},
