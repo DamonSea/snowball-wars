@@ -7,28 +7,21 @@ into combos in Trick Park (Plaza, Frozen Rink, Rooftops, Jungle Gym), discover n
 the Adventure levels. Built with three.js; open `index.html` in a browser to play (multiplayer works only in the
 claude.ai version).
 
-![The cast: Sunny, Rook, Flip, Nova, Vex and Tuk](docs/media/characters.png)
+![The cast: Flip, Nova and Tuk](docs/media/characters.png)
 
 **What's new:** see the [changelog](CHANGELOG.md).
 
 ## Features
 
 ### A cast with a real moveset
-Pick **Flip** the stunt pilot, **Nova** the snowboarder, **Vex** the skate punk or **Tuk** the yeti cub for the full
-acrobat moveset, or **Sunny** (a bouncy robot) and **Rook** (a quick explorer) for simpler controls. The acrobats
-each have five outfits; the gold one unlocks by beating Sky Gauntlet.
+Pick **Flip** the stunt pilot, **Nova** the snowboarder or **Tuk** the yeti cub. All three have the full acrobat
+moveset and five outfits each; the gold one unlocks by beating Sky Gauntlet.
 
 Double and triple jumps, a skid into a side somersault, backflips, long jumps, dives, wall jumps, a ground pound and
 **Pound Jump** (Jump right after a ground pound to rocket straight up), plus **ledge hang**: grab edges as you fall past,
 shimmy along them and pull up. Everything chains into combos.
 
 ![Triple jump, side somersault and backflip](docs/media/tricks.gif)
-
-**Vex** brings the attitude: half-lidded side-eye, a smirk with a snaggletooth, and a pink mohawk. His bandana tails,
-mohawk and wallet chain run on springs, so they whip when he stops, flop when he lands and swing as he turns. Leave him
-standing and he crosses his arms and blows bubble gum until it pops.
-
-![Vex runs, stops, lands, then crosses his arms and blows a bubble](docs/media/vex.gif)
 
 **Tuk** is a yeti cub in a hand-knit sweater: floppy ears, a tuft of fur and a scarf on springs, and a round belly
 that jiggles when he lands. Leave him alone and he tips his head back to catch snowflakes on his tongue.
@@ -41,7 +34,7 @@ wobble back, punches that reach, and ground pounds that ball up, stretch down an
 ![Exaggerated squash and stretch: jump, punch combo, ground pound](docs/media/squash-stretch.gif)
 
 ### Make them yours
-On character select, **Customize** (Flip, Nova and Vex) opens a dressing room: start from an outfit, repaint every part
+On character select, **Customize** (Flip, Nova and Tuk) opens a dressing room: start from an outfit, repaint every part
 (jacket, hat or hair, scarf or bandana, pants, boots, gloves and more) and add accessories. Head: crown, party hat,
 propeller cap, cat ears, halo. Face: shades, round specs, mustache, clown nose. Back: backpack, cape, jetpack, wings.
 They move, too: the propeller spins faster as you run, the jetpack fires in the air, wings flap and the cape streams.

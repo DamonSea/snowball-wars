@@ -372,5 +372,7 @@ function trail(col,n=1){for(let i=0;i<n;i++){const m=new THREE.Mesh(partGeo,new 
   m.position.set(P.position.x+(Math.random()-.5)*.4,py+.5+Math.random()*.9,P.position.z+(Math.random()-.5)*.4);scene.add(m);
   parts.push({m,v:V(-vel.x*.15,.2,-vel.z*.15),life:.35})}}
 // Flip is the lead: default pick, first in the select order, then Nova, Vex and Tuk. Sunny and Rook remain as alternates.
-const ORDER=[2,3,4,5,0,1];let ci=2;try{const v=localStorage.getItem('orbRunPick');if(v!==null&&chars[+v])ci=+v}catch(e){}let pickCi=ci;
+// The playable cast: Flip, Nova and Tuk. Sunny (0), Rook (1) and Vex (4) are benched for now: still built and working,
+// just not offered. Put their numbers back in ORDER to bring them back.
+const ORDER=[2,3,5];let ci=2;try{const v=localStorage.getItem('orbRunPick');if(v!==null&&ORDER.includes(+v))ci=+v}catch(e){}let pickCi=ci;
 let wave=0,bank=0,squash=0,airVy=0,wasG=true,lastFace=0;

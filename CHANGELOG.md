@@ -3,6 +3,12 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.15.0] - 2026-11-21 — The core three
+### Changed
+- The playable cast is now **Flip, Nova and Tuk**. Sunny, Rook and Vex are benched for now: their code stays in the
+  game (one line in `characters.js` brings any of them back), but they're no longer offered. A saved pick of a benched
+  character falls back to Flip.
+
 ## [2.14.0] - 2026-11-21 — Tuk
 ### Added
 - **Tuk**, a new acrobat with Flip's full moveset: a yeti cub with big round eyes, rosy cheeks, buck teeth, little

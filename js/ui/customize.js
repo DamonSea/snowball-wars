@@ -1,4 +1,4 @@
-// Character customization for the wardrobe characters (Flip, Nova, Vex): outfit presets, a color for every part, and
+// Character customization for the wardrobe characters (Flip, Nova, Tuk; Vex too while benched): outfit presets, a color for every part, and
 // accessories in three slots (head, face, back). Opened from character select with Customize. Looks save per
 // character in this browser and travel in multiplayer presence ("lk"), so friends see them too.
 // A look is {c:{part:hex}, a:{top,face,back}, ac:hex|null}: c overrides the preset's colors, ac recolors accessories.

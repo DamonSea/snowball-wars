@@ -36,7 +36,7 @@ let pickMode='run',pickLevel=0,lockChar=false;
 function select(m,lv=0){if(typeof closePark==='function')closePark();
   pickMode=m;pickLevel=lv;if(m==='run'&&lv!==runIdx){useRunMap(lv);setWorld('run');resetRun()}lockChar=m==='adv'&&!!levels[lv].flipOnly;ci=lockChar&&!chars[pickCi].acro?2:pickCi;state='select';overlay(false);$('cs').classList.remove('hide');
   P.position.set(0,0,0);py=0;vel.set(0,0,0);
-  $('csMode').textContent=m==='run'?`Trick Park \u00b7 ${RUNMAPS[lv].name}`:`Adventure · ${levels[lv].name}${lockChar?' · acrobats only (Flip, Nova, Vex, Tuk)':''}`;showChar();setTimeout(()=>$('csGo').focus(),50);
+  $('csMode').textContent=m==='run'?`Trick Park \u00b7 ${RUNMAPS[lv].name}`:`Adventure · ${levels[lv].name}`;showChar();setTimeout(()=>$('csGo').focus(),50);
 }
 function showChar(){
   const c=chars[ci];$('csName').textContent=c.name;$('csDesc').textContent=c.desc;

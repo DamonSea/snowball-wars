@@ -1,5 +1,5 @@
 (()=>{const out=[];const ok=(n,c)=>out.push((c?'OK   ':'FAIL ')+n);const _st=__step;__step=n=>{for(let i=0;i<n;i++){runHz.forEach(h=>{h.g.position.set(0,.75,60);h.vx=h.vz=0});SB.stun=0;_st(1)}};
-const ti=chars.findIndex(c=>c.name==='Tuk');ok('Tuk in the roster, right after Vex, with the acrobat moveset',ti===5&&chars[5].acro&&ORDER.indexOf(5)===ORDER.indexOf(4)+1&&chars[5].moves===chars[2].moves);
+const ti=chars.findIndex(c=>c.name==='Tuk');ok('roster is Flip, Nova, Tuk; Tuk has the acrobat moveset',ti===5&&chars[5].acro&&ORDER.join()==='2,3,5'&&chars[5].moves===chars[2].moves);
 ok('5 outfits, gold one locked',OUTFITS_TUK.length===5&&!!OUTFITS_TUK[4].lock);
 menu();pickMode='run';pickLevel=0;ci=5;showChar();confirmChar();__step(5);const H=TK;
 __place(10,-3,0,0);__step(10);jumpBuf=.15;keys.Space=true;__step(4);keys.Space=false;__until(()=>grounded,200);let ear=0,bel=9;for(let i=0;i<20;i++){__step(1);ear=Math.max(ear,Math.abs(H.ears[0].rotation.z-H.ears[0]._b));bel=Math.min(bel,H.belly.scale.y)}
