@@ -59,6 +59,10 @@ function updateSnow(dt){
       else for(const h of runHz)if(!h.dead&&hitsSpike(h,p)){splat(p,false);gone=true;break}
     }
     if(gone){scene.remove(b.m);SB.list.splice(i,1)}}
+  // punches, kicks, dives and belly slides smash snowmen too
+  for(const s of snowmen()){if(!s.up||py>2.6)continue;const d=Math.hypot(s.x-P.position.x,s.z-P.position.z);
+    if(attackHits(V(s.x,.75,s.z),0)){smash(V(s.x,1.2,s.z));knockSnowman(s)}
+    else if(chars[ci].acro&&(A.mode==='dive'||A.mode==='slide')&&d<1.15){shake=Math.max(shake,.2);rumble(120,.6,.8);SFX.splat(true);knockSnowman(s)}}
   for(const s of snowmen())if(!s.up&&(s.t-=dt)<=0){s.up=true;s.g.visible=true;burst(V(s.x,1.2,s.z),0xffffff,10)}
 }
 function clearSnow(){clearYellow();resetPound();SB.stun=0;if(CPU.a)CPU.a.init=false;myStars.visible=false;SB.list.forEach(b=>scene.remove(b.m));SB.list=[];SB.ammo=T.snow.ammo;SB.regen=0;SB.anim=0;snowHud()}
