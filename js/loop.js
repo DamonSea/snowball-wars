@@ -187,7 +187,7 @@ function tick(){
   else if(state==='menu'){if(innerWidth>=900){camPos.set(-.6+Math.sin(tAll*.2)*.4,2.3,7.2);look.set(2.4,1.2,0);cam.position.lerp(camPos,1-Math.exp(-3*dt))}
     else{camPos.set(Math.cos(tAll*.12)*24,13,Math.sin(tAll*.12)*24);look.set(0,0,0);cam.position.copy(camPos)}}
   else if(state==='won'){camPos.set(P.position.x+4,py+7,P.position.z+11);look.copy(goal.look);cam.position.lerp(camPos,1-Math.exp(-2*dt))}
-  else{camPos.set(P.position.x,py+T.camera.height,P.position.z+T.camera.back);look.set(P.position.x,py+1,P.position.z);cam.position.lerp(camPos,1-Math.exp(-5*dt))}
+  else camFollow(dt);
   if(shake>0){shake-=dt;cam.position.x+=(Math.random()-.5)*shake;cam.position.y+=(Math.random()-.5)*shake}
   cam.lookAt(look);
   sun.position.set(P.position.x+18,30,P.position.z+12);sun.target.position.copy(P.position);

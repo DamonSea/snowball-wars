@@ -120,7 +120,7 @@ needs Flip's or Nova's full moveset (and guard rails help).
 ### Play your way
 - **Multiplayer** (in the claude.ai version): play Trick Park with friends, with shared orbs and enemies, name tags and trick callouts.
 - **Controls:** keyboard & mouse, PS5 / standard controllers and touch; rebind anything in Settings → Controls. Every menu works with a controller, with on-screen ✕ / △ / ○ / L1 / R1 prompts.
-- **Settings** in three tabs: **Game** (graphics quality, performance stats, season, snowfall, side flip style, ledge hang, squash & stretch, yellow snow, enemies, computer player), **Sound** (volume mix and a style for every sound) and **Controls** (rebind anything).
+- **Settings** in three tabs: **Game** (camera: Classic, Behind you, Free or Free + auto; graphics quality, performance stats, season, snowfall, side flip style, ledge hang, squash & stretch, yellow snow, enemies, computer player), **Sound** (volume mix and a style for every sound) and **Controls** (rebind anything).
 - **Graphics: Auto** adjusts render resolution to hold a smooth frame rate (or pick High, Balanced or Low). Press **`** (backtick) for a performance overlay: fps, frame time, draw calls and GPU memory.
 - **Pause** swings the camera round to face your character, who waves and idles beside the pause menu.
 

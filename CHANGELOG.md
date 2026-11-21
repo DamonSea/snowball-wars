@@ -3,7 +3,15 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
-## [2.11.0] - 2026-11-21 — Map settings and the flag race
+## [2.12.0] - 2026-11-21 — Camera modes
+### Added
+- **Settings → Game → Camera:** Classic (the default, unchanged), Behind you (swings round to stay behind you as you
+  run), Free (aim it with the right stick; up/down tilts) and Free + auto (like Free, but drifts back behind you when
+  you leave it alone). In the turning modes, movement is camera-relative and the camera rises over walls instead of
+  hiding behind them.
+- Camera controls: right stick, or Z / X on the keyboard; R3 or V snaps the camera behind you. All rebindable.
+
+ - 2026-11-21 — Map settings and the flag race
 ### Added
 - **Map settings** in the Map Builder (shown when nothing is selected): Enemies on/off, Orb run on/off, Flag race on/off,
   with warnings when a needed piece is missing.

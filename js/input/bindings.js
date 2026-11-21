@@ -12,6 +12,8 @@ const ACT=[
   {id:'throw',label:'Throw snowball',kb:['KeyF','Mouse0'],pad:[5]},
   {id:'start',label:'Start timed run',kb:['Enter'],pad:[3]},
   {id:'pause',label:'Pause',kb:['KeyP'],pad:[9]},
+  {id:'camL',label:'Turn camera left',kb:['KeyZ']},{id:'camR',label:'Turn camera right',kb:['KeyX']},
+  {id:'camC',label:'Camera behind you',kb:['KeyV'],pad:[11]},
 ];
 const PADN=['✕','○','□','△','L1','R1','L2','R2','Create','Options','L3','R3'];
 const KB_RESERVED=['Escape','KeyM','KeyH','Tab','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','MetaLeft','MetaRight'];

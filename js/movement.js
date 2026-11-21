@@ -5,6 +5,7 @@ const clamp=(v,a)=>Math.max(-a,Math.min(a,v));
 function move(dt,speed){
   let ix=kbAxisX()+joy.x+pad.x;
   let iz=kbAxisZ()+joy.z+pad.z;
+  if(CAM.yaw)[ix,iz]=camInput(ix,iz);   // turning cameras: Up means away from the camera
   const im=Math.hypot(ix,iz);if(im>1){ix/=im;iz/=im}
   speed*=chars[ci].speed;invuln=Math.max(0,invuln-dt);
   if(poundMove(dt))return;
