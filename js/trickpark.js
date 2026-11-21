@@ -4,7 +4,7 @@ let orbs=[],runHz=[],runQ=[],runT=0,bestCombo=0,hintTimer=null,runFree=true,runC
 // START pad in the plaza: stand on it in free roam to begin a timed run
 const spadG=new THREE.Group();
 const rmObj=o=>freeTree(o);
-function useRunMap(i){runIdx=i;runL=RUNMAPS[i];try{localStorage.setItem('orbRunMap',i)}catch(e){}runL.grp.add(spadG);spadG.position.set(runL.spad.x,0,runL.spad.z)}
+function useRunMap(i){runIdx=i;runL=RUNMAPS[i];try{localStorage.setItem('orbRunMap',i)}catch(e){}if(runL.spad){runL.grp.add(spadG);spadG.position.set(runL.spad.x,0,runL.spad.z)}else if(spadG.parent)spadG.parent.remove(spadG)}
 useRunMap(runIdx);
 const spadM=new THREE.MeshBasicMaterial({color:0xffcc33,transparent:true,opacity:.55,side:THREE.DoubleSide,depthWrite:false});
 const spadRing=new THREE.Mesh(new THREE.RingGeometry(1.25,1.7,40),spadM);spadRing.rotation.x=-PI/2;spadRing.position.y=.05;spadG.add(spadRing);
@@ -18,7 +18,7 @@ function drawSpadSign(){const x=spadCv.getContext('2d');x.clearRect(0,0,512,160)
   x.fillStyle='#ffd84a';x.font='800 64px "Baloo 2", system-ui, sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText('START RUN',256,72);
   x.fillStyle='#fff8e8';x.font='600 28px "Baloo 2", system-ui, sans-serif';x.fillText('stand here',256,118);spadTex.needsUpdate=true}
 drawSpadSign();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(drawSpadSign);
-function freeUI(){const f=mode==='run'&&runFree&&state==='play';document.body.classList.toggle('free',f);spadG.visible=mode==='run'&&runFree&&runCD<=0&&state!=='menu'&&state!=='select'}
+function freeUI(){const f=mode==='run'&&runFree&&state==='play'&&!!(runL&&runL.spad);document.body.classList.toggle('free',f);spadG.visible=!!(runL&&runL.spad)&&mode==='run'&&runFree&&runCD<=0&&state!=='menu'&&state!=='select'}
 const FREE_HINT='Free roam: practice as long as you like. Stand on the START pad (or press Enter / △) to begin a 60-second run.';
 const orbGeo=new THREE.IcosahedronGeometry(.42,0),ringGeo=new THREE.RingGeometry(.55,.75,24);
 // ----- trick combos: tricks chain while you stay airborne or land and go again quickly -----
@@ -69,13 +69,15 @@ function spawnRunHz(kind=pickKind()){const f=makeFoe(kind,runL.grp),{x,z}=freeSp
 function resetRun(){[...orbs,...runHz].forEach(o=>rmObj(o.g));orbs=[];runHz=[];runQ=[];ATK.t=0;spawnCount=0;score=0;time=T.run.time;runT=0;bestCombo=0;lives=3;invuln=0;resetAcro();
   ({plats,advCol}=runL);clearSnow();Object.assign(GAP,{from:null,take:null,wasSup:true});CL.on=false;CL.top=false;stand=null;iceV.set(0,0,0);onIce=false;Object.assign(TR,{pts:0,mult:0,names:[],t:0});showCombo();
   P.position.set(0,0,0);vel.set(0,0,0);vy=py=0;grounded=true;
-  if(runL.custom){P.position.set(runL.spad.x,0,runL.spad.z);if(runL.spad.x||runL.spad.z)face=Math.atan2(-runL.spad.x,-runL.spad.z)}   // custom maps: start on the START pad, facing the middle
-  for(let i=0;i<T.run.orbsOnField;i++)spawnOrb();for(let i=0;i<T.run.hazardsStart;i++)spawnRunHz();spawnRollers()}
+  if(runL.custom){const s=runL.spawn;P.position.set(s.x,0,s.z);py=s.y||0;if(s.x||s.z)face=Math.atan2(-s.x,-s.z)}   // custom maps: start on the spawn point, facing the middle
+  frReset();
+  for(let i=0;i<T.run.orbsOnField;i++)spawnOrb();if(foesOn())for(let i=0;i<T.run.hazardsStart;i++)spawnRunHz();spawnRollers()}
+const foesOn=()=>!(runL&&runL.opt&&!runL.opt.enemies);
 function startRun(free=true){mode='run';setWorld('run');resetRun();runFree=free;runCD=0;padHold=0;state='play';overlay(false);hud();SFX.start();freeUI();renderControls();
-  const t=free?FREE_HINT:'Trick Park: chain tricks for a combo multiplier. Higher orbs are worth more!';hint(t);clearTimeout(hintTimer);
+  const t=free?freeHint():'Trick Park: chain tricks for a combo multiplier. Higher orbs are worth more!';hint(t);clearTimeout(hintTimer);
   if(!free)hintTimer=setTimeout(()=>{if($('hint').textContent===t)hint('')},6000)}
 // from free roam: keep Flip where he is, reset the board, count down 3-2-1, then the clock starts
-function beginTimed(){if(mode!=='run'||!runFree||runCD>0||state!=='play')return;
+function beginTimed(){if(mode!=='run'||!runFree||runCD>0||state!=='play')return;if(!runL.spad){toast('This map has no orb run.');return}
   runFree=false;runCD=3;popScore('3');SFX.ui(3);padHold=0;score=0;time=T.run.time;runT=0;bestCombo=0;lives=3;Object.assign(TR,{pts:0,mult:0,names:[],t:0});showCombo();
   if(!MP.client){orbs.forEach(o=>rmObj(o.g));orbs=[];spawnCount=0;for(let i=0;i<T.run.orbsOnField;i++)spawnOrb();
   runHz.forEach(h=>rmObj(h.g));runHz=[];runQ=[]}
@@ -88,13 +90,13 @@ function updateRun(dt){
   advT+=dt;
   if(runCD>0){const a=Math.ceil(runCD);runCD-=dt;const b=Math.ceil(runCD);
     if(b!==a&&b>=1&&b<=2){popScore(String(b));SFX.ui(b)}
-    if(runCD<=0){runCD=0;popScore('GO!');SFX.start();hint('');lives=3;if(!MP.client)for(let i=0;i<T.run.hazardsStart;i++)spawnRunHz();freeUI();hud()}}
+    if(runCD<=0){runCD=0;popScore('GO!');SFX.start();hint('');lives=3;if(!MP.client&&foesOn())for(let i=0;i<T.run.hazardsStart;i++)spawnRunHz();freeUI();hud()}}
   else if(!runFree){const shown=Math.ceil(time);time-=dt;runT+=dt;if(time<=0){time=0;hud();endRun();return}if(Math.ceil(time)!==shown)hud()}
-  else{ // free roam: START pad
+  else if(runL.spad){ // free roam: START pad
     const on=grounded&&py<.3&&Math.hypot(P.position.x-runL.spad.x,P.position.z-runL.spad.z)<1.6;
     padHold=on?padHold+dt:Math.max(0,padHold-dt*2);spadFill.scale.setScalar(Math.max(.001,Math.min(1,padHold/.8)));
     spadM.opacity=.45+Math.sin(advT*4)*.15+(on?.3:0);if(padHold>=.8)beginTimed()}
-  stepBody(dt,T.speed.trickPark);
+  stepBody(dt,T.speed.trickPark);frUpdate(dt);if(state!=='play')return;
   const r=Math.hypot(P.position.x,P.position.z);if(r>ARENA){P.position.x*=ARENA/r;P.position.z*=ARENA/r}
   trackGaps();
   // combo window only runs down while you're on the ground
@@ -112,9 +114,9 @@ function updateRun(dt){
       h.robbed=Math.max(0,(h.robbed||0)-dt);const how=foeHit(h)?'hit':foeStomp(h)?'stomp':null;
       if(how){killFoe(h,how);h.dead=true;rmObj(h.g);MP.gone.add(h.id);claim('k',h.id);continue}
       const c=foeTouch(h);if(c==='steal')impSteal(h);
-      else if(c==='hurt'&&!invuln){dropCombo();hurt(p.x,p.z,14);if(lives<=0){if(runFree||runCD>0){lives=3;hud()}else{endRun();return}}}}
+      else if(c==='hurt'&&!invuln){dropCombo();hurt(p.x,p.z,14);if(lives<=0){if(FR.on&&runFree&&!FR.done){frRespawn('Out of lives: back to your checkpoint.')}else if(runFree||runCD>0){lives=3;hud()}else{endRun();return}}}}
     return}
-  const want=runCD>0?0:runFree?T.run.hazardsFree:Math.min(T.run.hazardsStart+Math.floor(runT/T.run.hazardEvery),T.run.hazardsMax);while(runHz.length+runQ.length<want)spawnRunHz();
+  const want=!foesOn()||runCD>0?0:runFree?T.run.hazardsFree:Math.min(T.run.hazardsStart+Math.floor(runT/T.run.hazardEvery),T.run.hazardsMax);while(runHz.length+runQ.length<want)spawnRunHz();
   for(let i=runQ.length-1;i>=0;i--){runQ[i]-=dt;if(runQ[i]<=0){runQ.splice(i,1);spawnRunHz()}}
   for(const h of runHz){if(h.dead)continue;
     const p=h.g.position,ox=p.x,oz=p.z;
@@ -129,6 +131,6 @@ function updateRun(dt){
     h.robbed=Math.max(0,(h.robbed||0)-dt);const how=foeHit(h)?'hit':foeStomp(h)?'stomp':null;
     if(how){killFoe(h,how);h.dead=true;rmObj(h.g);runQ.push(T.run.smashRespawn);continue}
     const c=foeTouch(h);if(c==='steal')impSteal(h);
-    else if(c==='hurt'&&!invuln){if(h.kind==='penguin'&&h.st==='slide'){h.st='dizzy';h.t=T.foes.penguinDizzy;h.vx=h.vz=0}dropCombo();hurt(p.x,p.z,14);if(lives<=0){if(runFree||runCD>0){lives=3;hud()}else{endRun();return}}}
+    else if(c==='hurt'&&!invuln){if(h.kind==='penguin'&&h.st==='slide'){h.st='dizzy';h.t=T.foes.penguinDizzy;h.vx=h.vz=0}dropCombo();hurt(p.x,p.z,14);if(lives<=0){if(FR.on&&runFree&&!FR.done){frRespawn('Out of lives: back to your checkpoint.')}else if(runFree||runCD>0){lives=3;hud()}else{endRun();return}}}
   }
 }

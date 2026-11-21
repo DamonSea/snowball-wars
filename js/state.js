@@ -10,7 +10,7 @@ const fmt=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
 const level=()=>Math.floor(score/5);
 
 function hud(){
-  if(mode==='run'){$('k1').textContent=runFree?'Practice':'Score';$('v1').textContent=score;$('v2').textContent=runFree?'Free':runCD>0?'Ready':Math.ceil(time);$('v2').classList.toggle('low',!runFree&&!runCD&&time<10)}
+  if(mode==='run'){$('k1').textContent=runFree?'Practice':'Score';$('v1').textContent=score;$('v2').textContent=runFree?(typeof FR!=='undefined'&&FR.on?fmtRace(FR.t):'Free'):runCD>0?'Ready':Math.ceil(time);$('v2').classList.toggle('low',!runFree&&!runCD&&time<10)}
   else{$('k1').textContent='Cores';$('v1').textContent=`${coreCount}/3`;$('v2').textContent=fmt(atime);$('v2').classList.remove('low')}
   {const sb=$('snowBox');if(sb){sb.style.display=mode==='run'&&state!=='menu'&&state!=='select'?'':'none';snowHud()}}
   $('lv').innerHTML=[0,1,2].map(i=>`<i class="${i<lives?'':'off'}"></i>`).join('');
@@ -69,5 +69,8 @@ function setWorld(m){RUNMAPS.forEach(M=>M.grp.visible=m==='run'&&M===runL);level
 function resume(){state='play';overlay(false)}
 function retry(){mode==='run'?startRun(runFree):startAdv(curIdx)}
 function pause(){if(state!=='play')return;state='paused';wave=1.6;idleT=0;
-  if(mode==='run'&&runFree){overlay(true,'Free roam','Practice as long as you like.'+gapText(),'Resume','Start timed run',resume,()=>{resume();beginTimed()},'Settings',()=>openSet(),...(BLD.testing?['Back to builder',()=>backToBuilder()]:['Quit to menu',()=>menu()]));return}
+  if(mode==='run'&&runFree){const race=FR.on&&!FR.done,b=FR.on?raceBest():null;
+    overlay(true,FR.on?'Flag race':'Free roam',FR.on?(FR.done?'Finished! Keep exploring, or race again.':`Race time ${fmtRace(FR.t)}${b?' · best '+fmtRace(b):''}. Checkpoints ${FR.reached}/${runL.cps.length}.`):'Practice as long as you like.'+gapText(),
+      'Resume',runL.spad?'Start orb run':FR.on?'Restart race':'',resume,runL.spad?()=>{resume();beginTimed()}:()=>startRun(true),'Settings',()=>openSet(),
+      ...(BLD.testing?['Back to builder',()=>backToBuilder()]:['Quit to menu',()=>menu()]),race&&FR.reached?'Last checkpoint':'',()=>{resume();frRespawn()},runL.spad&&FR.on?'Restart race':'',()=>startRun(true));return}
   overlay(true,'Paused',mode==='run'?(FOE_STYLE==='spike'?'Take a breather. The spikeballs will wait.':'Take a breather. The bad guys will wait.')+gapText():`${curL.name} \u00b7 ${fmt(atime)} \u00b7 ${coreCount}/3 cores`,'Resume','Retry',resume,retry,'Settings',()=>openSet(),...(BLD.testing?['Back to builder',()=>backToBuilder()]:['Quit to menu',()=>menu()]))}

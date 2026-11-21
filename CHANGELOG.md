@@ -3,7 +3,17 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
-## [2.10.1] - 2026-11-21 — Slides in the Map Builder, stuck fixes
+## [2.11.0] - 2026-11-21 — Map settings and the flag race
+### Added
+- **Map settings** in the Map Builder (shown when nothing is selected): Enemies on/off, Orb run on/off, Flag race on/off,
+  with warnings when a needed piece is missing.
+- **Spawn point**: where players appear, separate from the START pad (which now only starts the orb run). Older maps
+  get a spawn point just in front of their START pad.
+- **Flag race**: Checkpoint flags and a Finish flag (new Objectives group). The clock runs from the spawn point to the
+  Finish flag; checkpoints turn green and become where you come back to when you run out of lives or pick
+  **Last checkpoint** in the pause menu. Best times save per map.
+
+ - 2026-11-21 — Slides in the Map Builder, stuck fixes
 ### Added
 - Map Builder: **Slide** (a railed chute you can butt-slide down and walk under) and **Ramp** (a solid slope that
   launches you off the top). Both rotate four ways like Stairs.

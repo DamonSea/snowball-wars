@@ -100,11 +100,15 @@ Build your own Trick Park maps: Trick Park → **More maps & builder** (or **Map
 
 ![The Map Builder: asset library on the left, inspector on the right](docs/media/map-builder.png)
 
+![Map settings, the spawn point, checkpoints and the finish flag](docs/media/map-settings.png)
+
 - **Asset library:** blocks, walls, raised decks, monkey bars, stairs, tire stacks, ice, trampolines, climbing poles,
   lamp posts, trees, rocks, orbs, snowman targets, rolling snowballs and the START pad.
 - **Edit:** click to place, drag to move, then resize, raise, recolor, rotate, duplicate or delete in the inspector.
   Undo/redo, keyboard shortcuts, and drafts that save as you go.
 - **Test:** play the map with the full moveset, then pause → Back to builder.
+- **Map settings:** turn enemies, the orb run and the flag race on or off. Players appear at the **Spawn point**;
+  the **START pad** begins the orb run; **Checkpoint** and **Finish** flags make a race with a saved best time.
 - **Publish** (claude.ai version): the map joins the More maps list for everyone who opens the game.
   Anywhere else, **Export / Import** map files.
 

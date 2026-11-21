@@ -21,7 +21,7 @@ function openBuilder(map){BLD.map=cleanMap(map||blankMap());BLD.sel=-1;BLD.tool=
 function closeBuilder(){saveDraftNow();BLD.testing=false;dropPreview();bGrid.visible=bGhost.visible=bSel.visible=false;document.body.classList.remove('building');$('bld').classList.add('hide');P.visible=true}
 function exitBuilder(){closeBuilder();openMapsPanel()}
 function dropPreview(){if(BLD.prev){freeTree(BLD.prev.grp);BLD.prev=null}}
-function rebuildPreview(){dropPreview();BLD.prev=buildCustom(BLD.map);BLD.prev.grp.visible=true;BLD.dirty=false;updateSelBox()}
+function rebuildPreview(){dropPreview();BLD.prev=buildCustom(BLD.map,true);BLD.prev.grp.visible=true;BLD.dirty=false;updateSelBox()}
 function updateSelBox(){const it=BLD.map.items[BLD.sel];bSel.visible=!!it&&state==='build';if(it)fitBox(bSel,itemBox(it))}
 // ----- edits (every change goes through here: undo snapshot, rebuild, autosave) -----
 const snapMap=()=>JSON.stringify(BLD.map);
@@ -34,7 +34,7 @@ function placeAt(t,x,z){const A=ASSETS[t];if(!A)return -1;
   pushUndo();x=snap(x);z=snap(z);
   if(A.unique){const i=BLD.map.items.findIndex(q=>q.t===t);if(i>=0){Object.assign(BLD.map.items[i],{x,z});BLD.sel=i;changed();SFX.ui(3);return i}}
   BLD.map.items.push({t,x,z,...JSON.parse(JSON.stringify(A.def))});BLD.sel=BLD.map.items.length-1;changed();SFX.ui(3);return BLD.sel}
-function delSel(){const it=BLD.map.items[BLD.sel];if(!it)return;if(ASSETS[it.t].unique){toast('Every map needs a START pad. Drag it to move it.');return}
+function delSel(){const it=BLD.map.items[BLD.sel];if(!it)return;if(ASSETS[it.t].required){toast('Every map needs a '+ASSETS[it.t].label+'. Drag it to move it.');return}
   pushUndo();BLD.map.items.splice(BLD.sel,1);BLD.sel=-1;changed();SFX.ui(1)}
 function dupSel(){const it=BLD.map.items[BLD.sel];if(!it||ASSETS[it.t].unique)return;if(BLD.map.items.length>=MAP_LIMIT)return;
   pushUndo();BLD.map.items.push({...it,x:it.x+1,z:it.z+1});BLD.sel=BLD.map.items.length-1;changed();SFX.ui(3)}
@@ -51,7 +51,12 @@ function renderLib(){const cats={};for(const[k,A]of Object.entries(ASSETS))(cats
   $('bLib').innerHTML=`<button class="bTool${BLD.tool==='select'?' on':''}" data-tool="select" title="Select, move and edit items (Esc)"><i>⮞</i>Select</button>`+
     Object.entries(cats).map(([c,L])=>`<h4>${c}</h4>`+L.map(([k,A])=>`<button class="bTool${BLD.tool===k?' on':''}" data-tool="${k}" title="${A.tip}"><i>${A.icon}</i>${A.label}</button>`).join('')).join('')}
 function renderInsp(){const it=BLD.map.items[BLD.sel],el=$('bInsp');
-  if(!it){const n=BLD.map.items.length;el.innerHTML=`<h3>${BLD.tool==='select'?'Select':ASSETS[BLD.tool].label}</h3><p class="bHelp">${BLD.tool==='select'?'Click an item to edit it, drag to move it. Drag empty ground to pan, wheel to zoom.':'Click the ground to place one. Keep clicking for more; Esc goes back to Select.'}</p>
+  if(!it){const n=BLD.map.items.length,O=BLD.map.opt||{},has=t=>BLD.map.items.some(i=>i.t===t);
+    const warn=[];if(O.orbs&&!has('start'))warn.push('Orb run is on, but there\u2019s no START pad.');if(O.flags&&!has('finish'))warn.push('Flag race is on: add a Finish flag.');
+    if(!O.flags&&(has('finish')||has('checkpoint')))warn.push('Flags are placed, but Flag race is off.');
+    const sets=`<h3>Map settings</h3>${Object.entries(MAP_OPTS).map(([k,[lab]])=>`<div class="bRow"><span>${lab}</span><button class="bTog${O[k]?' on':''}" data-opt="${k}" aria-pressed="${!!O[k]}">${O[k]?'On':'Off'}</button></div>`).join('')}
+      <p class="bHelp">Orb run: stand on the START pad to begin a 60-second orb hunt. Flag race: get from the spawn point to the Finish flag; checkpoints save your spot.</p>${warn.map(w=>`<p class="bHelp bWarn">${w}</p>`).join('')}<hr class="bHr">`;
+    el.innerHTML=sets+`<h3>${BLD.tool==='select'?'Select':ASSETS[BLD.tool].label}</h3><p class="bHelp">${BLD.tool==='select'?'Click an item to edit it, drag to move it. Drag empty ground to pan, wheel to zoom.':'Click the ground to place one. Keep clicking for more; Esc goes back to Select.'}</p>
     <p class="bHelp"><b>Keys</b>: Delete remove · Ctrl+Z undo · Ctrl+Y redo · Ctrl+D duplicate · R rotate · arrows nudge · [ ] lower/raise · WASD pan</p>
     <p class="bHelp">${n}/${MAP_LIMIT} items. Heights: a jump clears about 1.9, a double jump 2.6, triple 4, backflip 4.7, wall jumps climb any wall gap about 3 wide, ledge hang reaches about 1.9 above a jump.</p>`;return}
   const A=ASSETS[it.t];
@@ -62,9 +67,10 @@ function renderInsp(){const it=BLD.map.items[BLD.sel],el=$('bInsp');
     <div class="bRow"><span>X</span><button class="bStep" data-k="x" data-d="-.5">−</button><input type="number" data-k="x" value="${it.x}" step=".5"><button class="bStep" data-k="x" data-d=".5">+</button></div>
     <div class="bRow"><span>Z</span><button class="bStep" data-k="z" data-d="-.5">−</button><input type="number" data-k="z" value="${it.z}" step=".5"><button class="bStep" data-k="z" data-d=".5">+</button></div>
     ${A.f.map(row).join('')}
-    <div class="bBtns">${'w' in A.def?'<button data-act="rot">Rotate (R)</button>':''}${A.unique?'':'<button data-act="dup">Duplicate</button><button data-act="del" class="bDel">Delete</button>'}</div>`}
+    <div class="bBtns">${'w' in A.def?'<button data-act="rot">Rotate (R)</button>':''}${A.unique?'':'<button data-act="dup">Duplicate</button>'}${A.required?'':'<button data-act="del" class="bDel">Delete</button>'}</div>`}
 $('bLib').addEventListener('click',e=>{const b=e.target.closest('[data-tool]');if(!b)return;BLD.tool=b.dataset.tool;if(BLD.tool!=='select')BLD.sel=-1;updateSelBox();renderLib();renderInsp();SFX.ui(2)});
-$('bInsp').addEventListener('click',e=>{const it=BLD.map.items[BLD.sel];if(!it)return;const t=e.target.closest('button');if(!t)return;
+$('bInsp').addEventListener('click',e=>{const o=e.target.closest('[data-opt]');if(o){pushUndo();BLD.map.opt=BLD.map.opt||{};BLD.map.opt[o.dataset.opt]=BLD.map.opt[o.dataset.opt]?0:1;changed();SFX.ui(3);return}
+  const it=BLD.map.items[BLD.sel];if(!it)return;const t=e.target.closest('button');if(!t)return;
   if(t.dataset.c!==undefined)return setField('c',+t.dataset.c);
   if(t.dataset.k==='posts')return setField('posts',it.posts?0:1);
   if(t.classList.contains('bStep')){const k=t.dataset.k,F=FIELDS[k],v=+(+it[k]+ +t.dataset.d).toFixed(2);return setField(k,F?Math.max(F[1],Math.min(F[2],v)):v)}

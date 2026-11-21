@@ -4,7 +4,7 @@
 const CPU={on:false,a:null,x:0,y:0,z:0,vx:0,vy:0,vz:0,face:0,stun:0,cool:2,tx:0,tz:0,retarget:0,throwT:0,walk:0,hits:0,seq:1e6};
 try{CPU.on=localStorage.getItem('orbRunCpu')==='1'}catch(e){}
 function cpuAvatar(){if(CPU.a)return CPU.a;const a=makeAv(2);applyOutfitTo(a.rig.mats,1);a.of=1;a.stars=makeStars();a.g.add(a.stars);a.g.visible=false;CPU.a=a;return a}
-function cpuPlace(){const s=runL.spad;CPU.x=s.x+4;CPU.z=s.z-3;CPU.y=groundAt(CPU.x,CPU.z,20).h;if(!isFinite(CPU.y))CPU.y=0;
+function cpuPlace(){const s=runL.spad||runL.spawn||{x:0,z:5};CPU.x=s.x+4;CPU.z=s.z-3;CPU.y=groundAt(CPU.x,CPU.z,20).h;if(!isFinite(CPU.y))CPU.y=0;
   CPU.vx=CPU.vz=CPU.vy=0;CPU.stun=0;CPU.cool=2.5;CPU.retarget=0;CPU.hits=0;const a=cpuAvatar();a.g.position.set(CPU.x,CPU.y,CPU.z);a.init=false}
 function setCpu(on){CPU.on=on;try{localStorage.setItem('orbRunCpu',on?'1':'0')}catch(e){}
   if(on&&mode==='run')cpuPlace();if(CPU.a)CPU.a.g.visible=on&&mode==='run';toast(on?'Computer player joined':'Computer player left')}

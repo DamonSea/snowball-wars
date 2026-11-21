@@ -233,3 +233,5 @@ body.padnav #cust button:focus,body.padnav #maps button:focus,body.padnav #cs bu
 body.setopen #ov,body.setopen #cs,body.setopen #cust,body.setopen #maps{visibility:hidden}
 body.padnav .cpal .sw:focus{outline:3px solid #fff;outline-offset:2px;transform:scale(1.3);box-shadow:0 0 0 5px rgba(0,0,0,.35)}
 body.padnav #cust .opt:focus,body.padnav #cust .cpre:focus,body.padnav #cust .ctab:focus{outline:3px solid #fff;outline-offset:2px}
+
+.bTog.on{background:#39c46b;color:#fff}.bWarn{color:#ffd84a;opacity:1}.bHr{border:0;border-top:1px solid rgba(255,255,255,.15);margin:10px 0}
