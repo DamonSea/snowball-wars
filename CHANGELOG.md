@@ -3,6 +3,13 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.15.2] - 2026-11-21 — Unstuck from walls
+### Fixed
+- **Getting stuck against walls:** you're kept a small buffer away from walls, and any move inside that buffer was
+  refused, even walking straight away. If something put you inside it (falling past a ledge, a knockback, jumping
+  up beside a raised deck), you froze until something else moved you. Now a move is only refused if it goes deeper
+  into a wall, so you can always walk out or slide along it.
+
 ## [2.15.1] - 2026-11-21 — Stuck-crouch hunting
 ### Fixed
 - The controller is released while the game doesn't have focus (the browser can stop updating it and keep reporting

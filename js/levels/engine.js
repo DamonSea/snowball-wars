@@ -77,4 +77,10 @@ function wedgeRamp(ax,low,high,c,wid,hi,sideM,topM,grp=advW){const L=Math.abs(hi
   return rampPlat(ax,low,high,c,wid,0,hi,hi+3)}
 function groundAt(x,z,y){let h=-Infinity,on=null;for(const p of plats){const t=topOf(p,x,z);if(t<=y+T.stepUp&&t>h&&inside(p,x,z,T.footMargin)){h=t;on=p}}return{h,on}}
 // a platform with a bottom (bot) only blocks you where your body overlaps it, so you can walk under decks and bars
+// how deep a point sits inside a solid's wall buffer (bigger = deeper; <= 0 = clear of it)
+function wallDepth(p,x,z){const M=T.wallMargin;return p.k==='c'?p.r+M-Math.hypot(x-p.x,z-p.z):Math.min(p.w/2+M-Math.abs(x-p.x),p.d/2+M-Math.abs(z-p.z))}
+const blocksAt=(p,x,z,y)=>{if(!inside(p,x,z,T.wallMargin))return false;const t=topOf(p,x,z),b=botOf(p,x,z);return t>y+T.stepUp&&(b===undefined||y+T.bodyH>b)};
+// a move is refused only if it goes deeper into a wall's buffer: if you ever end up inside one (a fall past a ledge,
+// a knockback, a moving platform), you can always walk back out instead of freezing in place
+const blockedMove=(ox,oz,nx,nz,y)=>plats.some(p=>blocksAt(p,nx,nz,y)&&(!blocksAt(p,ox,oz,y)||wallDepth(p,nx,nz)>wallDepth(p,ox,oz)+1e-6));
 const blocked=(x,z,y)=>plats.some(p=>{if(!inside(p,x,z,T.wallMargin))return false;const t=topOf(p,x,z),b=botOf(p,x,z);return t>y+T.stepUp&&(b===undefined||y+T.bodyH>b)});

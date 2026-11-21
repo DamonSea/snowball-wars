@@ -106,8 +106,8 @@ function stepBody(dt,speed){
   if(onIce){const k=1-Math.exp(-(Math.hypot(vel.x,vel.z)<Math.hypot(iceV.x,iceV.z)?T.ice.coast:T.ice.push)*dt);iceV.x+=(vel.x-iceV.x)*k;iceV.z+=(vel.z-iceV.z)*k;vel.x=iceV.x;vel.z=iceV.z;nx=ox+vel.x*dt;nz=oz+vel.z*dt}
   else iceV.set(vel.x,0,vel.z);
   const ac=chars[ci].acro&&!grounded;
-  const bX=blocked(nx,oz,py);if(!bX)P.position.x=nx;else{if(ac&&Math.abs(nx-ox)>1e-4){A.wnx=-Math.sign(nx-ox);A.wnz=0;A.wallT=T.flip.wallJump.contact}vel.x=0}
-  const bZ=blocked(P.position.x,nz,py);if(!bZ)P.position.z=nz;else{if(ac&&Math.abs(nz-oz)>1e-4){A.wnz=-Math.sign(nz-oz);A.wnx=0;A.wallT=T.flip.wallJump.contact}vel.z=0}
+  const bX=blockedMove(ox,oz,nx,oz,py);if(!bX)P.position.x=nx;else{if(ac&&Math.abs(nx-ox)>1e-4){A.wnx=-Math.sign(nx-ox);A.wnz=0;A.wallT=T.flip.wallJump.contact}vel.x=0}
+  const bZ=blockedMove(P.position.x,oz,P.position.x,nz,py);if(!bZ)P.position.z=nz;else{if(ac&&Math.abs(nz-oz)>1e-4){A.wnz=-Math.sign(nz-oz);A.wnx=0;A.wallT=T.flip.wallJump.contact}vel.z=0}
   if(onIce){if(bX){if(Math.abs(iceV.x)>T.ice.bounceSound)SFX.board(Math.abs(iceV.x));iceV.x*=-T.ice.bounce}if(bZ){if(Math.abs(iceV.z)>T.ice.bounceSound)SFX.board(Math.abs(iceV.z));iceV.z*=-T.ice.bounce}}
   if(chars[ci].acro&&!A.knock&&A.mode!=='flip')A.spd=vel.x*Math.sin(face)+vel.z*Math.cos(face);
   pushOut(P.position,T.bodyRadius,advCol);tryGrab(dt);if(CL.on)return true;
