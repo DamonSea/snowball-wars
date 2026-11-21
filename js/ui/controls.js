@@ -18,7 +18,7 @@ function renderControls(){
   else rows.splice(2,0,['Run into a tree or pole','Climb it']);
   if(mode==='run')rows.splice(3,0,[L('throw'),'Throw a snowball']);
   if(mode==='run'&&runFree)rows.unshift([L('start')+' or START pad','Start timed run']);
-  if(!T_)rows.push(['Settings (gear)','Change any button']);
+  if(!T_)rows.push(['Hold '+L('respawn'),'Respawn (spawn point / checkpoint)'],['Hold '+L('start'),'Restart the orb run, race or level'],['Settings (gear)','Change any button']);
   $('ctlList').innerHTML=rows.map(([x,y])=>`<dt>${x}</dt><dd>${y}</dd>`).join('');
 }
 function setCtl(h){ctlHidden=h;document.body.classList.toggle('ctlHidden',h);try{localStorage.setItem('orbRunCtlHidden',h?'1':'0')}catch(e){}}
@@ -28,7 +28,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)pause()});
 // On a Mac, keys pressed while Cmd is held never send a key-up (Cmd+C, Cmd+Shift+4...), so they'd stay "held" forever:
 // ignore them, and let go of everything when Cmd is released or the page loses focus.
 const releaseAll=()=>{for(const k in keys)keys[k]=false};
-addEventListener('keydown',e=>{if(capKey(e))return;if(e.metaKey){if(e.key!=='Meta')return}else keys[e.code]=true;
+addEventListener('keydown',e=>{if(capKey(e))return;if(movesOpen&&(e.code==='Escape'||e.code==='Backspace')){e.preventDefault();closeMoves();return}if(e.metaKey){if(e.key!=='Meta')return}else keys[e.code]=true;
   if(setOpen){if(e.code==='Escape')closeSet();return}
   const acts=actsOfKey(e.code==='NumpadEnter'?'Enter':e.code);
   if(!e.repeat)for(const id of acts)if(state==='play'||(id==='pause'&&state==='paused'))press(id);

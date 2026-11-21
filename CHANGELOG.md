@@ -3,6 +3,19 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.16.0] - 2026-11-21 — Quality of life
+### Added
+- **Hold to respawn** (L3 on a controller, R on the keyboard): back to the spawn point, or to your last checkpoint in a
+  flag race. A meter shows while you hold, so a tap does nothing.
+- **Hold to restart** (△ / Enter): restarts the orb run (in place, with a fresh countdown), the flag race, or the
+  Adventure level.
+- **Moves** in the pause menu: the full move list for your character, scrollable with the controller.
+- **Stop orb run** in the pause menu, plus **Restart orb run**.
+### Changed
+- When an orb run ends (time's up or out of lives) there's no results screen and no trip back to spawn: a banner shows
+  your score, best combo and any new best, and you keep playing right where you are in free roam.
+- The pause menu is now Resume, then that mode's actions, then Moves, Settings and Quit.
+
 ## [2.15.2] - 2026-11-21 — Unstuck from walls
 ### Fixed
 - **Getting stuck against walls:** you're kept a small buffer away from walls, and any move inside that buffer was

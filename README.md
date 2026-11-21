@@ -121,6 +121,8 @@ needs Flip's or Nova's full moveset (and guard rails help).
 - **Settings** in three tabs: **Game** (camera: Classic, Behind you, Free or Free + auto; graphics quality, performance stats, season, snowfall, side flip style, ledge hang, squash & stretch, yellow snow, enemies, computer player), **Sound** (volume mix and a style for every sound) and **Controls** (rebind anything).
 - **Graphics: Auto** adjusts render resolution to hold a smooth frame rate (or pick High, Balanced or Low). Press **`** (backtick) for a performance overlay: fps, frame time, draw calls and GPU memory.
 - **Pause** swings the camera round to face your character, who waves and idles beside the pause menu.
+- **Hold to respawn** (L3 / R) takes you back to the spawn point or your last checkpoint; **hold to restart** (△ / Enter) restarts the orb run, race or level. A meter fills while you hold.
+- **Moves** in the pause menu lists every move for the character you're playing. During an orb run the pause menu also has **Restart** and **Stop orb run**, and when a run ends you keep playing right where you are.
 
 ## Project guide
 
@@ -169,7 +171,8 @@ by files above it. Nothing is bundled.
 | 31 | `js/builder/maps.js` | Map Builder asset library, map cleaning, and turning a saved map into a playable Trick Park map |
 | 32 | `js/builder/editor.js` | Map Builder editor: top-down camera, placing, selecting, dragging, inspector, undo, test play |
 | 33 | `js/builder/community.js` | Drafts, publishing to the shared map list, More maps panel, export and import |
-| 34 | `js/main.js` | Startup |
+| 34 | `js/qol.js` | Hold to respawn / restart, Stop orb run, Moves list in the pause menu |
+| 35 | `js/main.js` | Startup |
 
 ## Tests
 

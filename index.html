@@ -32,12 +32,16 @@
     <h1 id="ovT">Snowball Wars</h1>
     <p id="ovP"></p>
     <ul class="keys ktip"><li><kbd>WASD</kbd> or <kbd>Arrows</kbd> move</li><li><kbd>Space</kbd> jump</li><li><kbd>P</kbd> pause</li><li><kbd>H</kbd> controls</li><li><kbd>M</kbd> sound</li></ul>
-    <div class="btns"><button id="go">Run mode</button><button id="alt" class="alt">Adventure</button><button id="alt2" class="alt"></button><button id="alt3" class="alt"></button><button id="alt4" class="alt"></button><button id="alt5" class="alt"></button></div>
+    <div class="btns"><button id="go">Run mode</button><button id="alt" class="alt">Adventure</button><button id="alt2" class="alt"></button><button id="alt3" class="alt"></button><button id="alt4" class="alt"></button><button id="alt5" class="alt"></button><button id="alt6" class="alt"></button><button id="alt7" class="alt"></button></div>
     <p class="best" id="best"></p>
     <p class="best" id="online"></p>
     <p class="best" id="padInfo"></p>
   </div>
 </div>
+<div id="holdMeter" class="holdmeter" aria-live="polite"><span id="holdLab"></span><i><b id="holdBar"></b></i></div>
+<div id="moves" class="ov hide" aria-label="Moves"><div class="card movescard" role="dialog" aria-labelledby="movesT">
+  <h1 id="movesT">Moves</h1><dl id="movesList" class="moveslist"></dl>
+  <div class="btns"><button id="movesBack">Back<span class="pk" aria-hidden="true">○</span></button></div></div></div>
 <div id="park" class="park hide" aria-label="Trick Park">
   <div class="parkcard" role="dialog" aria-labelledby="parkT">
     <h1 id="parkT">Trick Park</h1>
@@ -126,6 +130,7 @@
 <script src="js/ui/customize.js"></script>
 <script src="js/ui/perf.js"></script>
 <script src="js/ui/parkmenu.js"></script>
+<script src="js/qol.js"></script>
 <script src="js/ui/controls.js"></script>
 <script src="js/input/gamepad.js"></script>
 <script src="js/loop.js"></script>

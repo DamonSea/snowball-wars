@@ -83,9 +83,10 @@ function beginTimed(){if(mode!=='run'||!runFree||runCD>0||state!=='play')return;
   runHz.forEach(h=>rmObj(h.g));runHz=[];runQ=[]}
   hint('Get ready!');hud();freeUI();renderControls()}
 function backToFree(){startRun(true)}
-function endRun(){bankCombo();state='over';const bk=runL.key,nb=score>(bestR[bk]||0);if(nb){bestR[bk]=score;try{localStorage.setItem(bk,score)}catch(e){}}
-  beep(220,.4,'sawtooth',.08);hint('');
-  overlay(true,lives<=0?(FOE_STYLE==='spike'?'Spiked!':'Wiped out!'):'Time’s up!',`Score ${score} · best combo ${bestCombo}.${nb?' New best!':''}`,'Play again','Free roam',()=>startRun(false),()=>backToFree(),'Menu',()=>menu())}
+// time's up (or out of lives): show the result and keep playing right where you are, back in free roam
+function endRun(){bankCombo();const bk=runL.key,fin=score,nb=fin>(bestR[bk]||0);if(nb){bestR[bk]=fin;try{localStorage.setItem(bk,fin)}catch(e){}}
+  beep(220,.4,'sawtooth',.08);const why=lives<=0?(FOE_STYLE==='spike'?'Spiked!':'Wiped out!'):'Time\u2019s up!';
+  toFreeInPlace();popScore(why);const msg=`${why} Score ${fin} \u00b7 best combo ${bestCombo}${nb?' \u00b7 New best!':''}`;hint(msg);clearTimeout(hintTimer);hintTimer=setTimeout(()=>{if($('hint').textContent===msg)hint(freeHint())},7000)}
 function updateRun(dt){
   advT+=dt;
   if(runCD>0){const a=Math.ceil(runCD);runCD-=dt;const b=Math.ceil(runCD);

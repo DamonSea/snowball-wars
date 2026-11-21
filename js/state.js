@@ -17,15 +17,15 @@ function hud(){
   $('mname').textContent=state==='menu'?'':mode==='run'?runL.name:'Adventure';
 }
 function hint(t){const h=$('hint');if(h.textContent===t)return;h.textContent=t;h.classList.remove('pop');void h.offsetWidth;if(t)h.classList.add('pop')}
-let onGo=null,onAlt=null,onAlt2=null,onAlt3=null,onAlt4=null,onAlt5=null;
-function overlay(show,t,p,goTxt,altTxt,go,alt,alt2Txt='',alt2=null,alt3Txt='',alt3=null,alt4Txt='',alt4=null,alt5Txt='',alt5=null){
+let onGo=null,onAlt=null,onAlt2=null,onAlt3=null,onAlt4=null,onAlt5=null,onAlt6=null,onAlt7=null;
+function overlay(show,t,p,goTxt,altTxt,go,alt,alt2Txt='',alt2=null,alt3Txt='',alt3=null,alt4Txt='',alt4=null,alt5Txt='',alt5=null,alt6Txt='',alt6=null,alt7Txt='',alt7=null){
   $('ov').classList.toggle('hide',!show);$('ov').classList.remove('menu','pausem');if(!show){document.activeElement&&document.activeElement.blur&&document.activeElement.blur();return}
-  $('ovT').textContent=t;$('ovT').classList.toggle('logo',t==='Snowball Wars');$('ovP').textContent=p;$('go').textContent=goTxt;$('alt').textContent=altTxt;onGo=go;onAlt=alt;$('alt2').textContent=alt2Txt;onAlt2=alt2;$('alt3').textContent=alt3Txt;onAlt3=alt3;$('alt4').textContent=alt4Txt;onAlt4=alt4;$('alt5').textContent=alt5Txt;onAlt5=alt5;
+  $('ovT').textContent=t;$('ovT').classList.toggle('logo',t==='Snowball Wars');$('ovP').textContent=p;$('go').textContent=goTxt;$('alt').textContent=altTxt;onGo=go;onAlt=alt;$('alt2').textContent=alt2Txt;onAlt2=alt2;$('alt3').textContent=alt3Txt;onAlt3=alt3;$('alt4').textContent=alt4Txt;onAlt4=alt4;$('alt5').textContent=alt5Txt;onAlt5=alt5;$('alt6').textContent=alt6Txt;onAlt6=alt6;$('alt7').textContent=alt7Txt;onAlt7=alt7;
   $('best').textContent=RUNMAPS.filter(M=>!M.custom).map(M=>`${M.name}: ${bestR[M.key]||'not yet'}`).join(' \u00b7 ')+levels.map(L=>` · ${L.name}: ${bestA[L.key]?fmt(bestA[L.key]):'not yet'}`).join('');
   setTimeout(()=>$('go').focus(),50);
 }
-$('go').addEventListener('click',()=>onGo&&onGo());$('alt2').addEventListener('click',()=>onAlt2&&onAlt2());$('alt3').addEventListener('click',()=>onAlt3&&onAlt3());$('alt4').addEventListener('click',()=>onAlt4&&onAlt4());$('alt5').addEventListener('click',()=>onAlt5&&onAlt5());$('alt').addEventListener('click',()=>onAlt&&onAlt());
-function menu(){BLD.testing=false;if(typeof closePark==='function')closePark();if(typeof closeMapsPanel==='function')closeMapsPanel();chars.forEach((c,i)=>{if(c.outs&&!unlocked(OFI[i],c.outs)){OFI[i]=0;applyOutfitTo(c.rig.mats,0,c.outs)}});
+$('go').addEventListener('click',()=>onGo&&onGo());$('alt2').addEventListener('click',()=>onAlt2&&onAlt2());$('alt3').addEventListener('click',()=>onAlt3&&onAlt3());$('alt4').addEventListener('click',()=>onAlt4&&onAlt4());$('alt5').addEventListener('click',()=>onAlt5&&onAlt5());$('alt6').addEventListener('click',()=>onAlt6&&onAlt6());$('alt7').addEventListener('click',()=>onAlt7&&onAlt7());$('alt').addEventListener('click',()=>onAlt&&onAlt());
+function menu(){BLD.testing=false;if(typeof closeMoves==='function'&&movesOpen){movesOpen=false;$('moves').classList.add('hide')}if(typeof closePark==='function')closePark();if(typeof closeMapsPanel==='function')closeMapsPanel();chars.forEach((c,i)=>{if(c.outs&&!unlocked(OFI[i],c.outs)){OFI[i]=0;applyOutfitTo(c.rig.mats,0,c.outs)}});
 
   state='menu';mode='run';ci=2;wave=1.6;setWorld('run');resetRun();hint('');hud();freeUI();
   overlay(true,'Snowball Wars','','Trick Park','Adventure',()=>parkMenu(),()=>levelMenu(),'Map Builder',()=>openMapsPanel());
@@ -66,13 +66,15 @@ $('csBack').addEventListener('click',()=>{$('cs').classList.add('hide');menu()})
 function setWorld(m){RUNMAPS.forEach(M=>M.grp.visible=m==='run'&&M===runL);levels.forEach(L=>L.advW.visible=m==='adv'&&L===curL)}
 function resume(){state='play';overlay(false)}
 function retry(){mode==='run'?startRun(runFree):startAdv(curIdx)}
-function pause(){if(state!=='play')return;state='paused';wave=1.6;idleT=0;
-  // one vertical column: Resume, then this mode's actions, then Settings and Quit (the character waves on the left)
-  const quit=BLD.testing?['Back to builder',()=>backToBuilder()]:['Quit to menu',()=>menu()],set=['Settings',()=>openSet()];
-  if(mode==='run'&&runFree){const race=FR.on&&!FR.done,b=FR.on?raceBest():null;
-    const acts=[runL.spad?['Start game',()=>{resume();beginTimed()}]:null,race&&FR.reached?['Last checkpoint',()=>{resume();frRespawn()}]:null,FR.on?['Restart race',()=>startRun(true)]:null].filter(Boolean);
-    const[a1,a2,a3]=[acts[0]||['',null],acts[1]||['',null],acts[2]||['',null]];
-    overlay(true,FR.on?'Flag race':runL.custom?runL.name:'Trick Park',FR.on?(FR.done?'Finished! Keep exploring, or race again.':`Race time ${fmtRace(FR.t)}${b?' · best '+fmtRace(b):''} · checkpoints ${FR.reached}/${runL.cps.length}`):'',
-      'Resume',a1[0],resume,a1[1],a2[0],a2[1],a3[0],a3[1],...set,...quit)}
-  else overlay(true,mode==='run'?'Trick Park':curL.name,mode==='run'?'':`${fmt(atime)} \u00b7 ${coreCount}/3 cores`,'Resume','Retry',resume,retry,...set,...quit);
+function pause(){if(state!=='play')return;state='paused';wave=1.6;idleT=0;showPause()}
+// one vertical column: Resume, then this mode's actions, then Moves, Settings and Quit (the character waves on the left)
+function showPause(){const quit=BLD.testing?['Back to builder',()=>backToBuilder()]:['Quit to menu',()=>menu()],tail=[['Moves',()=>openMoves()],['Settings',()=>openSet()],quit];
+  let title,line='',acts;
+  if(mode==='run'&&runFree){const race=FR.on&&!FR.done,b=FR.on?raceBest():null;title=FR.on?'Flag race':runL.custom?runL.name:'Trick Park';
+    if(FR.on)line=FR.done?'Finished! Keep exploring, or race again.':`Race time ${fmtRace(FR.t)}${b?' · best '+fmtRace(b):''} · checkpoints ${FR.reached}/${runL.cps.length}`;
+    acts=[runL.spad?['Start game',()=>{resume();beginTimed()}]:null,race&&FR.reached?['Last checkpoint',()=>{resume();frRespawn()}]:null,FR.on?['Restart race',()=>startRun(true)]:null].filter(Boolean)}
+  else if(mode==='run'){title='Orb run';line=`Score ${score} · ${Math.ceil(time)}s left`;acts=[['Restart orb run',()=>{resume();quickRetry()}],['Stop orb run',()=>{resume();stopOrbRun()}]]}
+  else{title=curL.name;line=`${fmt(atime)} \u00b7 ${coreCount}/3 cores`;acts=[['Retry',retry]]}
+  const B=[['Resume',resume],...acts,...tail],g=k=>B[k]||['',null];
+  overlay(true,title,line,g(0)[0],g(1)[0],g(0)[1],g(1)[1],g(2)[0],g(2)[1],g(3)[0],g(3)[1],g(4)[0],g(4)[1],g(5)[0],g(5)[1],g(6)[0],g(6)[1],g(7)[0],g(7)[1]);
   $('ov').classList.add('menu','pausem')}

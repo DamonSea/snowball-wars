@@ -256,3 +256,14 @@ body.setopen #park{visibility:hidden}
 
 /* pause: same vertical column as the main menu; keep its one status line */
 .ov.pausem #ovP{font-size:15px;margin:0 0 6px;opacity:.85}
+
+/* ----- hold-to-respawn / hold-to-retry meter ----- */
+.holdmeter{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);z-index:6;display:none;flex-direction:column;align-items:center;gap:6px;
+  background:rgba(5,18,28,.8);color:#fff;padding:8px 16px 10px;border-radius:14px;font:700 15px "Inter",sans-serif;pointer-events:none}
+.holdmeter.on{display:flex}.holdmeter i{display:block;width:180px;height:8px;border-radius:9px;background:rgba(255,255,255,.2);overflow:hidden}
+.holdmeter b{display:block;height:100%;background:#ffd84a;transform-origin:left;transform:scaleX(0)}
+/* ----- Moves list ----- */
+.movescard{width:min(620px,100%);max-height:calc(100vh - 40px);display:flex;flex-direction:column}
+.moveslist{overflow:auto;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:6px 0 12px;padding:4px 6px;text-align:left;font-size:15px}
+.moveslist dt{font-weight:700;white-space:nowrap}.moveslist dd{margin:0;opacity:.9}
+body.setopen #moves{visibility:hidden}
