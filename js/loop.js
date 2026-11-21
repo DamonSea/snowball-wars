@@ -40,7 +40,7 @@ function tick(){
   pollPad();if(!$('ov').classList.contains('hide'))updatePadInfo();
   const pl=state==='play';if(pl!==wasPlaying){wasPlaying=pl;document.body.classList.toggle('playing',pl);if(pl)renderControls();freeUI()}
   let dt=Math.min(clock.getDelta(),.05);if(hitStop>0){hitStop-=dt;dt*=.12}tAll+=dt;
-  if(state==='build'){builderFrame(dt);renderer.render(scene,cam);requestAnimationFrame(tick);return}   // Map Builder: its own camera, no game updates
+  if(state==='build'){builderFrame(dt);renderer.render(scene,cam);perfFrame();requestAnimationFrame(tick);return}   // Map Builder: its own camera, no game updates
   if(state==='play')updateAttack(dt);
   water.position.y=-.8+Math.sin(tAll*.8)*.05;
   if(state==='play')mode==='run'?updateRun(dt):updateAdv(dt);
@@ -173,7 +173,7 @@ function tick(){
   RUNMAPS.forEach(M=>{if(M.blink)M.blink.emissiveIntensity=tAll%1.4<.35?2.4:.15});
   goal.pad.scale.setScalar(1+Math.sin(tAll*3)*.06);
   for(let i=parts.length-1;i>=0;i--){const q=parts[i];q.life-=dt;q.v.y-=12*dt;q.m.position.addScaledVector(q.v,dt);
-    q.m.material.opacity=Math.max(0,q.life/.7);if(q.life<=0){scene.remove(q.m);parts.splice(i,1)}}
+    q.m.material.opacity=Math.max(0,q.life/.7);if(q.life<=0){freeTree(q.m);parts.splice(i,1)}}
 
   if(state==='select'&&CUST.on){const wide=innerWidth>=760;camPos.set(0,1.5,wide?4.3:5.4);look.set(wide?.85:0,wide?.85:.15,0);cam.position.lerp(camPos,1-Math.exp(-6*dt))}
   else if(state==='select'){camPos.set(0,1.9,innerWidth<600?7:5.6);look.set(0,innerWidth<600?.1:.45,0);cam.position.lerp(camPos,1-Math.exp(-6*dt))}
@@ -189,6 +189,6 @@ function tick(){
   sun.position.set(P.position.x+18,30,P.position.z+12);sun.target.position.copy(P.position);
 
   mpFrame(dt);
-  renderer.render(scene,cam);
+  renderer.render(scene,cam);perfFrame();
   requestAnimationFrame(tick);
 }

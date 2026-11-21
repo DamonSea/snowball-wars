@@ -218,3 +218,7 @@ body.building .hud .stats>div,body.building #mpList,body.building #combo,body.bu
 
 .setcard:not(.t-sound) .vol,.setcard:not(.t-sound) .vols,.setcard:not(.t-sound) #setReset{display:none!important}
 .srow .sld{display:flex;align-items:center;gap:8px;grid-column:2/-1}.srow .sld input{flex:1}.srow .sld small{font-size:12px;opacity:.75}
+
+/* ----- performance stats ----- */
+.perf{position:fixed;right:10px;top:72px;text-align:right;z-index:7;pointer-events:none;background:rgba(5,18,28,.78);color:#e8f6ff;font:600 12px/1.45 ui-monospace,Menlo,monospace;padding:6px 9px;border-radius:9px}
+.perf.hide{display:none}.perf .good{color:#7dffa0}.perf .meh{color:#ffd84a}.perf .bad{color:#ff7a6b}.perf small{opacity:.7}

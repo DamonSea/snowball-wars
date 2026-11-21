@@ -3,6 +3,18 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.9.0] - 2026-11-20 — Performance
+### Added
+- **Settings → Game → Graphics: Auto / High / Balanced / Low.** Auto starts at 1.5x resolution and adjusts while you
+  play: below ~50 fps it lowers resolution (then shadow detail) in steps, and raises it again when frames are smooth.
+- **Performance stats** overlay (Settings → Game, or the ` key): fps, frame time, draw calls, triangles and GPU memory.
+- `tools/perf`: scripts that measure every map and check for GPU memory build-up.
+### Fixed
+- GPU memory leaks: removed objects never freed their geometry and materials, so memory grew through a session.
+  Enemy respawns, orbs, ground-pound rings, particles, snowballs, yellow snow, snow angels, multiplayer avatars,
+  accessories and the Map Builder preview are now freed. In testing, 60 Map Builder edits used to leave ~3,800
+  geometries on the GPU (now ~120: just the current map) and 20 enemy respawn cycles ~1,600 (now ~20: the live ones).
+
 ## [2.8.0] - 2026-11-20 — Make them yours
 ### Added
 - **Customize** on character select for Flip, Nova and Vex: outfit presets, a color for every part, and accessories in

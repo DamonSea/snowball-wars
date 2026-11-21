@@ -58,14 +58,14 @@ function updateSnow(dt){
       if(Math.hypot(P.position.x-p.x,P.position.z-p.z)<.75&&p.y>py&&p.y<py+2.1){hitMe(b.owner,b.id,p.x-b.vx*.05,p.z-b.vz*.05,b.yellow);gone=true}
       else for(const h of runHz)if(!h.dead&&!(b.owner==='goon'&&h.kind==='goon')&&hitsFoe(h,p)){splat(p,false);gone=true;break}
     }
-    if(gone){scene.remove(b.m);SB.list.splice(i,1)}}
+    if(gone){freeTree(b.m);SB.list.splice(i,1)}}
   // punches, kicks, dives and belly slides smash snowmen too
   for(const s of snowmen()){if(!s.up||py>2.6)continue;const d=Math.hypot(s.x-P.position.x,s.z-P.position.z);
     if(attackHits(V(s.x,.75,s.z),0)){ATK.hits++;hitStop=.07;shake=Math.max(shake,.18);rumble(120,.7,.9);SFX.hit();knockSnowman(s)}
     else if(chars[ci].acro&&(A.mode==='dive'||A.mode==='slide')&&d<1.15){shake=Math.max(shake,.2);rumble(120,.6,.8);SFX.splat(true);knockSnowman(s)}}
   for(const s of snowmen())if(!s.up&&(s.t-=dt)<=0){s.up=true;s.g.visible=true;burst(V(s.x,1.2,s.z),0xffffff,10)}
 }
-function clearSnow(){clearAngels();clearRollers();clearYellow();resetPound();SB.stun=0;if(CPU.a)CPU.a.init=false;myStars.visible=false;SB.list.forEach(b=>scene.remove(b.m));SB.list=[];SB.ammo=T.snow.ammo;SB.regen=0;SB.anim=0;snowHud()}
+function clearSnow(){clearAngels();clearRollers();clearYellow();resetPound();SB.stun=0;if(CPU.a)CPU.a.init=false;myStars.visible=false;SB.list.forEach(b=>freeTree(b.m));SB.list=[];SB.ammo=T.snow.ammo;SB.regen=0;SB.anim=0;snowHud()}
 // orbs refill snowballs: regular orbs give a few, gold orbs fill you up
 function gainSnow(gold){const was=SB.ammo;SB.ammo=gold?T.snow.ammo:Math.min(T.snow.ammo,SB.ammo+T.snow.orbAmmo);if(SB.ammo>was){snowHud();snowFlash('gain')}}
 function snowFlash(c){const e=$('snowBox');if(!e)return;e.classList.remove('gain','empty');void e.offsetWidth;e.classList.add(c)}

@@ -33,5 +33,5 @@ function poundHits(pos,yb){const d=Math.hypot(pos.x-P.position.x,pos.z-P.positio
 function shockRing(x,y,z){const m=new THREE.Mesh(new THREE.RingGeometry(.6,.95,40),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.85,side:THREE.DoubleSide,depthWrite:false}));
   m.rotation.x=-PI/2;m.position.set(x,y+.08,z);scene.add(m);GP.rings.push({m,t:0})}
 function poundFx(dt){for(let i=GP.rings.length-1;i>=0;i--){const r=GP.rings[i];r.t+=dt;const k=r.t/.45;
-  r.m.scale.setScalar(1+k*T.pound.radius*1.1);r.m.material.opacity=.85*(1-k);if(k>=1){scene.remove(r.m);GP.rings.splice(i,1)}}}
+  r.m.scale.setScalar(1+k*T.pound.radius*1.1);r.m.material.opacity=.85*(1-k);if(k>=1){freeTree(r.m);GP.rings.splice(i,1)}}}
 function resetPound(){GP.st=0;GP.t=0;SA.t=0;if(typeof LH!=='undefined')LH.on=false;if(YS.spray){YS.spray=false;loopNoise('yellow',false)}YS.t=0;if(A.mode==='pound')A.mode='normal'}

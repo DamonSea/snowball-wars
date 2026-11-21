@@ -20,7 +20,7 @@ function openBuilder(map){BLD.map=cleanMap(map||blankMap());BLD.sel=-1;BLD.tool=
   Object.assign(BLD.cam,{x:0,z:3,dist:36});Object.assign(BLD.cs,BLD.cam);renderLib();renderInsp();rebuildPreview();setStatus('')}
 function closeBuilder(){saveDraftNow();BLD.testing=false;dropPreview();bGrid.visible=bGhost.visible=bSel.visible=false;document.body.classList.remove('building');$('bld').classList.add('hide');P.visible=true}
 function exitBuilder(){closeBuilder();openMapsPanel()}
-function dropPreview(){if(BLD.prev){scene.remove(BLD.prev.grp);BLD.prev=null}}
+function dropPreview(){if(BLD.prev){freeTree(BLD.prev.grp);BLD.prev=null}}
 function rebuildPreview(){dropPreview();BLD.prev=buildCustom(BLD.map);BLD.prev.grp.visible=true;BLD.dirty=false;updateSelBox()}
 function updateSelBox(){const it=BLD.map.items[BLD.sel];bSel.visible=!!it&&state==='build';if(it)fitBox(bSel,itemBox(it))}
 // ----- edits (every change goes through here: undo snapshot, rebuild, autosave) -----

@@ -12,6 +12,13 @@ $('stage').appendChild(renderer.domElement);
 const scene=new THREE.Scene();
 scene.background=new THREE.Color(0x123f57);scene.fog=new THREE.Fog(0x123f57,30,75);
 const cam=new THREE.PerspectiveCamera(55,1,.1,200);
+// GPU memory: anything removed for good is freed with freeTree(). KEEP protects resources that are shared or permanent:
+// everything that exists at startup (snapshotted in main.js) plus shared pieces like the particle geometry.
+const KEEP=new Set();const keep=(...a)=>{a.forEach(x=>x&&KEEP.add(x));return a[0]};
+function freeTree(o){if(!o)return;if(o.parent)o.parent.remove(o);if(!o.traverse)return;
+  o.traverse(m=>{const g=m.geometry;if(g&&!KEEP.has(g)&&g.dispose)g.dispose();
+    for(const x of Array.isArray(m.material)?m.material:m.material?[m.material]:[]){if(KEEP.has(x)||!x.dispose)continue;if(x.map&&!KEEP.has(x.map)&&x.map.dispose)x.map.dispose();x.dispose()}})}
+function keepScene(){scene.traverse(m=>{if(m.geometry)KEEP.add(m.geometry);for(const x of Array.isArray(m.material)?m.material:m.material?[m.material]:[]){KEEP.add(x);if(x.map)KEEP.add(x.map)}})}
 const resize=()=>{renderer.setSize(innerWidth,innerHeight);cam.aspect=innerWidth/innerHeight;cam.fov=cam.aspect<.8?70:55;cam.updateProjectionMatrix()};
 addEventListener('resize',resize);resize();
 const hemi=new THREE.HemisphereLight(0xcfeeff,0x2d3a22,.75);scene.add(hemi);

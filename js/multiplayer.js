@@ -34,7 +34,7 @@ function makeAv(ch){const g=new THREE.Group();scene.add(g);
   const tc=tagCanvas(320,96),tt=new THREE.CanvasTexture(tc),tag=new THREE.Sprite(new THREE.SpriteMaterial({map:tt,transparent:true,depthWrite:false}));tag.scale.set(2.6,.78,1);tag.position.y=2.75;g.add(tag);
   const kc=tagCanvas(320,72),kt=new THREE.CanvasTexture(kc),trick=new THREE.Sprite(new THREE.SpriteMaterial({map:kt,transparent:true,depthWrite:false,opacity:0}));trick.scale.set(2.6,.58,1);trick.position.y=3.5;g.add(trick);
   return{g,rig,ch,of:-1,tc,tt,tag,kc,kt,trick,txt:'',tn:null,tt0:0,init:false,lx:0,lz:0}}
-function dropAv(a){scene.remove(a.g)}
+function dropAv(a){freeTree(a.g)}
 function clearAv(){MP.av.forEach(dropAv);MP.av.clear()}
 function drawTag(a,name,sc,free){const t=name+'|'+sc+'|'+free;if(t===a.txt)return;a.txt=t;const x=a.tc.getContext('2d');x.clearRect(0,0,320,96);
   x.fillStyle='rgba(10,32,46,.82)';x.beginPath();x.roundRect?x.roundRect(10,6,300,84,22):x.rect(10,6,300,84);x.fill();

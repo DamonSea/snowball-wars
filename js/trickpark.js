@@ -3,7 +3,7 @@
 let orbs=[],runHz=[],runQ=[],runT=0,bestCombo=0,hintTimer=null,runFree=true,runCD=0,padHold=0;
 // START pad in the plaza: stand on it in free roam to begin a timed run
 const spadG=new THREE.Group();
-const rmObj=o=>o.parent&&o.parent.remove(o);
+const rmObj=o=>freeTree(o);
 function useRunMap(i){runIdx=i;runL=RUNMAPS[i];try{localStorage.setItem('orbRunMap',i)}catch(e){}runL.grp.add(spadG);spadG.position.set(runL.spad.x,0,runL.spad.z)}
 useRunMap(runIdx);
 const spadM=new THREE.MeshBasicMaterial({color:0xffcc33,transparent:true,opacity:.55,side:THREE.DoubleSide,depthWrite:false});

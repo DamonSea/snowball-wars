@@ -53,7 +53,7 @@ function applyLook(rig,ch,of,L){const list=chars[ch].outs;if(!list)return;applyO
   for(const k in L.c){const M=rig.mats[k];if(!M)continue;M.color.setHex(L.c[k]);if(k==='lens')M.emissive.setHex(L.c[k]).multiplyScalar(.35)}
   if(L.c.jacket!==undefined)rig.mats.rib.color.setHex(L.c.jacket).multiplyScalar(.78);
   buildAcc(rig,L)}
-function buildAcc(rig,L){(rig.accA||[]).forEach(it=>it.g.parent&&it.g.parent.remove(it.g));rig.accA=[];const a=rig.anc;if(!a)return;
+function buildAcc(rig,L){(rig.accA||[]).forEach(it=>freeTree(it.g));rig.accA=[];const a=rig.anc;if(!a)return;
   for(const[slot]of ACC_SLOTS){const def=ACC[slot].find(i=>i.id===L.a[slot]);if(!def)continue;const m=accM(L.ac??def.col),it={kind:def.kind,id:def.id};
     let g;if(slot==='top'){const pv=new THREE.Group();pv.rotation.z=-(a.tilt||0);rig.head.add(pv);g=new THREE.Group();g.position.y=a.top;pv.add(g);it.g=pv}
     else if(slot==='face'){g=new THREE.Group();g.position.set(0,a.eyeY,a.face);rig.head.add(g);it.g=g}

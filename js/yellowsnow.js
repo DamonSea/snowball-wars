@@ -20,7 +20,7 @@ function startYellow(){
 function stopYellow(){if(!YS.spray)return;YS.spray=false;YS.t=T.yellow.finish;if(YS.used>.4)YS.armed=true;loopNoise('yellow',false);SFX.yellowEnd()}
 // a session = one group of marks sharing a material, so a whole drawing fades together
 function newSession(){const m=new THREE.MeshBasicMaterial({color:0xf2d64b,transparent:true,opacity:.85,depthWrite:false}),g=new THREE.Group();scene.add(g);
-  const s={g,m,t:0,n:0,acc:0};YS.sess.push(s);while(YS.sess.length>T.yellow.maxSessions){const o=YS.sess.shift();scene.remove(o.g)}return s}
+  const s={g,m,t:0,n:0,acc:0};YS.sess.push(s);while(YS.sess.length>T.yellow.maxSessions){const o=YS.sess.shift();freeTree(o.g)}return s}
 // emit stream drops from a body at (x,y,z) facing f, moving (vx,vz)
 function emitStream(x,y,z,f,vx,vz,sess,dt){
   const Y=T.yellow;sess.acc+=dt*Y.rate;
@@ -40,17 +40,17 @@ function updateYellow(dt){
     const g=groundAt(p.x,p.z,p.y+.3).h,gh=isFinite(g)?g:0;
     if(p.y<=gh+.02||d.t>2){if(p.y<=gh+.3&&d.sess&&d.sess.n<Y.maxMarks){const k=new THREE.Mesh(ysMarkGeo,d.sess.m);k.rotation.x=-PI/2;
         k.position.set(p.x,gh+.02+Math.random()*.004,p.z);k.scale.setScalar(.7+Math.random()*.7);d.sess.g.add(k);d.sess.n++}
-      if(Math.random()<.15)burst(V(p.x,gh+.05,p.z),0xfff2a8,1);scene.remove(d.m);YS.drops.splice(i,1)}}
+      if(Math.random()<.15)burst(V(p.x,gh+.05,p.z),0xfff2a8,1);freeTree(d.m);YS.drops.splice(i,1)}}
   // drawings melt away
   for(let i=YS.sess.length-1;i>=0;i--){const s=YS.sess[i];if(s===YS.cur&&YS.spray)continue;s.t+=dt;
-    s.m.opacity=.85*Math.max(0,Math.min(1,(Y.sessionLife-s.t)/4));if(s.t>=Y.sessionLife){scene.remove(s.g);YS.sess.splice(i,1)}}
+    s.m.opacity=.85*Math.max(0,Math.min(1,(Y.sessionLife-s.t)/4));if(s.t>=Y.sessionLife){freeTree(s.g);YS.sess.splice(i,1)}}
 }
 // friends: draw their stream while their presence says they're spraying (called from snowFromPeer)
 function yellowFromPeer(pr,a){
   if(pr.yw===1&&mode==='run'&&WIN&&YS.on){if(!a.ysSess||!YS.sess.includes(a.ysSess))a.ysSess=newSession();
     const G=a.g.position;emitStream(G.x,G.y,G.z,a.g.rotation.y,0,0,a.ysSess,YS.dt)}
   else a.ysSess=null}
-function clearYellow(){stopYellow();YS.t=0;YS.drops.forEach(d=>scene.remove(d.m));YS.drops=[];YS.sess.forEach(s=>scene.remove(s.g));YS.sess=[];YS.armed=false}
+function clearYellow(){stopYellow();YS.t=0;YS.drops.forEach(d=>freeTree(d.m));YS.drops=[];YS.sess.forEach(s=>freeTree(s.g));YS.sess=[];YS.armed=false}
 function setYellow(on){YS.on=on;try{localStorage.setItem('orbRunYellow',on?'1':'0')}catch(e){}if(!on){stopYellow();YS.armed=false}renderControls()}
 // movement while spraying or finishing: slow walk and turn to aim, no jumping
 function yellowMove(dt,ix,iz){

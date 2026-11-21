@@ -16,15 +16,15 @@ function makeAngel(x,y,z,f){const g=new THREE.Group();g.position.set(x,y+.022,z)
   const flat=(geo,px,pz,sx=1,sz=1)=>{const k=new THREE.Mesh(geo,m);k.rotation.x=-PI/2;k.position.set(px,0,pz);k.scale.set(sx,sz,1);g.add(k);return k};
   flat(new THREE.CircleGeometry(.32,20),0,0,.9,2.1);flat(new THREE.CircleGeometry(.24,16),0,-.95);
   const wings=flat(new THREE.CircleGeometry(1.15,28,0,PI),0,-.4),skirt=flat(new THREE.CircleGeometry(.95,24,PI,PI),0,.45);
-  const d={g,m,wings,skirt,t:0};SA.decals.push(d);while(SA.decals.length>6){const o=SA.decals.shift();scene.remove(o.g)}return d}
+  const d={g,m,wings,skirt,t:0};SA.decals.push(d);while(SA.decals.length>6){const o=SA.decals.shift();freeTree(o.g)}return d}
 function angelMove(dt){ // called from move(): hold still; Jump gets you up early
   vel.set(0,0,0);A.spd=0;if(jumpBuf>0&&SA.t<T.angel.time-.4){SA.t=Math.min(SA.t,.3);jumpBuf=0}else jumpBuf=0}
 function angelPhase(){const el=T.angel.time-SA.t,tt=T.angel.time;return{el,lie:Math.min(1,el/.35,SA.t/.35),sweep:el>.35&&SA.t>.35?.5-.5*Math.cos((el-.35)*PI*2.4):0}}
 function updateAngels(dt){
   if(SA.t>0){SA.t=Math.max(0,SA.t-dt);const k=angelPhase();if(SA.dec){const sc=Math.min(1,.25+(T.angel.time-SA.t)/T.angel.time*1.1);SA.dec.wings.scale.set(sc,sc,1);SA.dec.skirt.scale.set(sc,sc,1)}
     if(SA.t===0&&!SA.done){SA.done=true;if(T.angel.time-SA.t>1)addTrick('Snow Angel')}}
-  for(let i=SA.decals.length-1;i>=0;i--){const d=SA.decals[i];if(d===SA.dec&&SA.t>0)continue;d.t+=dt;d.m.opacity=.75*Math.max(0,Math.min(1,(T.angel.life-d.t)/5));if(d.t>=T.angel.life){scene.remove(d.g);SA.decals.splice(i,1)}}}
-function clearAngels(){SA.t=0;SA.decals.forEach(d=>scene.remove(d.g));SA.decals=[];SA.dec=null}
+  for(let i=SA.decals.length-1;i>=0;i--){const d=SA.decals[i];if(d===SA.dec&&SA.t>0)continue;d.t+=dt;d.m.opacity=.75*Math.max(0,Math.min(1,(T.angel.life-d.t)/5));if(d.t>=T.angel.life){freeTree(d.g);SA.decals.splice(i,1)}}}
+function clearAngels(){SA.t=0;SA.decals.forEach(d=>freeTree(d.g));SA.decals=[];SA.dec=null}
 // ---------- rolling snowballs ----------
 const RS={list:[],pushing:false};
 const rollGeo=new THREE.SphereGeometry(1,18,14),rollM=new THREE.MeshStandardMaterial({color:0xf6f9fc,roughness:.95});

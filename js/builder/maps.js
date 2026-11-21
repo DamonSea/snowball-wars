@@ -89,5 +89,5 @@ function buildCustom(map){const m=cleanMap(map);
   advW=saved.advW;plats=saved.plats;advCol=saved.advCol;return M}
 // add (or replace) a custom map in the Trick Park list; returns its index
 function addCustomMap(map){const M=buildCustom(map),i=RUNMAPS.findIndex(q=>q.key===M.key);
-  if(i>=0){const old=RUNMAPS[i];if(old===runL&&mode==='run'&&state!=='build'){scene.remove(M.grp);return i}scene.remove(old.grp);RUNMAPS[i]=M;if(old===runL)runL=M;return i}
+  if(i>=0){const old=RUNMAPS[i];if(old===runL&&mode==='run'&&state!=='build'){freeTree(M.grp);return i}freeTree(old.grp);RUNMAPS[i]=M;if(old===runL)runL=M;return i}
   RUNMAPS.push(M);return RUNMAPS.length-1}
