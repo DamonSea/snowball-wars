@@ -14,7 +14,7 @@ async function mpInit(){try{if(!window.claude||typeof window.claude.use!=='funct
   const[room,user]=await Promise.all([window.claude.use('room'),window.claude.use('user')]);if(!room)return;
   MP.lobby=room;MP.user=user;MP.on=true;
   try{const me=user&&await user.me();MP.myName=(me&&me.name)||''}catch(e){}
-  room.onPeers(()=>lobbyUI(),()=>{MP.on=false;lobbyUI()});lobbyUI()}catch(e){MP.on=false}}
+  room.onPeers(()=>lobbyUI(),e=>{MP.on=false;MP.err=(e&&e.code)||'error';lobbyUI()});lobbyUI()}catch(e){MP.on=false}}
 function nameOf(peer){
   if(peer.sameTab)return MP.myName||'You';
   if(peer.by&&MP.user){if(!(peer.by in MP.prof)){MP.prof[peer.by]='';MP.user.profiles([peer.by]).then(ps=>{const q=ps&&ps[peer.by];MP.prof[peer.by]=(q&&q.name)||''}).catch(()=>{})}
@@ -22,9 +22,10 @@ function nameOf(peer){
   const n=peer.presence&&peer.presence.nm;return typeof n==='string'&&n.trim()?n.trim().slice(0,24):'Player'}
 const whereName=w=>w==='menu'?'in the menu':w==='adv'?'in Adventure':/^p\d$/.test(w||'')&&RUNMAPS[+w[1]]?'in '+RUNMAPS[+w[1]].name:'';
 function lobbyUI(){const e=$('online');if(!e)return;
+  if(MP.err&&(!MP.on||!MP.lobby)){e.textContent='Multiplayer couldn\u2019t connect ('+MP.err+').';return}
   if(!MP.on||!MP.lobby){e.textContent='';return}
   const ps=MP.lobby.peers();if(ps.length<2){e.textContent='Multiplayer: share this game from claude.ai to invite friends. Anyone on the same Trick Park map plays with you.';return}
-  e.textContent='Online now: '+ps.map(p=>(p.sameTab?'You':nameOf(p))+(p.sameTab?'':(' ('+(whereName(p.presence.w)||'here')+')'))).join(', ')}
+  e.textContent=(MP.err?'Multiplayer problem ('+MP.err+'). ':'')+'Online now: '+ps.map(p=>(p.sameTab?'You':nameOf(p))+(p.sameTab?'':(' ('+(whereName(p.presence.w)||'here')+')'))).join(', ')}
 // players are matched by map key (custom maps sit at different list positions on different screens)
 const mapCount=i=>{const M=RUNMAPS[i];return M&&MP.on&&MP.lobby?MP.lobby.peers().filter(p=>!p.sameTab&&p.presence&&p.presence.w==='p'+M.key).length:0};
 // --- remote avatars ---
@@ -57,7 +58,7 @@ function updAvatars(dt){
   const seen=new Set(),k=1-Math.exp(-14*dt);
   for(const peer of MP.room.peers()){if(peer.sameTab)continue;const pr=peer.presence||{},p=pr.p;
     if(!Array.isArray(p)||p.length<4||!p.every(v=>typeof v==='number'&&isFinite(v)))continue;
-    seen.add(peer.peer);const ch=[0,1,2,3].includes(pr.ch)?pr.ch:2;let a=MP.av.get(peer.peer);
+    seen.add(peer.peer);const ch=Number.isInteger(pr.ch)&&chars[pr.ch]?pr.ch:2;let a=MP.av.get(peer.peer);
     if(a&&a.ch!==ch){dropAv(a);a=null}
     if(!a){a=makeAv(ch);MP.av.set(peer.peer,a)}
     {const L=chars[ch].outs,ks=JSON.stringify(pr.lk||null);if(L&&Number.isInteger(pr.of)&&L[pr.of]&&(pr.of!==a.of||ks!==a.lk)){applyLook(a.rig,ch,pr.of,cleanLook(pr.lk,ch));a.of=pr.of;a.lk=ks}}
@@ -77,11 +78,18 @@ function updAvatars(dt){
 }
 // --- room membership, host election, presence ---
 function wantRoom(){return MP.on&&mode==='run'&&(state==='play'||state==='paused'||state==='over')?'tp-'+runL.key:''}
+// A map's "room" is a filtered view of the lobby: everyone whose lobby presence says they're on the same map.
+// (Named rooms can be refused for some viewers, e.g. people invited from outside your account, which left
+// players able to see each other in the lobby but never meet on the map.)
+const GAME_KEYS=['ch','of','lk','p','q','sc','fr','t','c','sb','hb','yw','z','H'];
+function mapView(want){const L=MP.lobby,w='p'+want.slice(3);
+  return{name:want,peers:()=>L.peers().filter(p=>p.sameTab||(p.presence&&p.presence.w===w)),
+    presence:pr=>L.presence(Object.assign({},pr,{w,nm:MP.myName||'Player'})).then(()=>{MP.err=''},e=>{MP.err=(e&&e.code)||'error';lobbyUI();throw e}),
+    leave:async()=>{const z={};GAME_KEYS.forEach(k=>z[k]=null);try{await L.presence(z)}catch(e){}}}}
 async function switchRoom(want){MP.joining=true;try{
   if(MP.room){const r=MP.room;MP.room=null;MP.roomName='';clearAv();try{await r.leave()}catch(e){}}
   MP.gone.clear();MP.done.clear();MP.client=false;MP.host=true;MP.hostPeer=null;
-  if(want){const r=await MP.lobby.join(want);MP.room=r;MP.roomName=want;
-    r.onPeers(()=>{},()=>{if(MP.room===r){MP.room=null;MP.roomName='';clearAv();MP.client=false;MP.host=true}})}
+  if(want){MP.room=mapView(want);MP.roomName=want}
 }catch(e){MP.retryAt=performance.now()+5000}finally{MP.joining=false}}
 function electHost(){
   if(!MP.room){MP.client=false;MP.host=true;MP.hostPeer=null;return}

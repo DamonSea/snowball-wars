@@ -3,6 +3,16 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.16.2] - 2026-11-21 — Multiplayer fix
+### Fixed
+- **Friends on the same map couldn't see each other.** Each map used its own named room, and some viewers (such as
+  people invited from outside your account) can be refused named rooms. The join failed silently and retried
+  forever, so players showed up in the lobby ("Bob is in Plaza") but never met on the map. Map play now runs
+  over the lobby everyone is already in, drawing only players on the same map.
+- Tuk (and Vex) showed up looking like Flip to other players.
+### Added
+- If multiplayer hits an error, the menu's "Online now" line says so instead of failing silently.
+
 ## [2.16.1] - 2026-11-21 — Snappier turning
 ### Changed
 - **Turning from a standstill or a walk** is now near-instant: your character spins round on the spot (about 4 frames
