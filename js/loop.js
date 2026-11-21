@@ -6,8 +6,8 @@ let wasPlaying=null,wallSliding=false,sndG=true,sndAir=0,sndVy=0,stepPh=0;
 // spring physics input: how the character's velocity changed this frame, in their own frame (f forward, s right, u up)
 const pv={x:0,y:0,z:0},dvL={f:0,s:0,u:0};let idleT=0;
 // Settings → Squash & stretch: Exaggerated springs the whole body around every move (TS = spring state per rig)
-let TOON=false;try{TOON=localStorage.getItem('orbRunSquash')==='big'}catch(e){}
-function setToon(on){TOON=on;try{localStorage.setItem('orbRunSquash',on?'big':'normal')}catch(e){}}
+let TOON=0;try{const v=localStorage.getItem('orbRunSquash');TOON=v==='big'?1:v==='normal'?0:Math.max(0,Math.min(1,+v||0))}catch(e){}
+function setToon(v){TOON=v===true?1:v===false?0:Math.max(0,Math.min(1,+v||0));try{localStorage.setItem('orbRunSquash',String(TOON))}catch(e){}}
 const TS=new Map();
 // target body scale for the current move: [x (side), y (up), z (forward)]
 function toonTarget(air,m){const acro=!!chars[ci].acro;
@@ -30,11 +30,12 @@ function toonTarget(air,m){const acro=!!chars[ci].acro;
   if(air&&vy<-6){const y=1+Math.min((-vy-6)/50,.22);return[1/Math.sqrt(y),y,1/Math.sqrt(y)]}
   if(squash>0){const q=squash;return[1+.6*q,1-.72*q,1+.6*q]}
   return[1,1,1]}
-function toonScale(o,dt,air,m,tookOff){let S=TS.get(o);if(!S){S={x:1,y:1,z:1,vx:0,vy:0,vz:0};TS.set(o,S)}
-  const t=toonTarget(air,m);if(tookOff){S.vy+=7;S.vx-=3;S.vz-=3}
-  [['x',0],['y',1],['z',2]].forEach(([a,i])=>{const v='v'+a;S[v]+=((t[i]-S[a])*230-S[v]*11)*dt;S[a]=Math.max(.35,Math.min(2,S[a]+S[v]*dt))});
+// base = the Default look ([x,y,z]); the slider blends toward the cartoon target and loosens the spring as it goes
+function toonScale(o,dt,air,m,tookOff,base=[1,1,1]){let S=TS.get(o);if(!S){S={x:base[0],y:base[1],z:base[2],vx:0,vy:0,vz:0};TS.set(o,S)}
+  const q=TOON,tt=toonTarget(air,m),t=base.map((b,i)=>b+(tt[i]-b)*q),C=30-19*q;if(tookOff){S.vy+=7*q;S.vx-=3*q;S.vz-=3*q}
+  [['x',0],['y',1],['z',2]].forEach(([a,i])=>{const v='v'+a;S[v]+=((t[i]-S[a])*230-S[v]*C)*dt;S[a]=Math.max(.35,Math.min(2,S[a]+S[v]*dt))});
   o.scale.set(S.x,S.y,S.z)}
-const playingToon=()=>TOON&&(state==='play'||state==='paused');
+const playingToon=()=>TOON>0&&(state==='play'||state==='paused');
 function tick(){
   pollPad();if(!$('ov').classList.contains('hide'))updatePadInfo();
   const pl=state==='play';if(pl!==wasPlaying){wasPlaying=pl;document.body.classList.toggle('playing',pl);if(pl)renderControls();freeUI()}
@@ -52,8 +53,9 @@ function tick(){
     if(grounded&&gs>1.2&&am!=='skid'&&am!=='slide'&&!A.knock){const ph=Math.floor(walk*(onIce?1.15:ci===0?3:am==='crouch'?3.2:2.2)/PI);if(ph!==stepPh){stepPh=ph;SFX.step(onIce?3:ci===0?2:mode==='adv'&&curIdx===1?1:0)}}
   }
   updSnow(dt);if(state!=='paused'&&state!=='over')breath(dt);audioFrame(dt);sndG=grounded;{const gl=state==='play'&&onIce&&grounded&&Math.hypot(vel.x,vel.z)>2&&selOf('step')>=0;loopNoise('skate',gl,{ft:'highpass',f:4200,q:.6,vol:.035})}{const ws=selOf('wallSlide');loopNoise('slide',wallSliding&&state==='play'&&ws>=0,SFXV.wallSlide.opts[Math.max(0,ws)][1])}if(state!=='play')wallSliding=false;
-  else if(state==='menu'){face=Math.sin(tAll*.5)*.35;if(tAll%6<dt)wave=1.6}
-  else if(state==='select'){face=Math.sin(tAll*.7)*.45}
+  if(state==='menu'){face=Math.sin(tAll*.5)*.35;if(tAll%6<dt)wave=1.6}
+  else if(state==='select'){face=CUST.on?CUST.rot:Math.sin(tAll*.7)*.45}
+  else if(state==='paused'&&tAll%7<dt&&!setOpen)wave=1.6;
   if(mode==='adv'&&(state==='won'||state==='over'))goal.spin(dt);
 
   P.position.y=py;P.rotation.y=face;
@@ -63,7 +65,7 @@ function tick(){
   {const pl=state==='play',dx=pl?vel.x-pv.x:0,dz=pl?vel.z-pv.z:0,sf=Math.sin(face),cf=Math.cos(face);
     dvL.f=dx*sf+dz*cf;dvL.s=dx*cf-dz*sf;dvL.u=pl?vy-pv.y:0;pv.x=vel.x;pv.y=vy;pv.z=vel.z;
     const busy=moving||air||ATK.t>0||GP.st||YS.spray||YS.t>0||SA.t>0||SB.anim>0||LH.on||CL.on||RS.pushing||wave>0||(chars[ci].acro&&A.mode!=='normal');
-    idleT=(state==='play'||state==='select'||state==='menu')&&!busy?idleT+dt:0}
+    idleT=(state==='play'||state==='select'||state==='menu'||state==='paused')&&!busy?idleT+dt:0}
   const tookOff=state==='play'&&wasG&&!grounded&&vy>3;
   if(ci===0){
     body.position.y=(moving&&grounded&&!onIce?Math.abs(Math.sin(walk*3))*.12:Math.sin(tAll*3)*.04)+(wave>1.2?Math.sin((1.6-wave)*PI/.4)*.35:0);
@@ -77,7 +79,7 @@ function tick(){
     else if(SB.anim>0){body.rotation.y=0;body.rotation.x=SB.anim>.18?-.3:.4}
     else{body.rotation.y=0;body.rotation.x=0}
     feet[0].position.z=moving?Math.sin(walk*3)*.22:0;feet[1].position.z=-feet[0].position.z;
-    if(playingToon())toonScale(body,dt,air,'normal',tookOff);else body.scale.set(1,1,1);
+    if(playingToon())toonScale(body,dt,air,'normal',tookOff);else{TS.delete(body);body.scale.set(1,1,1)}
     if(state==='play'&&grounded&&!wasG)squash=Math.min(1,Math.max(.65,-airVy/12));if(!grounded)airVy=vy;wasG=grounded;squash=Math.max(0,squash-dt*4.5);
   }else{
     const H=chars[ci].rig,m=A.mode,playing=state==='play',acro=!!chars[ci].acro&&playing,chibi=ci>=2;
@@ -86,7 +88,7 @@ function tick(){
     const dF=angD(face,lastFace)/Math.max(dt,1e-3);lastFace=face;
     bank+=(clamp(-dF*.045*Math.min(1,sp/7),.32)*(playing?1:0)-bank)*(1-Math.exp(-7*dt));
     // squash on landing
-    if(playing&&grounded&&!wasG)squash=TOON?Math.min(1,Math.max(.65,-airVy/12)):Math.min(1,Math.max(.35,-airVy/15));
+    if(playing&&grounded&&!wasG)squash=TOON>.5?Math.min(1,Math.max(.65,-airVy/12)):Math.min(1,Math.max(.35,-airVy/15));
     if(!grounded)airVy=vy;wasG=grounded;squash=Math.max(0,squash-dt*4.5);
     const br=Math.sin(tAll*2.2);
     let lx=0,lr=0,ax=.05*br,ar=-.05*br,zl=-.12-br*.04,zr=.12+br*.04,pitch=0,roll=0,yaw=0,yo=br*.012,hx=Math.sin(tAll*1.1)*.05,hz=0,hy=0,snap=false,snapY=false,rate=10,llz=0,skz=0;
@@ -140,7 +142,7 @@ function tick(){
       else{ax=-3+sw*.18;ar=-3-sw*.18;zl=-.18;zr=.18;lx=.08+sw*.12;lr=.08-sw*.12;pitch=.04;yo=0}}
     if(H.attitude&&idleT>.4&&!CL.on&&!LH.on){const k=Math.min(1,(idleT-.4)*3);rate=8;ax=-1.5*k;ar=-1.38*k;zl=.74*k;zr=-.7*k;lx=-.06;lr=.1;roll=.07*k;yo=0;pitch=-.04*k;hx=-.14*k;hy=.3*k+Math.sin(tAll*.6)*.05;hz=.13*k}
     if(wave>0&&!air&&!moving){zr=2.5+Math.sin(wave*14)*.35;ar=0;hz=-.1}
-    if(state==='select')hy=Math.sin(tAll*1.3)*.25;
+    if(state==='select'&&!CUST.on)hy=Math.sin(tAll*1.3)*.25;
     roll+=bank;hz-=bank*.5;
     const k=snap?1:1-Math.exp(-rate*dt),kh=1-Math.exp(-8*dt),L=(o,p,v,q=k)=>o[p]+=(v-o[p])*q;
     L(H.legL.rotation,'x',lx);L(H.legR.rotation,'x',lr);L(H.legR.rotation,'z',lrz);L(H.legL.rotation,'z',llz);L(H.armL.rotation,'x',ax);L(H.armR.rotation,'x',ar);
@@ -151,7 +153,8 @@ function tick(){
     L(H.head.rotation,'x',hx,kh);L(H.head.rotation,'y',hy,kh);L(H.head.rotation,'z',hz,kh);
     // squash and stretch
     const st=air&&vy>0?1+Math.min(vy/70,.13):1,sy=(1-.26*squash*squash)*st,sxz=1/Math.sqrt(sy);
-    if(playingToon())toonScale(H.root,dt,air,m,tookOff);else{L(H.root.scale,'y',sy,.5);L(H.root.scale,'x',sxz,.5);L(H.root.scale,'z',sxz,.5)}
+    if(playingToon())toonScale(H.root,dt,air,m,tookOff,[sxz,sy,sxz]);else{TS.delete(H.root);L(H.root.scale,'y',sy,.5);L(H.root.scale,'x',sxz,.5);L(H.root.scale,'z',sxz,.5)}
+    if(H.accA&&H.accA.length)accFrame(H,dt,sp,air,dvL);
     if(H.tails)vexPhysics(H,dt,dvL,sp,air,run,ph,bank,idleT>1.2&&state!=='menu');
     if(H.scarf){const fl=Math.min(1.25,sp*.11)+(air?.35:0)+(state==='select'?.15:0);
       H.scarf.forEach((g,i)=>{L(g.rotation,'x',(i?fl*.12:.25+fl)+Math.sin(tAll*(6+sp)-i*1.1)*(.08+fl*.12),.25);
@@ -172,7 +175,11 @@ function tick(){
   for(let i=parts.length-1;i>=0;i--){const q=parts[i];q.life-=dt;q.v.y-=12*dt;q.m.position.addScaledVector(q.v,dt);
     q.m.material.opacity=Math.max(0,q.life/.7);if(q.life<=0){scene.remove(q.m);parts.splice(i,1)}}
 
-  if(state==='select'){camPos.set(0,1.9,innerWidth<600?7:5.6);look.set(0,innerWidth<600?.1:.45,0);cam.position.lerp(camPos,1-Math.exp(-6*dt))}
+  if(state==='select'&&CUST.on){const wide=innerWidth>=760;camPos.set(0,1.5,wide?4.3:5.4);look.set(wide?.85:0,wide?.85:.15,0);cam.position.lerp(camPos,1-Math.exp(-6*dt))}
+  else if(state==='select'){camPos.set(0,1.9,innerWidth<600?7:5.6);look.set(0,innerWidth<600?.1:.45,0);cam.position.lerp(camPos,1-Math.exp(-6*dt))}
+  // paused: swing round in front of the character so they face the camera, standing to the left of the pause card
+  else if(state==='paused'){const fx=Math.sin(face),fz=Math.cos(face),wide=innerWidth>=900,d=wide?4.6:5.4,o=wide?1.9:0;
+    camPos.set(P.position.x+fx*d,py+1.5,P.position.z+fz*d);look.set(P.position.x+fz*o,py+(wide?.95:.2),P.position.z-fx*o);cam.position.lerp(camPos,1-Math.exp(-4*dt))}
   else if(state==='menu'){if(innerWidth>=900){camPos.set(-.6+Math.sin(tAll*.2)*.4,2.3,7.2);look.set(2.4,1.2,0);cam.position.lerp(camPos,1-Math.exp(-3*dt))}
     else{camPos.set(Math.cos(tAll*.12)*24,13,Math.sin(tAll*.12)*24);look.set(0,0,0);cam.position.copy(camPos)}}
   else if(state==='won'){camPos.set(P.position.x+4,py+7,P.position.z+11);look.copy(goal.look);cam.position.lerp(camPos,1-Math.exp(-2*dt))}

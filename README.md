@@ -30,10 +30,19 @@ standing and he crosses his arms and blows bubble gum until it pops.
 
 ![Vex runs, stops, lands, then crosses his arms and blows a bubble](docs/media/vex.gif)
 
-**Settings → Squash & stretch → Exaggerated** turns every move into a cartoon: tall stretchy jumps, splat landings that
+**Settings → Game → Squash & stretch** is a slider from Default to Max; turned up, it makes every move a cartoon: tall stretchy jumps, splat landings that
 wobble back, punches that reach, and ground pounds that ball up, stretch down and squash flat.
 
 ![Exaggerated squash and stretch: jump, punch combo, ground pound](docs/media/squash-stretch.gif)
+
+### Make them yours
+On character select, **Customize** (Flip, Nova and Vex) opens a dressing room: start from an outfit, repaint every part
+(jacket, hat or hair, scarf or bandana, pants, boots, gloves and more) and add accessories. Head: crown, party hat,
+propeller cap, cat ears, halo. Face: shades, round specs, mustache, clown nose. Back: backpack, cape, jetpack, wings.
+They move, too: the propeller spins faster as you run, the jetpack fires in the air, wings flap and the cape streams.
+Your look shows up for friends in multiplayer.
+
+![Customizing Vex with a crown and wings](docs/media/customize.png)
 
 ### Trick Park
 Four maps to skate, flip and wall-jump around, with free roam until you step on the START pad for a 60-second
@@ -101,7 +110,8 @@ needs Flip's or Nova's full moveset (and guard rails help).
 ### Play your way
 - **Multiplayer** (in the claude.ai version): play Trick Park with friends, with shared orbs and enemies, name tags and trick callouts.
 - **Controls:** keyboard & mouse, PS5 / standard controllers and touch; rebind anything in Settings → Controls.
-- **Settings:** Winter or Summer look, snowfall, a sound style for every move, music, ambience and volume mix, enemy style, side flip style.
+- **Settings** in three tabs: **Game** (season, snowfall, side flip style, ledge hang, squash & stretch, yellow snow, enemies, computer player), **Sound** (volume mix and a style for every sound) and **Controls** (rebind anything).
+- **Pause** swings the camera round to face your character, who waves and idles beside the pause menu.
 
 ## Project guide
 
@@ -137,19 +147,20 @@ by files above it. Nothing is bundled.
 | 18 | `js/pound.js` | Ground pound for every character: spin, drop, shockwave |
 | 19 | `js/input/bindings.js` | Custom controls: key, mouse and controller bindings, rebinding in Settings |
 | 20 | `js/ui/settings.js` | Settings panel (season, mix, sound styles) |
-| 21 | `js/ui/controls.js` | Controls card, keyboard, touch |
-| 22 | `js/input/gamepad.js` | PS5 / standard controller support |
-| 23 | `js/loop.js` | The frame loop: update, animate, camera, render |
-| 24 | `js/seasons.js` | Snowfall, breath, Winter/Summer switching |
-| 25 | `js/multiplayer.js` | Trick Park multiplayer over the page's room capability |
-| 26 | `js/snowballs.js` | Snowball fights: throwing, ammo (refilled by orbs), snowmen, hits on players (Trick Park only) |
-| 27 | `js/yellowsnow.js` | Yellow snow: hold-to-spray stream that marks the snow, yellow snowballs (Settings → Yellow snow) |
-| 28 | `js/winterfun.js` | Snow angels and rolling snowballs that grow |
-| 29 | `js/cpu.js` | Computer player for Trick Park (Settings → Computer player) |
-| 30 | `js/builder/maps.js` | Map Builder asset library, map cleaning, and turning a saved map into a playable Trick Park map |
-| 31 | `js/builder/editor.js` | Map Builder editor: top-down camera, placing, selecting, dragging, inspector, undo, test play |
-| 32 | `js/builder/community.js` | Drafts, publishing to the shared map list, More maps panel, export and import |
-| 33 | `js/main.js` | Startup |
+| 21 | `js/ui/customize.js` | Customize screen: outfit presets, part colors, accessories (and their animations), saved looks |
+| 22 | `js/ui/controls.js` | Controls card, keyboard, touch |
+| 23 | `js/input/gamepad.js` | PS5 / standard controller support |
+| 24 | `js/loop.js` | The frame loop: update, animate, camera, render |
+| 25 | `js/seasons.js` | Snowfall, breath, Winter/Summer switching |
+| 26 | `js/multiplayer.js` | Trick Park multiplayer over the page's room capability |
+| 27 | `js/snowballs.js` | Snowball fights: throwing, ammo (refilled by orbs), snowmen, hits on players (Trick Park only) |
+| 28 | `js/yellowsnow.js` | Yellow snow: hold-to-spray stream that marks the snow, yellow snowballs (Settings → Yellow snow) |
+| 29 | `js/winterfun.js` | Snow angels and rolling snowballs that grow |
+| 30 | `js/cpu.js` | Computer player for Trick Park (Settings → Computer player) |
+| 31 | `js/builder/maps.js` | Map Builder asset library, map cleaning, and turning a saved map into a playable Trick Park map |
+| 32 | `js/builder/editor.js` | Map Builder editor: top-down camera, placing, selecting, dragging, inspector, undo, test play |
+| 33 | `js/builder/community.js` | Drafts, publishing to the shared map list, More maps panel, export and import |
+| 34 | `js/main.js` | Startup |
 
 ## Tests
 

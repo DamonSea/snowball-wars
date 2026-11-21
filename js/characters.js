@@ -90,7 +90,7 @@ function buildChibi(parent=P){
   [-1,1].forEach(s=>{const rim=add(new THREE.TorusGeometry(.085,.03,8,16),metal,s*.12,.33,.37,head);rim.rotation.x=-.45;
     const l=add(new THREE.CylinderGeometry(.075,.075,.03,14),lens,s*.12,.33,.37,head);l.rotation.x=PI/2-.45});
   add(B(.07,.03,.03),metal,0,.33,.39,head);
-  return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,scarf,
+  return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,scarf,anc:{hr:.45,top:.56,eyeY:0,face:.5,nose:[0,-.09,.52],backY:.1,backZ:-.4},
     mats:{jacket,fleece,leather,pants,boot,sole,glove,scarf:scarfM,metal,lens,rib}};
 }
 // Nova: backcountry snowboarder. Her own rig with the same interface (root > hp > limbs, head, eyes, mats):
@@ -116,7 +116,7 @@ function buildNova(parent=P){
   T(.21,.1,fleece,0,.47,0,hp);
   add(B(.03,.5,.03),metal,0,.1,.355,hp);
   // snowboard strapped to her back
-  const board=new THREE.Group();board.position.set(0,.18,-.42);board.rotation.z=.32;hp.add(board);
+  const board=new THREE.Group();board.position.set(0,.18,-.42);board.name='board';board.rotation.z=.32;hp.add(board);
   add(B(.32,1.05,.045),metal,0,0,0,board);[-1,1].forEach(e=>add(new THREE.CylinderGeometry(.16,.16,.045,18),metal,0,e*.525,0,board).rotation.x=PI/2);
   add(B(.33,.12,.05),scarf,0,.12,-.002,board);add(B(.33,.05,.05),lens,0,-.05,-.002,board);
   [-1,1].forEach(e=>add(B(.36,.07,.09),sole,0,e*.28,.05,board));
@@ -150,7 +150,7 @@ function buildNova(parent=P){
   T(.47,.03,scarf,0,.04,0,head,0,PI);
   [-1,1].forEach(s=>{const c=add(new THREE.CylinderGeometry(.12,.12,.09,16),scarf,s*.44,-.03,0,head);c.rotation.z=PI/2;
     const l=add(new THREE.CylinderGeometry(.065,.065,.02,14),lens,s*.495,-.03,0,head);l.rotation.z=PI/2});
-  return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,pony,hsYo:.21,
+  return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,pony,hsYo:.21,board,anc:{hr:.4,top:.5,eyeY:0,face:.45,nose:[0,-.08,.45],backY:.12,backZ:-.38},
     mats:{jacket,fleece,leather,pants,boot,sole,glove,scarf,metal,lens,rib}};
 }
 // Vex: a mouthy skate punk with attitude. Same rig interface as Flip and Nova. His dangly bits run on real springs
@@ -219,7 +219,7 @@ function buildVex(parent=P){
   add(new THREE.ConeGeometry(.018,.045,4),white,.085,-.205,.405,head).rotation.x=PI;
   {const b=new THREE.Group();b.position.set(-.23,-.1,.34);b.rotation.set(0,-.55,.35);head.add(b);add(B(.13,.045,.02),tape,0,0,0,b);add(B(.045,.11,.02),tape,0,0,.004,b)}
   const gum=add(S(.15,16,12),sm(0xff4fa3,{roughness:.2,transparent:true,opacity:.92,emissive:0x5a0f30,emissiveIntensity:.4}),.05,-.22,.5,head);gum.scale.setScalar(.001);gum.visible=false;gum.castShadow=false;
-  return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,tails,hawk,chain,gum,gT:0,attitude:true,hsYo:.24,
+  return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,tails,hawk,chain,gum,gT:0,attitude:true,hsYo:.24,anc:{hr:.43,top:.42,tilt:.5,eyeY:.02,face:.47,nose:[0,-.07,.47],backY:.1,backZ:-.4},
     mats:{jacket,fleece,leather,pants,boot,sole,glove,scarf,metal,lens,rib}};
 }
 // A damped spring on one rotation axis (velocity kept on the object): dangly bits overshoot and wobble instead of easing.
@@ -266,11 +266,15 @@ const OUTFITS_VEX=[
   {...OUTFITS[4],name:'Gold Tooth',leather:0x1d1d22}];
 const unlocked=(o,list=OUTFITS)=>!list[o].lock||!!bestA.orbRunAdv2;
 const OFI={}; // each wardrobe character's current outfit, by character index
-function applyOutfit(i){const c=chars[ci];if(c.outs)applyOutfitTo(c.rig.mats,i,c.outs)}
+function applyOutfit(i){const c=chars[ci];if(!c.outs)return;if(typeof LOOKS!=='undefined'&&LOOKS[ci]){LOOKS[ci].c={};saveLook(ci);applyLook(c.rig,ci,i,LOOKS[ci])}else applyOutfitTo(c.rig.mats,i,c.outs)}
 function applyOutfitTo(M,i,list=OUTFITS){const o=list[i];
   ['jacket','fleece','leather','pants','boot','sole','glove','scarf','metal','lens'].forEach(k=>M[k].color.setHex(o[k]));
   M.lens.emissive.setHex(o.lensE);M.rib.color.setHex(o.jacket).multiplyScalar(.78);
   M.jacket.metalness=o.shiny?.55:0;M.jacket.roughness=o.shiny?.35:.75;M.rib.metalness=o.shiny?.4:0;}
+// paintable parts per wardrobe character, in Colors-tab order: [material key, label]
+const PARTS={Flip:[['jacket','Jacket'],['fleece','Collar & trim'],['leather','Cap'],['scarf','Scarf'],['pants','Pants'],['boot','Boots'],['sole','Soles'],['glove','Gloves'],['lens','Goggle lenses'],['metal','Goggle frames']],
+  Nova:[['jacket','Puffer'],['fleece','Collar & patches'],['leather','Beanie'],['glove','Mittens'],['scarf','Headphones & pom'],['pants','Snow pants'],['boot','Boots'],['sole','Soles & straps'],['metal','Snowboard'],['lens','Board stripe']],
+  Vex:[['jacket','Hoodie'],['leather','Mohawk'],['scarf','Bandana'],['fleece','Laces & strings'],['lens','Bolts'],['pants','Jeans'],['boot','Sneakers'],['sole','Soles & toe caps'],['glove','Wristbands'],['metal','Studs & chain']]};
 const chars=[
   {name:'Sunny',desc:'A bouncy little robot. Springy legs give the highest jump.',speed:1,jump:9,sp:3,jp:5,ag:2,g:body},
   {name:'Rook',desc:'A quick-footed island explorer. Fastest runner, shorter hop.',speed:1.15,jump:7.8,sp:5,jp:3,ag:3,g:R.root,rig:R},

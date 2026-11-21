@@ -49,11 +49,18 @@
       </div>
       <button class="arrow" id="next" aria-label="Next character">&rsaquo;</button>
     </div>
-    <div class="btns"><button id="csGo">Play</button><button id="csBack" class="alt">Back</button></div>
+    <div class="btns"><button id="csGo">Play</button><button id="csCust" class="alt"></button><button id="csBack" class="alt">Back</button></div>
     <div class="outfits" id="outfits"></div>
     <div class="dots" id="dots"></div>
   </div>
 </div>
+<div id="cust" class="hide" aria-label="Customize character"><div class="custcard" role="dialog" aria-labelledby="custT">
+  <h1 id="custT">Customize <span id="custName"></span></h1>
+  <div class="ctabs" role="tablist"><button class="ctab" role="tab" data-t="outfit">Outfits</button><button class="ctab" role="tab" data-t="color">Colors</button><button class="ctab" role="tab" data-t="acc">Accessories</button></div>
+  <div id="custBody" class="custbody"></div>
+  <div class="btns"><button id="custDone">Done</button><button id="custReset" class="alt">Reset look</button></div>
+  <p class="bHelp ctip">Drag the character (or ← →) to turn them. Q / E switch tabs.</p>
+</div></div>
 <div id="maps" class="ov hide" aria-label="More maps"><div class="card setcard mapscard" role="dialog" aria-modal="true" aria-labelledby="mapsT">
   <h1 id="mapsT">More maps</h1><p class="bHelp" style="text-align:center">Build your own Trick Park maps, play them, and publish them into the game.</p><div id="mapsList"></div></div></div>
 <div id="bld" class="hide" aria-label="Map builder">
@@ -69,7 +76,8 @@
 </div>
 <div id="set" class="ov hide" aria-hidden="true"><div class="card setcard" role="dialog" aria-modal="true" aria-labelledby="setT">
   <h1 id="setT">Settings</h1>
-  <p class="setsub">Pick the season, set the mix, then pick a style for each sound. Choosing one plays it; <span aria-hidden="true">&#9654;</span> replays it.</p>
+  <div class="stabs" role="tablist" aria-label="Settings sections"><button class="stab" role="tab" data-st="game">Game</button><button class="stab" role="tab" data-st="sound">Sound</button><button class="stab" role="tab" data-st="controls">Controls</button></div>
+  <p class="setsub" id="setSub"></p>
   <div class="vol"><label for="volr">Master</label><input type="range" id="volr" min="0" max="100" step="5"><button id="setMute" class="alt mini"></button></div>
   <div class="vols"><div class="vol"><label for="v-vMus">Music</label><input type="range" id="v-vMus" data-k="vMus" min="0" max="100" step="5"></div><div class="vol"><label for="v-vSfx">Effects</label><input type="range" id="v-vSfx" data-k="vSfx" min="0" max="100" step="5"></div><div class="vol"><label for="v-vAmb">Ambience</label><input type="range" id="v-vAmb" data-k="vAmb" min="0" max="100" step="5"></div></div>
   <div id="setList" class="setlist"></div>
@@ -103,6 +111,7 @@
 <script src="js/pound.js"></script>
 <script src="js/input/bindings.js"></script>
 <script src="js/ui/settings.js"></script>
+<script src="js/ui/customize.js"></script>
 <script src="js/ui/controls.js"></script>
 <script src="js/input/gamepad.js"></script>
 <script src="js/loop.js"></script>

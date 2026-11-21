@@ -14,7 +14,7 @@ ok('idle: arms crossed',crossed);ok('idle: blows a bubble (scale '+bub.toFixed(2
 __k({KeyW:true});__step(5);ok('moving uncrosses the arms',H.gum.visible===false);__k({});
 // Exaggerated squash & stretch
 setToon(false);__place(0,10,0,Math.PI);__step(30);ok('normal mode: ordinary scale',Math.abs(H.root.scale.y-1)<.05);
-setToon(true);ok('setting saved',localStorage.getItem('orbRunSquash')==='big');
+setToon(true);ok('setting saved',localStorage.getItem('orbRunSquash')==='1');
 __place(0,10,0,Math.PI);jumpBuf=.15;keys.Space=true;let up=0;for(let i=0;i<12;i++){__step(1);up=Math.max(up,H.root.scale.y)}keys.Space=false;
 __until(()=>grounded,200);let lo=9;for(let i=0;i<10;i++){__step(1);lo=Math.min(lo,H.root.scale.y)}
 ok('jump stretches tall ('+up.toFixed(2)+')',up>1.25);ok('landing squashes flat ('+lo.toFixed(2)+')',lo<.75);
@@ -25,6 +25,6 @@ ok('ground pound: balls up ('+sp.toFixed(2)+'), stretches down ('+dn.toFixed(2)+
 // Sunny gets it too
 ci=0;__place(0,10,0,Math.PI);__step(60);jumpBuf=.15;keys.Space=true;let su=0;for(let i=0;i<12;i++){__step(1);su=Math.max(su,body.scale.y)}keys.Space=false;ok('Sunny stretches too ('+su.toFixed(2)+')',su>1.2);
 setToon(false);__until(()=>grounded,200);__step(60);ok('turning it off restores scale',Math.abs(body.scale.y-1)<.05);
-ok('settings row',LOOK.squash&&LOOK.squash.opts[1]==='Exaggerated');
+ok('settings slider',LOOK.squash&&LOOK.squash.slider);
 const a=makeAv(4);ok('multiplayer avatar for Vex',!!a.rig.tails&&a.rig.hawk.length===6);
 ci=4;__step=_st;return out.join('\n')})()

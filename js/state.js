@@ -44,7 +44,7 @@ function showChar(){
   const c=chars[ci];$('csName').textContent=c.name;$('csDesc').textContent=c.desc;
   $('bSp').style.width=c.sp*20+'%';$('bJp').style.width=c.jp*20+'%';$('bAg').style.width=c.ag*20+'%';
   renderOutfits();
-  $('csMoves').textContent=c.moves||'';$('cb').classList.toggle('na',!c.acro);
+  $('csMoves').textContent=c.moves||'';$('csCust').textContent=c.outs?'Customize':'';$('cb').classList.toggle('na',!c.acro);
   $('dots').innerHTML=pickOrder().map(i=>`<i class="${i===ci?'on':''}"></i>`).join('');
   wave=1.6;if(!lockChar){pickCi=ci;try{localStorage.setItem('orbRunPick',ci)}catch(e){}}
 }
@@ -63,11 +63,11 @@ const pickOrder=()=>lockChar?ORDER.filter(i=>chars[i].acro):ORDER;
 function cycle(d){const O=pickOrder();ci=O[(O.indexOf(ci)+d+O.length)%O.length];showChar();SFX.ui(ci)}
 function confirmChar(){$('cs').classList.add('hide');document.activeElement&&document.activeElement.blur&&document.activeElement.blur();if(pickMode==='run'){useRunMap(pickLevel);startRun()}else startAdv(pickLevel)}
 $('prev').addEventListener('click',()=>cycle(-1));$('next').addEventListener('click',()=>cycle(1));
-$('csGo').addEventListener('click',confirmChar);
+$('csGo').addEventListener('click',confirmChar);$('csCust').addEventListener('click',()=>openCust());
 $('csBack').addEventListener('click',()=>{$('cs').classList.add('hide');menu()});
 function setWorld(m){RUNMAPS.forEach(M=>M.grp.visible=m==='run'&&M===runL);levels.forEach(L=>L.advW.visible=m==='adv'&&L===curL)}
 function resume(){state='play';overlay(false)}
 function retry(){mode==='run'?startRun(runFree):startAdv(curIdx)}
-function pause(){if(state!=='play')return;state='paused';
+function pause(){if(state!=='play')return;state='paused';wave=1.6;idleT=0;
   if(mode==='run'&&runFree){overlay(true,'Free roam','Practice as long as you like.'+gapText(),'Resume','Start timed run',resume,()=>{resume();beginTimed()},'Settings',()=>openSet(),...(BLD.testing?['Back to builder',()=>backToBuilder()]:['Quit to menu',()=>menu()]));return}
   overlay(true,'Paused',mode==='run'?(FOE_STYLE==='spike'?'Take a breather. The spikeballs will wait.':'Take a breather. The bad guys will wait.')+gapText():`${curL.name} \u00b7 ${fmt(atime)} \u00b7 ${coreCount}/3 cores`,'Resume','Retry',resume,retry,'Settings',()=>openSet(),...(BLD.testing?['Back to builder',()=>backToBuilder()]:['Quit to menu',()=>menu()]))}

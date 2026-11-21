@@ -60,13 +60,14 @@ function updAvatars(dt){
     seen.add(peer.peer);const ch=[0,1,2,3].includes(pr.ch)?pr.ch:2;let a=MP.av.get(peer.peer);
     if(a&&a.ch!==ch){dropAv(a);a=null}
     if(!a){a=makeAv(ch);MP.av.set(peer.peer,a)}
-    {const L=chars[ch].outs;if(L&&Number.isInteger(pr.of)&&L[pr.of]&&pr.of!==a.of){applyOutfitTo(a.rig.mats,pr.of,L);a.of=pr.of}}
+    {const L=chars[ch].outs,ks=JSON.stringify(pr.lk||null);if(L&&Number.isInteger(pr.of)&&L[pr.of]&&(pr.of!==a.of||ks!==a.lk)){applyLook(a.rig,ch,pr.of,cleanLook(pr.lk,ch));a.of=pr.of;a.lk=ks}}
     const G=a.g.position;if(!a.init){G.set(p[0],p[1],p[2]);a.init=true}
     const ox=G.x,oz=G.z;G.x+=(p[0]-G.x)*k;G.y+=(p[1]-G.y)*k;G.z+=(p[2]-G.z)*k;a.g.rotation.y+=angD(p[3],a.g.rotation.y)*k;
     if(Array.isArray(pr.q))applyPose(a,pr.q,Math.min(1,k*1.6));
     const sp=Math.hypot(G.x-ox,G.z-oz)/Math.max(dt,1e-3);
     if(a.rig.pony){const fl=Math.min(1,sp*.08);a.rig.pony.forEach((g,i)=>{g.rotation.x=(i?.12+fl*.22:.45+fl*.75)+Math.sin(tAll*(5+sp*.6)-i*1.2)*(.05+fl*.08)})}
     if(a.rig.tails){const fl=Math.min(1,sp*.09);a.rig.tails.forEach((c,j)=>c.forEach((g,i)=>{g.rotation.x=(i?.15+fl*.22:.35+fl*.85)+Math.sin(tAll*(5+sp*.7)-i*1.3+j*1.7)*(.03+fl*.09)}));a.rig.hawk.forEach((g,i)=>g.rotation.x=g._b-fl*.22*(i+1)/5)}
+    if(a.rig.accA&&a.rig.accA.length)accFrame(a.rig,dt,sp,false,{f:0,s:0,u:0});
     if(a.rig.scarf){const fl=Math.min(1.25,sp*.11);a.rig.scarf.forEach((g,i)=>{g.rotation.x=(i?fl*.12:.25+fl)+Math.sin(tAll*(6+sp)-i*1.1)*(.08+fl*.12)})}
     snowFromPeer(peer,a);
     drawTag(a,nameOf(peer),Number.isFinite(pr.sc)?Math.floor(pr.sc):0,!!pr.fr);
@@ -98,7 +99,7 @@ function mpFrame(dt){
   const want=wantRoom();if(want!==MP.roomName&&!MP.joining&&now>MP.retryAt)switchRoom(want);
   electHost();updAvatars(dt);
   if(MP.room&&now-MP.lastSend>50){MP.lastSend=now;
-    const pr={nm:MP.myName||'Player',ch:ci,of:OFI[ci]??0,p:[P.position.x,py,P.position.z,face].map(f2),q:poseOf(),sc:score,fr:runFree?1:0,t:[MP.tr.n,MP.tr.s],c:[MP.cl.n,MP.cl.o,MP.cl.k],sb:SB.sent,hb:SB.hits,yw:YS.spray?1:0,z:SB.stun>0?1:0,H:null};
+    const pr={nm:MP.myName||'Player',ch:ci,of:OFI[ci]??0,lk:LOOKS[ci]||null,p:[P.position.x,py,P.position.z,face].map(f2),q:poseOf(),sc:score,fr:runFree?1:0,t:[MP.tr.n,MP.tr.s],c:[MP.cl.n,MP.cl.o,MP.cl.k],sb:SB.sent,hb:SB.hits,yw:YS.spray?1:0,z:SB.stun>0?1:0,H:null};
     if(MP.host)pr.H={o:orbs.map(o=>[o.id,f2(o.g.position.x),f2(o.y),f2(o.g.position.z),o.gold?1:0,o.v,o.ring.visible?0:1,o.beam?1:0]),h:runHz.filter(h=>!h.dead).map(h=>[h.id,f2(h.g.position.x),f2(h.g.position.z),KINDS.indexOf(h.kind),Math.max(0,FSTATES.indexOf(h.st)),f2(h.face||0)]),g:FX.sent};
     MP.room.presence(pr).catch(()=>{})}
   if(now-MP.lastList>250){MP.lastList=now;mpList()}

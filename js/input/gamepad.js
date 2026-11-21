@@ -44,10 +44,11 @@ function pollPad(){
   if(pr(8)){setMute(!AU.muted);toast(AU.muted?'Sound off':'Sound on');if(setOpen)renderSet()}
   const L=pr(14)||se==='l',R=pr(15)||se==='r',U=pr(12)||se==='u',D=pr(13)||se==='d';
   if(capPad(pr))return;
-  if(setOpen){setNav(L,R,U,D,pr(0),pr(1)||pr(9));return}
+  if(setOpen){setNav(L,R,U,D,pr(0),pr(1)||pr(9),pr(4),pr(5));return}
   if(state==='play'){
     for(const a of ACT)if(BIND.pad[a.id]&&BIND.pad[a.id].some(i=>pr(i))){press(a.id);if(state!=='play')break}if(pr(17))setCtl(!ctlHidden);
-  }else if(state==='select'){
+  }else if(state==='select'&&CUST.on){custPad(L,R,pr(0),pr(1),pr(4),pr(5));
+  }else if(state==='select'){if(pr(3)&&chars[ci].outs){openCust();return}
     if(L)cycle(-1);if(R)cycle(1);if(U)cycleOutfit(-1);if(D)cycleOutfit(1);
     if(pr(0))confirmChar();else if(pr(1)){$('cs').classList.add('hide');menu()}
   }else if(!$('ov').classList.contains('hide')){

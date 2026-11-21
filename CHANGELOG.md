@@ -3,6 +3,21 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.8.0] - 2026-11-20 — Make them yours
+### Added
+- **Customize** on character select for Flip, Nova and Vex: outfit presets, a color for every part, and accessories in
+  three slots (head: crown, party hat, propeller cap, cat ears, halo; face: shades, round specs, mustache, clown nose;
+  back: backpack, cape, jetpack, wings) with an accessory color. Accessories animate. Looks save per character and show
+  in multiplayer.
+- Pause camera: the view swings in front of your character, who faces you and waves beside the pause menu.
+### Changed
+- Settings are split into **Game**, **Sound** and **Controls** tabs (L1 / R1 switch tabs on a controller).
+- Squash & stretch is now a slider from Default to Max instead of an on/off choice.
+- The Music, Effects and Ambience sliders are stacked full width.
+### Fixed
+- The menu and character-select idle code never ran (a stray `else`), so the menu character now sways and waves
+  every few seconds as intended.
+
 ## [2.7.0] - 2026-11-20 — Vex
 ### Added
 - **Vex**, a new acrobat with Flip's full moveset: a mouthy skate punk with a pink mohawk, half-lidded side-eye, a
