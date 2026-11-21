@@ -60,6 +60,7 @@ function pollPad(){
   const L=pr(14)||se==='l',R=pr(15)||se==='r',U=pr(12)||se==='u',D=pr(13)||se==='d';
   if(capPad(pr))return;
   if(setOpen){setNav(L,R,U,D,pr(0),pr(1)||pr(9),pr(4),pr(5));return}
+  if(PARK.on){parkPad(L,R,pr(0),pr(1),pr(3));return}
   if(typeof mapsOpen!=='undefined'&&mapsOpen){panelNav($('maps'),L,R,U,D,pr(0));if(pr(1)){closeMapsPanel();parkMenu()}return}
   if(state==='play'){
     for(const a of ACT)if(BIND.pad[a.id]&&BIND.pad[a.id].some(i=>pr(i))){press(a.id);if(state!=='play')break}if(pr(17))setCtl(!ctlHidden);

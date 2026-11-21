@@ -25,17 +25,15 @@ function overlay(show,t,p,goTxt,altTxt,go,alt,alt2Txt='',alt2=null,alt3Txt='',al
   setTimeout(()=>$('go').focus(),50);
 }
 $('go').addEventListener('click',()=>onGo&&onGo());$('alt2').addEventListener('click',()=>onAlt2&&onAlt2());$('alt3').addEventListener('click',()=>onAlt3&&onAlt3());$('alt4').addEventListener('click',()=>onAlt4&&onAlt4());$('alt5').addEventListener('click',()=>onAlt5&&onAlt5());$('alt').addEventListener('click',()=>onAlt&&onAlt());
-function menu(){BLD.testing=false;if(typeof closeMapsPanel==='function')closeMapsPanel();chars.forEach((c,i)=>{if(c.outs&&!unlocked(OFI[i],c.outs)){OFI[i]=0;applyOutfitTo(c.rig.mats,0,c.outs)}});
+function menu(){BLD.testing=false;if(typeof closePark==='function')closePark();if(typeof closeMapsPanel==='function')closeMapsPanel();chars.forEach((c,i)=>{if(c.outs&&!unlocked(OFI[i],c.outs)){OFI[i]=0;applyOutfitTo(c.rig.mats,0,c.outs)}});
 
   state='menu';mode='run';ci=2;wave=1.6;setWorld('run');resetRun();hint('');hud();freeUI();
-  overlay(true,'Snowball Wars','Meet Flip the stunt pilot and Nova the snowboarder, two daredevils with momentum to burn. Trick Park: chain flips, dives and wall jumps into combos, grab orbs for snowballs and pelt your rivals. Adventure: handmade levels to conquer.','Trick Park','Adventure',()=>parkMenu(),()=>levelMenu(),'Map Builder',()=>openMapsPanel());
+  overlay(true,'Snowball Wars','','Trick Park','Adventure',()=>parkMenu(),()=>levelMenu(),'Map Builder',()=>openMapsPanel());
   $('ov').classList.add('menu');
 }
-function parkMenu(){const lab=(n,i)=>{const c=mapCount(i);return c?`${n} \u00b7 ${c} here`:n};
-  overlay(true,'Trick Park','Plaza: a skatepark built around trick lines, with named gaps to discover. Frozen Rink: skate on slippery ice, then trick off the snow fort and candy canes. Rooftops: a vertical city of wall-jump alleys and rooftop orbs. Jungle Gym: one connected playground of forts, monkey bars, trampolines and a wall-jump canyon, built to use every move.'+(MP.on?' Friends on the same map play together.':''),lab('Plaza',0),lab('Frozen Rink',1),()=>select('run',0),()=>select('run',1),lab('Rooftops',2),()=>select('run',2),lab('Jungle Gym',3),()=>select('run',3),'More maps & builder',()=>openMapsPanel(),'Back',()=>menu())}
 function levelMenu(){overlay(true,'Adventure','Lighthouse Isles: hop across islands and light the lighthouse. Sky Gauntlet: a climb through sky ruins that needs every one of Flip’s tricks, wall jumps included.','Lighthouse Isles','Sky Gauntlet',()=>select('adv',0),()=>select('adv',1),'Back',()=>menu())}
 let pickMode='run',pickLevel=0,lockChar=false;
-function select(m,lv=0){
+function select(m,lv=0){if(typeof closePark==='function')closePark();
   pickMode=m;pickLevel=lv;if(m==='run'&&lv!==runIdx){useRunMap(lv);setWorld('run');resetRun()}lockChar=m==='adv'&&!!levels[lv].flipOnly;ci=lockChar&&!chars[pickCi].acro?2:pickCi;state='select';overlay(false);$('cs').classList.remove('hide');
   P.position.set(0,0,0);py=0;vel.set(0,0,0);
   $('csMode').textContent=m==='run'?`Trick Park \u00b7 ${RUNMAPS[lv].name}`:`Adventure · ${levels[lv].name}${lockChar?' · Flip, Nova and Vex only':''}`;showChar();setTimeout(()=>$('csGo').focus(),50);

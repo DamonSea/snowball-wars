@@ -235,3 +235,21 @@ body.padnav .cpal .sw:focus{outline:3px solid #fff;outline-offset:2px;transform:
 body.padnav #cust .opt:focus,body.padnav #cust .cpre:focus,body.padnav #cust .ctab:focus{outline:3px solid #fff;outline-offset:2px}
 
 .bTog.on{background:#39c46b;color:#fff}.bWarn{color:#ffd84a;opacity:1}.bHr{border:0;border-top:1px solid rgba(255,255,255,.15);margin:10px 0}
+
+/* ----- main menu: title and three buttons ----- */
+.ov.menu #ovP:empty,.ov.menu .ktip,.ov.menu #best{display:none}
+#ovT.logo::after{content:" \2744\FE0E";font-size:.8em;color:#bfefff}
+.ov.menu .btns{flex-direction:column;align-items:stretch;min-width:240px}.ov.menu .btns button{font-size:20px;min-height:52px}
+/* ----- Trick Park menu ----- */
+.park{position:fixed;inset:0;display:grid;place-items:center;padding:16px;z-index:3;background:radial-gradient(circle at 50% 40%,rgba(18,63,87,.15),rgba(5,18,28,.7))}
+.park.hide{display:none}
+.parkcard{width:min(560px,100%);text-align:center;background:var(--card);border:2px solid rgba(255,216,74,.35);border-radius:28px;padding:18px 20px 16px;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.parkcard h1{margin:0 0 10px;font-size:36px}
+.parkframe{display:block;width:100%;aspect-ratio:16/9;padding:0;border-radius:20px;overflow:hidden;border:3px solid rgba(255,255,255,.35);background:#a9c9d8;box-shadow:none;cursor:pointer}
+.parkframe img{width:100%;height:100%;object-fit:cover;display:block}.parkframe.noimg img{display:none}
+.parkframe:hover,.parkframe:focus{border-color:#ffd84a}
+.parkpick{display:flex;align-items:center;justify-content:center;gap:12px;margin:14px 0 4px}
+.parkname{min-width:210px;padding:8px 22px;border-radius:999px;background:#1b3a4b;font:800 26px "Baloo 2",system-ui,sans-serif}
+.parkarrow{width:46px;height:46px;min-height:0;padding:0;border-radius:50%;font-size:18px}
+.parkbest{margin:6px 0 0;font:700 17px "Inter",sans-serif}.parkmeta{margin:2px 0 10px;font-size:13px;opacity:.7}
+body.setopen #park{visibility:hidden}

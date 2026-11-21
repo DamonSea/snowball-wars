@@ -9,7 +9,7 @@
 //     tree(x,z,scale,g,advCol);                            // climbable trees, rocks, decor...
 //     RUNMAPS.push({name:'My Map',grp:g,plats,advCol,spad:{x:0,z:5},key:'orbRunBestN',
 //       spots:[{x,z,y,v,any,air}, ...]}); }               // orb spots: y = surface height
-//   Then add the map to parkMenu() in state.js and its best-score key to bestR in state.js.
+//   The Trick Park menu lists it automatically; add its best-score key to bestR in state.js.
 // Adding an Adventure level: create js/levels/<name>.js that calls beginLevel(), builds with
 //   cylPlat/boxPlat/movPlat/patrol/circler/addCore/addFlag/makePad, sets goal={x,z,y,pad,padM,look,on(v),spin(dt)},
 //   pushes tutorial zones if wanted, then endLevel({name,key,intro,allMsg,need,winT,winHint}).

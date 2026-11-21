@@ -33,6 +33,7 @@ addEventListener('keydown',e=>{if(capKey(e))return;if(e.metaKey){if(e.key!=='Met
   const acts=actsOfKey(e.code==='NumpadEnter'?'Enter':e.code);
   if(!e.repeat)for(const id of acts)if(state==='play'||(id==='pause'&&state==='paused'))press(id);
   if((acts.length||['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))&&state==='play')e.preventDefault();
+  if(state==='menu'&&PARK.on&&!setOpen){if(parkKey(e.code))e.preventDefault();return}
   if(state==='select'&&CUST.on){if(!e.target.closest||!e.target.closest('input'))custKey(e.code);if(e.code.startsWith('Arrow'))e.preventDefault();return}
   if(state==='select'){if(e.code==='ArrowLeft'||e.code==='KeyA')cycle(-1);if(e.code==='ArrowRight'||e.code==='KeyD')cycle(1);
     if(e.code==='ArrowUp'||e.code==='KeyW'){e.preventDefault();cycleOutfit(-1)}if(e.code==='ArrowDown'||e.code==='KeyS'){e.preventDefault();cycleOutfit(1)}

@@ -3,7 +3,14 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
-## [2.12.0] - 2026-11-21 — Camera modes
+## [2.13.0] - 2026-11-21 — Simpler menus
+### Changed
+- **Main menu:** just the title and three buttons (Trick Park, Adventure, Map Builder) beside Flip; the intro
+  paragraph and score list are gone.
+- **Trick Park menu:** one map at a time, with a picture of the map, its name between ◀ ▶ arrows, and your best score.
+  Click the picture or Play to go. Controller: ←→ flip maps, ✕ play, △ more maps, ○ back. Keyboard: arrows, Enter, Esc.
+
+ - 2026-11-21 — Camera modes
 ### Added
 - **Settings → Game → Camera:** Classic (the default, unchanged), Behind you (swings round to stay behind you as you
   run), Free (aim it with the right stick; up/down tilts) and Free + auto (like Free, but drifts back behind you when
