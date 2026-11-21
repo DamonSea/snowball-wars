@@ -43,6 +43,11 @@ function pollPad(){
   let gp=null;try{const l=navigator.getGamepads?navigator.getGamepads():[];for(const g of l)if(g&&g.connected&&g.buttons.length&&(!gp||g.timestamp>gp.timestamp))gp=g}catch(e){}
   pad.gp=gp;
   if(!gp){pad.x=pad.z=0;pad.jump=pad.crouch=false;padNow=[];if(pad.connected){pad.connected=false;padChanged()}padPrev=[];return}
+  // without focus the browser may stop updating the controller and keep reporting the last buttons as held (a stuck
+  // Crouch, for one), so while the game isn't focused, treat everything as let go
+  if(document.hasFocus&&!document.hasFocus()){pad.x=pad.z=0;pad.jump=pad.crouch=false;padNow=[];padPrev=[];
+    if(!pad.unfocused&&pad.connected&&state==='play'){pad.unfocused=true;toast('Click the game to keep using your controller.')}return}
+  pad.unfocused=false;
   if(!pad.connected){pad.connected=true;padChanged()}
   const now=readButtons(gp);
   const prev=padPrev,pr=i=>now[i]&&!prev[i];

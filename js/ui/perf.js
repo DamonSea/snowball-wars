@@ -22,9 +22,14 @@ function qualFrame(ms){if(GFX.mode!=='auto'||state!=='play'||ms>250)return;GFX.a
 try{setQual(localStorage.getItem('orbRunQuality')||'auto')}catch(e){setQual('auto')}
 // called once per frame from tick(), after rendering
 function perfFrame(){const now=performance.now(),ms=now-PERF.last;PERF.last=now;qualFrame(ms);if(!PERF.on)return;PERF.frames++;PERF.acc+=ms;PERF.worst=Math.max(PERF.worst,ms);
-  if(PERF.acc<500)return;const I=renderer.info,fps=PERF.frames*1000/PERF.acc;
+  if(PERF.acc<500)return;const I=renderer.info||{render:{calls:0,triangles:0},memory:{geometries:0,textures:0}},fps=PERF.frames*1000/PERF.acc;
   PERF.el.innerHTML=`<b class="${fps<30?'bad':fps<50?'meh':'good'}">${fps.toFixed(0)} fps</b> ${(PERF.acc/PERF.frames).toFixed(1)} ms <small>(worst ${PERF.worst.toFixed(0)})</small><br>`+
     `${I.render.calls} draw calls · ${(I.render.triangles/1000).toFixed(0)}k tris<br>${I.memory.geometries} geometries · ${I.memory.textures} textures · ${I.programs?I.programs.length:0} shaders<br>`+
-    `${renderer.domElement.width}×${renderer.domElement.height} @ ${renderer.getPixelRatio().toFixed(2)}x${typeof GFX!=='undefined'?' · '+GFX.name:''}`;
+    `${renderer.domElement.width}×${renderer.domElement.height} @ ${renderer.getPixelRatio?renderer.getPixelRatio().toFixed(2):1}x${typeof GFX!=='undefined'?' · '+GFX.name:''}`;
+  // what the player is doing, and what (if anything) is holding Crouch down: for tracking down stuck states
+  if(state==='play'||state==='paused'){const kb=(BIND.kb.crouch||[]).filter(k=>keys[k]),pb=(BIND.pad.crouch||[]).filter(i=>padNow[i]).map(i=>PADN[i]||('#'+i)),
+    held=[...kb,...pb.map(n=>'pad '+n),...(joy.crouch?['touch']:[])],gp=pad.gp,trig=gp?[6,7].map(i=>gp.buttons[i]?gp.buttons[i].value.toFixed(2):'-').join('/'):'-';
+    PERF.el.innerHTML+=`<br><small>${chars[ci].name} · ${A.mode}${BS.on?' · butt slide':''}${LH.on?' · ledge hang':''}${CL.on?' · climbing':''}${SB.stun>0?' · stunned':''}${A.knock>0?' · knocked':''} · ${grounded?'ground':'air'}<br>`+
+      `crouch: ${held.length?'<b class="bad">held by '+held.join(', ')+'</b>':'not held'} · L2/R2 ${trig}<br>${runL.name} (${P.position.x.toFixed(1)}, ${py.toFixed(1)}, ${P.position.z.toFixed(1)}) · cam ${CAM_NAMES[CAMS.indexOf(CAM.mode)]}</small>`}
   PERF.frames=0;PERF.acc=0;PERF.worst=0}
 addEventListener('keydown',e=>{if(e.code==='Backquote'&&!e.repeat&&!(e.target.closest&&e.target.closest('input')))setPerf(!PERF.on)});

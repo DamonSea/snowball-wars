@@ -3,6 +3,14 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.15.1] - 2026-11-21 — Stuck-crouch hunting
+### Fixed
+- The controller is released while the game doesn't have focus (the browser can stop updating it and keep reporting
+  the last buttons as held, which could leave Crouch stuck). A message says to click the game to keep playing.
+### Added
+- The stats overlay (` key) now shows what your character is doing (crouch, butt slide, ledge hang, climbing...)
+  and exactly which key or controller button the game thinks is holding Crouch, plus map, position and camera.
+
 ## [2.15.0] - 2026-11-21 — The core three
 ### Changed
 - The playable cast is now **Flip, Nova and Tuk**. Sunny, Rook and Vex are benched for now: their code stays in the
