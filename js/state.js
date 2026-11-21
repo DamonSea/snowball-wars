@@ -44,7 +44,7 @@ function showChar(){
   const c=chars[ci];$('csName').textContent=c.name;$('csDesc').textContent=c.desc;
   $('bSp').style.width=c.sp*20+'%';$('bJp').style.width=c.jp*20+'%';$('bAg').style.width=c.ag*20+'%';
   renderOutfits();
-  $('csMoves').textContent=c.moves||'';$('csCust').textContent=c.outs?'Customize':'';$('cb').classList.toggle('na',!c.acro);
+  $('csMoves').textContent=c.moves||'';$('csCust').innerHTML=c.outs?'Customize<span class="pk" aria-hidden="true">\u25b3</span>':'';$('cb').classList.toggle('na',!c.acro);
   $('dots').innerHTML=pickOrder().map(i=>`<i class="${i===ci?'on':''}"></i>`).join('');
   wave=1.6;if(!lockChar){pickCi=ci;try{localStorage.setItem('orbRunPick',ci)}catch(e){}}
 }

@@ -1,6 +1,6 @@
 (()=>{const out=[];const ok=(n,c)=>out.push((c?'OK   ':'FAIL ')+n);const hx=m=>m.color.getHex?m.color.getHex():null;
 menu();__step(2);pickMode='run';pickLevel=0;$('cs').classList.remove('hide');state='select';ci=0;showChar();ok('no Customize for Sunny',$('csCust').textContent==='');
-ci=2;showChar();ok('Customize for Flip',$('csCust').textContent==='Customize');
+ci=2;showChar();ok('Customize for Flip',$('csCust').textContent.startsWith('Customize'));
 $('csCust').click();__step(2);ok('panel opens, select card hides',CUST.on&&!$('cust').classList.contains('hide')&&$('cs').classList.contains('hide'));
 document.querySelector('#cust .ctab[data-t="color"]').click();const rows=document.querySelectorAll('#custBody .crow').length;ok('Colors tab lists Flip parts ('+rows+')',rows===PARTS.Flip.length);
 document.querySelector('#custBody [data-p="jacket"][data-c="'+0x2f6fd0+'"]').click();ok('recolor jacket',F.mats.jacket.color.getHex()===0x2f6fd0&&LOOKS[2].c.jacket===0x2f6fd0);

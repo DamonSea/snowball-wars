@@ -3,6 +3,15 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.9.1] - 2026-11-20 — Controller-friendly menus
+### Added
+- Button prompts whenever a controller is connected: ✕ Play, △ Customize, ○ Back / Done, and L1 / R1 beside tabs.
+- Full controller navigation in Customize and More maps: the D-pad moves to the nearest control, ✕ picks, ○ goes
+  back, L1 / R1 switch tabs, and the right stick turns your character in Customize. Sliders change with ←→.
+### Fixed
+- Scrolling menus with a controller: the focused control now stays in view, settings open at the top instead of
+  jumping to the bottom, and the menu behind Settings is hidden instead of showing through.
+
 ## [2.9.0] - 2026-11-20 — Performance
 ### Added
 - **Settings → Game → Graphics: Auto / High / Balanced / Low.** Auto starts at 1.5x resolution and adjusts while you

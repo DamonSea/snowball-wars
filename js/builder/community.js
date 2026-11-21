@@ -57,7 +57,7 @@ function renderMaps(){if(!mapsOpen)return;const d=Object.values(loadDrafts()).so
   else if(COMM.status==='slow'||COMM.status==='error')h+='<p class="bHelp">Shared maps can’t be reached right now.</p>';
   else if(!COMM.list.length)h+='<p class="bHelp">Nothing published yet. Build a map and press Publish.</p>';
   else h+=COMM.list.map(m=>`<div class="mRow"><div><b>${esc(m.name)}</b><small>by ${esc(m.author||'someone')} · ${+m.items||0} items</small></div><span><button data-a="pplay" data-id="${esc(m.id)}">Play</button><button data-a="pedit" data-id="${esc(m.id)}" class="alt">${mine(m)?'Edit':'Copy'}</button>${mine(m)?`<button data-a="unpub" data-id="${esc(m.id)}" class="alt mDel" aria-label="Unpublish ${esc(m.name)}">✕</button>`:''}</span></div>`).join('');
-  h+='<div class="btns"><button id="mBack" class="alt">Back</button></div>';$('mapsList').innerHTML=h}
+  h+='<div class="btns"><button id="mBack" class="alt">Back<span class="pk" aria-hidden="true">\u25cb</span></button></div>';$('mapsList').innerHTML=h}
 $('maps').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const id=b.dataset.id,a=b.dataset.a;
   if(b.id==='mNew')return openBuilder(blankMap());if(b.id==='mImp')return $('bFile').click();if(b.id==='mBack'){closeMapsPanel();return parkMenu()}
   const dr=loadDrafts()[id],pub=COMM.list.find(m=>m.id===id);

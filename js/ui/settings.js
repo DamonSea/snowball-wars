@@ -36,8 +36,9 @@ function renderSet(){
   $('setPad').textContent=pad.connected?'Controller: L1 / R1 switch tabs · ↑↓ choose a row · ←→ change it · ✕ preview · ○ done':'';
 }
 function chooseSfx(k,i){sfxSel[k]=i;try{localStorage.setItem('orbRunSfx',JSON.stringify(sfxSel))}catch(e){}renderSet();if(i>=0){if(AU.muted)toast('Sound is muted');else previewSfx(k)}}
-function openSet(){if(state==='play')pause();setOpen=true;setRow=tabRows()[0];renderSet();$('set').classList.remove('hide');$('set').setAttribute('aria-hidden','false');setTimeout(()=>$('setClose').focus(),50)}
-function closeSet(){CAP=null;setOpen=false;$('set').classList.add('hide');$('set').setAttribute('aria-hidden','true');document.activeElement&&document.activeElement.blur&&document.activeElement.blur();
+function openSet(){if(state==='play')pause();setOpen=true;setRow=tabRows()[0];renderSet();document.body.classList.add('setopen');$('set').classList.remove('hide');$('set').setAttribute('aria-hidden','false');
+  const card=$('set').querySelector('.setcard');card.scrollTop=0;setTimeout(()=>{try{$('setClose').focus({preventScroll:true})}catch(e){}card.scrollTop=0},50)}
+function closeSet(){CAP=null;setOpen=false;document.body.classList.remove('setopen');$('set').classList.add('hide');$('set').setAttribute('aria-hidden','true');document.activeElement&&document.activeElement.blur&&document.activeElement.blur();
   if(!$('ov').classList.contains('hide'))setTimeout(()=>$('go').focus(),50)}
 $('gear').addEventListener('click',()=>{$('gear').blur();setOpen?closeSet():openSet()});
 $('setClose').addEventListener('click',closeSet);
@@ -54,7 +55,7 @@ function setNav(L,R,U,D,ok,back,lb,rb){
   if(lb||rb){const T=['game','sound','controls'];setTabTo(T[(T.indexOf(setTab)+(rb?1:2))%3]);return}
   const[r0,r1]=tabRows();if(setRow<r0||setRow>=r1)setRow=r0;
   if(U||D){document.body.classList.add('padnav');setRow=r0+(setRow-r0+(D?1:-1)+(r1-r0))%(r1-r0);renderSet();
-    const row=$('setList').querySelector(`[data-row="${setRow}"]`);row&&row.scrollIntoView({block:'nearest'})}
+    const row=$('setList').querySelector(`[data-row="${setRow}"]`);row&&row.scrollIntoView({block:'nearest'});if(setRow===r0)$('set').querySelector('.setcard').scrollTop=0}
   const k=ROWS[setRow];
   if(k.startsWith('k:')||k.startsWith('p:')){if(L||R){setSlot=R?1:0;renderSet()}if(ok)startCap(k.slice(2),k[0]==='k'?'kb':'pad',setSlot);if(back)closeSet();return}
   if(L||R){if(LOOK[k]&&LOOK[k].slider){LOOK[k].set(Math.round((LOOK[k].get()+(R?.1:-.1))*10)/10);renderSet();SFX.ui(2)}

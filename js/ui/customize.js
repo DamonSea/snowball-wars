@@ -86,7 +86,9 @@ function renderCust(){const c=chars[ci],L=LOOKS[ci],list=c.outs;$('custName').te
     h=(PARTS[c.name]||[]).map(([k,lab])=>{const cur=L.c[k]??base[k];return`<div class="crow"><span>${lab}${L.c[k]!==undefined?` <button class="cundo" data-u="${k}" title="Back to the outfit's color" aria-label="Reset ${lab}">↺</button>`:''}</span><div class="cpal">${CPAL.map(v=>sw('data-c',v,v===cur,lab+' '+hexS(v))).join('').replace(/data-c=/g,`data-p="${k}" data-c=`)}</div></div>`}).join('')}
   else{h=ACC_SLOTS.map(([s,lab])=>`<div class="crow"><span>${lab}</span><div class="copts"><button class="opt${!L.a[s]?' on':''}" data-s="${s}" data-a="">None</button>${ACC[s].map(i=>`<button class="opt${L.a[s]===i.id?' on':''}" data-s="${s}" data-a="${i.id}">${i.label}</button>`).join('')}</div></div>`).join('')+
     `<div class="crow"><span>Accessory color${L.ac!==null?' <button class="cundo" data-u="ac" aria-label="Reset accessory color">↺</button>':''}</span><div class="cpal">${CPAL.map(v=>sw('data-ac',v,v===L.ac,'Accessory '+hexS(v))).join('')}</div></div>`}
-  $('custBody').innerHTML=h}
+  const a=document.activeElement,key=a&&$('cust').contains(a)?[...a.attributes].filter(x=>x.name.startsWith('data-')).map(x=>`[${x.name}="${x.value}"]`).join(''):'';
+  $('custBody').innerHTML=h;
+  if(key&&document.body.classList.contains('padnav')){const n=$('cust').querySelector('button'+key);n&&padFocus(n)}}
 $('cust').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
   if(d.t){CUST.tab=d.t;renderCust();SFX.ui(2);return}
   if(b.id==='custDone'){closeCust();SFX.ui(3);return}
@@ -103,4 +105,8 @@ renderer.domElement.addEventListener('pointermove',e=>{if(CUST.on&&CUST.drag!==n
 renderer.domElement.addEventListener('pointerup',()=>{CUST.drag=null});
 function custKey(code){if(code==='ArrowLeft'||code==='KeyA')CUST.rot-=.5;else if(code==='ArrowRight'||code==='KeyD')CUST.rot+=.5;
   else if(code==='Escape'){closeCust();return true}else if(code==='KeyQ'||code==='KeyE'){const T=['outfit','color','acc'];CUST.tab=T[(T.indexOf(CUST.tab)+(code==='KeyE'?1:2))%3];renderCust()}return true}
-function custPad(L,R,ok,back,lb,rb){if(L)CUST.rot-=.5;if(R)CUST.rot+=.5;if(back){closeCust();return}if(lb||rb){const T=['outfit','color','acc'];CUST.tab=T[(T.indexOf(CUST.tab)+(rb?1:2))%3];renderCust()}}
+// controller: D-pad / left stick move between controls, ✕ picks, ○ done, L1 / R1 tabs, right stick turns the character
+function custPad(L,R,U,D,ok,back,lb,rb,gp){const rx=gp&&gp.axes[2]||0;if(Math.abs(rx)>.2)CUST.rot+=rx*.07;
+  if(back){closeCust();return}
+  if(lb||rb){const T=['outfit','color','acc'];CUST.tab=T[(T.indexOf(CUST.tab)+(rb?1:2))%3];renderCust();const t=$('cust').querySelector('.ctab.on');t&&padFocus(t);$('custBody').scrollTop=0;SFX.ui(2);return}
+  panelNav($('cust'),L,R,U,D,ok)}
