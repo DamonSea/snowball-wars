@@ -16,6 +16,7 @@ const T={
   flip:{                  // Flip's momentum moveset
     topSpeedBoost:1.1, accel:16, decel:20, stopDecel:26,
     turnSlow:7, turnFast:14, fastAbove:8, sharpTurn:1.2,
+    pivotBelow:4, pivotTurn:45,     // below this speed you turn on the spot (fast) and move straight where the stick points
     jumps:[0,9.5,11.2,13.8],        // single, double, triple jump launch speeds
     chainWindow:.27, chainMinSpeed:5,
     jumpCut:.5, jumpCutAbove:2,     // tap-jump: upward speed is halved on release

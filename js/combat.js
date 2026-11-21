@@ -6,7 +6,8 @@ const swArc=new THREE.Mesh(new THREE.RingGeometry(.7,1.05,20,1,0,PI*.75),swM),sw
 [swArc,swFull].forEach(m=>{m.rotation.order='YXZ';m.visible=false;scene.add(m)});
 const ATKSPEC=T.attacks;
 const atkSpec=()=>ATKSPEC[ATK.kind==='combo'?ATK.step:ATK.kind];
-function inputDir(){const ix=kbAxisX()+joy.x+pad.x,iz=kbAxisZ()+joy.z+pad.z;return Math.hypot(ix,iz)>.3?Math.atan2(ix,iz):null}
+function inputDir(){let ix=kbAxisX()+joy.x+pad.x,iz=kbAxisZ()+joy.z+pad.z;if(CAM.yaw)[ix,iz]=camInput(ix,iz);   // same camera turn as walking
+  return Math.hypot(ix,iz)>.3?Math.atan2(ix,iz):null}
 function attackPress(){
   if(state!=='play'||A.knock>0||CL.on||SB.stun>0||YS.t>0||YS.spray||SA.t>0)return;
   if(ATK.t>0){if(ATK.kind==='combo'&&ATK.step<3)ATK.queued=true;return}

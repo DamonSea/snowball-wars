@@ -3,6 +3,15 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.16.1] - 2026-11-21 — Snappier turning
+### Changed
+- **Turning from a standstill or a walk** is now near-instant: your character spins round on the spot (about 4 frames
+  for a full about-face) and walks straight where you point, instead of curving round in a little arc. At running
+  speed you still lean into turns, and a hard reversal still skids (and sets up the side flip).
+### Fixed
+- **Attacks aim with the stick in every camera mode.** With the Behind, Free or Auto camera, the stick direction
+  wasn't adjusted for the camera, so swings could go off at an angle.
+
 ## [2.16.0] - 2026-11-21 — Quality of life
 ### Added
 - **Hold to respawn** (L3 on a controller, R on the keyboard): back to the spawn point, or to your last checkpoint in a

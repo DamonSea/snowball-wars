@@ -39,7 +39,7 @@ function moveAcro(dt,max,ix,iz){
   A.landT=Math.max(0,A.landT-dt);A.wallT=grounded?0:Math.max(0,A.wallT-dt);A.lock=Math.max(0,A.lock-dt);
   if(grounded&&A.air)landAcro();
   A.air=!grounded;
-  const leave=()=>{grounded=false;stand=null;jumpBuf=0};
+  const leave=()=>{grounded=false;stand=null;jumpBuf=0};let head=null;   // head: move this way instead of along face (pivoting)
   if(grounded){
     if(A.mode==='slide'){A.t-=dt;A.spd*=Math.exp(-T.flip.dive.slideDecay*dt);puff();if(A.t<=0)A.mode=ck?'crouch':'normal'}
     else if(A.mode==='skid'){A.t-=dt;A.spd=Math.max(0,A.spd-T.flip.skid.decel*dt);puff(onIce?4:2);
@@ -57,6 +57,8 @@ function moveAcro(dt,max,ix,iz){
       if(ATK.t>0)A.spd=Math.max(0,A.spd-(ATK.step===3?14:30)*dt);
       else if(im>.2){const d=angD(ang,face);
         if(Math.abs(d)>T.flip.skid.angle&&A.spd>T.flip.skid.minSpeed){A.mode='skid';A.t=T.flip.skid.time;A.skidTo=ang;SFX.skid()}
+        else if(A.spd<T.flip.pivotBelow){face+=clamp(d,T.flip.pivotTurn*dt);head=ang;   // from a standstill or a walk: snap round and go
+          const tgt=max*T.flip.topSpeedBoost*im;A.spd+=A.spd<tgt?Math.min(T.flip.accel*dt,tgt-A.spd):0}
         else{const tr=A.spd>T.flip.fastAbove?T.flip.turnSlow:T.flip.turnFast;face+=clamp(d,tr*dt);
           const tgt=max*T.flip.topSpeedBoost*im*(Math.abs(d)>T.flip.sharpTurn?.5:1);
           A.spd+=A.spd<tgt?Math.min(T.flip.accel*dt,tgt-A.spd):-Math.min(T.flip.decel*dt,A.spd-tgt)}}
@@ -74,7 +76,7 @@ function moveAcro(dt,max,ix,iz){
     if(A.canCut&&!held('jump')&&!joy.jump&&vy>T.flip.jumpCutAbove){vy*=T.flip.jumpCut;A.canCut=false}
     A.flipT+=dt;A.twirlT+=dt;if(A.mode==='long'&&Math.random()<.6)trail(0xffffff);
   }
-  vel.x=Math.sin(face)*A.spd;vel.z=Math.cos(face)*A.spd;
+  const hd=head===null?face:head;vel.x=Math.sin(hd)*A.spd;vel.z=Math.cos(hd)*A.spd;
   P.position.x+=vel.x*dt;P.position.z+=vel.z*dt;
   walk+=Math.abs(A.spd)*dt*1.6;
 }
