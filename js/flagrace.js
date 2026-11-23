@@ -25,6 +25,5 @@ function frFinish(){FR.done=true;const t=FR.t,b=raceBest(),nb=!b||t<b;if(nb)try{
 // what free roam says on a custom map
 function freeHint(){if(!runL.custom)return FREE_HINT;const a=[];
   if(FR.on)a.push('Flag race: reach the Finish flag'+(runL.cps.length?'; checkpoints save your spot':'')+'.');
-  if(runL.spad)a.push('Stand on the START pad (or press Enter / △) for a 60-second orb run.');
-  if(!FR.on||FR.done)a.push('Pause for Snowball Wars.');
+  if(runL.spad)a.push('Stand on the PLAY pad (or press Enter / △) to choose a mode.');
   return a.join(' ')||'Explore and play around.'}

@@ -1,7 +1,7 @@
-// Trick Park mode: START pad, trick combos and scoring, orbs, spikeballs, free roam and timed runs.
+// Trick Park mode: PLAY pad, trick combos and scoring, orbs, spikeballs, free roam and timed runs.
 // ---------- RUN mode ----------
 let orbs=[],runHz=[],runQ=[],runT=0,bestCombo=0,hintTimer=null,runFree=true,runCD=0,padHold=0;
-// START pad in the plaza: stand on it in free roam to begin a timed run
+// PLAY pad in the plaza: stand on it in free roam to begin a timed run
 const spadG=new THREE.Group();
 const rmObj=o=>freeTree(o);
 function useRunMap(i){runIdx=i;runL=RUNMAPS[i];try{localStorage.setItem('orbRunMap',i)}catch(e){}if(runL.spad){runL.grp.add(spadG);spadG.position.set(runL.spad.x,0,runL.spad.z)}else if(spadG.parent)spadG.parent.remove(spadG)}
@@ -15,11 +15,11 @@ const spadTex=new THREE.CanvasTexture(spadCv);
 const spadSign=new THREE.Sprite(new THREE.SpriteMaterial({map:spadTex,transparent:true,depthWrite:false}));spadSign.scale.set(3.2,1,1);spadSign.position.y=2.4;spadG.add(spadSign);
 function drawSpadSign(){const x=spadCv.getContext('2d');x.clearRect(0,0,512,160);x.fillStyle='rgba(10,32,46,.85)';
   x.beginPath();x.roundRect?x.roundRect(16,16,480,128,40):x.rect(16,16,480,128);x.fill();
-  x.fillStyle='#ffd84a';x.font='800 64px "Baloo 2", system-ui, sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText('START RUN',256,72);
+  x.fillStyle='#ffd84a';x.font='800 64px "Baloo 2", system-ui, sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText('PLAY',256,72);
   x.fillStyle='#fff8e8';x.font='600 28px "Baloo 2", system-ui, sans-serif';x.fillText('stand here',256,118);spadTex.needsUpdate=true}
 drawSpadSign();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(drawSpadSign);
 function freeUI(){const f=mode==='run'&&runFree&&state==='play'&&!!(runL&&runL.spad)&&!WAR.on;document.body.classList.toggle('free',f);spadG.visible=!!(runL&&runL.spad)&&mode==='run'&&runFree&&runCD<=0&&!WAR.on&&state!=='menu'&&state!=='select'}
-const FREE_HINT='Free roam: practice as long as you like. Stand on the START pad (or press Enter / △) to begin a 60-second run, or pause for Snowball Wars.';
+const FREE_HINT='Free roam: practice as long as you like. Stand on the PLAY pad (or press Enter / △) to choose Orb Race or Snowball Wars.';
 const orbGeo=new THREE.IcosahedronGeometry(.42,0),ringGeo=new THREE.RingGeometry(.55,.75,24);
 // ----- trick combos: tricks chain while you stay airborne or land and go again quickly -----
 const TR={pts:0,mult:0,names:[],t:0};
@@ -83,6 +83,15 @@ function beginTimed(o={}){if(mode!=='run'||!runFree||runCD>0||state!=='play'||WA
   raceStart({id:o.id,join:!!o.id});if(o.time){time=o.time;runCD=1.5}   // orbrace.js: friends join, or computer rivals
   hint('');if(o.by)toast(`${o.by} started an orb race!`);hud();freeUI();renderControls()}
 function backToFree(){startRun(true)}
+// the PLAY pad (or △ / Enter in free roam): pick a mode. With only one on offer, just start it.
+let padLock=false;
+function modeMenu(){if(state!=='play'||mode!=='run'||!runFree||runCD>0||WAR.on)return;
+  const solo=!warPeers().length,O=[];
+  if(runL.spad)O.push(['Orb Race',()=>{resume();beginTimed()},`<b>Orb Race</b> \u00b7 60 seconds of orb grabbing${solo&&RACE.rivals?' vs '+RACE.rivals+' computer rival'+(RACE.rivals>1?'s':''):''}`]);
+  if(canWar())O.push(['Snowball Wars',()=>{resume();startWars()},`<b>Snowball Wars</b> \u00b7 3-minute snowball fight${solo?' vs 3 computer players':''}`]);
+  if(!O.length)return;if(O.length===1){O[0][1]();return}
+  state='paused';SFX.ui(2);
+  overlay(true,'Choose a mode','',O[0][0],O[1][0],O[0][1],O[1][1],'Cancel',()=>resume());$('ovP').innerHTML=O.map(o=>o[2]).join('<br>');$('ov').classList.add('menu','pausem')}
 // time's up (or out of lives): show the result and keep playing right where you are, back in free roam
 function endRun(){bankCombo();const rr=RACE.on?raceResult():null;const bk=runL.key,fin=score,nb=fin>(bestR[bk]||0);if(nb){bestR[bk]=fin;try{localStorage.setItem(bk,fin)}catch(e){}}
   beep(220,.4,'sawtooth',.08);const why=lives<=0?(FOE_STYLE==='spike'?'Spiked!':'Wiped out!'):'Time\u2019s up!';
@@ -93,10 +102,10 @@ function updateRun(dt){
     if(b!==a&&b>=1&&b<=2){popScore(String(b));SFX.ui(b)}
     if(runCD<=0){runCD=0;popScore('GO!');SFX.start();hint('');lives=3;if(!MP.client&&foesOn())for(let i=0;i<T.run.hazardsStart;i++)spawnRunHz();freeUI();hud()}}
   else if(!runFree){const shown=Math.ceil(time);time-=dt;runT+=dt;if(time<=0){time=0;hud();endRun();return}if(Math.ceil(time)!==shown)hud()}
-  else if(runL.spad&&!WAR.on){ // free roam: START pad
-    const on=grounded&&py<.3&&Math.hypot(P.position.x-runL.spad.x,P.position.z-runL.spad.z)<1.6;
+  else if(runL.spad&&!WAR.on){ // free roam: PLAY pad
+    const on=grounded&&py<.3&&Math.hypot(P.position.x-runL.spad.x,P.position.z-runL.spad.z)<1.6;if(!on)padLock=false;   // step off to use it again
     padHold=on?padHold+dt:Math.max(0,padHold-dt*2);spadFill.scale.setScalar(Math.max(.001,Math.min(1,padHold/.8)));
-    spadM.opacity=.45+Math.sin(advT*4)*.15+(on?.3:0);if(padHold>=.8)beginTimed()}
+    spadM.opacity=.45+Math.sin(advT*4)*.15+(on?.3:0);if(padHold>=.8&&!padLock){padHold=0;padLock=true;modeMenu()}}
   stepBody(dt,T.speed.trickPark);frUpdate(dt);if(state!=='play')return;
   const r=Math.hypot(P.position.x,P.position.z);if(r>ARENA){P.position.x*=ARENA/r;P.position.z*=ARENA/r}
   trackGaps();

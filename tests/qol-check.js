@@ -22,7 +22,7 @@ beginTimed();__step(200);__place(6,-3,0,0);__step(3);lives=0;endRun();__step(2);
 pause();[...document.querySelectorAll('#ov button')].find(b=>b.textContent==='Moves').click();__step(2);ok('Moves opens a list of moves',!$('moves').classList.contains('hide')&&$('movesList').querySelectorAll('dt').length>10&&/Backflip/.test($('movesList').textContent));
 dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',bubbles:true}));__step(2);ok('Esc goes back to the pause menu',$('moves').classList.contains('hide')&&state==='paused'&&!$('ov').classList.contains('hide'));resume();
 // free roam pause
-pause();ok('free roam pause: '+btns().join(', '),btns().join('|')==='Resume|Start game|Snowball Wars|Moves|Settings|Quit to menu');resume();
+pause();ok('free roam pause: '+btns().join(', '),btns().join('|')==='Resume|Orb Race|Snowball Wars|Moves|Settings|Quit to menu');resume();
 // controller: L3 hold respawns
 const gp={id:'DualSense',mapping:'standard',connected:true,timestamp:1,buttons:Array.from({length:18},()=>({pressed:false,value:0})),axes:[0,0,0,0]};navigator.getGamepads=()=>[gp];
 __place(11,-4,0,0);__step(3);gp.buttons[10].pressed=true;gp.timestamp++;__step(70);gp.buttons[10].pressed=false;gp.timestamp++;__step(2);ok('hold L3 respawns on the controller',Math.hypot(P.position.x,P.position.z)<.5);

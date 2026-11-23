@@ -24,7 +24,7 @@ const ASSETS={
   snowman:{label:'Snowman target',icon:'☃',cat:'Play',def:{},f:[],tip:'Knock it over for points'},
   roller:{label:'Rolling snowball',icon:'●',cat:'Play',def:{},f:[],tip:'Push it to roll it bigger'},
   spawn:{label:'Spawn point',icon:'◉',cat:'Play',def:{},f:[],tip:'Where players appear (one per map)',unique:true,required:true},
-  start:{label:'START pad',icon:'▶',cat:'Objectives',def:{},f:[],tip:'Orb run: stand here to begin the 60-second orb collection game',unique:true},
+  start:{label:'PLAY pad',icon:'▶',cat:'Objectives',def:{},f:[],tip:'Stand here to choose a mode: Orb Race or Snowball Wars',unique:true},
   checkpoint:{label:'Checkpoint flag',icon:'⚑',cat:'Objectives',def:{},f:[],tip:'Flag race: touch it to save your spot; you come back here'},
   finish:{label:'Finish flag',icon:'🏁',cat:'Objectives',def:{},f:[],tip:'Flag race: reach it to finish (one per map)',unique:true},
   tree:{label:'Tree',icon:'♣',cat:'Nature',def:{s:1},f:['s'],tip:'Climbable tree'},
@@ -32,10 +32,10 @@ const ASSETS={
 };
 const num=(v,lo,hi,dflt)=>{v=+v;return Number.isFinite(v)?Math.max(lo,Math.min(hi,v)):dflt};
 const newMapId=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
-// map settings: enemies on/off, the orb run (START pad game) on/off, the flag race (checkpoints + finish) on/off
+// map settings: enemies on/off, the orb run (PLAY pad game) on/off, the flag race (checkpoints + finish) on/off
 const MAP_OPTS={enemies:['Enemies',1],orbs:['Orb run',1],flags:['Flag race',0]};
 function blankMap(){return{v:1,id:newMapId(),name:'My map',author:'',opt:{enemies:1,orbs:1,flags:0},items:[{t:'spawn',x:0,z:16},{t:'start',x:0,z:10}]}}
-// make any map safe to build: known items only, numbers in range, inside the arena, one START pad
+// make any map safe to build: known items only, numbers in range, inside the arena, one PLAY pad
 function cleanMap(m){const o={v:1,id:/^[a-z0-9]{6,24}$/.test(m&&m.id)?m.id:newMapId(),name:String((m&&m.name)||'Untitled').replace(/[<>]/g,'').slice(0,32)||'Untitled',
   author:String((m&&m.author)||'').replace(/[<>]/g,'').slice(0,32),items:[],opt:{}};const seen=new Set();
   for(const k in MAP_OPTS)o.opt[k]=m&&m.opt&&m.opt[k]!==undefined?(m.opt[k]?1:0):MAP_OPTS[k][1];
@@ -43,7 +43,7 @@ function cleanMap(m){const o={v:1,id:/^[a-z0-9]{6,24}$/.test(m&&m.id)?m.id:newMa
     const q={t:it.t,x:num(it.x,-MAP_R,MAP_R,0),z:num(it.z,-MAP_R,MAP_R,0)};const r=Math.hypot(q.x,q.z);if(r>MAP_R){q.x*=MAP_R/r;q.z*=MAP_R/r}
     for(const k of Object.keys(A.def)){const F=FIELDS[k];q[k]=k==='dir'?Math.round(num(it.dir,0,3,0)):F?num(it[k],F[1],F[2],A.def[k]):A.def[k];if(F&&F[3]===1)q[k]=Math.round(q[k])}
     if(q.t==='deck'&&q.th>q.h-.1)q.th=Math.max(.15,q.h-.1);o.items.push(q)}
-  // every map needs a spawn point; older maps spawned on their START pad, so put it just in front of the pad
+  // every map needs a spawn point; older maps spawned on their PLAY pad, so put it just in front of the pad
   if(!seen.has('spawn')){const s=o.items.find(i=>i.t==='start');let sx=0,sz=16;
     if(s){const r=Math.hypot(s.x,s.z)||1;sx=+(s.x-s.x/r*3).toFixed(1);sz=+(s.z-s.z/r*3).toFixed(1);if(!Math.hypot(s.x,s.z)){sx=0;sz=3}}
     o.items.unshift({t:'spawn',x:sx,z:sz})}
@@ -105,7 +105,7 @@ function buildCustom(map,preview=false){const m=cleanMap(map);
     case'spawn':spawn={x,z};break;
     case'checkpoint':flagAt.push({x,z,fin:false});break;
     case'finish':flagAt.push({x,z,fin:true});break}});
-  // flags stand on whatever is under them; markers for the spawn point (and, in the builder, the START pad)
+  // flags stand on whatever is under them; markers for the spawn point (and, in the builder, the PLAY pad)
   const topHere=(x,z)=>plats.reduce((h,p)=>inside(p,x,z,0)&&topOf(p,x,z)<40?Math.max(h,topOf(p,x,z)):h,0);
   const cps=[],flags=flagAt.map(f=>{const y=topHere(f.x,f.z),fl=makeRaceFlag(grp,f.x,y,f.z,f.fin);fl.x=f.x;fl.z=f.z;fl.y=y;fl.fin=f.fin;if(!f.fin)cps.push(fl);return fl});
   const finish=flags.find(f=>f.fin)||null;

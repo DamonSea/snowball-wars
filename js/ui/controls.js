@@ -17,7 +17,7 @@ function renderControls(){
     ['Crouch in the air','Dive'],['Jump as you land \u00d73','Triple jump'],['Reverse at speed, Jump','Side flip'],['Jump off a wall mid-air','Wall jump']);
   else rows.splice(2,0,['Run into a tree or pole','Climb it']);
   if(mode==='run')rows.splice(3,0,[L('throw'),'Throw a snowball']);
-  if(mode==='run'&&runFree)rows.unshift([L('start')+' or START pad','Start timed run']);
+  if(mode==='run'&&runFree)rows.unshift([L('start')+' or PLAY pad','Choose a mode: Orb Race or Snowball Wars']);
   if(!T_)rows.push(['Hold '+L('respawn'),'Respawn (spawn point / checkpoint)'],['Hold '+L('start'),'Restart the orb run, race or level'],['Settings (gear)','Change any button']);
   $('ctlList').innerHTML=rows.map(([x,y])=>`<dt>${x}</dt><dd>${y}</dd>`).join('');
 }

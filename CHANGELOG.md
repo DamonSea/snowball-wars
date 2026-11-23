@@ -3,6 +3,15 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.20.0] - 2026-11-23 — Choose a mode
+### Changed
+- **The START pad is now the PLAY pad, and it asks which mode you want:** Orb Race or Snowball Wars (or Cancel),
+  each with a one-line description. Pressing △ / Enter in free roam opens the same menu, and ○ / Esc / Options
+  cancels. After cancelling, step off the pad and back on to open it again. If a map offers only one mode, it
+  starts straight away.
+- The pause menu's "Start game" is now **Orb Race**, next to **Snowball Wars**.
+- The map builder calls it the PLAY pad too.
+
 ## [2.19.3] - 2026-11-23 — Free + auto camera rebuilt
 ### Changed
 - **Free + auto now follows where you're moving, not where you face.** Run sideways and it turns with you; the more
