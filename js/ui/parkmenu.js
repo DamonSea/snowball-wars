@@ -23,8 +23,8 @@ function renderPark(){const L=parkMaps();PARK.i=Math.max(0,Math.min(PARK.i,L.len
   $('parkTabDev').classList.toggle('on',!user);$('parkTabUser').classList.toggle('on',user);$('parkTabDev').setAttribute('aria-selected',!user);$('parkTabUser').setAttribute('aria-selected',user);
   $('parkHint').classList.toggle('hide',!user);const img=$('parkImg');
   if(!M){$('parkName').textContent='No maps yet';$('parkBest').textContent='';$('parkMeta').textContent='';img.removeAttribute('src');img.parentNode.classList.add('noimg');$('parkPlay').disabled=true;return}
-  $('parkPlay').disabled=false;const n=mapCount(RUNMAPS.indexOf(M)),b=bestR[M.key];
-  $('parkName').textContent=M.name;$('parkBest').textContent=b?`Best score ${b.toLocaleString()}`:'No best score yet';
+  $('parkPlay').disabled=false;const n=mapCount(RUNMAPS.indexOf(M)),b=bestO(M.key);
+  $('parkName').textContent=M.name;$('parkBest').textContent=b?`Best orb race: ${b} orb${b===1?'':'s'}`:'No orb race yet';
   $('parkMeta').textContent=[user?`by ${M.author||'a player'}`:'',`${PARK.i+1} of ${L.length}`,n?`${n} friend${n>1?'s':''} here`:''].filter(Boolean).join(' · ');
   const src=parkThumb(M);if(src){img.src=src;img.alt=M.name+' from above'}img.parentNode.classList.toggle('noimg',!src)}
 function parkStep(d){const n=parkMaps().length;if(!n)return;PARK.i=(PARK.i+d+n)%n;renderPark();SFX.ui(2)}

@@ -55,11 +55,11 @@ const T={
   snow:{speed:20,lift:4,gravity:18,life:2.5,ammo:6,regen:0,orbAmmo:2,cooldown:.3,hitKnock:9,hitLift:5,stun:.9,snowmanRespawn:8,snowmanAmmo:2},   // snowmanAmmo: snowballs you get for knocking down a snowman (target or Winter Crew)
   // Snowball Wars: match length (s), hearts, points per hit / trick shot / KO bonus, KO respawn and blink time,
   // computer players when alone, snowball pickups, and a slow trickle (s per snowball)
-  // Orb Race: a snowball hit knocks up to `spill` points loose as orbs worth `spillOrb` each; rival walking speed
-  race:{spill:200,spillOrb:100,botSpeed:5.4},
+  // Orb Race (a straight orb count): a snowball hit knocks up to `spillN` orbs loose; rival walking speed
+  race:{spillN:2,botSpeed:5.4},
   // Tag: round length, the new It's count before it can tag, no-tag-back time, touch reach, computer players and
   // their chase / flee speeds, and how high they can hop after you
   tag:{time:120,count:1.5,noBack:2,reach:1.3,bots:3,hopMax:4.2},   // chase / flee speeds live in each personality (TAG_PERS in tag.js)
-  wars:{time:180,hp:3,hit:100,trick:200,ko:250,respawn:2.5,invuln:2.5,bots:3,packs:6,packSmall:2,packBig:4,regen:8},   // packs: snowball pickups on the map (small on the ground, big up high / mid-air)
+  wars:{time:180,hp:3,respawn:2.5,invuln:2.5,bots:3,packs:6,packSmall:2,packBig:4,regen:8},   // packs: snowball pickups on the map (small on the ground, big up high / mid-air)
   camera:{height:10.5,back:13,autoTurn:2.6}   // autoTurn: Free + auto's turn speed (rad/s) when running fully sideways
 };

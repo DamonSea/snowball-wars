@@ -81,6 +81,6 @@ function moveAcro(dt,max,ix,iz){
   P.position.x+=vel.x*dt;P.position.z+=vel.z*dt;
   walk+=Math.abs(A.spd)*dt*1.6;
 }
-function hurt(x,z,kb){ATK.t=0;resetPound();CL.on=false;CL.top=false;rumble(220,.9,.5);lives--;invuln=1.6;shake=.35;SFX.hurt();A.knock=chars[ci].acro?T.flip.knockTime:0;A.mode='normal';A.flipT=99;
+function hurt(x,z,kb){ATK.t=0;resetPound();CL.on=false;CL.top=false;rumble(220,.9,.5);if(!noLives())lives--;invuln=1.6;shake=.35;SFX.hurt();A.knock=chars[ci].acro?T.flip.knockTime:0;A.mode='normal';A.flipT=99;
   const dx=P.position.x-x,dz=P.position.z-z,d=Math.hypot(dx,dz)||1;vel.x=dx/d*kb;vel.z=dz/d*kb;vy=5;grounded=false;stand=null;hud()}
 function jump(){if(grounded&&state==='play'){vy=chars[ci].jump;grounded=false;stand=null;jumpBuf=0;ci===0?SFX.robotJump():SFX.jump(1)}}

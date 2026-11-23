@@ -3,7 +3,23 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
-## [2.26.0] - 2026-11-23 — Emote wheel and dances
+## [2.27.0] - 2026-11-23 — Simpler scoring
+### Fixed
+- **Two scoreboards at once with friends:** the friends' trick-points list showed on top of a game's scoreboard,
+  and friends' rows on the game scoreboard showed their free-roam trick points. Now the trick-points list only
+  shows in free roam (and only friends who are in free roam), and game boards use each game's own count.
+- Friends' name tags show what they're doing: KOs in a match, orbs in an orb race, It time in Tag, trick points in
+  free roam.
+### Changed
+- **No lives in free roam:** the Lives box is gone and getting hurt costs nothing. Lives still count in the orb race
+  and a flag race; Snowball Wars has its hearts.
+- **Orb Race is a straight count:** every orb is 1, the board shows an orb icon and each player's count, a hit knocks
+  up to 2 orbs loose, and the map picker / title screen show your best orb count.
+- **Snowball Wars has no points:** hearts and KOs; most KOs wins, hits break ties. Hits still pop up "Hit!",
+  "Trick Shot!" or "KO!".
+- Free roam's score box is now labelled **Tricks**.
+
+ - 2026-11-23 — Emote wheel and dances
 ### Added
 - **Emote wheel (every character):** standing on the ground, hold Ground pound (L1 / Q / right-click), point the
   stick, WASD or mouse at an emote and let go. A quick tap keeps the wheel open: pick with the stick and press Jump

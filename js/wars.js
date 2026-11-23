@@ -1,6 +1,6 @@
 // Snowball Wars: a timed free-for-all snowball fight in Trick Park (pause menu > Snowball Wars).
-// Everyone has 3 hearts. A hit scores 100 (200 for a Trick Shot: thrown mid-air or mid-trick), the hit
-// that takes someone's last heart scores a KO bonus, and they respawn a few seconds later. Snowball
+// Everyone has 3 hearts. No points: the hit that takes someone's last heart is a KO, most KOs wins (hits break
+// ties), and the knocked-out player respawns a few seconds later. Snowball
 // pickups (bundles at the orb spots, bigger up high) refill your snowballs. Alone you play against computer players; with friends on the map it's players
 // only, and starting a match pulls everyone on that map into it (they join through presence: `wm`).
 const WAR={on:false,id:'',t:0,cd:0,hp:3,score:0,hits:0,kos:0,downs:0,out:0,inv:0,bots:[],piles:[],refill:0,regen:0,
@@ -35,22 +35,22 @@ function warsStop(restore=true){if(!WAR.on)return;WAR.on=false;if(WAR.id)WAR.don
   $('warsBoard').classList.remove('on');freeUI();SB.stun=0;score=0;lives=3;
   if(restore&&mode==='run'&&!MP.client&&!orbs.length){spawnCount=0;for(let i=0;i<T.run.orbsOnField;i++)spawnOrb()}   // enemies come back on their own (updateRun)
   hud()}
-function warsEnd(){const rows=standings(),me=rows.findIndex(r=>r.me),place=me+1,W=WAR.score;
-  const bk='warsBest_'+runL.key,best=+(localStorage.getItem(bk)||0),nb=W>best;if(nb)try{localStorage.setItem(bk,W)}catch(e){}
-  const top=rows[0]&&rows[0].score,tied=rows.filter(r=>r.score===top).length>1;
+function warsEnd(){const rows=standings(),me=rows.findIndex(r=>r.me),place=me+1,W=WAR.kos;
+  const bk='warsBestKO_'+runL.key,best=+(localStorage.getItem(bk)||0),nb=W>best;if(nb)try{localStorage.setItem(bk,W)}catch(e){}
+  const top=rows[0],tied=!!top&&rows.filter(r=>r.kos===top.kos&&r.hits===top.hits).length>1;
   const title=place===1?(tied?'Tied for first!':'You win!'):`${place}${['st','nd','rd'][place-1]||'th'} place`;
-  const fin={rows,stats:`${WAR.hits} hits · ${WAR.kos} KOs · knocked out ${WAR.downs}×${nb?' · New best!':''}`};
+  const fin={rows,stats:`${WAR.hits} hits · knocked out ${WAR.downs}×${nb?' · Most KOs yet!':''}`};
   warsStop(true);state='over';SFX[place===1?'start':'ui'](3);
   overlay(true,title,'','Play again','Keep playing',()=>{state='play';overlay(false);startWars()},()=>{state='play';overlay(false)});
   hint('');$('ov').classList.add('wres');
-  $('ovP').innerHTML=`<ol class="warsres">${fin.rows.map(r=>`<li class="${r.me?'me':''}"><b>${warEsc(r.name)}</b><span>${r.score}</span></li>`).join('')}</ol><small>${fin.stats}</small>`}
+  $('ovP').innerHTML=`<ol class="warsres">${fin.rows.map(r=>`<li class="${r.me?'me':''}"><b>${warEsc(r.name)}</b><span>${r.kos} KO</span></li>`).join('')}</ol><small>${fin.stats}</small>`}
 // everyone in the match, best first
-function standings(){const r=[{name:'You',score:WAR.score,hp:WAR.out>0?0:WAR.hp,me:1}];
-  WAR.bots.forEach(b=>r.push({name:b.name,score:b.score,hp:b.out>0?0:b.hp}));
-  for(const p of warPeers()){const w=p.presence.wm;if(Array.isArray(w)&&w[0]===WAR.id)r.push({name:nameOf(p),score:Number.isFinite(p.presence.sc)?Math.floor(p.presence.sc):0,hp:Number.isInteger(w[2])?w[2]:3})}
-  return r.sort((a,b)=>b.score-a.score||(b.me?1:0)-(a.me?1:0))}
+function standings(){const r=[{name:'You',kos:WAR.kos,hits:WAR.hits,hp:WAR.out>0?0:WAR.hp,me:1}];
+  WAR.bots.forEach(b=>r.push({name:b.name,kos:b.kos,hits:b.hits,hp:b.out>0?0:b.hp}));
+  for(const p of warPeers()){const w=p.presence.wm;if(Array.isArray(w)&&w[0]===WAR.id)r.push({name:nameOf(p),kos:Number.isInteger(w[3])?w[3]:0,hits:Number.isInteger(w[4])?w[4]:0,hp:Number.isInteger(w[2])?w[2]:3})}
+  return r.sort((a,b)=>b.kos-a.kos||b.hits-a.hits||(b.me?1:0)-(a.me?1:0))}
 function warsBoard(){const e=$('warsBoard');if(!e)return;
-  e.innerHTML=`<div class="wbt">${WAR.cd>0?'Get ready':fmtClock(WAR.t)}</div>`+standings().map(r=>`<div class="wbr${r.me?' me':''}"><b>${warEsc(r.name)}</b><i>${'♥'.repeat(Math.max(0,r.hp))}<s>${'♥'.repeat(Math.max(0,T.wars.hp-r.hp))}</s></i><span>${r.score}</span></div>`).join('')}
+  e.innerHTML=`<div class="wbt">${WAR.cd>0?'Get ready':fmtClock(WAR.t)}</div>`+standings().map(r=>`<div class="wbr${r.me?' me':''}"><b>${warEsc(r.name)}</b><i>${'♥'.repeat(Math.max(0,r.hp))}<s>${'♥'.repeat(Math.max(0,T.wars.hp-r.hp))}</s></i><span>${r.kos}<small> KO</small></span></div>`).join('')}
 
 // ---------- snowball pickups: bundles at the map's orb spots, collected like orbs ----------
 // High and mid-air spots hold bigger bundles, so the hard routes keep you stocked. Grab one and another appears
@@ -107,13 +107,13 @@ function updateBot(b,dt){const a=b.a;
       a.g.visible=true;a.tag.position.y=2.75;a.g.position.set(b.x,b.y,b.z);burst(V(b.x,1,b.z),0xffffff,14);return}
     if(!a.g.visible)return;
     b.vx*=Math.exp(-3*dt);b.vz*=Math.exp(-3*dt);botMove(b,dt);
-    applyPose(a,KO_Q,koBlend(down));a.tag.position.y=2.75-1.5*koBlend(down);koStars(a.stars,b.x,b.y,b.z,b.face,dt);drawTag(a,b.name,b.score,false);return}
+    applyPose(a,KO_Q,koBlend(down));a.tag.position.y=2.75-1.5*koBlend(down);koStars(a.stars,b.x,b.y,b.z,b.face,dt);drawTag(a,b.name,`${b.kos} KO`,false);return}
   a.g.visible=b.inv>0?Math.floor(tAll*10)%2===0:true;
   b.stun=Math.max(0,b.stun-dt);b.inv=Math.max(0,b.inv-dt);b.cool-=dt;b.throwT=Math.max(0,b.throwT-dt);b.retarget-=dt;
   if(b.stun>0){b.vx*=Math.exp(-2.5*dt);b.vz*=Math.exp(-2.5*dt)}else botThink(b,dt);
   botMove(b,dt);
   a.stars.visible=b.stun>0;if(b.stun>0){a.stars.position.set(0,2.35,0);a.stars.rotation.y+=dt*7}
-  botPose(b,dt);drawTag(a,b.name,b.score,false)}
+  botPose(b,dt);drawTag(a,b.name,`${b.kos} KO`,false)}
 // walk/skid with simple collision: walls stop it, ledges it walks off fall
 function botMove(b,dt){const a=b.a;
   const nx=b.x+b.vx*dt,nz=b.z+b.vz*dt;
@@ -125,9 +125,10 @@ function botMove(b,dt){const a=b.a;
 
 // ---------- hits ----------
 // score a hit for `by` ('me' or 'botN') on the fighter that lost a heart; ko: that was their last heart
-function award(by,ko,trick){const pts=(trick?T.wars.trick:T.wars.hit)+(ko?T.wars.ko:0);
-  if(by==='me'){WAR.score+=pts;WAR.hits++;if(ko)WAR.kos++;score=WAR.score;popScore(ko?`KO! +${pts}`:trick?`Trick Shot! +${pts}`:`+${pts}`);if(ko)SFX.start();hud()}
-  else if(by.startsWith('bot')){const b=WAR.bots[+by.slice(3)];if(b){b.score+=pts;b.hits++;if(ko)b.kos++}}}
+// No points: KOs decide the match (hits break ties). Trick Shots are still called out.
+function award(by,ko,trick){
+  if(by==='me'){WAR.hits++;if(ko)WAR.kos++;popScore(ko?'KO!':trick?'Trick Shot!':'Hit!');if(ko)SFX.start();hud()}
+  else if(by.startsWith('bot')){const b=WAR.bots[+by.slice(3)];if(b){b.hits++;if(ko)b.kos++}}}
 // a snowball (mine or a bot's) reached a bot?
 function botCatch(p,ball){if(!WAR.on)return false;
   for(const b of WAR.bots){if(b.out>0||ball.owner===botKey(b))continue;

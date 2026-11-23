@@ -15,7 +15,7 @@ ok('Stop orb run: back to free roam, right where you were',runFree&&state==='pla
 beginTimed();__step(200);__place(8,-1,0,0);__step(3);keys.Enter=true;__step(60);keys.Enter=false;__step(2);ok('hold Enter restarts the orb run in place',runCD>0&&!runFree&&Math.hypot(P.position.x-8,P.position.z+1)<.6);
 // time runs out: no overlay, no teleport, back to free roam with a result line
 __step(200);__place(7,-3,0,0);__step(3);time=.05;__step(5);ok('time up: keep playing where you were (no overlay)',state==='play'&&runFree&&$('ov').classList.contains('hide')&&Math.hypot(P.position.x-7,P.position.z+3)<.6);
-ok('with the result shown',/Time.s up!.*Score/.test($('hint').textContent));
+ok('with the result shown',/Time.s up!.*orbs?\b/.test($('hint').textContent));
 // out of lives: same
 beginTimed();__step(200);__place(6,-3,0,0);__step(3);lives=0;endRun();__step(2);ok('out of lives: same, lives back to 3',state==='play'&&runFree&&lives===3&&Math.hypot(P.position.x-6,P.position.z+3)<.6);
 // Moves list

@@ -38,6 +38,10 @@ function makeAv(ch){const g=new THREE.Group();scene.add(g);
 function dropAv(a){freeTree(a.g)}
 function clearAv(){MP.av.forEach(dropAv);MP.av.clear()}
 // name tag over a player: sc is a score, or a string shown as-is (Tag: time as It)
+// a friend's name-tag line: their count in the game they're in, or their trick points in free roam
+function peerLine(pr){const n=v=>Number.isFinite(v)?Math.floor(v):0;
+  if(Array.isArray(pr.wm))return`${n(pr.wm[3])} KO`;if(Array.isArray(pr.or))return`${n(pr.or[2])} orbs`;if(Array.isArray(pr.tm))return`It ${n(pr.tm[2])}s`;
+  return pr.fr?`tricks · ${n(pr.sc)}`:`${n(pr.sc)}`}
 function drawTag(a,name,sc,free){const t=name+'|'+sc+'|'+free;if(t===a.txt)return;a.txt=t;const x=a.tc.getContext('2d');x.clearRect(0,0,320,96);
   x.fillStyle='rgba(10,32,46,.82)';x.beginPath();x.roundRect?x.roundRect(10,6,300,84,22):x.rect(10,6,300,84);x.fill();
   x.textAlign='center';x.textBaseline='middle';x.fillStyle='#fff8e8';x.font='800 34px "Baloo 2", system-ui, sans-serif';x.fillText(name.slice(0,16),160,36);
@@ -72,7 +76,7 @@ function updAvatars(dt){
     if(a.rig.accA&&a.rig.accA.length)accFrame(a.rig,dt,sp,false,{f:0,s:0,u:0});
     if(a.rig.scarf){const fl=Math.min(1.25,sp*.11);a.rig.scarf.forEach((g,i)=>{g.rotation.x=(i?fl*.12:.25+fl)+Math.sin(tAll*(6+sp)-i*1.1)*(.08+fl*.12)})}
     snowFromPeer(peer,a);
-    drawTag(a,nameOf(peer),Number.isFinite(pr.sc)?Math.floor(pr.sc):0,!!pr.fr);
+    drawTag(a,nameOf(peer),peerLine(pr),!!pr.fr);
     const t=pr.t;if(Array.isArray(t)&&t[0]!==a.tn){if(a.tn!==null&&typeof t[1]==='string'&&t[1])showTrickTag(a,t[1].slice(0,22));a.tn=t[0]}
     if(a.tt0>0){a.tt0-=dt;a.trick.material.opacity=Math.min(1,a.tt0*2);a.trick.position.y=3.5+(1.3-a.tt0)*.5}else a.trick.material.opacity=0}
   for(const[id,a]of MP.av)if(!seen.has(id)){dropAv(a);MP.av.delete(id)}
@@ -108,14 +112,14 @@ function mpFrame(dt){
   const want=wantRoom();if(want!==MP.roomName&&!MP.joining&&now>MP.retryAt)switchRoom(want);
   electHost();updAvatars(dt);
   if(MP.room&&now-MP.lastSend>50){MP.lastSend=now;
-    const pr={nm:MP.myName||'Player',ch:ci,of:OFI[ci]??0,lk:LOOKS[ci]||null,p:[P.position.x,py,P.position.z,face].map(f2),q:poseOf(),sc:score,fr:runFree?1:0,t:[MP.tr.n,MP.tr.s],c:[MP.cl.n,MP.cl.o,MP.cl.k],sb:SB.sent,hb:SB.hits,yw:YS.spray?1:0,z:SB.stun>0?1:0,H:null,wm:WAR.on?[WAR.id,Math.round(WAR.t),WAR.out>0?0:WAR.hp]:null,or:raceLive()?[RACE.id,Math.round(time)]:null,sp:RACE.sp.length?RACE.sp:null,tm:TAG.on?[TAG.id,Math.round(TAG.t),+(TAG.itT.me||0).toFixed(1),TAG.it==='me'?1:0,TAG.last]:null};
+    const pr={nm:MP.myName||'Player',ch:ci,of:OFI[ci]??0,lk:LOOKS[ci]||null,p:[P.position.x,py,P.position.z,face].map(f2),q:poseOf(),sc:score,fr:runFree?1:0,t:[MP.tr.n,MP.tr.s],c:[MP.cl.n,MP.cl.o,MP.cl.k],sb:SB.sent,hb:SB.hits,yw:YS.spray?1:0,z:SB.stun>0?1:0,H:null,wm:WAR.on?[WAR.id,Math.round(WAR.t),WAR.out>0?0:WAR.hp,WAR.kos,WAR.hits]:null,or:raceLive()?[RACE.id,Math.round(time),orbN]:null,sp:RACE.sp.length?RACE.sp:null,tm:TAG.on?[TAG.id,Math.round(TAG.t),+(TAG.itT.me||0).toFixed(1),TAG.it==='me'?1:0,TAG.last]:null};
     if(MP.host)pr.H={o:orbs.map(o=>[o.id,f2(o.g.position.x),f2(o.y),f2(o.g.position.z),o.gold?1:0,o.v,o.ring.visible?0:1,o.beam?1:0]),h:runHz.filter(h=>!h.dead).map(h=>[h.id,f2(h.g.position.x),f2(h.g.position.z),KINDS.indexOf(h.kind),Math.max(0,FSTATES.indexOf(h.st)),f2(h.face||0)]),g:FX.sent};
     MP.room.presence(pr).catch(()=>{})}
   if(now-MP.lastList>250){MP.lastList=now;mpList()}
 }
-function mpList(){const e=$('mpList');if(!MP.room){e.classList.remove('on');return}
+function mpList(){const e=$('mpList');if(!MP.room||WAR.on||RACE.on||TAG.on||(mode==='run'&&!runFree)){e.classList.remove('on');return}
   const ps=MP.room.peers().filter(p=>p.sameTab||(p.presence&&Array.isArray(p.presence.p)));if(ps.length<2){e.classList.remove('on');return}
-  const rows=ps.map(p=>({n:p.sameTab?(MP.myName?MP.myName+' (you)':'You'):nameOf(p),s:p.sameTab?score:(Number.isFinite(p.presence.sc)?Math.floor(p.presence.sc):0),me:p.sameTab})).sort((a,b)=>b.s-a.s);
+  const rows=ps.filter(p=>p.sameTab||p.presence.fr).map(p=>({n:p.sameTab?(MP.myName?MP.myName+' (you)':'You'):nameOf(p),s:p.sameTab?score:(Number.isFinite(p.presence.sc)?Math.floor(p.presence.sc):0),me:p.sameTab})).sort((a,b)=>b.s-a.s);
   e.replaceChildren(...rows.map(r=>{const d=document.createElement('div');d.className=r.me?'me':'';const n=document.createElement('span');n.textContent=r.n;const s=document.createElement('b');s.textContent=r.s;d.append(n,s);return d}));e.classList.add('on')}
 // claims sent to the referee
 function claim(kind,id){const L=MP.cl[kind];L.push(id);if(L.length>6)L.shift();MP.cl.n++}

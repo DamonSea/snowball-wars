@@ -67,7 +67,7 @@ function makeOrb(s,gold,id){const col=orbCol(gold);
 // enemies: winter crew or classic spikeballs (see enemies.js)
 function spawnRunHz(kind=pickKind()){const f=makeFoe(kind,runL.grp),{x,z}=freeSpot(12);f.g.position.set(x,kind==='spike'?.75:0,z);const a=Math.random()*PI*2,sp=kind==='spike'?T.run.hazardSpeed+runT*T.run.hazardSpeedUp:0;
   runHz.push(Object.assign(f,{vx:Math.cos(a)*sp,vz:Math.sin(a)*sp,id:mkId('h'+(++hzSeq)),st:'walk',t:1+Math.random()*2,face:a,wa:a,cool:2+Math.random()*2,robbed:0,mine:0}))}
-function resetRun(){if(WAR.on)warsStop(false);raceStop();tagStop(false);[...orbs,...runHz].forEach(o=>rmObj(o.g));orbs=[];runHz=[];runQ=[];ATK.t=0;spawnCount=0;score=0;time=T.run.time;runT=0;bestCombo=0;lives=3;invuln=0;resetAcro();
+function resetRun(){if(WAR.on)warsStop(false);raceStop();tagStop(false);[...orbs,...runHz].forEach(o=>rmObj(o.g));orbs=[];runHz=[];runQ=[];ATK.t=0;spawnCount=0;score=0;orbN=0;time=T.run.time;runT=0;bestCombo=0;lives=3;invuln=0;resetAcro();
   ({plats,advCol}=runL);clearSnow();Object.assign(GAP,{from:null,take:null,wasSup:true});CL.on=false;CL.top=false;stand=null;iceV.set(0,0,0);onIce=false;Object.assign(TR,{pts:0,mult:0,names:[],t:0});showCombo();
   P.position.set(0,0,0);vel.set(0,0,0);vy=py=0;grounded=true;
   if(runL.custom){const s=runL.spawn;P.position.set(s.x,0,s.z);py=s.y||0;if(s.x||s.z)face=Math.atan2(-s.x,-s.z)}   // custom maps: start on the spawn point, facing the middle
@@ -78,7 +78,7 @@ function startRun(free=true){mode='run';setWorld('run');resetRun();runFree=free;
   hint('')}
 // from free roam: keep Flip where he is, reset the board, count down 3-2-1, then the clock starts
 function beginTimed(o={}){if(mode!=='run'||!runFree||runCD>0||state!=='play'||WAR.on||TAG.on)return;if(!runL.spad){toast('This map has no orb run.');return}
-  runFree=false;runCD=3;popScore('3');SFX.ui(3);padHold=0;score=0;time=T.run.time;runT=0;bestCombo=0;lives=3;Object.assign(TR,{pts:0,mult:0,names:[],t:0});showCombo();
+  runFree=false;runCD=3;popScore('3');SFX.ui(3);padHold=0;score=0;orbN=0;time=T.run.time;runT=0;bestCombo=0;lives=3;Object.assign(TR,{pts:0,mult:0,names:[],t:0});showCombo();
   if(!MP.client){orbs.forEach(o=>rmObj(o.g));orbs=[];spawnCount=0;for(let i=0;i<T.run.orbsOnField;i++)spawnOrb();
   runHz.forEach(h=>rmObj(h.g));runHz=[];runQ=[]}
   raceStart({id:o.id,join:!!o.id});if(o.time){time=o.time;runCD=1.5}   // orbrace.js: friends join, or computer rivals
@@ -102,9 +102,11 @@ function modeMenu(){if(state!=='play'||mode!=='run'||!runFree||runCD>0||WAR.on||
 // pause menu > Play
 function gamesMenu(){if(state!=='paused')return;SFX.ui(2);showModes('Play','Back',()=>showPause())}
 // time's up (or out of lives): show the result and keep playing right where you are, back in free roam
-function endRun(){bankCombo();const rr=RACE.on?raceResult():null;const bk=runL.key,fin=score,nb=fin>(bestR[bk]||0);if(nb){bestR[bk]=fin;try{localStorage.setItem(bk,fin)}catch(e){}}
+// best orb count per map
+const bestO=k=>{try{return+localStorage.getItem('orbsBest_'+k)||0}catch(e){return 0}};
+function endRun(){bankCombo();const rr=RACE.on?raceResult():null;const bk=runL.key,fin=orbN,nb=fin>bestO(bk);if(nb)try{localStorage.setItem('orbsBest_'+bk,fin)}catch(e){}
   beep(220,.4,'sawtooth',.08);const why=lives<=0?(FOE_STYLE==='spike'?'Spiked!':'Wiped out!'):'Time\u2019s up!';
-  toFreeInPlace();popScore(why);const msg=`${why} ${rr?rr.text+' \u00b7 ':''}Score ${fin} \u00b7 best combo ${bestCombo}${nb?' \u00b7 New best!':''}`;hint(msg)}
+  toFreeInPlace();popScore(why);const msg=`${why} ${rr?rr.text+' \u00b7 ':''}${fin} orb${fin===1?'':'s'}${nb?' \u00b7 New best!':''}`;hint(msg)}
 function updateRun(dt){
   advT+=dt;
   if(runCD>0){const a=Math.ceil(runCD);runCD-=dt;const b=Math.ceil(runCD);
@@ -125,7 +127,8 @@ function updateRun(dt){
   for(const o of [...orbs]){
     if(Math.hypot(o.g.position.x-P.position.x,o.g.position.z-P.position.z)<1.15&&Math.abs(py-o.y)<1.7){
       burst(o.m.getWorldPosition(V(0,0,0)),o.col||(o.gold?0xffcc33:0x5ff3ff));if(o.gold)time+=T.run.goldBonusTime;gainSnow(o.gold);
-      if(TR.mult){TR.pts+=o.v;TR.t=Math.max(TR.t,T.combo.orbExtend);showCombo()}else{score+=o.v;popScore('+'+o.v)}
+      // orb race: a straight count. Free roam: orbs feed your trick points as before
+      if(!runFree){orbN++;popScore('+1')}else if(TR.mult){TR.pts+=o.v;TR.t=Math.max(TR.t,T.combo.orbExtend);showCombo()}else{score+=o.v;popScore('+'+o.v)}
       SFX.orb(o.gold);rmObj(o.g);orbs.splice(orbs.indexOf(o),1);if(MP.client){MP.gone.add(o.id);claim('o',o.id)}else if(!o.spill)spawnOrb();hud()}
   }
   if(MP.client){const k=1-Math.exp(-12*dt);

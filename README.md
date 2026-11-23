@@ -43,8 +43,9 @@ Your look shows up for friends in multiplayer.
 ![Customizing Vex with a crown and wings](docs/media/customize.png)
 
 ### Trick Park
-Four maps to skate, flip and wall-jump around, with free roam until you step on the START pad for a 60-second
-scored run. Higher orbs are worth more, combos multiply, and **named gaps** reward clean lines.
+Maps to skate, flip and wall-jump around. **Free roam** has no lives: tricks, combos and **named gaps** earn trick
+points (higher orbs are worth more there). Step on the PLAY pad to start a game: the **Orb Race** is a straight count
+of orbs, **Snowball Wars** is hearts and KOs, and **Tag** is time spent It.
 - **Plaza:** a skatepark built around trick lines: tower and crown, runway, chimney, pillars, treehouse, fountain, and the Big Slide.
 - **Frozen Rink:** real ice physics: build speed, glide, drift and bounce off the boards.
 - **Rooftops:** a vertical city made for wall jumps, topped by a climbable antenna 18 m up.
@@ -144,11 +145,11 @@ needs Flip's or Nova's full moveset (and guard rails help).
 
   ![Christmas Village](media/christmas-village.png)
 
-- **Orb Race**: the orb run is a race now. Friends on the map join the same run; a snowball hit knocks your points loose as orbs anyone can grab; solo, two computer rivals race you (Settings → Orb run rivals).
+- **Orb Race**: the orb run is a race now. Friends on the map join the same run; whoever grabs the most orbs wins (no points), a snowball hit knocks 2 of your orbs loose for anyone to grab; solo, two computer rivals race you (Settings → Orb run rivals).
 
   ![Orb Race](media/orb-race.png)
 
-- **Snowball Wars mode**: pause in Trick Park and pick *Snowball Wars* for a 3-minute free-for-all. 3 hearts each, Trick Shots for double points, KO bonuses, snowball pickups to grab (the high ones hold more). Solo you face three computer players; with friends on the map it's players only.
+- **Snowball Wars mode**: pause in Trick Park and pick *Snowball Wars* for a 3-minute free-for-all. 3 hearts each, most KOs wins (no points), snowball pickups to grab (the high ones hold more). Solo you face three computer players; with friends on the map it's players only.
 
   ![Snowball Wars match](media/snowball-wars-match.png)
 
