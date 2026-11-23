@@ -3,6 +3,14 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.22.1] - 2026-11-23 — Snowball pickups
+### Changed
+- **Snowball Wars: snow piles are replaced by snowball pickups that work like orbs.** Glowing bundles of snowballs
+  sit at the map's orb spots, including the high ones and the ones in mid-air. Ground bundles give 2; high and
+  mid-air ones give 4, are bigger and have a light beam so you can spot them. Six are out at a time; grab one and
+  another appears somewhere else. They stay put if you're already full. Each player has their own.
+- The slow snowball trickle is now 1 every 8 seconds (was 3), so the pickups (and snowmen) are your real refill.
+
 ## [2.22.0] - 2026-11-23 — Tag, and friendly penguins
 ### Added
 - **Tag**, a third Trick Park mode (PLAY pad or pause menu → Tag). A 2-minute round: whoever's It wears an "IT!"

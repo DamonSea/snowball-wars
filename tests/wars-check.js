@@ -6,7 +6,7 @@ menu();pickMode='run';pickLevel=0;ci=2;showChar();confirmChar();__step(10);
 pause();ok('free roam pause offers Snowball Wars',btns().includes('Snowball Wars'));click('Snowball Wars');__step(2);
 ok('match starts: 3 computer players, board up',WAR.on&&WAR.bots.length===3&&$('warsBoard').classList.contains('on'));
 ok('orbs and enemies cleared',orbs.length===0&&runHz.length===0);
-ok('4 snow piles',WAR.piles.length===4);
+ok('6 snowball pickups out, at orb spots',WAR.piles.length===6&&WAR.piles.filter(p=>!p.spot.rand).length>=4);
 ok('HUD shows Score / Ready / 3 hearts',$('k1').textContent==='Score'&&$('v2').textContent==='Ready'&&lives===3);
 SB.ammo=6;throwSnow();ok('no throwing during the countdown',SB.ammo===6);
 __step(200);ok('countdown over, clock running',WAR.cd===0&&WAR.t<180&&/^[23]:\d\d$/.test($('v2').textContent));
@@ -28,8 +28,13 @@ SB.ammo=6;throwSnow();ok('can\'t throw while knocked out',SB.ammo===6);
 SB.hitCool=0;hitMe('bot1',4,0,0,false);ok('no hits while you\'re down',WAR.hp===0&&bot1.score===bs+550);
 const x0=P.position.x;__step(Math.ceil(T.wars.respawn*60)+5);ok('you respawn somewhere else with 3 hearts and full snow',WAR.out<=0&&WAR.hp===3&&SB.ammo===T.snow.ammo&&WAR.inv>0);
 SB.hitCool=0;hitMe('bot1',5,0,0,false);ok('blinking after respawn: safe',WAR.hp===3);
-// snow piles
-__step(200);hold();WAR.out=0;WAR.inv=0;const pl=WAR.piles[0];SB.ammo=0;snowHud();__place(pl.x,pl.z,0,0);WAR.bots.forEach(q=>{q.cool=99});__step(60);ok('standing on a snow pile refills snowballs',SB.ammo>=3);WAR.bots.forEach(q=>{q.cool=1});
+// snowball pickups: grab one like an orb, another appears elsewhere; bigger bundles up high
+__step(200);hold();WAR.out=0;WAR.inv=0;const pl=WAR.piles.find(p=>!p.spot.air)||WAR.piles[0];SB.ammo=1;snowHud();__place(pl.x,pl.z,pl.y,0);__step(3);
+ok('grab a snowball pickup: +'+pl.v+' (1 -> '+SB.ammo+')',SB.ammo===Math.min(T.snow.ammo,1+pl.v));
+ok('it disappears and a new one appears somewhere else',!WAR.piles.includes(pl)&&WAR.piles.length===6);
+SB.ammo=T.snow.ammo;snowHud();const p2=WAR.piles.find(p=>!p.spot.air);__place(p2.x,p2.z,p2.y,0);__step(3);ok('when you\'re full, pickups stay put',WAR.piles.includes(p2));
+const hi=WAR.piles.concat().map(p=>p.spot).filter(s=>s.y>=3||s.air);ok('high / mid-air pickups are the big ones',WAR.piles.every(p=>(p.spot.rand||!(p.spot.y>=3||p.spot.air))?p.v===T.wars.packSmall:p.v===T.wars.packBig));
+WAR.bots.forEach(q=>{q.cool=1});
 // bots throw at each other and at you
 const before=WAR.bots.reduce((a,q)=>a+q.hits,0)+WAR.downs;let thrown=0;const L0=launchSnowball;launchSnowball=(...a)=>{if(String(a[2]).startsWith('bot'))thrown++;return L0(...a)};__step(600);launchSnowball=L0;
 ok('computer players throw ('+thrown+' in 10s)',thrown>=6);
@@ -39,7 +44,7 @@ ok('pause line shows place and time',true);
 // time up: results
 WAR.t=.02;__step(3);ok('time up: results screen',state==='over'&&!$('ov').classList.contains('hide')&&$('ovP').querySelectorAll('.warsres li').length===4);
 ok('results list you',[...$('ovP').querySelectorAll('.warsres li.me')].length===1);
-ok('bots and piles cleared, board hidden',!WAR.on&&WAR.bots.length===0&&WAR.piles.length===0&&!$('warsBoard').classList.contains('on'));
+ok('bots and pickups cleared, board hidden',!WAR.on&&WAR.bots.length===0&&WAR.piles.length===0&&!$('warsBoard').classList.contains('on'));
 ok('buttons: '+btns().join(', '),btns().join('|')==='Play again|Keep playing');
 const px=P.position.x;click('Keep playing');__step(5);ok('keep playing: free roam in place, orbs back',state==='play'&&runFree&&orbs.length===T.run.orbsOnField&&Math.abs(P.position.x-px)<.5);
 __step(30);ok('enemies come back',runHz.length===T.run.hazardsFree||!foesOn());

@@ -1,7 +1,7 @@
 // Snowball Wars: a timed free-for-all snowball fight in Trick Park (pause menu > Snowball Wars).
 // Everyone has 3 hearts. A hit scores 100 (200 for a Trick Shot: thrown mid-air or mid-trick), the hit
-// that takes someone's last heart scores a KO bonus, and they respawn a few seconds later. Snow piles
-// refill your snowballs. Alone you play against computer players; with friends on the map it's players
+// that takes someone's last heart scores a KO bonus, and they respawn a few seconds later. Snowball
+// pickups (bundles at the orb spots, bigger up high) refill your snowballs. Alone you play against computer players; with friends on the map it's players
 // only, and starting a match pulls everyone on that map into it (they join through presence: `wm`).
 const WAR={on:false,id:'',t:0,cd:0,hp:3,score:0,hits:0,kos:0,downs:0,out:0,inv:0,bots:[],piles:[],refill:0,regen:0,
   done:new Set(),tick:0,by:'',lastBy:''};
@@ -52,14 +52,21 @@ function standings(){const r=[{name:'You',score:WAR.score,hp:WAR.out>0?0:WAR.hp,
 function warsBoard(){const e=$('warsBoard');if(!e)return;
   e.innerHTML=`<div class="wbt">${WAR.cd>0?'Get ready':fmtClock(WAR.t)}</div>`+standings().map(r=>`<div class="wbr${r.me?' me':''}"><b>${warEsc(r.name)}</b><i>${'♥'.repeat(Math.max(0,r.hp))}<s>${'♥'.repeat(Math.max(0,T.wars.hp-r.hp))}</s></i><span>${r.score}</span></div>`).join('')}
 
-// ---------- snow piles: stand on one to refill ----------
-function makePiles(){WAR.piles.forEach(p=>freeTree(p.g));WAR.piles=[];const mS=snowM;
-  for(let k=0;k<T.wars.piles;k++){const s=freeSpot(4),g=new THREE.Group(),y=groundAt(s.x,s.z,20).h;g.position.set(s.x,isFinite(y)?y:0,s.z);runL.grp.add(g);
-    const m=new THREE.Mesh(new THREE.SphereGeometry(.95,14,8),mS);m.scale.set(1,.42,1);m.position.y=.05;g.add(m);
-    for(let i=0;i<5;i++){const b=new THREE.Mesh(sbGeo,sbMat);const a=i/5*PI*2;b.position.set(Math.cos(a)*.38,.42+(i%2)*.06,Math.sin(a)*.38);g.add(b)}
-    const top=new THREE.Mesh(sbGeo,sbMat);top.position.y=.6;g.add(top);
-    const ring=new THREE.Mesh(ringGeo,new THREE.MeshBasicMaterial({color:0x9fe3ff,transparent:true,opacity:.5,side:THREE.DoubleSide}));ring.rotation.x=-PI/2;ring.position.y=.04;ring.scale.setScalar(2.1);g.add(ring);
-    WAR.piles.push({g,x:s.x,z:s.z,y:g.position.y,ring})}}
+// ---------- snowball pickups: bundles at the map's orb spots, collected like orbs ----------
+// High and mid-air spots hold bigger bundles, so the hard routes keep you stocked. Grab one and another appears
+// somewhere else. Each player has their own (they're ammo, not points).
+const packMat=keep(new THREE.MeshBasicMaterial({color:0x9fe3ff,transparent:true,opacity:.55,side:THREE.DoubleSide})),
+  packBall=keep(new THREE.MeshStandardMaterial({color:0xf2fbff,emissive:0x6fcfff,emissiveIntensity:.55,roughness:.6})),
+  packBeam=keep(new THREE.MeshBasicMaterial({color:0x9fe3ff,transparent:true,opacity:.2,depthWrite:false,blending:THREE.AdditiveBlending})),packBeamGeo=keep(new THREE.CylinderGeometry(.09,.09,14,6,1,true));
+function packSpot(){const used=WAR.piles.map(p=>p.spot),pool=(runL.spots||[]).filter(s=>(chars[ci].acro||s.any)&&!used.includes(s)&&Math.hypot(s.x-P.position.x,s.z-P.position.z)>5);
+  if(pool.length&&Math.random()<.85)return pool[Math.floor(Math.random()*pool.length)];
+  const f=freeSpot(5),y=groundAt(f.x,f.z,20).h;return{x:f.x,z:f.z,y:isFinite(y)?y:0,rand:1}}
+function makePack(){const s=packSpot(),big=!s.rand&&(s.y>=3||s.air),n=big?T.wars.packBig:T.wars.packSmall,g=new THREE.Group();g.position.set(s.x,s.y,s.z);runL.grp.add(g);
+  const b=new THREE.Group();b.position.y=1;g.add(b);
+  for(let i=0;i<n+1;i++){const m=new THREE.Mesh(sbGeo,packBall);const a=i/(n+1)*PI*2;m.position.set(Math.cos(a)*(big?.3:.22),i===0?.22:0,Math.sin(a)*(big?.3:.22));if(i===0)m.position.set(0,.24,0);m.scale.setScalar(big?1.25:1);m.castShadow=true;b.add(m)}
+  const ring=new THREE.Mesh(ringGeo,packMat);ring.rotation.x=-PI/2;ring.position.y=.03;ring.visible=!s.air;if(big){ring.scale.setScalar(1.25);const bm=new THREE.Mesh(packBeamGeo,packBeam);bm.position.y=7;g.add(bm)}g.add(ring);
+  WAR.piles.push({g,b,ring,spot:s,x:s.x,z:s.z,y:s.y,v:n,t:Math.random()*6})}
+function makePiles(){WAR.piles.forEach(p=>freeTree(p.g));WAR.piles=[];for(let k=0;k<T.wars.packs;k++)makePack()}
 
 // ---------- computer players ----------
 function makeBot(k){const d=BOT_DEF[k%BOT_DEF.length],a=makeAv(d.ch);try{applyLook(a.rig,d.ch,d.of,cleanLook(null,d.ch));a.of=d.of}catch(e){}
@@ -158,10 +165,11 @@ function warsUpdate(dt){
       WAR.hp=T.wars.hp;WAR.inv=T.wars.invuln;invuln=T.wars.invuln;SB.stun=0;SB.ammo=T.snow.ammo;snowHud();burst(V(s.x,py+1,s.z),0xffffff,14);hud()}}
   if(WAR.inv>0)WAR.inv-=dt;
   if(WAR.out>0&&WAR.out<=.3&&!WAR.poof){WAR.poof=true;burst(V(P.position.x,py+.5,P.position.z),0xffffff,18);burst(V(P.position.x,py+.5,P.position.z),0xdff4ff,8)}
-  // snow piles and a slow trickle
-  let near=false;for(const p of WAR.piles){p.ring.material.opacity=.35+Math.sin(tAll*3)*.15;if(Math.hypot(p.x-P.position.x,p.z-P.position.z)<T.wars.pileR&&Math.abs(py-p.y)<1.2)near=true}
-  if(near&&SB.ammo<T.snow.ammo&&(WAR.refill+=dt)>=T.wars.pileRate){WAR.refill=0;SB.ammo++;snowHud();snowFlash('gain');SFX.ui(2)}
-  if(!near)WAR.refill=0;
+  // snowball pickups (bob and spin like orbs; grab one if you have room) and a slow trickle
+  for(const p of [...WAR.piles]){p.t+=dt;p.b.position.y=1+Math.sin(p.t*2.4)*.18;p.b.rotation.y+=dt*1.6;
+    if(SB.ammo<T.snow.ammo&&Math.hypot(p.x-P.position.x,p.z-P.position.z)<1.15&&Math.abs(py-p.y)<1.7){
+      const was=SB.ammo;SB.ammo=Math.min(T.snow.ammo,SB.ammo+p.v);snowHud();snowFlash('gain');SFX.orb(p.v>T.wars.packSmall);popScore(`+${SB.ammo-was} snow`);
+      burst(V(p.x,p.y+1,p.z),0xffffff,10);freeTree(p.g);WAR.piles.splice(WAR.piles.indexOf(p),1);makePack()}}
   if(SB.ammo<T.snow.ammo&&(WAR.regen+=dt)>=T.wars.regen){WAR.regen=0;SB.ammo++;snowHud()}
   WAR.bots.forEach(b=>updateBot(b,dt));
   if((WAR.tick+=dt)>.25){WAR.tick=0;warsBoard()}}

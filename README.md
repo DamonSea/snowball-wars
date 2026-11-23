@@ -134,7 +134,7 @@ needs Flip's or Nova's full moveset (and guard rails help).
 
   ![Orb Race](media/orb-race.png)
 
-- **Snowball Wars mode**: pause in Trick Park and pick *Snowball Wars* for a 3-minute free-for-all. 3 hearts each, Trick Shots for double points, KO bonuses, snow piles to reload. Solo you face three computer players; with friends on the map it's players only.
+- **Snowball Wars mode**: pause in Trick Park and pick *Snowball Wars* for a 3-minute free-for-all. 3 hearts each, Trick Shots for double points, KO bonuses, snowball pickups to grab (the high ones hold more). Solo you face three computer players; with friends on the map it's players only.
 
   ![Snowball Wars match](media/snowball-wars-match.png)
 
