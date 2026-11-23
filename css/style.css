@@ -253,6 +253,9 @@ body.padnav #cust .opt:focus,body.padnav #cust .cpre:focus,body.padnav #cust .ct
 .parkarrow{width:46px;height:46px;min-height:0;padding:0;border-radius:50%;font-size:18px}
 .parkbest{margin:6px 0 0;font:700 17px "Inter",sans-serif}.parkmeta{margin:2px 0 10px;font-size:13px;opacity:.7}
 body.setopen #park{visibility:hidden}
+.parktabs{display:flex;justify-content:center;gap:8px;margin:-2px 0 10px}.parktabs .mvtab{font-size:15px;padding:7px 16px;position:relative}
+.parktabs .pk{position:static;margin:0 6px;font-size:10px;vertical-align:1px}.parkhint{margin:-6px 0 10px;font-size:12px;opacity:.75}.parkhint.hide{display:none}
+.parkempty{display:grid;place-items:center;height:100%;padding:20px;font:700 16px "Inter",sans-serif;color:#1b3a4b}
 
 /* pause: same vertical column as the main menu; keep its one status line */
 .ov.pausem #ovP{font-size:15px;margin:0 0 6px;opacity:.85}

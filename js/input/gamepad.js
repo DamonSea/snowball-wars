@@ -66,7 +66,7 @@ function pollPad(){
   if(capPad(pr))return;
   if(setOpen){setNav(L,R,U,D,pr(0),pr(1)||pr(9),pr(4),pr(5));return}
   if(movesOpen){movesPad(L,R,U,D,pr(1)||pr(9),pr(4),pr(5));return}
-  if(PARK.on){parkPad(L,R,pr(0),pr(1),pr(3));return}
+  if(PARK.on){parkPad(L,R,pr(0),pr(1),pr(3),pr(4),pr(5),U,D);return}
   if(typeof mapsOpen!=='undefined'&&mapsOpen){panelNav($('maps'),L,R,U,D,pr(0));if(pr(1)){closeMapsPanel();parkMenu()}return}
   if(state==='play'){
     for(const a of ACT)if(BIND.pad[a.id]&&BIND.pad[a.id].some(i=>pr(i))){press(a.id);if(state!=='play')break}if(pr(17))setCtl(!ctlHidden);

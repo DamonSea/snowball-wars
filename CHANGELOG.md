@@ -3,7 +3,16 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
-## [2.24.0] - 2026-11-23 — User Maps
+## [2.25.0] - 2026-11-23 — Dev Maps and User Maps
+### Added
+- **Trick Park picker tabs: Dev Maps and User Maps.** Switch with the tabs, Q/E (or Up/Down), or L1/R1.
+- **Maps published from the builder now appear in User Maps** for everyone, credited "by <maker>", newest first,
+  after the maps shipped with the game. Unpublishing removes them. Each is built once per published version.
+### Changed
+- Player maps merge only their plain top-level pieces, so animated parts (flags, snowmen) keep working.
+- The publish message now points to Trick Park → User Maps.
+
+ - 2026-11-23 — User Maps
 ### Added
 - **User Maps:** player-made maps that ship with the game, at the end of the Trick Park picker, marked
   "User Map by <name>". The first is **Ben's Madness Map** by Ben: blocks, stairs, orbs and a forest of 335

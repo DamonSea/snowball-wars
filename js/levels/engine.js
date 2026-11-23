@@ -87,10 +87,11 @@ const blocked=(x,z,y)=>plats.some(p=>{if(!inside(p,x,z,T.wallMargin))return fals
 
 // Merge every static mesh under `root` that shares a material into one mesh: far fewer draw calls for maps full of
 // small decorations. Collision lives in plats/advCol, not in meshes, so this is safe for map scenery. Season-only,
-// textured and non-shadow-casting meshes are left alone.
-function mergeStatic(root){if(typeof root.updateMatrixWorld!=='function'||!THREE.BufferGeometry.prototype.applyMatrix4)return;
+// textured and non-shadow-casting meshes are left alone. direct: only meshes sitting right under root (player maps keep
+// animated pieces such as flags and snowmen in their own groups, so those stay untouched).
+function mergeStatic(root,direct){if(typeof root.updateMatrixWorld!=='function'||!THREE.BufferGeometry.prototype.applyMatrix4)return;
   root.updateMatrixWorld(true);const byMat=new Map();
-  root.traverse(o=>{if(!o.isMesh||!o.castShadow||winterOnly.includes(o)||Array.isArray(o.material)||o.material.map)return;if(!byMat.has(o.material))byMat.set(o.material,[]);byMat.get(o.material).push(o)});
+  root.traverse(o=>{if(!o.isMesh||(direct&&o.parent!==root)||!o.castShadow||winterOnly.includes(o)||Array.isArray(o.material)||o.material.map)return;if(!byMat.has(o.material))byMat.set(o.material,[]);byMat.get(o.material).push(o)});
   for(const[m,list]of byMat){if(list.length<2)continue;let n=0;
     const gs=list.map(o=>{const g=o.geometry.index?o.geometry.toNonIndexed():o.geometry.clone();g.applyMatrix4(o.matrixWorld);n+=g.attributes.position.count;return g});
     const pos=new Float32Array(n*3),nor=new Float32Array(n*3);let k=0;

@@ -17,8 +17,17 @@ async function commInit(){try{if(!window.claude||typeof window.claude.use!=='fun
   try{COMM.me.owner=!!(user&&await user.isOwner())}catch(e){}try{COMM.canWrite=user?await user.can('data.write'):null}catch(e){}
   const timer=setTimeout(()=>{if(COMM.status==='loading'){COMM.status='slow';renderMaps()}},10000);
   db.collection('maps').onSnapshot(s=>{clearTimeout(timer);
-    COMM.list=(Array.isArray(s)?s:(s&&s.docs)||[]).map(d=>d&&typeof d.data==='function'?{id:d.id,...d.data()}:{...d}).filter(m=>typeof m.map==='string'&&m.map.length<240000).sort((a,b)=>(+b.updated||0)-(+a.updated||0));COMM.status='ok';renderMaps()},
+    COMM.list=(Array.isArray(s)?s:(s&&s.docs)||[]).map(d=>d&&typeof d.data==='function'?{id:d.id,...d.data()}:{...d}).filter(m=>typeof m.map==='string'&&m.map.length<240000).sort((a,b)=>(+b.updated||0)-(+a.updated||0));COMM.status='ok';syncPubMaps();renderMaps()},
     e=>{clearTimeout(timer);COMM.status='error';renderMaps()})}catch(e){COMM.status='off'}}
+// Published maps join Trick Park → User Maps. Each is built once per published version (and again if a draft of it was
+// played in between); unpublished maps drop out of the list.
+const PUB={keys:new Set()};
+function syncPubMaps(){const keys=new Set();
+  for(const p of COMM.list){const m=parseShared(p);if(!m)continue;const key='cm_'+m.id,v=String(p.updated||'');keys.add(key);
+    if(RUNMAPS.some(M=>M.key===key&&(M.user||M.pubV===v)))continue;
+    try{const was=RUNMAPS.find(M=>M.key===key),M=RUNMAPS[addCustomMap(m)];if(M===was)continue;   // being played right now: rebuilt on the next update
+      M.author=p.author||m.author||'';M.pubAt=+p.updated||0;M.pubV=v;mergeStatic(M.grp,true);delete PARK.thumbs[key]}catch(e){}}
+  PUB.keys=keys;if(PARK.on)renderPark()}
 function parseShared(m){try{return cleanMap({...JSON.parse(m.map),id:m.id})}catch(e){return null}}
 async function publishMap(map){
   if(!COMM.db){toast('Publishing works in the claude.ai version of the game. Use Export to share the map file.');SFX.deny();return}
@@ -28,7 +37,7 @@ async function publishMap(map){
   if(prev&&prev.authorId&&COMM.me.id&&prev.authorId!==COMM.me.id&&!COMM.me.owner){toast('That map belongs to someone else. Export it, or make a copy.');return}
   m.author=(prev&&prev.author)||COMM.me.name||'Player';
   try{await COMM.db.collection('maps').doc(m.id).set({name:m.name,author:m.author,authorId:(prev&&prev.authorId)||COMM.me.id||'',items:m.items.length,updated:Date.now(),map:JSON.stringify(m)});
-    toast(`Published "${m.name}"! It's in Trick Park → More maps for everyone.`);SFX.unlock()}
+    toast(`Published "${m.name}"! It's in Trick Park → User Maps for everyone.`);SFX.unlock()}
   catch(e){const c=e&&e.code;if(c==='invalid_argument'){COMM.canWrite=false;toast('You can play shared maps, but publishing needs Contributor access from the owner.')}
     else if(c==='quota_exceeded')toast('The game’s map storage is full. Unpublish an old map first.');
     else toast('Could not publish right now. Try again in a moment.');SFX.deny()}}

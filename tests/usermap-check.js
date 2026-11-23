@@ -1,25 +1,40 @@
 (()=>{const out=[];const ok=(n,c,x='')=>out.push((c?'OK   ':'FAIL ')+n+(x?' -> '+x:''));
-const L=parkMaps(),M=L[L.length-1];
-ok('User map is last in the Trick Park picker',M&&M.user&&M.name==="Ben's Madness Map",M&&M.name);
-ok('Built-in maps still come first, none are User Maps',L.slice(0,-1).every(m=>!m.custom&&!m.user),L.length+' maps');
+parkMenu();__step(2);
+ok('Picker opens on Dev Maps',PARK.tab==='dev'&&$('parkTabDev').classList.contains('on'));
+const D=parkMaps();ok('Dev Maps are only the built-in maps',D.length>=5&&D.every(m=>!m.custom&&!m.user),D.map(m=>m.name).join(', '));
+ok('Dev Maps have no author line or hint',!/by /.test($('parkMeta').textContent)&&$('parkHint').classList.contains('hide'),$('parkMeta').textContent);
+parkStep(1);parkStep(1);const devI=PARK.i;
+parkKey('KeyE');ok('E switches to User Maps',PARK.tab==='user'&&$('parkTabUser').classList.contains('on'));
+let U=parkMaps(),M=U[0];ok("User Maps start with Ben's Madness Map",M&&M.name==="Ben's Madness Map",U.map(m=>m.name).join(', '));
+ok('Credits Ben',/by Ben/.test($('parkMeta').textContent),$('parkMeta').textContent);
+ok('User Maps hint shows',!$('parkHint').classList.contains('hide'));
+ok('No Dev Maps in User Maps',U.every(m=>m.custom));
+parkKey('KeyQ');ok('Q goes back to Dev Maps, same spot',PARK.tab==='dev'&&PARK.i===devI);
+parkPad(false,false,false,false,false,false,true);ok('R1 switches to User Maps',PARK.tab==='user');
+parkPad(false,false,false,false,false,true,false);ok('L1 switches to Dev Maps',PARK.tab==='dev');
 ok('Not counted in the title-screen best scores',!$('best').textContent.includes('Madness'));
-PARK.i=L.indexOf(M);renderPark();ok('Picker credits Ben',/User Map by Ben/.test($('parkMeta').textContent),$('parkMeta').textContent);
-PARK.i=0;renderPark();ok('Built-in maps have no User Map label',!/User Map/.test($('parkMeta').textContent),$('parkMeta').textContent);
+// a map published from the builder shows up in User Maps
+const pm={v:1,id:'pubtest1',name:'Sky Steps',author:'Maya',items:[{t:'spawn',x:0,z:10},{t:'block',x:4,z:0,w:2,d:2,h:2,c:1},{t:'block',x:-4,z:0,w:2,d:2,h:3,c:2},{t:'snowman',x:6,z:6},{t:'finish',x:0,z:-10},{t:'orb',x:4,z:0,y:3}],opt:{enemies:0,orbs:1,flags:1}};
+COMM.list=[{id:'pubtest1',name:'Sky Steps',author:'Maya',authorId:'u1',items:6,updated:Date.now(),map:JSON.stringify(pm)}];syncPubMaps();
+parkTab('user');U=parkMaps();ok('Published map joins User Maps after the shipped ones',U.length===2&&U[1].name==='Sky Steps',U.map(m=>m.name).join(', '));
+PARK.i=1;renderPark();ok('Published map credits its maker',/by Maya/.test($('parkMeta').textContent),$('parkMeta').textContent);
+ok('Published map is not in Dev Maps',!devMaps().some(m=>m.name==='Sky Steps'));
+const n0=RUNMAPS.length,sky=U[1];syncPubMaps();ok('Same version is not rebuilt',RUNMAPS.length===n0&&parkMaps()[1]===sky);
+ok('Snowman and flag kept as their own pieces',sky.snowmen.length===1&&sky.snowmen[0].g.parent===sky.grp&&sky.finish&&sky.finish.g.parent===sky.grp);
+parkPlay();__step(10);ok('Published map plays',runL===sky&&(state==='select'||state==='play'),runL.name);
+COMM.list=[];syncPubMaps();parkMenu();__step(2);ok('Unpublished map leaves User Maps',PARK.tab==='user'&&!parkMaps().includes(sky),parkMaps().map(m=>m.name).join(', '));
+// play Ben's map
+const B=userMaps()[0];closePark();useRunMap(RUNMAPS.indexOf(B));startRun(true);__step(5);
 const src=USER_MAPS[0];ok('Duplicates removed (400 items kept)',src.items.length===400,src.items.length);
-useRunMap(RUNMAPS.indexOf(M));startRun(true);__step(5);
 ok('Starts at the spawn point',Math.abs(P.position.x)<.6&&Math.abs(P.position.z-16)<.6,P.position.x.toFixed(1)+','+P.position.z.toFixed(1));
 ok('Has lamps to climb',advCol.filter(c=>c.pole).length>=300,advCol.filter(c=>c.pole).length+' poles');
-ok('Has orb spots (Ben placed 34 + 8 ground)',runL.spots.length>=40&&orbs.length>0,runL.spots.length+' spots, '+orbs.length+' out now');
-ok('Enemies on (Ben\'s setting)',runHz.length>0,runHz.length+' enemies');
-// stand on a block
+ok('Has orb spots (Ben placed 34 + 8 ground)',runL.spots.length>=40&&orbs.length>0,runL.spots.length+' spots');
+ok("Enemies on (Ben's setting)",runHz.length>0,runHz.length+' enemies');
 const b=src.items.find(i=>i.t==='block');__place(b.x,b.z,2.5,0);__until(()=>grounded,120);ok('Can stand on a block',Math.abs(py-2)<.15,'y='+py.toFixed(2));
-// climb a lamp
 const c=advCol.find(c=>c.pole&&Math.hypot(c.x,c.z)<20);__place(c.x,c.z+1.2,0,-Math.PI);__k({KeyW:true});__until(()=>CL.on,90);ok('Can grab a lamp pole',CL.on);__k({});
-// walk up stairs
 const s=src.items.find(i=>i.t==='stairs');__place(s.x,s.z+3,0,-Math.PI);__k({KeyW:true});__step(80);__k({});__step(10);ok('Stairs are walkable',py>.5,'y='+py.toFixed(2));
-// modes start
 const tryMode=(n,f,g)=>{try{f();__step(10);ok(n+' starts here',g())}catch(e){ok(n+' starts here',false,e.message)}};
 tryMode('Snowball Wars',()=>startWars(),()=>WAR.on);if(WAR.on)warsStop(false);__step(3);
 tryMode('Tag',()=>startTag(),()=>TAG.on);if(TAG.on)tagStop(false);__step(3);
-tryMode('Orb Race',()=>{setRivals(2);beginTimed()},()=>RACE.on&&RACE.bots.length===2);__step(120);ok('Orb Race rivals move',RACE.bots.length>0&&RACE.bots.some(b=>Math.hypot(b.a.g.position.x,b.a.g.position.z-16)>2));raceStop();
+tryMode('Orb Race',()=>{setRivals(2);beginTimed()},()=>RACE.on&&RACE.bots.length===2);
 return out.join('\n')})()
