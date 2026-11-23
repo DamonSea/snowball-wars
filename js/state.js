@@ -10,16 +10,18 @@ const fmt=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
 const level=()=>Math.floor(score/5);
 
 function hud(){
-  if(mode==='run'){$('k1').textContent=runFree?'Practice':'Score';$('v1').textContent=score;$('v2').textContent=runFree?(typeof FR!=='undefined'&&FR.on?fmtRace(FR.t):'Free'):runCD>0?'Ready':Math.ceil(time);$('v2').classList.toggle('low',!runFree&&!runCD&&time<10)}
+  if(mode==='run'&&typeof WAR!=='undefined'&&WAR.on){$('k1').textContent='Score';$('v1').textContent=WAR.score;$('v2').textContent=WAR.cd>0?'Ready':fmtClock(WAR.t);$('v2').classList.toggle('low',!WAR.cd&&WAR.t<15);lives=WAR.out>0?0:WAR.hp}
+  else if(mode==='run'){$('k1').textContent=runFree?'Practice':'Score';$('v1').textContent=score;$('v2').textContent=runFree?(typeof FR!=='undefined'&&FR.on?fmtRace(FR.t):'Free'):runCD>0?'Ready':Math.ceil(time);$('v2').classList.toggle('low',!runFree&&!runCD&&time<10)}
   else{$('k1').textContent='Cores';$('v1').textContent=`${coreCount}/3`;$('v2').textContent=fmt(atime);$('v2').classList.remove('low')}
   {const sb=$('snowBox');if(sb){sb.style.display=mode==='run'&&state!=='menu'&&state!=='select'?'':'none';snowHud()}}
+  {const k=$('lvK');if(k)k.textContent=mode==='run'&&typeof WAR!=='undefined'&&WAR.on?'Hearts':'Lives'}
   $('lv').innerHTML=[0,1,2].map(i=>`<i class="${i<lives?'':'off'}"></i>`).join('');
   $('mname').textContent=state==='menu'?'':mode==='run'?runL.name:'Adventure';
 }
 function hint(t){const h=$('hint');if(h.textContent===t)return;h.textContent=t;h.classList.remove('pop');void h.offsetWidth;if(t)h.classList.add('pop')}
 let onGo=null,onAlt=null,onAlt2=null,onAlt3=null,onAlt4=null,onAlt5=null,onAlt6=null,onAlt7=null;
 function overlay(show,t,p,goTxt,altTxt,go,alt,alt2Txt='',alt2=null,alt3Txt='',alt3=null,alt4Txt='',alt4=null,alt5Txt='',alt5=null,alt6Txt='',alt6=null,alt7Txt='',alt7=null){
-  $('ov').classList.toggle('hide',!show);$('ov').classList.remove('menu','pausem');if(!show){document.activeElement&&document.activeElement.blur&&document.activeElement.blur();return}
+  $('ov').classList.toggle('hide',!show);$('ov').classList.remove('menu','pausem','wres');if(!show){document.activeElement&&document.activeElement.blur&&document.activeElement.blur();return}
   $('ovT').textContent=t;$('ovT').classList.toggle('logo',t==='Snowball Wars');$('ovP').textContent=p;$('go').textContent=goTxt;$('alt').textContent=altTxt;onGo=go;onAlt=alt;$('alt2').textContent=alt2Txt;onAlt2=alt2;$('alt3').textContent=alt3Txt;onAlt3=alt3;$('alt4').textContent=alt4Txt;onAlt4=alt4;$('alt5').textContent=alt5Txt;onAlt5=alt5;$('alt6').textContent=alt6Txt;onAlt6=alt6;$('alt7').textContent=alt7Txt;onAlt7=alt7;
   $('best').textContent=RUNMAPS.filter(M=>!M.custom).map(M=>`${M.name}: ${bestR[M.key]||'not yet'}`).join(' \u00b7 ')+levels.map(L=>` · ${L.name}: ${bestA[L.key]?fmt(bestA[L.key]):'not yet'}`).join('');
   setTimeout(()=>$('go').focus(),50);
@@ -70,9 +72,11 @@ function pause(){if(state!=='play')return;state='paused';wave=1.6;idleT=0;showPa
 // one vertical column: Resume, then this mode's actions, then Moves, Settings and Quit (the character waves on the left)
 function showPause(){const quit=BLD.testing?['Back to builder',()=>backToBuilder()]:['Quit to menu',()=>menu()],tail=[['Moves',()=>openMoves()],['Settings',()=>openSet()],quit];
   let title,line='',acts;
-  if(mode==='run'&&runFree){const race=FR.on&&!FR.done,b=FR.on?raceBest():null;title=FR.on?'Flag race':runL.custom?runL.name:'Trick Park';
+  if(mode==='run'&&WAR.on){title='Snowball Wars';const st=standings(),pl=st.findIndex(r=>r.me)+1;line=`Score ${WAR.score} \u00b7 ${pl}${['st','nd','rd'][pl-1]||'th'} of ${st.length} \u00b7 ${fmtClock(WAR.t)} left`;
+    acts=[['Restart match',()=>{resume();startWars()}],['End match',()=>{resume();warsStop(true);hint(freeHint());toast('Match ended.')}]]}
+  else if(mode==='run'&&runFree){const race=FR.on&&!FR.done,b=FR.on?raceBest():null;title=FR.on?'Flag race':runL.custom?runL.name:'Trick Park';
     if(FR.on)line=FR.done?'Finished! Keep exploring, or race again.':`Race time ${fmtRace(FR.t)}${b?' · best '+fmtRace(b):''} · checkpoints ${FR.reached}/${runL.cps.length}`;
-    acts=[runL.spad?['Start game',()=>{resume();beginTimed()}]:null,race&&FR.reached?['Last checkpoint',()=>{resume();frRespawn()}]:null,FR.on?['Restart race',()=>startRun(true)]:null].filter(Boolean)}
+    acts=[runL.spad?['Start game',()=>{resume();beginTimed()}]:null,canWar()?['Snowball Wars',()=>{resume();startWars()}]:null,race&&FR.reached?['Last checkpoint',()=>{resume();frRespawn()}]:null,FR.on?['Restart race',()=>startRun(true)]:null].filter(Boolean)}
   else if(mode==='run'){title='Orb run';line=`Score ${score} · ${Math.ceil(time)}s left`;acts=[['Restart orb run',()=>{resume();quickRetry()}],['Stop orb run',()=>{resume();stopOrbRun()}]]}
   else{title=curL.name;line=`${fmt(atime)} \u00b7 ${coreCount}/3 cores`;acts=[['Retry',retry]]}
   const B=[['Resume',resume],...acts,...tail],g=k=>B[k]||['',null];

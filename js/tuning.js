@@ -53,5 +53,8 @@ const T={
   angel:{time:2.6,life:45},
   roll:{r0:.35,rMax:1.5,grow:.045,push:4.2,friction:.55,iceFriction:.2,bounce:.4,bowl:1.8},
   snow:{speed:20,lift:4,gravity:18,life:2.5,ammo:6,regen:0,orbAmmo:2,cooldown:.3,hitKnock:9,hitLift:5,stun:.9,snowmanRespawn:8},
+  // Snowball Wars: match length (s), hearts, points per hit / trick shot / KO bonus, KO respawn and blink time,
+  // computer players when alone, snow piles (count, radius, seconds per snowball), and a slow trickle (s per snowball)
+  wars:{time:180,hp:3,hit:100,trick:200,ko:250,respawn:2.5,invuln:2.5,bots:3,piles:4,pileR:1.7,pileRate:.25,regen:3},
   camera:{height:10.5,back:13}
 };

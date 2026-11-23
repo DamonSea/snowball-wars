@@ -3,6 +3,23 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.18.0] - 2026-11-23 — Snowball Wars mode
+### Added
+- **Snowball Wars**, a 3-minute free-for-all snowball fight in Trick Park (pause menu → Snowball Wars).
+  - Everyone has 3 hearts. A hit scores 100; a **Trick Shot** (thrown mid-air or mid-trick) scores 200; the hit that
+    takes someone's last heart adds a 250 KO bonus. Knocked-out players respawn elsewhere a few seconds later,
+    blinking and safe for a moment.
+  - **Snow piles** around the map refill your snowballs while you stand on them, plus a slow trickle.
+  - Playing alone, three computer players join: **Sleet** (Nova), **Flurry** (Tuk) and **Drift** (Flip). They pick
+    fights with each other too, and go after whoever hit them last.
+  - With friends on the same map it's players only, and when one person starts a match everyone on that map joins.
+  - A live scoreboard with hearts, a results screen (Play again / Keep playing), and a best score per map.
+  - Orbs and enemies clear out for the match and come back afterwards. Hold △ / Enter restarts the match; the pause
+    menu has Restart match and End match.
+### Fixed
+- Unreleased: an edit made the Settings computer player ignore its on/off switch. Caught by the tests before
+  release.
+
 ## [2.17.0] - 2026-11-23 — Orb styles
 ### Added
 - **Orb style** setting (Settings → Game): Crystal (the original, still the default), Donuts (pink icing with

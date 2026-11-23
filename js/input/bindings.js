@@ -32,7 +32,7 @@ const kbAxisZ=()=>(kbHeld('down')||keys.ArrowDown?1:0)-(kbHeld('up')||keys.Arrow
 const actsOfKey=c=>ACT.filter(a=>BIND.kb[a.id].includes(c)).map(a=>a.id);
 function press(id){
   if(id==='jump')jumpBuf=.15;else if(id==='attack')attackPress();else if(id==='throw')throwSnow();else if(id==='pound')poundOrSnow();
-  else if(id==='start'){if(state==='play'&&mode==='run'&&runFree&&!(FR.on&&!runL.spad))beginTimed()}   // holding it restarts instead (qol.js)
+  else if(id==='start'){if(state==='play'&&mode==='run'&&runFree&&!WAR.on&&!(FR.on&&!runL.spad))beginTimed()}   // holding it restarts instead (qol.js)
   else if(id==='pause'){if(state==='play')pause();else if(state==='paused')resume()}}
 function keyName(c){const m={Space:'Space',ShiftLeft:'L Shift',ShiftRight:'R Shift',ControlLeft:'L Ctrl',ControlRight:'R Ctrl',AltLeft:'L Alt',AltRight:'R Alt',
   Enter:'Enter',NumpadEnter:'Enter',Backspace:'Backspace',CapsLock:'Caps Lock',Backquote:'`',Minus:'-',Equal:'=',BracketLeft:'[',BracketRight:']',

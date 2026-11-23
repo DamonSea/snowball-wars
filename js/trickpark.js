@@ -18,8 +18,8 @@ function drawSpadSign(){const x=spadCv.getContext('2d');x.clearRect(0,0,512,160)
   x.fillStyle='#ffd84a';x.font='800 64px "Baloo 2", system-ui, sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText('START RUN',256,72);
   x.fillStyle='#fff8e8';x.font='600 28px "Baloo 2", system-ui, sans-serif';x.fillText('stand here',256,118);spadTex.needsUpdate=true}
 drawSpadSign();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(drawSpadSign);
-function freeUI(){const f=mode==='run'&&runFree&&state==='play'&&!!(runL&&runL.spad);document.body.classList.toggle('free',f);spadG.visible=!!(runL&&runL.spad)&&mode==='run'&&runFree&&runCD<=0&&state!=='menu'&&state!=='select'}
-const FREE_HINT='Free roam: practice as long as you like. Stand on the START pad (or press Enter / △) to begin a 60-second run.';
+function freeUI(){const f=mode==='run'&&runFree&&state==='play'&&!!(runL&&runL.spad)&&!WAR.on;document.body.classList.toggle('free',f);spadG.visible=!!(runL&&runL.spad)&&mode==='run'&&runFree&&runCD<=0&&!WAR.on&&state!=='menu'&&state!=='select'}
+const FREE_HINT='Free roam: practice as long as you like. Stand on the START pad (or press Enter / △) to begin a 60-second run, or pause for Snowball Wars.';
 const orbGeo=new THREE.IcosahedronGeometry(.42,0),ringGeo=new THREE.RingGeometry(.55,.75,24);
 // ----- trick combos: tricks chain while you stay airborne or land and go again quickly -----
 const TR={pts:0,mult:0,names:[],t:0};
@@ -66,7 +66,7 @@ function makeOrb(s,gold,id){const col=orbCol(gold);
 // enemies: winter crew or classic spikeballs (see enemies.js)
 function spawnRunHz(kind=pickKind()){const f=makeFoe(kind,runL.grp),{x,z}=freeSpot(12);f.g.position.set(x,kind==='spike'?.75:0,z);const a=Math.random()*PI*2,sp=kind==='spike'?T.run.hazardSpeed+runT*T.run.hazardSpeedUp:0;
   runHz.push(Object.assign(f,{vx:Math.cos(a)*sp,vz:Math.sin(a)*sp,id:mkId('h'+(++hzSeq)),st:'walk',t:1+Math.random()*2,face:a,wa:a,cool:2+Math.random()*2,robbed:0,mine:0}))}
-function resetRun(){[...orbs,...runHz].forEach(o=>rmObj(o.g));orbs=[];runHz=[];runQ=[];ATK.t=0;spawnCount=0;score=0;time=T.run.time;runT=0;bestCombo=0;lives=3;invuln=0;resetAcro();
+function resetRun(){if(WAR.on)warsStop(false);[...orbs,...runHz].forEach(o=>rmObj(o.g));orbs=[];runHz=[];runQ=[];ATK.t=0;spawnCount=0;score=0;time=T.run.time;runT=0;bestCombo=0;lives=3;invuln=0;resetAcro();
   ({plats,advCol}=runL);clearSnow();Object.assign(GAP,{from:null,take:null,wasSup:true});CL.on=false;CL.top=false;stand=null;iceV.set(0,0,0);onIce=false;Object.assign(TR,{pts:0,mult:0,names:[],t:0});showCombo();
   P.position.set(0,0,0);vel.set(0,0,0);vy=py=0;grounded=true;
   if(runL.custom){const s=runL.spawn;P.position.set(s.x,0,s.z);py=s.y||0;if(s.x||s.z)face=Math.atan2(-s.x,-s.z)}   // custom maps: start on the spawn point, facing the middle
@@ -93,7 +93,7 @@ function updateRun(dt){
     if(b!==a&&b>=1&&b<=2){popScore(String(b));SFX.ui(b)}
     if(runCD<=0){runCD=0;popScore('GO!');SFX.start();hint('');lives=3;if(!MP.client&&foesOn())for(let i=0;i<T.run.hazardsStart;i++)spawnRunHz();freeUI();hud()}}
   else if(!runFree){const shown=Math.ceil(time);time-=dt;runT+=dt;if(time<=0){time=0;hud();endRun();return}if(Math.ceil(time)!==shown)hud()}
-  else if(runL.spad){ // free roam: START pad
+  else if(runL.spad&&!WAR.on){ // free roam: START pad
     const on=grounded&&py<.3&&Math.hypot(P.position.x-runL.spad.x,P.position.z-runL.spad.z)<1.6;
     padHold=on?padHold+dt:Math.max(0,padHold-dt*2);spadFill.scale.setScalar(Math.max(.001,Math.min(1,padHold/.8)));
     spadM.opacity=.45+Math.sin(advT*4)*.15+(on?.3:0);if(padHold>=.8)beginTimed()}
@@ -117,7 +117,7 @@ function updateRun(dt){
       const c=foeTouch(h);if(c==='steal')impSteal(h);
       else if(c==='hurt'&&!invuln){dropCombo();hurt(p.x,p.z,14);if(lives<=0){if(FR.on&&runFree&&!FR.done){frRespawn('Out of lives: back to your checkpoint.')}else if(runFree||runCD>0){lives=3;hud()}else{endRun();return}}}}
     return}
-  const want=!foesOn()||runCD>0?0:runFree?T.run.hazardsFree:Math.min(T.run.hazardsStart+Math.floor(runT/T.run.hazardEvery),T.run.hazardsMax);while(runHz.length+runQ.length<want)spawnRunHz();
+  const want=!foesOn()||runCD>0||WAR.on?0:runFree?T.run.hazardsFree:Math.min(T.run.hazardsStart+Math.floor(runT/T.run.hazardEvery),T.run.hazardsMax);while(runHz.length+runQ.length<want)spawnRunHz();
   for(let i=runQ.length-1;i>=0;i--){runQ[i]-=dt;if(runQ[i]<=0){runQ.splice(i,1);spawnRunHz()}}
   for(const h of runHz){if(h.dead)continue;
     const p=h.g.position,ox=p.x,oz=p.z;

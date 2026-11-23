@@ -15,7 +15,7 @@
   <div class="stats"><button class="pz snd" id="gear" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.5 7.5 0 0 0-1.7-1L15 3.3h-4l-.4 2.6a7.5 7.5 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1c.5.4 1.1.7 1.7 1l.4 2.6h4l.4-2.6c.6-.3 1.2-.6 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" transform="translate(-1 0)"/></svg></button><button class="pz snd" id="snd" aria-label="Toggle sound (M)" aria-pressed="false"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path class="w" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="x" d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button><button class="pz" id="pz" aria-label="Pause (P)" title="Pause (P)"><i></i><i></i></button>
     <div><span class="k" id="k1">Orbs</span><b id="v1">0</b></div>
     <div><span class="k">Time</span><b id="v2">45</b></div>
-    <div><span class="k">Lives</span><span id="lv" class="pips"></span></div>
+    <div><span class="k" id="lvK">Lives</span><span id="lv" class="pips"></span></div>
     <div id="snowBox" style="display:none"><span class="k">Snow</span><span id="snowAmmo" class="pips snow"></span></div>
   </div>
 </header>
@@ -38,6 +38,7 @@
     <p class="best" id="padInfo"></p>
   </div>
 </div>
+<div id="warsBoard" class="warsboard" aria-live="off"></div>
 <div id="holdMeter" class="holdmeter" aria-live="polite"><span id="holdLab"></span><i><b id="holdBar"></b></i></div>
 <div id="moves" class="ov hide" aria-label="Moves"><div class="card movescard" role="dialog" aria-labelledby="movesT">
   <h1 id="movesT">Moves</h1><dl id="movesList" class="moveslist"></dl>
@@ -138,6 +139,7 @@
 <script src="js/seasons.js"></script>
 <script src="js/multiplayer.js"></script>
 <script src="js/snowballs.js"></script>
+<script src="js/wars.js"></script>
 <script src="js/yellowsnow.js"></script>
 <script src="js/winterfun.js"></script>
 <script src="js/cpu.js"></script>

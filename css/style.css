@@ -267,3 +267,15 @@ body.setopen #park{visibility:hidden}
 .moveslist{overflow:auto;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:6px 0 12px;padding:4px 6px;text-align:left;font-size:15px}
 .moveslist dt{font-weight:700;white-space:nowrap}.moveslist dd{margin:0;opacity:.9}
 body.setopen #moves{visibility:hidden}
+
+/* ----- Snowball Wars scoreboard + results ----- */
+.warsboard{position:fixed;right:14px;top:84px;z-index:5;display:none;min-width:200px;background:rgba(5,18,28,.78);color:#fff;border-radius:14px;padding:8px 12px 10px;font:600 14px "Inter",sans-serif;pointer-events:none}
+.warsboard.on{display:block}.warsboard .wbt{font:800 20px "Inter",sans-serif;text-align:center;margin-bottom:4px;letter-spacing:.02em}
+.warsboard .wbr{display:grid;grid-template-columns:1fr auto 52px;gap:8px;align-items:center;padding:2px 4px;border-radius:8px}
+.warsboard .wbr.me{background:rgba(95,243,255,.18)}.warsboard .wbr b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px}
+.warsboard .wbr i{font-style:normal;color:#ff5a6a;letter-spacing:1px}.warsboard .wbr i s{text-decoration:none;opacity:.25}.warsboard .wbr span{text-align:right;font-variant-numeric:tabular-nums}
+.warsres{list-style:none;padding:0;margin:6px auto 10px;max-width:300px;text-align:left;counter-reset:w}
+.warsres li{display:flex;justify-content:space-between;gap:12px;padding:5px 10px;border-radius:10px;counter-increment:w}
+.warsres li b::before{content:counter(w) ". ";opacity:.6}.warsres li.me{background:rgba(95,243,255,.2)}
+@media (max-width:700px){.warsboard{top:auto;bottom:150px;right:8px;min-width:170px;font-size:12px}}
+#ov.wres .ktip,#ov.wres #best,#ov.wres #padInfo{display:none}
