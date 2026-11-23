@@ -10,6 +10,7 @@ const LOOK={season:{label:'Season',opts:['Winter','Summer'],get:()=>WIN?0:1,set:
   hang:{label:'Ledge hang',opts:['On','Off'],get:()=>LH.enabled?0:1,set:i=>{LH.enabled=i===0;if(!LH.enabled)LH.on=false;try{localStorage.setItem('orbRunHang',LH.enabled?'1':'0')}catch(e){}}},
   squash:{label:'Squash & stretch',slider:true,get:()=>TOON,set:v=>setToon(v)},
   yellow:{label:'Yellow snow',opts:['On','Off'],get:()=>YS.on?0:1,set:i=>setYellow(i===0)},
+  orbs:{label:'Orb style',opts:ORB_SKINS.map(s=>s.name),get:()=>Math.max(0,ORB_SKINS.findIndex(s=>s.id===ORB_SKIN)),set:i=>setOrbSkin(ORB_SKINS[i].id)},
   foes:{label:'Enemies',opts:['Winter crew','Spikeballs'],get:()=>FOE_STYLE==='spike'?1:0,set:i=>setFoeStyle(i?'spike':'crew')},
   cpu:{label:'Computer player',opts:['Off','On'],get:()=>CPU.on?1:0,set:i=>setCpu(i===1)}};
 const ROWS=[...Object.keys(LOOK),...SKEYS,...BIND_ROWS];let setSlot=0;

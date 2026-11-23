@@ -3,6 +3,13 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.17.0] - 2026-11-23 — Orb styles
+### Added
+- **Orb style** setting (Settings → Game): Crystal (the original, still the default), Donuts (pink icing with
+  sprinkles), Stars, Snowflakes, Presents or Coins. Each has a gold version for bonus orbs: golden-glazed donuts,
+  orange stars, gold snowflakes, gold presents and gold coins. Switching restyles the orbs already on the map, and
+  your pick is remembered. It's cosmetic and only changes what you see, so friends can each pick their own.
+
 ## [2.16.2] - 2026-11-21 — Multiplayer fix
 ### Fixed
 - **Friends on the same map couldn't see each other.** Each map used its own named room, and some viewers (such as

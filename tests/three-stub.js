@@ -31,8 +31,9 @@ class HemisphereLight extends Light{constructor(s,g,i){super(s,i);this.groundCol
 class DirectionalLight extends Light{}
 class PointLight extends Light{constructor(c,i,d){super(c,i);this.distance=d}}
 class PerspectiveCamera extends Object3D{constructor(fov,aspect,near,far){super();Object.assign(this,{fov,aspect,near,far})}updateProjectionMatrix(){}}
-class Geometry{constructor(...a){this.parameters=a;this.type=this.constructor.name;this.attributes={}}setAttribute(n,a){this.attributes[n]=a;return this}}
-const geos={};['BoxGeometry','CylinderGeometry','SphereGeometry','ConeGeometry','RingGeometry','TorusGeometry','PlaneGeometry','OctahedronGeometry','IcosahedronGeometry','DodecahedronGeometry','CircleGeometry','BufferGeometry'].forEach(n=>{geos[n]=class extends Geometry{};Object.defineProperty(geos[n],'name',{value:n})});
+class Geometry{constructor(...a){this.parameters=a;this.type=this.constructor.name;this.attributes={}}setAttribute(n,a){this.attributes[n]=a;return this}translate(){return this}computeVertexNormals(){}}
+class Shape{constructor(){this.pts=[]}moveTo(x,y){this.pts.push([x,y]);return this}lineTo(x,y){this.pts.push([x,y]);return this}}
+const geos={};['BoxGeometry','CylinderGeometry','SphereGeometry','ConeGeometry','RingGeometry','TorusGeometry','PlaneGeometry','OctahedronGeometry','IcosahedronGeometry','DodecahedronGeometry','CircleGeometry','BufferGeometry','ExtrudeGeometry'].forEach(n=>{geos[n]=class extends Geometry{};Object.defineProperty(geos[n],'name',{value:n})});
 class BufferAttribute{constructor(a,s){this.array=a;this.itemSize=s;this.needsUpdate=false}}
 class Material{constructor(p={}){this._p=p;Object.assign(this,p);this.color=new Color(p.color??0xffffff);this.emissive=new Color(p.emissive??0);if(this.opacity===undefined)this.opacity=1}
   clone(){const m=new this.constructor(this._p);m.color=this.color.clone();m.emissive=this.emissive.clone();for(const k of['opacity','transparent','flatShading','metalness','roughness','emissiveIntensity','map','emissiveMap'])if(k in this)m[k]=this[k];return m}}
@@ -42,7 +43,7 @@ class CanvasTexture extends Texture{}
 class Fog{constructor(c,n,f){this.color=new Color(c);this.near=n;this.far=f}}
 class Clock{getDelta(){return window.__fixedDt||1/60}}
 class WebGLRenderer{constructor(){this.domElement=document.createElement('canvas');this.shadowMap={};this.frames=0}setPixelRatio(){}setSize(){}render(){this.frames++;window.__frames=this.frames}}
-window.THREE=Object.assign({Vector3,Vector2,Euler,Quaternion,Color,Object3D,Group,Scene,Mesh,Sprite,Points,HemisphereLight,DirectionalLight,PointLight,PerspectiveCamera,
+window.THREE=Object.assign({Shape,Vector3,Vector2,Euler,Quaternion,Color,Object3D,Group,Scene,Mesh,Sprite,Points,HemisphereLight,DirectionalLight,PointLight,PerspectiveCamera,
   BufferAttribute,MeshStandardMaterial,MeshBasicMaterial,SpriteMaterial,PointsMaterial,Texture,CanvasTexture,Fog,Clock,WebGLRenderer,
   DoubleSide:2,AdditiveBlending:2,RepeatWrapping:1000,PCFSoftShadowMap:2,NearestFilter:1003},geos);
 window.__objCount=()=>objCount;

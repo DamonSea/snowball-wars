@@ -121,6 +121,9 @@ needs Flip's or Nova's full moveset (and guard rails help).
 - **Settings** in three tabs: **Game** (camera: Classic, Behind you, Free or Free + auto; graphics quality, performance stats, season, snowfall, side flip style, ledge hang, squash & stretch, yellow snow, enemies, computer player), **Sound** (volume mix and a style for every sound) and **Controls** (rebind anything).
 - **Graphics: Auto** adjusts render resolution to hold a smooth frame rate (or pick High, Balanced or Low). Press **`** (backtick) for a performance overlay: fps, frame time, draw calls and GPU memory.
 - **Pause** swings the camera round to face your character, who waves and idles beside the pause menu.
+- **Orb style** (Settings → Game): swap the orbs for donuts, stars, snowflakes, presents or coins.
+
+  ![Orb styles](media/orb-styles.png)
 - **Hold to respawn** (L3 / R) takes you back to the spawn point or your last checkpoint; **hold to restart** (△ / Enter) restarts the orb run, race or level. A meter fills while you hold.
 - **Moves** in the pause menu lists every move for the character you're playing. During an orb run the pause menu also has **Restart** and **Stop orb run**, and when a run ends you keep playing right where you are.
 
@@ -151,28 +154,29 @@ by files above it. Nothing is bundled.
 | 11 | `js/content-ready.js` | Picks the current level and map once all are registered |
 | 12 | `js/state.js` | Game state, HUD, menus, character select, pause |
 | 13 | `js/trickpark.js` | Trick Park: START pad, combos, orbs, spikeballs, timed runs |
-| 14 | `js/physics.js` | Platform physics, ice, walls, tree and pole climbing, ledge hang, trampolines, raised decks |
-| 15 | `js/adventure.js` | Adventure: cores, checkpoints, tutorial zones, goal |
-| 16 | `js/combat.js` | Three-hit combo, sweep, air kick |
-| 17 | `js/movement.js` | Sunny/Rook controls and Flip's whole moveset |
-| 18 | `js/pound.js` | Ground pound for every character: spin, drop, shockwave |
-| 19 | `js/input/bindings.js` | Custom controls: key, mouse and controller bindings, rebinding in Settings |
-| 20 | `js/ui/settings.js` | Settings panel (season, mix, sound styles) |
-| 21 | `js/ui/customize.js` | Customize screen: outfit presets, part colors, accessories (and their animations), saved looks |
-| 22 | `js/ui/controls.js` | Controls card, keyboard, touch |
-| 23 | `js/input/gamepad.js` | PS5 / standard controller support |
-| 24 | `js/loop.js` | The frame loop: update, animate, camera, render |
-| 25 | `js/seasons.js` | Snowfall, breath, Winter/Summer switching |
-| 26 | `js/multiplayer.js` | Trick Park multiplayer over the page's room capability |
-| 27 | `js/snowballs.js` | Snowball fights: throwing, ammo (refilled by orbs), snowmen, hits on players (Trick Park only) |
-| 28 | `js/yellowsnow.js` | Yellow snow: hold-to-spray stream that marks the snow, yellow snowballs (Settings → Yellow snow) |
-| 29 | `js/winterfun.js` | Snow angels and rolling snowballs that grow |
-| 30 | `js/cpu.js` | Computer player for Trick Park (Settings → Computer player) |
-| 31 | `js/builder/maps.js` | Map Builder asset library, map cleaning, and turning a saved map into a playable Trick Park map |
-| 32 | `js/builder/editor.js` | Map Builder editor: top-down camera, placing, selecting, dragging, inspector, undo, test play |
-| 33 | `js/builder/community.js` | Drafts, publishing to the shared map list, More maps panel, export and import |
-| 34 | `js/qol.js` | Hold to respawn / restart, Stop orb run, Moves list in the pause menu |
-| 35 | `js/main.js` | Startup |
+| 14 | `js/orbskins.js` | Orb styles: crystal, donuts, stars, snowflakes, presents, coins |
+| 15 | `js/physics.js` | Platform physics, ice, walls, tree and pole climbing, ledge hang, trampolines, raised decks |
+| 16 | `js/adventure.js` | Adventure: cores, checkpoints, tutorial zones, goal |
+| 17 | `js/combat.js` | Three-hit combo, sweep, air kick |
+| 18 | `js/movement.js` | Sunny/Rook controls and Flip's whole moveset |
+| 19 | `js/pound.js` | Ground pound for every character: spin, drop, shockwave |
+| 20 | `js/input/bindings.js` | Custom controls: key, mouse and controller bindings, rebinding in Settings |
+| 21 | `js/ui/settings.js` | Settings panel (season, mix, sound styles) |
+| 22 | `js/ui/customize.js` | Customize screen: outfit presets, part colors, accessories (and their animations), saved looks |
+| 23 | `js/ui/controls.js` | Controls card, keyboard, touch |
+| 24 | `js/input/gamepad.js` | PS5 / standard controller support |
+| 25 | `js/loop.js` | The frame loop: update, animate, camera, render |
+| 26 | `js/seasons.js` | Snowfall, breath, Winter/Summer switching |
+| 27 | `js/multiplayer.js` | Trick Park multiplayer over the page's room capability |
+| 28 | `js/snowballs.js` | Snowball fights: throwing, ammo (refilled by orbs), snowmen, hits on players (Trick Park only) |
+| 29 | `js/yellowsnow.js` | Yellow snow: hold-to-spray stream that marks the snow, yellow snowballs (Settings → Yellow snow) |
+| 30 | `js/winterfun.js` | Snow angels and rolling snowballs that grow |
+| 31 | `js/cpu.js` | Computer player for Trick Park (Settings → Computer player) |
+| 32 | `js/builder/maps.js` | Map Builder asset library, map cleaning, and turning a saved map into a playable Trick Park map |
+| 33 | `js/builder/editor.js` | Map Builder editor: top-down camera, placing, selecting, dragging, inspector, undo, test play |
+| 34 | `js/builder/community.js` | Drafts, publishing to the shared map list, More maps panel, export and import |
+| 35 | `js/qol.js` | Hold to respawn / restart, Stop orb run, Moves list in the pause menu |
+| 36 | `js/main.js` | Startup |
 
 ## Tests
 

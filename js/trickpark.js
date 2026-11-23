@@ -57,12 +57,12 @@ function freeSpot(minP=4){for(let t=0;t<80;t++){const a=Math.random()*PI*2,r=Mat
 function pickSpot(){const pool=runL.spots.filter(s=>(chars[ci].acro||s.any)&&!orbs.some(o=>o.spot===s)&&Math.hypot(s.x-P.position.x,s.z-P.position.z)>5);
   if(!pool.length||Math.random()<.35){const g=freeSpot(5);return{x:g.x,z:g.z,y:0,v:100,rand:1}}return pool[Math.floor(Math.random()*pool.length)]}
 function spawnOrb(){const gold=++spawnCount%T.run.goldEvery===0,s=pickSpot();makeOrb(s,gold,mkId('o'+(++orbSeq)))}
-function makeOrb(s,gold,id){const col=gold?0xffcc33:0x5ff3ff;
+function makeOrb(s,gold,id){const col=orbCol(gold);
   const g=new THREE.Group();g.position.set(s.x,s.y,s.z);runL.grp.add(g);
-  const m=new THREE.Mesh(orbGeo,new THREE.MeshStandardMaterial({color:col,emissive:col,emissiveIntensity:.9,flatShading:true}));m.castShadow=true;g.add(m);
+  const m=orbBody(gold);g.add(m);   // Crystal, Donuts, Stars... (orbskins.js)
   const ring=new THREE.Mesh(ringGeo,new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.45,side:THREE.DoubleSide}));ring.rotation.x=-PI/2;ring.position.y=.03;ring.visible=!s.air;g.add(ring);
   if(s.v>=200&&!s.rand){const b=new THREE.Mesh(new THREE.CylinderGeometry(.08,.08,14,6,1,true),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.18,depthWrite:false,blending:THREE.AdditiveBlending}));b.position.y=7;g.add(b)}
-  orbs.push({g,m,ring,gold,t:Math.random()*6,spot:s.rand?null:s,y:s.y,v:gold?T.run.goldValue:s.v,id,beam:s.v>=200&&!s.rand})}
+  orbs.push({g,m,ring,gold,col,t:Math.random()*6,spot:s.rand?null:s,y:s.y,v:gold?T.run.goldValue:s.v,id,beam:s.v>=200&&!s.rand})}
 // enemies: winter crew or classic spikeballs (see enemies.js)
 function spawnRunHz(kind=pickKind()){const f=makeFoe(kind,runL.grp),{x,z}=freeSpot(12);f.g.position.set(x,kind==='spike'?.75:0,z);const a=Math.random()*PI*2,sp=kind==='spike'?T.run.hazardSpeed+runT*T.run.hazardSpeedUp:0;
   runHz.push(Object.assign(f,{vx:Math.cos(a)*sp,vz:Math.sin(a)*sp,id:mkId('h'+(++hzSeq)),st:'walk',t:1+Math.random()*2,face:a,wa:a,cool:2+Math.random()*2,robbed:0,mine:0}))}
@@ -106,7 +106,7 @@ function updateRun(dt){
   if(MP.client)syncFromHost();else hostClaims();
   for(const o of [...orbs]){
     if(Math.hypot(o.g.position.x-P.position.x,o.g.position.z-P.position.z)<1.15&&Math.abs(py-o.y)<1.7){
-      burst(o.m.getWorldPosition(V(0,0,0)),o.gold?0xffcc33:0x5ff3ff);if(o.gold)time+=T.run.goldBonusTime;gainSnow(o.gold);
+      burst(o.m.getWorldPosition(V(0,0,0)),o.col||(o.gold?0xffcc33:0x5ff3ff));if(o.gold)time+=T.run.goldBonusTime;gainSnow(o.gold);
       if(TR.mult){TR.pts+=o.v;TR.t=Math.max(TR.t,T.combo.orbExtend);showCombo()}else{score+=o.v;popScore('+'+o.v)}
       SFX.orb(o.gold);rmObj(o.g);orbs.splice(orbs.indexOf(o),1);if(MP.client){MP.gone.add(o.id);claim('o',o.id)}else spawnOrb();hud()}
   }
