@@ -60,12 +60,12 @@ function tick(){
 
   P.position.y=py;P.rotation.y=face;
   const moving=Math.hypot(vel.x,vel.z)>.5&&state==='play';
-  if(state!=='play'&&(EM.wheel||EM.id)){closeWheel();stopEmote()}   // menus, pause, level changes
+  if(state!=='play'&&(EM.hold||EM.wheel||EM.id)){closeWheel();stopEmote()}   // menus, pause, level changes
   chars.forEach((c,i)=>c.g.visible=i===ci);wave=Math.max(0,wave-dt);
   const air=!grounded&&state==='play';
   {const pl=state==='play',dx=pl?vel.x-pv.x:0,dz=pl?vel.z-pv.z:0,sf=Math.sin(face),cf=Math.cos(face);
     dvL.f=dx*sf+dz*cf;dvL.s=dx*cf-dz*sf;dvL.u=pl?vy-pv.y:0;pv.x=vel.x;pv.y=vy;pv.z=vel.z;
-    const busy=EM.id||EM.wheel||BS.on||moving||air||ATK.t>0||GP.st||YS.spray||YS.t>0||SA.t>0||SB.anim>0||LH.on||CL.on||RS.pushing||wave>0||(chars[ci].acro&&A.mode!=='normal');
+    const busy=EM.id||EM.wheel||EM.hold||BS.on||moving||air||ATK.t>0||GP.st||YS.spray||YS.t>0||SA.t>0||SB.anim>0||LH.on||CL.on||RS.pushing||wave>0||(chars[ci].acro&&A.mode!=='normal');
     idleT=(state==='play'||state==='select'||state==='menu'||state==='paused')&&!busy?idleT+dt:0}
   const tookOff=state==='play'&&wasG&&!grounded&&vy>3;
   if(ci===0){

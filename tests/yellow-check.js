@@ -1,7 +1,7 @@
 (()=>{const out=[];const runN=n=>{for(let i=0;i<n;i++)__step(1)};
 const kd=c=>{keys[c]=true;dispatchEvent(new KeyboardEvent('keydown',{code:c}))},ku=c=>{keys[c]=false;dispatchEvent(new KeyboardEvent('keyup',{code:c}))};
-// yellow snow now comes from the emote wheel: tap Q, press 6 (Yellow Snow); Q again stops it
-const ysGo=()=>{kd('KeyQ');runN(2);ku('KeyQ');runN(2);kd('Digit6');ku('Digit6')},ysStop=()=>{kd('KeyQ');ku('KeyQ')};
+// yellow snow now comes from the emote wheel: hold Q until it opens, press 6 (Yellow Snow); Q again stops it
+const ysGo=()=>{kd('KeyQ');runN(22);kd('Digit6');ku('Digit6');ku('KeyQ');runN(1)},ysStop=()=>{kd('KeyQ');ku('KeyQ')};
 __place(3,6,0,Math.PI);runN(3);ysGo();runN(30);out.push('from the wheel: spraying='+YS.spray+' drops in the air='+YS.drops.length+' marks so far='+YS.cur.n);
 const z0=P.position.z;keys.KeyW=true;jumpBuf=.15;runN(45);keys.KeyW=false;
 out.push('walking while spraying: moved '+(z0-P.position.z).toFixed(2)+'m in .75s (slow), grounded='+grounded+', marks='+YS.cur.n);

@@ -67,8 +67,8 @@ Run into a tree, lamp post or antenna to grab on, climb to a handstand, aim with
 ### Snowball fights
 Throw snowballs (F / R1 / touch) at friends, snowmen and enemies. A hit knocks the target back and stuns it with
 dizzy stars; orbs refill your snowballs. Turn on the **computer player** in Settings for someone to fight solo.
-**Emotes:** standing on the ground, hold Ground pound (L1 / Q / right-click) for the emote wheel. Point at one and let
-go (or tap to keep the wheel open, then pick with Jump, a click, or 1-8): **Wave, Cheer, Robot, Shuffle, Disco,
+**Emotes:** standing on the ground, **tap** Ground pound (L1 / Q / right-click) for a quick taunt (your last emote,
+Wave to start), or **hold** it: a ring fills, then the emote wheel opens. Point at one and let go (or click one, or 1-8): **Wave, Cheer, Robot, Shuffle, Disco,
 Chicken Dance, Snow Angel, Yellow Snow**. Dances loop until you move, and friends see them. Yellow snow (optional
 silliness, off in Settings; Nova doesn't) keeps spraying until you press Ground pound again, and leaves you a yellow snowball.
 

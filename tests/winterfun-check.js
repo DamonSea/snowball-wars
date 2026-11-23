@@ -6,9 +6,9 @@ out.push('rollers on Jungle Gym: '+RS.list.length+' sizes '+RS.list.map(b=>b.r.t
 __place(-4,16,0,0);runN(2);keys.ShiftLeft=true;kd('KeyQ');ku('KeyQ');keys.ShiftLeft=false;out.push('crouch+Q: angel='+(SA.t>0)+' yellow='+(YS.spray||YS.t>0)+' imprint pieces='+(SA.dec?SA.dec.g.children.length:0));
 const x0=P.position.x;keys.KeyD=true;runN(60);keys.KeyD=false;const mid=F.hp.rotation.x;runN(110);out.push('during angel: stayed put='+(Math.abs(P.position.x-x0)<.01)+' lying pitch='+mid.toFixed(2)+' | done, combo='+TR.names.join(','));
 // plain Q on the ground is still yellow snow for Flip
-__place(-6,18,0,0);runN(2);kd('KeyQ');runN(5);out.push('Flip plain Q: wheel='+EM.wheel+' yellow='+YS.spray);ku('KeyQ');runN(40);
+__place(-6,18,0,0);runN(2);kd('KeyQ');runN(5);out.push('Flip plain Q held: wheel coming='+(EM.hold||EM.wheel)+' yellow='+YS.spray);ku('KeyQ');runN(40);
 // Nova: Q makes an angel, never yellow snow
-menu();pickMode='run';pickLevel=3;ci=3;showChar();confirmChar();__step(5);__place(-6,18,0,0);runN(2);kd('KeyQ');runN(5);out.push('Nova plain Q: wheel='+EM.wheel+' angel='+(SA.t>0)+' yellow='+(YS.spray||YS.t>0));ku('KeyQ');runN(200);
+menu();pickMode='run';pickLevel=3;ci=3;showChar();confirmChar();__step(5);__place(-6,18,0,0);runN(2);kd('KeyQ');runN(5);out.push('Nova plain Q held: wheel coming='+(EM.hold||EM.wheel)+' angel='+(SA.t>0)+' yellow='+(YS.spray||YS.t>0));ku('KeyQ');runN(200);
 startYellow();out.push('Nova startYellow() directly: yellow='+(YS.spray||YS.t>0));
 // rolling snowball: push it, it grows
 T.run.hazardsFree=0;runHz.forEach(h=>rmObj(h.g));runHz=[];const b=RS.list[0];b.x=-10;b.z=16;b.r=T.roll.r0;syncRoller(b);__place(-12,16,0,Math.PI/2);invuln=0;runHz.forEach(h=>rmObj(h.g));runHz=[];

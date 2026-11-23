@@ -1,7 +1,9 @@
-// Emotes (every character). Standing on the ground, hold Ground pound (L1 / Q / right-click) to open the emote wheel.
-// Point the stick (or WASD / arrows / the mouse) at an emote and let go to do it. A quick tap leaves the wheel open:
-// then pick with the stick and press Jump or Ground pound again, click or tap an emote, or press 1-8. Esc or Crouch
-// closes it. Ground pound in the air is unchanged, and Crouch + Ground pound is still a quick snow angel.
+// Emotes (every character). Standing on the ground, Ground pound (L1 / Q / right-click):
+// - Tap it: quick taunt, your last emote from the wheel (Wave to start with).
+// - Hold it: a ring fills around your quick taunt's icon (EM_HOLD seconds) and opens the emote wheel. Point the stick
+//   (or WASD / arrows / the mouse) at an emote and let go to do it; let go with nothing picked to close it. While it's
+//   open you can also click or tap an emote, or press 1-8; Esc closes it.
+// Ground pound in the air is unchanged, and Crouch + Ground pound is still a quick snow angel.
 // Dances loop until you move, jump, attack or throw. Friends see them: the rig pose is already sent over multiplayer.
 // Yellow snow from the wheel keeps spraying (you can walk and steer) until you press Ground pound again or run dry.
 const EMOTES=[
@@ -13,7 +15,9 @@ const EMOTES=[
   {id:'yellow',name:'Yellow Snow',ic:'💛'},
   {id:'disco',name:'Disco',ic:'✨',loop:true},
   {id:'chicken',name:'Chicken Dance',ic:'🐔',loop:true}];
-const EM={wheel:false,sel:-1,openT:0,sticky:false,id:null,t:0,dur:0};
+const EM={hold:false,ht:0,wheel:false,sel:-1,id:null,t:0,dur:0,last:'wave'},EM_HOLD=.3;
+try{const v=localStorage.getItem('orbRunTaunt');if(EMOTES.some(e=>e.id===v&&e.id!=='angel'&&e.id!=='yellow'))EM.last=v}catch(e){}
+const emoteOf=id=>EMOTES.find(e=>e.id===id)||EMOTES[0];
 // why an emote can't be done right now ('' = it can)
 function emoteWhy(e){
   if(e.id==='angel')return WIN?'':'Needs snow (winter)';
@@ -25,15 +29,20 @@ const ewEl=document.createElement('div');ewEl.id='emoteWheel';ewEl.className='ew
 ewEl.innerHTML='<div class="ecenter"><b id="ewName">Emotes</b><small id="ewTip"></small></div>'+EMOTES.map((e,i)=>{const a=i/EMOTES.length*2*PI,r=118;
   return`<button class="eslot" role="menuitem" data-i="${i}" style="left:${(50+Math.sin(a)*r/3.4).toFixed(2)}%;top:${(50-Math.cos(a)*r/3.4).toFixed(2)}%"><span class="ic" aria-hidden="true">${e.ic}</span>${e.name}<span class="pk pkw" aria-hidden="true">${i+1}</span></button>`}).join('');
 document.body.appendChild(ewEl);
+// the hold indicator: your quick taunt's icon with a ring that fills; when it's full the wheel opens in its place
+const ehEl=document.createElement('div');ehEl.id='emoteHold';ehEl.className='ehold hide';ehEl.setAttribute('aria-hidden','true');
+ehEl.innerHTML='<div class="ehring"></div><span class="ic"></span><small>Hold for emotes</small>';document.body.appendChild(ehEl);
 ewEl.addEventListener('pointerover',e=>{const b=e.target.closest('.eslot');if(b&&EM.wheel){EM.sel=+b.dataset.i;renderWheel()}});
-ewEl.addEventListener('click',e=>{const b=e.target.closest('.eslot');if(b&&EM.wheel)doEmote(+b.dataset.i)});
+ewEl.addEventListener('click',e=>{const b=e.target.closest('.eslot');if(b&&EM.wheel)pickEmote(+b.dataset.i)});
 // right-click held over a slot: letting go there picks it (the release is also seen by updateEmotes)
 ewEl.addEventListener('contextmenu',e=>e.preventDefault());
 function renderWheel(){ewEl.querySelectorAll('.eslot').forEach((b,i)=>{b.classList.toggle('on',i===EM.sel);b.classList.toggle('off',!!emoteWhy(EMOTES[i]))});
   const e=EMOTES[EM.sel],why=e?emoteWhy(e):'';$('ewName').textContent=e?e.name:'Emotes';
-  $('ewTip').textContent=why||(e?(EM.sticky?'Jump or click to do it':'Let go to do it'):(EM.sticky?'Pick one':'Point at one'))}
-function openWheel(){if(!canEmote())return;stopEmote();EM.wheel=true;EM.sel=-1;EM.openT=0;EM.sticky=false;ewEl.classList.remove('hide');renderWheel();SFX.ui(1)}
-function closeWheel(){if(!EM.wheel)return;EM.wheel=false;EM.sticky=false;ewEl.classList.add('hide')}
+  $('ewTip').textContent=why||(e?'Let go to do it':'Point at one')}
+// Ground pound pressed on the ground: start the hold (a tap taunts, a hold opens the wheel)
+function openWheel(){if(!canEmote())return;stopEmote();EM.hold=true;EM.ht=0;const e=emoteOf(EM.last);ehEl.querySelector('.ic').textContent=e.ic;ehEl.style.setProperty('--p',0)}
+function showWheel(){EM.hold=false;ehEl.classList.add('hide');EM.wheel=true;EM.sel=-1;ewEl.classList.remove('hide');renderWheel();SFX.ui(1);rumble(40,0,.3)}
+function closeWheel(){EM.hold=false;ehEl.classList.add('hide');if(!EM.wheel)return;EM.wheel=false;ewEl.classList.add('hide')}
 // ---------- doing one ----------
 function doEmote(i){const e=EMOTES[i];closeWheel();if(!e)return;const why=emoteWhy(e);
   if(why){toast(why);SFX.deny();return}
@@ -41,36 +50,44 @@ function doEmote(i){const e=EMOTES[i];closeWheel();if(!e)return;const why=emoteW
   if(e.id==='yellow'){startYellow();if(YS.spray)YS.auto=true;return}
   if(!canEmote())return;
   EM.id=e.id;EM.t=0;EM.dur=e.loop?20:e.dur;if(e.id==='wave')wave=1.6;idleT=0;SFX.ui(5)}
+// remember the last wheel pick as your quick taunt (not snow angel / yellow snow)
+function setTaunt(id){if(id==='angel'||id==='yellow')return;EM.last=id;try{localStorage.setItem('orbRunTaunt',id)}catch(e){}}
 function stopEmote(){EM.id=null;EM.t=0}
 // a button press while the wheel is open or while dancing; true = handled here
 function emotePress(id){
   if(id==='pound'&&YS.auto&&YS.spray){stopYellow();return true}
   if(EM.wheel){
-    if(id==='pound'||id==='jump'){if(EM.sticky){if(EM.sel>=0)doEmote(EM.sel);else closeWheel()}return true}
     if(id==='pause'){closeWheel();return false}
     return true}
+  if(EM.hold){if(id==='pause'){closeWheel();return false}return true}
   if(EM.id&&id!=='pause')stopEmote();
   return false}
 function emoteKey(c){if(!EM.wheel)return false;
   if(c==='Escape'){closeWheel();return true}
-  const d=/^(Digit|Numpad)([1-8])$/.exec(c);if(d){doEmote(+d[2]-1);return true}
-  if(c==='Enter'||c==='NumpadEnter'){if(EM.sel>=0)doEmote(EM.sel);return true}
+  const d=/^(Digit|Numpad)([1-8])$/.exec(c);if(d){pickEmote(+d[2]-1);return true}
+  if(c==='Enter'||c==='NumpadEnter'){if(EM.sel>=0)pickEmote(EM.sel);return true}
   return false}
+// a pick from the wheel: do it, and it becomes your quick taunt
+function pickEmote(i){const e=EMOTES[i];if(e&&!emoteWhy(e))setTaunt(e.id);doEmote(i)}
 function updateEmotes(dt){
+  if(EM.hold){
+    if(state!=='play'||!grounded||SB.stun>0||A.knock>0||CL.on){closeWheel();return}
+    EM.ht+=dt;const down=held('pound')||joy.pound;
+    if(!down){closeWheel();doEmote(EMOTES.indexOf(emoteOf(EM.last)))}   // a tap: quick taunt
+    else if(EM.ht>=EM_HOLD)showWheel();
+    else if(EM.ht>.07){ehEl.classList.remove('hide');ehEl.style.setProperty('--p',Math.min(1,EM.ht/EM_HOLD).toFixed(3))}}   // only after a moment, so taps don't flash it
   if(EM.wheel){
     if(state!=='play'||!grounded||SB.stun>0||A.knock>0||CL.on){closeWheel();return}
-    EM.openT+=dt;
     const x=kbAxisX()+joy.x+pad.x,z=kbAxisZ()+joy.z+pad.z;
     if(Math.hypot(x,z)>.5){const n=EMOTES.length,a=(Math.atan2(x,-z)+2*PI)%(2*PI),s=Math.round(a/(2*PI/n))%n;if(s!==EM.sel){EM.sel=s;SFX.ui(1)}}
     const down=held('pound')||joy.pound;
-    if(EM.sticky&&(held('crouch')||joy.crouch))closeWheel();
-    else if(!down&&!EM.sticky){if(EM.sel>=0)doEmote(EM.sel);else if(EM.openT<.3)EM.sticky=true;else closeWheel()}
+    if(!down){if(EM.sel>=0)pickEmote(EM.sel);else closeWheel()}
     if(EM.wheel)renderWheel()}
   if(EM.id){EM.t+=dt;if(EM.t>=EM.dur||state!=='play'||!grounded||SB.stun>0||A.knock>0||CL.on||ATK.t>0)stopEmote()}}
 // called from move(): stand still while the wheel is open or while dancing; moving or jumping ends a dance
 function emoteMove(dt,ix,iz){
-  if(EM.id&&!EM.wheel&&(Math.hypot(ix,iz)>.3||jumpBuf>0)){stopEmote();return false}
-  const k=Math.exp(-14*dt);vel.x*=k;vel.z*=k;P.position.x+=vel.x*dt;P.position.z+=vel.z*dt;if(EM.wheel)jumpBuf=0;
+  if(EM.id&&!EM.wheel&&!EM.hold&&(Math.hypot(ix,iz)>.3||jumpBuf>0)){stopEmote();return false}
+  const k=Math.exp(-14*dt);vel.x*=k;vel.z*=k;P.position.x+=vel.x*dt;P.position.z+=vel.z*dt;if(EM.wheel||EM.hold)jumpBuf=0;
   if(chars[ci].acro){A.spd=0;A.mode='normal';A.air=false}return true}
 // ---------- the dances (rig characters: legs lx/lr, arms ax/ar forward-back and zl/zr out to the side,
 // body pitch/roll/yaw and height yo, head hx/hy/hz, legs out to the side llz/lrz) ----------

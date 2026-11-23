@@ -316,3 +316,12 @@ body.setopen #moves{visibility:hidden}
 /* orb race board: an orb and a count */
 .orbct{display:inline-flex;align-items:center;gap:6px}.orbic{display:inline-block;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0 18%,#7ff6ff 30%,#16b5d6 75%);box-shadow:0 0 6px rgba(95,243,255,.7)}
 .wbr span small{font-size:.7em;opacity:.75}
+
+/* emote hold indicator: a ring fills around your quick taunt's icon, then the wheel opens in its place */
+.ehold{position:fixed;left:50%;top:50%;width:92px;height:92px;margin:-46px 0 0 -46px;z-index:4;pointer-events:none;display:grid;place-items:center;--p:0}
+.ehold.hide{display:none}
+.ehring{position:absolute;inset:0;border-radius:50%;background:conic-gradient(#ffd84a calc(var(--p)*360deg),rgba(255,255,255,.18) 0);
+  -webkit-mask:radial-gradient(circle,transparent 58%,#000 60%);mask:radial-gradient(circle,transparent 58%,#000 60%)}
+.ehold::before{content:"";position:absolute;inset:7px;border-radius:50%;background:rgba(8,26,38,.72)}
+.ehold .ic{position:relative;font-size:34px;line-height:1}
+.ehold small{position:absolute;top:100%;margin-top:6px;white-space:nowrap;font:700 12px "Inter",sans-serif;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6)}

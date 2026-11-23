@@ -10,7 +10,7 @@ function renderControls(){
   const mv=T_?'Joystick':P?'L-stick / D-pad':(()=>{const ks=['up','left','down','right'].map(id=>BIND.kb[id][0]);
     const n=ks.map(c=>c?keyName(c):'?');return(n.every(x=>x.length===1)?k(n.join('')):n.map(k).join(' '))+' / '+k('Arrows')})();
   const rows=[[mv,'Move'],[L('jump'),'Jump (hold for full height)'],[L('attack'),'Attack (tap \u00d73 for a combo)'],['In the air: '+L('attack'),'Flying kick'],
-    ['In the air: '+L('pound'),'Ground pound'],['Standing: hold '+L('pound'),'Emotes'],...(camTurns()&&!T_?[[(pad.connected?'Right stick':L('camL')+' / '+L('camR')),'Turn the camera'+(CAM.mode==='behind'?'':' (stick up/down tilts)')],[L('camC'),'Camera behind you']]:[]),['On a slope: hold '+L('crouch'),'Butt slide (Jump to hop off)'],...(WIN?[[(chars[ci].name==='Nova'?'Standing: ':'Crouch + ')+L('pound'),'Snow angel']]:[]),...(YS.on&&WIN&&chars[ci].name!=='Nova'?[['Standing: hold '+L('pound'),'Yellow snow (walk to aim)']]:[]),...(mode==='run'?[['Walk into a small snowball','Roll it bigger']]:[]),[L('pause'),'Pause']];
+    ['In the air: '+L('pound'),'Ground pound'],['Standing: tap / hold '+L('pound'),'Taunt / emote wheel'],...(camTurns()&&!T_?[[(pad.connected?'Right stick':L('camL')+' / '+L('camR')),'Turn the camera'+(CAM.mode==='behind'?'':' (stick up/down tilts)')],[L('camC'),'Camera behind you']]:[]),['On a slope: hold '+L('crouch'),'Butt slide (Jump to hop off)'],...(WIN?[[(chars[ci].name==='Nova'?'Standing: ':'Crouch + ')+L('pound'),'Snow angel']]:[]),...(YS.on&&WIN&&chars[ci].name!=='Nova'?[['Standing: hold '+L('pound'),'Yellow snow (walk to aim)']]:[]),...(mode==='run'?[['Walk into a small snowball','Roll it bigger']]:[]),[L('pause'),'Pause']];
   if(!T_)rows.push([P?b('Create'):k('M'),'Sound on/off'],[P?b('Touchpad'):k('H'),'Hide this panel']);
   if(chars[ci].acro)rows.splice(2,0,[L('crouch'),'Crouch (move to crouch-walk)'],['Crouch + '+L('attack'),'Sweep kick'],
     ['Run + crouch + Jump','Long jump'],['Still + crouch + Jump','Backflip'],['Run into a tree or pole','Climb it (Jump at the top: flip)'],
@@ -42,7 +42,7 @@ function moveGroups(){
       ...(run?[['Throw a snowball',L('throw'),'Aims where you face (or push the stick). Hit snowmen to get snowballs back.']]:[]),
       ...(WIN?[['Snow angel','Crouch'+plus+L('pound')+' or the emote wheel','Lie in the snow and flap.']]:[]),
       ...(run?[['Giant snowball','Walk into a small snowball','It grows as you roll it; bowl people over.']]:[])]},
-    {name:'Emotes',items:[['Emote wheel','Standing: hold '+L('pound'),'Point at an emote and let go. Tap it instead to keep the wheel open.'],
+    {name:'Emotes',items:[['Quick taunt','Standing: tap '+L('pound'),'Does your last emote from the wheel (Wave to start).'],['Emote wheel','Standing: hold '+L('pound'),'A ring fills, then the wheel opens. Point at an emote and let go.'],
       ['Dances','Robot, Shuffle, Disco, Chicken Dance','They loop until you move. Friends see them too.'],['Wave & Cheer','On the wheel','Say hi, or celebrate.']]},
     {name:'Game',items:[...(run&&runFree?[['Choose a mode',L('start')+' or the PLAY pad','Collectathon, Snowball Wars or Tag.']]:[]),
       ...(T_?[]:[['Respawn','Hold '+L('respawn'),'Back to the spawn point or your checkpoint.'],['Restart','Hold '+L('start'),'Restart the run, match, race or level.']]),

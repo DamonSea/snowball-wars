@@ -3,7 +3,15 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
-## [2.29.0] - 2026-11-23 — Aim arc and charged snowballs; easier tree grabs
+## [2.30.0] - 2026-11-23 — Tap to taunt, hold for the wheel
+### Changed
+- **Tapping L1 (Q / right-click) on the ground now taunts straight away** instead of opening the wheel. The quick
+  taunt is your last pick from the wheel (Wave to start; Snow Angel and Yellow Snow don't count), and it's remembered.
+- **Holding it opens the wheel, with a visible indicator:** your quick taunt's icon appears with a gold ring that
+  fills over 0.3 s; when it's full the wheel opens in its place. Point and let go to pick, or let go with nothing
+  picked to close it. The tap-to-keep-open mode is gone.
+
+ - 2026-11-23 — Aim arc and charged snowballs; easier tree grabs
 ### Added
 - **Hold Throw to aim:** a dotted sky-blue arc shows exactly where the snowball will fly, with a ring where it lands.
   Turn to aim while holding. A quick tap still throws immediately.
