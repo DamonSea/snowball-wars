@@ -5,24 +5,32 @@
 //   Free + auto  - like Free, but when you leave it alone it drifts back behind you while you run
 // R3 (or V) snaps the camera behind you in any turning mode.
 const CAMS=['classic','behind','free','auto'],CAM_NAMES=['Classic','Behind you','Free','Free + auto'];
-const CAM={mode:'classic',yaw:0,pitch:.5,idle:9};
+const CAM={mode:'classic',yaw:0,pitch:.5,idle:9,inYaw:0,lockDir:null};
 try{const m=localStorage.getItem('orbRunCam');if(CAMS.includes(m))CAM.mode=m}catch(e){}
 function setCam(m){if(!CAMS.includes(m))m='classic';CAM.mode=m;CAM.idle=9;if(m==='classic')CAM.yaw=0;try{localStorage.setItem('orbRunCam',m)}catch(e){}if(typeof renderControls==='function')renderControls()}
 const camTurns=()=>CAM.mode!=='classic';
 const angTo=(a,b)=>{let d=(b-a)%(2*PI);if(d>PI)d-=2*PI;if(d<-PI)d+=2*PI;return d};
+// Input lock: while you hold a direction, it keeps meaning the same way in the world, even as the camera swings.
+// Without it, pulling back in a following camera walks you in a circle: you turn toward the camera, the camera
+// swings behind you, "back" now points somewhere new, and you keep turning. The lock resets when you let go,
+// clearly change direction, or turn the camera yourself.
+function camInputFrame(manual){const ix=kbAxisX()+joy.x+pad.x,iz=kbAxisZ()+joy.z+pad.z;
+  if(!camTurns()||Math.hypot(ix,iz)<.25){CAM.inYaw=CAM.yaw;CAM.lockDir=null;return}
+  const d=Math.atan2(ix,iz);if(manual||CAM.lockDir===null||Math.abs(angTo(CAM.lockDir,d))>.8){CAM.inYaw=CAM.yaw;CAM.lockDir=d}}
 // rotate a stick/keys input (screen space: x right, z down) into world space for the current camera
-function camInput(ix,iz){const y=CAM.yaw;if(!y)return[ix,iz];const c=Math.cos(y),s=Math.sin(y);return[ix*c+iz*s,-ix*s+iz*c]}
-function camSnap(){CAM.yaw=face+PI;CAM.idle=9}
+function camInput(ix,iz){const y=CAM.inYaw;if(!y)return[ix,iz];const c=Math.cos(y),s=Math.sin(y);return[ix*c+iz*s,-ix*s+iz*c]}
+function camSnap(){CAM.yaw=face+PI;CAM.idle=9;CAM.inYaw=CAM.yaw;CAM.lockDir=null}
 // per frame while playing: update yaw / pitch, then where the camera sits and looks
 function camFollow(dt){
   if(!camTurns()){camPos.set(P.position.x,py+T.camera.height,P.position.z+T.camera.back);look.set(P.position.x,py+1,P.position.z);cam.position.lerp(camPos,1-Math.exp(-5*dt));return}
   const gp=pad.connected&&pad.gp,rx=gp?gp.axes[2]||0:0,ry=gp?gp.axes[3]||0:0,dz=v=>Math.abs(v)>.18?(v-Math.sign(v)*.18)/.82:0;
   let turn=dz(rx)+(held('camR')?1:0)-(held('camL')?1:0),tilt=dz(ry);
   if(state==='play'&&pressed('camC'))camSnap();
-  const sp=Math.hypot(vel.x,vel.z);
-  if(CAM.mode==='behind'){if(turn)CAM.yaw-=turn*2.4*dt;else if(sp>.8)CAM.yaw+=angTo(CAM.yaw,face+PI)*(1-Math.exp(-2.6*dt))}
+  camInputFrame(!!turn);
+  const sp=Math.hypot(vel.x,vel.z),rev=Math.abs(angTo(CAM.yaw,face+PI))>2;   // rev: you've turned to face the camera
+  if(CAM.mode==='behind'){if(turn)CAM.yaw-=turn*2.4*dt;else if(sp>.8)CAM.yaw+=angTo(CAM.yaw,face+PI)*(1-Math.exp(-(rev?4.2:2.6)*dt))}
   else{if(turn||tilt){CAM.yaw-=turn*2.6*dt;CAM.pitch=Math.max(.15,Math.min(1.2,CAM.pitch+tilt*1.4*dt));CAM.idle=0}else CAM.idle+=dt;
-    if(CAM.mode==='auto'&&CAM.idle>1.4&&sp>2.5)CAM.yaw+=angTo(CAM.yaw,face+PI)*(1-Math.exp(-1.4*dt))}
+    if(CAM.mode==='auto'&&(CAM.idle>1.4||rev&&CAM.idle>.4)&&sp>2.5)CAM.yaw+=angTo(CAM.yaw,face+PI)*(1-Math.exp(-(rev?3.2:1.4)*dt))}
   const pitch=CAM.mode==='behind'?.42:CAM.pitch,D=CAM.mode==='behind'?9.5:11,h=Math.cos(pitch)*D;
   camPos.set(P.position.x+Math.sin(CAM.yaw)*h,py+1.2+Math.sin(pitch)*D,P.position.z+Math.cos(CAM.yaw)*h);look.set(P.position.x,py+1.3,P.position.z);
   // keep walls and buildings from blocking the view: pull the camera in front of anything solid in the way

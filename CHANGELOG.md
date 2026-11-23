@@ -3,6 +3,14 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.19.1] - 2026-11-23 — No more walking in circles
+### Fixed
+- **Pulling back with the Behind or Free + auto camera walked you in a circle.** You'd turn to face the camera, the
+  camera would swing behind you, "back" would then point somewhere new, and you'd keep turning. Now a direction you
+  hold keeps meaning the same way in the world until you let go, clearly change direction, or turn the camera
+  yourself. Pulling back walks you straight back toward the camera, and the camera swings round behind you
+  (faster than before when you've turned all the way around). The right stick still steers while you run.
+
 ## [2.19.0] - 2026-11-23 — Orb Race
 ### Added
 - **The orb run is now a race.**
