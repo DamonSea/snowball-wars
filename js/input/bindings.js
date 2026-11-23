@@ -8,7 +8,7 @@ const ACT=[
   {id:'jump',label:'Jump',kb:['Space'],pad:[0]},
   {id:'attack',label:'Attack',kb:['KeyJ','KeyK'],pad:[2]},
   {id:'crouch',label:'Crouch / dive',kb:['ShiftLeft','KeyC'],pad:[1,7]},
-  {id:'pound',label:'Ground pound / yellow snow',kb:['KeyQ','Mouse2'],pad:[4]},
+  {id:'pound',label:'Ground pound / emotes',kb:['KeyQ','Mouse2'],pad:[4]},
   {id:'throw',label:'Throw snowball',kb:['KeyF','Mouse0'],pad:[5]},
   {id:'start',label:'Start timed run',kb:['Enter'],pad:[3]},
   {id:'pause',label:'Pause',kb:['KeyP'],pad:[9]},
@@ -31,6 +31,7 @@ const kbAxisX=()=>(kbHeld('right')||keys.ArrowRight?1:0)-(kbHeld('left')||keys.A
 const kbAxisZ=()=>(kbHeld('down')||keys.ArrowDown?1:0)-(kbHeld('up')||keys.ArrowUp?1:0);
 const actsOfKey=c=>ACT.filter(a=>BIND.kb[a.id].includes(c)).map(a=>a.id);
 function press(id){
+  if(emotePress(id))return;
   if(id==='jump')jumpBuf=.15;else if(id==='attack')attackPress();else if(id==='throw')throwSnow();else if(id==='pound')poundOrSnow();
   else if(id==='start'){if(state==='play'&&mode==='run'&&runFree&&!WAR.on&&!(FR.on&&!runL.spad))modeMenu()}   // holding it restarts instead (qol.js)
   else if(id==='pause'){if(state==='play')pause();else if(state==='paused')backOrResume()}}

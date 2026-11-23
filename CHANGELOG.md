@@ -3,7 +3,24 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
-## [2.25.0] - 2026-11-23 — Dev Maps and User Maps
+## [2.26.0] - 2026-11-23 — Emote wheel and dances
+### Added
+- **Emote wheel (every character):** standing on the ground, hold Ground pound (L1 / Q / right-click), point the
+  stick, WASD or mouse at an emote and let go. A quick tap keeps the wheel open: pick with the stick and press Jump
+  (✕) or Ground pound, click or tap one, or press 1-8. Esc or Crouch (○) closes it.
+- **Dances:** Robot, Shuffle, Disco and Chicken Dance loop until you move, jump, attack or throw. Also **Wave** and
+  **Cheer**. Friends see them in multiplayer (the pose is already synced).
+- Snow Angel and Yellow Snow are on the wheel; slots that can't be used right now are dimmed with the reason
+  (no snow, turned off in Settings, Nova, empty).
+- Moves screen: a new Emotes page.
+### Changed
+- Ground pound on the ground no longer starts yellow snow (or Nova's snow angel) by itself; it opens the wheel.
+  Crouch + Ground pound is still a quick snow angel, and Ground pound in the air is unchanged.
+- Yellow snow from the wheel keeps spraying (walk and steer as before) until you press Ground pound again or run dry.
+### Fixed
+- The wheel closes on pause, menus, respawns and level changes.
+
+ - 2026-11-23 — Dev Maps and User Maps
 ### Added
 - **Trick Park picker tabs: Dev Maps and User Maps.** Switch with the tabs, Q/E (or Up/Down), or L1/R1.
 - **Maps published from the builder now appear in User Maps** for everyone, credited "by <maker>", newest first,

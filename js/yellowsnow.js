@@ -4,20 +4,20 @@
 // T.yellow.tank seconds and refills over time. Let go and they finish with a shiver. After a go, your next
 // snowball is a yellow snowball worth a Yellow Snowball bonus. In multiplayer, presence "yw" says you're spraying
 // and friends' screens draw your stream from your avatar.
-const YS={on:true,spray:false,t:0,tank:0,used:0,armed:false,drops:[],sess:[],cur:null,dt:1/60,yIds:new Set()};
+const YS={on:true,auto:false,spray:false,t:0,tank:0,used:0,armed:false,drops:[],sess:[],cur:null,dt:1/60,yIds:new Set()};
 try{YS.on=localStorage.getItem('orbRunYellow')!=='0'}catch(e){}
 const ysDropGeo=new THREE.SphereGeometry(.045,6,4),ysDropM=new THREE.MeshBasicMaterial({color:0xf5dc52}),ysMarkGeo=new THREE.CircleGeometry(.1,10);
 YS.tank=T.yellow.tank;
-// on the ground: Crouch + Ground pound makes a snow angel; Ground pound alone is yellow snow (Nova always makes angels)
+// on the ground: Crouch + Ground pound makes a snow angel; Ground pound alone opens the emote wheel (emotes.js)
 const isNova=()=>chars[ci].name==='Nova';
-function poundOrSnow(){if(grounded&&state==='play'){if(isNova()||held('crouch')||joy.crouch)startAngel();else startYellow()}else groundPound()}
+function poundOrSnow(){if(grounded&&state==='play'){if(held('crouch')||joy.crouch)startAngel();else openWheel()}else groundPound()}
 function startYellow(){
   if(isNova()||SA.t>0||!YS.on||YS.spray||YS.t>0||CL.on||SB.stun>0||ATK.t>0||GP.st||!grounded)return;
   if(chars[ci].acro&&A.mode!=='normal'&&A.mode!=='crouch')return;
   if(!WIN){toast('No snow to write your name in. Try winter.');return}
   if(YS.tank<.4){toast('Nothing left. Give it a minute.');SFX.deny();return}
   YS.spray=true;YS.used=0;YS.cur=newSession();addTrick('Yellow Snow')}
-function stopYellow(){if(!YS.spray)return;YS.spray=false;YS.t=T.yellow.finish;if(YS.used>.4)YS.armed=true;loopNoise('yellow',false);SFX.yellowEnd()}
+function stopYellow(){if(!YS.spray)return;YS.spray=false;YS.auto=false;YS.t=T.yellow.finish;if(YS.used>.4)YS.armed=true;loopNoise('yellow',false);SFX.yellowEnd()}
 // a session = one group of marks sharing a material, so a whole drawing fades together
 function newSession(){const m=new THREE.MeshBasicMaterial({color:0xf2d64b,transparent:true,opacity:.85,depthWrite:false}),g=new THREE.Group();scene.add(g);
   const s={g,m,t:0,n:0,acc:0};YS.sess.push(s);while(YS.sess.length>T.yellow.maxSessions){const o=YS.sess.shift();freeTree(o.g)}return s}
@@ -30,7 +30,7 @@ function emitStream(x,y,z,f,vx,vz,sess,dt){
 function updateYellow(dt){
   YS.dt=dt;const Y=T.yellow;
   if(YS.spray){
-    const holding=held('pound')||joy.pound;
+    const holding=YS.auto||held('pound')||joy.pound;   // from the emote wheel it keeps going until Ground pound again
     if(!holding||!grounded||state!=='play'||SB.stun>0||CL.on){stopYellow()}
     else{YS.tank=Math.max(0,YS.tank-dt);YS.used+=dt;emitStream(P.position.x,py,P.position.z,face,vel.x,vel.z,YS.cur,dt);
       loopNoise('yellow',true,{f:3000,q:1.6,vol:.045});if(YS.tank<=0){stopYellow();toast('Empty.')}}}

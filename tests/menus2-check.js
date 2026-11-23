@@ -11,7 +11,7 @@ press('pause');__step(2);ok('...and again closes the pause menu',state==='play')
 pause();click('Play');__step(2);click('Tag');__step(3);ok('starting a mode from Play works',TAG.on&&state==='play');pause();click('End tag');__step(3);
 // Moves: pages of cards
 pause();click('Moves');__step(2);ok('title reads "Flip’s Moves"',$('movesT').textContent==='Flip’s Moves');
-ok('first page: Basics, 1 of 5, with cards',$('mvCat').textContent==='Basics'&&$('mvOf').textContent==='1 of 5'&&$('movesList').querySelectorAll('.mvc').length>=4);
+ok('first page: Basics, 1 of 6, with cards',$('mvCat').textContent==='Basics'&&$('mvOf').textContent==='1 of 6'&&$('movesList').querySelectorAll('.mvc').length>=4);
 dispatchEvent(new KeyboardEvent('keydown',{code:'ArrowRight',bubbles:true}));__step(1);ok('→ flips to Big Jumps',$('mvCat').textContent==='Big Jumps'&&/Long jump/.test($('movesList').textContent));
 dispatchEvent(new KeyboardEvent('keydown',{code:'ArrowLeft',bubbles:true}));dispatchEvent(new KeyboardEvent('keydown',{code:'ArrowLeft',bubbles:true}));__step(1);ok('← wraps round to Game',$('mvCat').textContent==='Game');
 [...document.querySelectorAll('.mvtab')].find(t=>t.textContent==='In the Air').click();__step(1);ok('tabs jump straight to a page',$('mvCat').textContent==='In the Air'&&/Dive/.test($('movesList').textContent));

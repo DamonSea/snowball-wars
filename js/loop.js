@@ -45,7 +45,7 @@ function tick(){
   water.position.y=-.8+Math.sin(tAll*.8)*.05;
   if(state==='play')mode==='run'?updateRun(dt):updateAdv(dt);
   if(state==='play'&&mode==='run')updateSnow(dt);
-  unstick(dt);holdFrame(dt);updateCpu(dt);warsUpdate(dt);raceUpdate(dt);tagUpdate(dt);poundFx(dt);updateYellow(dt);updateAngels(dt);updateRollers(dt);updateFlipArrow();
+  unstick(dt);holdFrame(dt);updateCpu(dt);warsUpdate(dt);raceUpdate(dt);tagUpdate(dt);poundFx(dt);updateYellow(dt);updateAngels(dt);updateEmotes(dt);updateRollers(dt);updateFlipArrow();
   if(state==='play'){
     if(grounded&&!sndG&&sndAir>.15)SFX.land(-sndVy);
     if(!grounded){sndAir+=dt;sndVy=vy}else sndAir=0;
@@ -60,11 +60,12 @@ function tick(){
 
   P.position.y=py;P.rotation.y=face;
   const moving=Math.hypot(vel.x,vel.z)>.5&&state==='play';
+  if(state!=='play'&&(EM.wheel||EM.id)){closeWheel();stopEmote()}   // menus, pause, level changes
   chars.forEach((c,i)=>c.g.visible=i===ci);wave=Math.max(0,wave-dt);
   const air=!grounded&&state==='play';
   {const pl=state==='play',dx=pl?vel.x-pv.x:0,dz=pl?vel.z-pv.z:0,sf=Math.sin(face),cf=Math.cos(face);
     dvL.f=dx*sf+dz*cf;dvL.s=dx*cf-dz*sf;dvL.u=pl?vy-pv.y:0;pv.x=vel.x;pv.y=vy;pv.z=vel.z;
-    const busy=BS.on||moving||air||ATK.t>0||GP.st||YS.spray||YS.t>0||SA.t>0||SB.anim>0||LH.on||CL.on||RS.pushing||wave>0||(chars[ci].acro&&A.mode!=='normal');
+    const busy=EM.id||EM.wheel||BS.on||moving||air||ATK.t>0||GP.st||YS.spray||YS.t>0||SA.t>0||SB.anim>0||LH.on||CL.on||RS.pushing||wave>0||(chars[ci].acro&&A.mode!=='normal');
     idleT=(state==='play'||state==='select'||state==='menu'||state==='paused')&&!busy?idleT+dt:0}
   const tookOff=state==='play'&&wasG&&!grounded&&vy>3;
   if(ci===0){
@@ -78,6 +79,7 @@ function tick(){
     else if(YS.spray||YS.t>0){body.rotation.y=0;body.rotation.x=-.1;body.rotation.z=YS.spray?0:Math.sin(tAll*42)*.09}
     else if(SB.anim>0){body.rotation.y=0;body.rotation.x=SB.anim>.18?-.3:.4}
     else if(BS.on){body.rotation.y=0;body.rotation.x=-.45+buttTilt();body.rotation.z=0;body.position.y-=.12}
+    else if(EM.id){body.rotation.y=Math.sin(EM.t*6)*.4;body.rotation.x=0;body.position.y+=Math.abs(Math.sin(EM.t*8))*.15}
     else{body.rotation.y=0;body.rotation.x=0}
     feet[0].position.z=moving?Math.sin(walk*3)*.22:0;feet[1].position.z=-feet[0].position.z;
     if(playingToon())toonScale(body,dt,air,'normal',tookOff);else{TS.delete(body);body.scale.set(1,1,1)}
@@ -137,6 +139,8 @@ function tick(){
       ax=-2.75+w*.15;ar=-2.75-w*.15;zl=-.55;zr=.55;hx=-.2;hy=0}
     else if(RS.pushing&&grounded&&!CL.on&&ATK.t<=0){ax=ar=-1.35;zl=-.25;zr=.25;pitch+=.22;hx=-.1}
     else if(SB.anim>0&&!CL.on){const q=1-SB.anim/.3;rate=30;if(q<.4){ar=.9;zr=.25;yaw=.35;hy=-.2}else{ar=-2.5+(q-.4)*2.2;zr=.15;yaw=-.3;hy=.2}}
+    // emotes: dances, wave and cheer (emotes.js)
+    else if(EM.id&&!CL.on&&state==='play'){const o=emotePose({lx,lr,ax,ar,zl,zr,pitch,roll,yaw,yo,hx,hy,hz,llz,lrz,rate});({lx,lr,ax,ar,zl,zr,pitch,roll,yaw,yo,hx,hy,hz,llz,lrz,rate}=o)}
     if(CL.on&&state!=='menu'){snap=false;snapY=false;rate=12;yaw=0;roll=0;hy=0;hz=0;lrz=0;llz=0;
       if(CL.top){pitch=PI;ax=ar=-3.1;zl=-.15;zr=.15;lx=.4;lr=-.4;roll=Math.sin(tAll*3)*.07;yo=H.hsYo??(ci>=2?.32:.38);hx=-.3}
       else{const c=Math.sin(CL.h*3+CL.ang*2);pitch=-.12;ax=-2.75+c*.45;ar=-2.75-c*.45;zl=-.3;zr=.3;lx=-.95+c*.45;lr=-.95-c*.45;yo=0;hx=.35}}

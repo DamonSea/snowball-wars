@@ -66,12 +66,15 @@ Run into a tree, lamp post or antenna to grab on, climb to a handstand, aim with
 ### Snowball fights
 Throw snowballs (F / R1 / touch) at friends, snowmen and enemies. A hit knocks the target back and stuns it with
 dizzy stars; orbs refill your snowballs. Turn on the **computer player** in Settings for someone to fight solo.
-Optional silliness: hold the Ground pound button while standing for **yellow snow** (and a yellow snowball). Nova doesn't.
+**Emotes:** standing on the ground, hold Ground pound (L1 / Q / right-click) for the emote wheel. Point at one and let
+go (or tap to keep the wheel open, then pick with Jump, a click, or 1-8): **Wave, Cheer, Robot, Shuffle, Disco,
+Chicken Dance, Snow Angel, Yellow Snow**. Dances loop until you move, and friends see them. Yellow snow (optional
+silliness, off in Settings; Nova doesn't) keeps spraying until you press Ground pound again, and leaves you a yellow snowball.
 
 ![A snowball duel with the computer player](docs/media/snowball-fight.gif)
 
 ### Winter activities
-- **Snow angels:** Crouch + Ground pound while standing in snow (Nova: just Ground pound). Lie back, sweep, leave an angel.
+- **Snow angels:** from the emote wheel, or Crouch + Ground pound while standing in snow. Lie back, sweep, leave an angel.
 - **Rolling snowballs:** walk into one of the small snowballs around each Trick Park map to push it. It grows as it rolls,
   bowls over enemies and snowmen, and a big one is something to stand on. Smash it to start over.
 
@@ -200,14 +203,15 @@ by files above it. Nothing is bundled.
 | 29 | `js/wars.js` | Snowball Wars mode: matches, hearts, scoring, snow piles, computer players |
 | 30 | `js/orbrace.js` | Orb Race: shared runs with friends, knocked-loose orbs, computer rivals |
 | 31 | `js/tag.js` | Tag mode: It passing, no tag-backs, time-as-It scoring, computer players |
-| 32 | `js/yellowsnow.js` | Yellow snow: hold-to-spray stream that marks the snow, yellow snowballs (Settings → Yellow snow) |
+| 32 | `js/yellowsnow.js` | Yellow snow: spray stream (from the emote wheel) that marks the snow, yellow snowballs (Settings → Yellow snow) |
 | 33 | `js/winterfun.js` | Snow angels and rolling snowballs that grow |
-| 34 | `js/cpu.js` | Computer player for Trick Park (Settings → Computer player) |
-| 35 | `js/builder/maps.js` | Map Builder asset library, map cleaning, and turning a saved map into a playable Trick Park map |
-| 36 | `js/builder/editor.js` | Map Builder editor: top-down camera, placing, selecting, dragging, inspector, undo, test play |
-| 37 | `js/builder/community.js` | Drafts, publishing to the shared map list, More maps panel, export and import |
-| 38 | `js/qol.js` | Hold to respawn / restart, Stop orb run, Moves list in the pause menu |
-| 39 | `js/main.js` | Startup |
+| 34 | `js/emotes.js` | Emote wheel (hold Ground pound standing): wave, cheer, dances, snow angel, yellow snow |
+| 35 | `js/cpu.js` | Computer player for Trick Park (Settings → Computer player) |
+| 36 | `js/builder/maps.js` | Map Builder asset library, map cleaning, and turning a saved map into a playable Trick Park map |
+| 37 | `js/builder/editor.js` | Map Builder editor: top-down camera, placing, selecting, dragging, inspector, undo, test play |
+| 38 | `js/builder/community.js` | Drafts, publishing to the shared map list, More maps panel, export and import |
+| 39 | `js/qol.js` | Hold to respawn / restart, Stop orb run, Moves list in the pause menu |
+| 40 | `js/main.js` | Startup |
 
 ## Tests
 

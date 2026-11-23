@@ -10,7 +10,7 @@ function renderControls(){
   const mv=T_?'Joystick':P?'L-stick / D-pad':(()=>{const ks=['up','left','down','right'].map(id=>BIND.kb[id][0]);
     const n=ks.map(c=>c?keyName(c):'?');return(n.every(x=>x.length===1)?k(n.join('')):n.map(k).join(' '))+' / '+k('Arrows')})();
   const rows=[[mv,'Move'],[L('jump'),'Jump (hold for full height)'],[L('attack'),'Attack (tap \u00d73 for a combo)'],['In the air: '+L('attack'),'Flying kick'],
-    ['In the air: '+L('pound'),'Ground pound'],...(camTurns()&&!T_?[[(pad.connected?'Right stick':L('camL')+' / '+L('camR')),'Turn the camera'+(CAM.mode==='behind'?'':' (stick up/down tilts)')],[L('camC'),'Camera behind you']]:[]),['On a slope: hold '+L('crouch'),'Butt slide (Jump to hop off)'],...(WIN?[[(chars[ci].name==='Nova'?'Standing: ':'Crouch + ')+L('pound'),'Snow angel']]:[]),...(YS.on&&WIN&&chars[ci].name!=='Nova'?[['Standing: hold '+L('pound'),'Yellow snow (walk to aim)']]:[]),...(mode==='run'?[['Walk into a small snowball','Roll it bigger']]:[]),[L('pause'),'Pause']];
+    ['In the air: '+L('pound'),'Ground pound'],['Standing: hold '+L('pound'),'Emotes'],...(camTurns()&&!T_?[[(pad.connected?'Right stick':L('camL')+' / '+L('camR')),'Turn the camera'+(CAM.mode==='behind'?'':' (stick up/down tilts)')],[L('camC'),'Camera behind you']]:[]),['On a slope: hold '+L('crouch'),'Butt slide (Jump to hop off)'],...(WIN?[[(chars[ci].name==='Nova'?'Standing: ':'Crouch + ')+L('pound'),'Snow angel']]:[]),...(YS.on&&WIN&&chars[ci].name!=='Nova'?[['Standing: hold '+L('pound'),'Yellow snow (walk to aim)']]:[]),...(mode==='run'?[['Walk into a small snowball','Roll it bigger']]:[]),[L('pause'),'Pause']];
   if(!T_)rows.push([P?b('Create'):k('M'),'Sound on/off'],[P?b('Touchpad'):k('H'),'Hide this panel']);
   if(chars[ci].acro)rows.splice(2,0,[L('crouch'),'Crouch (move to crouch-walk)'],['Crouch + '+L('attack'),'Sweep kick'],
     ['Run + crouch + Jump','Long jump'],['Still + crouch + Jump','Backflip'],['Run into a tree or pole','Climb it (Jump at the top: flip)'],
@@ -40,8 +40,10 @@ function moveGroups(){
       ['Ground pound','In the air: '+L('pound'),'Smashes down and knocks things around you.'],['Pound jump',J+' as you land a pound','Shoots you straight up, very high.']]},
     {name:'Snowballs & Fighting',items:[['Attack',A_,'Tap \u00d73 for a combo.'],...(acro?[['Sweep kick',C+plus+A_,'Spins round and hits all around you.']]:[]),
       ...(run?[['Throw a snowball',L('throw'),'Aims where you face (or push the stick). Hit snowmen to get snowballs back.']]:[]),
-      ...(WIN?[['Snow angel',(chars[ci].name==='Nova'?'Standing: ':'Crouch'+plus)+L('pound'),'Lie in the snow and flap.']]:[]),
+      ...(WIN?[['Snow angel','Crouch'+plus+L('pound')+' or the emote wheel','Lie in the snow and flap.']]:[]),
       ...(run?[['Giant snowball','Walk into a small snowball','It grows as you roll it; bowl people over.']]:[])]},
+    {name:'Emotes',items:[['Emote wheel','Standing: hold '+L('pound'),'Point at an emote and let go. Tap it instead to keep the wheel open.'],
+      ['Dances','Robot, Shuffle, Disco, Chicken Dance','They loop until you move. Friends see them too.'],['Wave & Cheer','On the wheel','Say hi, or celebrate.']]},
     {name:'Game',items:[...(run&&runFree?[['Choose a mode',L('start')+' or the PLAY pad','Orb Race, Snowball Wars or Tag.']]:[]),
       ...(T_?[]:[['Respawn','Hold '+L('respawn'),'Back to the spawn point or your checkpoint.'],['Restart','Hold '+L('start'),'Restart the run, match, race or level.']]),
       ...(camTurns()&&!T_?[['Turn the camera',P?b('R-stick'):L('camL')+' '+L('camR'),'Up and down tilt it. '+L('camC')+' snaps it behind you.']]:[]),
@@ -56,6 +58,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)pause()});
 const releaseAll=()=>{for(const k in keys)keys[k]=false};
 addEventListener('keydown',e=>{if(capKey(e))return;if(movesOpen){if(e.code==='Escape'||e.code==='Backspace'){e.preventDefault();closeMoves();return}if(e.code==='ArrowLeft'||e.code==='ArrowRight'){e.preventDefault();moveCat(e.code==='ArrowLeft'?-1:1);return}}if(e.metaKey){if(e.key!=='Meta')return}else keys[e.code]=true;
   if(setOpen){if(e.code==='Escape')closeSet();return}
+  if(state==='play'&&emoteKey(e.code)){e.preventDefault();return}
   const acts=actsOfKey(e.code==='NumpadEnter'?'Enter':e.code);
   if(!e.repeat)for(const id of acts)if(state==='play'||(id==='pause'&&state==='paused'))press(id);
   if((acts.length||['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))&&state==='play')e.preventDefault();

@@ -298,3 +298,17 @@ body.setopen #moves{visibility:hidden}
 .mvc .mvk kbd,.mvc .mvk .ps{font-size:12px}
 .mvc p{margin:0;font-size:13px;line-height:1.35;opacity:.82}
 @media (max-width:560px){.mvgrid{grid-template-columns:1fr}.mvcat{min-width:150px}}
+
+/* emote wheel */
+.ewheel{position:fixed;left:50%;top:50%;width:340px;height:340px;margin:-170px 0 0 -170px;border-radius:50%;z-index:4;
+  background:radial-gradient(circle,rgba(8,26,38,.35) 22%,rgba(8,26,38,.78) 23%,rgba(8,26,38,.78) 70%,rgba(8,26,38,0) 71%)}
+.ewheel.hide{display:none}
+.eslot{position:absolute;width:82px;height:82px;margin:-41px 0 0 -41px;padding:0;min-height:0;border-radius:50%;border:2px solid rgba(255,255,255,.22);
+  background:rgba(255,255,255,.1);color:#e8f3f8;box-shadow:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  font:700 11px/1.1 "Inter",sans-serif;text-align:center;cursor:pointer;transition:transform .08s,background .08s}
+.eslot .ic{font-size:28px;line-height:1}
+.eslot .pk{position:absolute;top:-4px;right:-2px;font-size:9px}
+.eslot.on{background:#ffd84a;color:#2a2205;border-color:#fff;transform:scale(1.14)}
+.eslot.off{opacity:.42}
+.ecenter{position:absolute;left:50%;top:50%;width:120px;margin:-26px 0 0 -60px;text-align:center;pointer-events:none;color:#fff}
+.ecenter b{display:block;font:800 19px/1.1 "Baloo 2",system-ui,sans-serif}.ecenter small{display:block;font-size:11px;opacity:.8;margin-top:3px}
