@@ -70,6 +70,12 @@ function updateSnow(dt){
       else for(const h of runHz)if(!h.dead&&!(b.owner==='goon'&&h.kind==='goon')&&hitsFoe(h,p)){splat(p,false);gone=true;break}
     }
     if(gone){freeTree(b.m);SB.list.splice(i,1)}}
+  // standing snowmen are solid: you (and computer players) bump off them; knocked down, you can walk through.
+  // r .55 keeps you just close enough that dives and belly slides still smash them.
+  {const solid=snowmen().filter(s=>s.up).map(s=>({x:s.x,z:s.z,r:.55}));if(solid.length){
+    if(py<2.4)pushOut(P.position,T.bodyRadius,solid);
+    for(const b of [...(WAR.on?WAR.bots:[]),...RACE.bots,...(TAG.on?TAG.bots:[])])if((b.y||0)<2.4)pushOut(b,.5,solid);
+    if(CPU.on&&(CPU.y||0)<2.4)pushOut(CPU,.5,solid)}}
   // punches, kicks, dives and belly slides smash snowmen too
   for(const s of snowmen()){if(!s.up||py>2.6)continue;const d=Math.hypot(s.x-P.position.x,s.z-P.position.z);
     if(attackHits(V(s.x,.75,s.z),0)){ATK.hits++;hitStop=.07;shake=Math.max(shake,.18);rumble(120,.7,.9);SFX.hit();knockSnowman(s)}

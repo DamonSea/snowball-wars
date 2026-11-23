@@ -6,17 +6,18 @@
 // One player's game (the lowest peer id) referees the shared orbs and spikeballs and publishes
 // them in its presence; the others mirror that field and send "claims" when they grab or smash.
 const MP={on:false,lobby:null,user:null,room:null,roomName:'',joining:false,retryAt:0,me:'',host:true,client:false,hostPeer:null,
-  myName:'',av:new Map(),prof:{},gone:new Set(),done:new Set(),cl:{n:0,o:[],k:[]},tr:{n:0,s:''},lastSend:0,lastWhere:'',lastList:0};
+  myName:'',acctName:'',av:new Map(),prof:{},gone:new Set(),done:new Set(),cl:{n:0,o:[],k:[]},tr:{n:0,s:''},lastSend:0,lastWhere:'',lastList:0};
 let orbSeq=0,hzSeq=0;
 const mkId=p=>(MP.me?MP.me.slice(-5):'s')+p;
 const f2=x=>Math.round(x*100)/100;
 async function mpInit(){try{if(!window.claude||typeof window.claude.use!=='function')return;
   const[room,user]=await Promise.all([window.claude.use('room'),window.claude.use('user')]);if(!room)return;
   MP.lobby=room;MP.user=user;MP.on=true;
-  try{const me=user&&await user.me();MP.myName=(me&&me.name)||''}catch(e){}
+  try{const me=user&&await user.me();MP.acctName=(me&&me.name)||''}catch(e){}MP.myName=savedName()||MP.acctName;
   room.onPeers(()=>lobbyUI(),e=>{MP.on=false;MP.err=(e&&e.code)||'error';lobbyUI()});lobbyUI()}catch(e){MP.on=false}}
 function nameOf(peer){
   if(peer.sameTab)return MP.myName||'You';
+  {const n=peer.presence&&peer.presence.nm;if(peer.presence&&peer.presence.nmSet&&typeof n==='string'&&n.trim())return n.trim().slice(0,24)}
   if(peer.by&&MP.user){if(!(peer.by in MP.prof)){MP.prof[peer.by]='';MP.user.profiles([peer.by]).then(ps=>{const q=ps&&ps[peer.by];MP.prof[peer.by]=(q&&q.name)||''}).catch(()=>{})}
     if(MP.prof[peer.by])return MP.prof[peer.by]}
   const n=peer.presence&&peer.presence.nm;return typeof n==='string'&&n.trim()?n.trim().slice(0,24):'Player'}
@@ -89,7 +90,7 @@ function wantRoom(){return MP.on&&mode==='run'&&(state==='play'||state==='paused
 const GAME_KEYS=['wm','or','sp','tm','ch','of','lk','p','q','sc','fr','t','c','sb','hb','yw','z','H'];
 function mapView(want){const L=MP.lobby,w='p'+want.slice(3);
   return{name:want,peers:()=>L.peers().filter(p=>p.sameTab||(p.presence&&p.presence.w===w)),
-    presence:pr=>L.presence(Object.assign({},pr,{w,nm:MP.myName||'Player'})).then(()=>{MP.err=''},e=>{MP.err=(e&&e.code)||'error';lobbyUI();throw e}),
+    presence:pr=>L.presence(Object.assign({},pr,{w,nm:MP.myName||'Player',nmSet:savedName()?1:0})).then(()=>{MP.err=''},e=>{MP.err=(e&&e.code)||'error';lobbyUI();throw e}),
     leave:async()=>{const z={};GAME_KEYS.forEach(k=>z[k]=null);try{await L.presence(z)}catch(e){}}}}
 async function switchRoom(want){MP.joining=true;try{
   if(MP.room){const r=MP.room;MP.room=null;MP.roomName='';clearAv();try{await r.leave()}catch(e){}}
@@ -108,11 +109,11 @@ function mpFrame(dt){
   if(!MP.on)return;const now=performance.now();
   // lobby presence: where you are
   const w=state==='menu'||state==='select'||state==='build'?'menu':mode==='run'?'p'+runL.key:'adv';
-  if(w!==MP.lastWhere){MP.lastWhere=w;MP.lobby.presence({w,nm:MP.myName||'Player'}).catch(()=>{});lobbyUI()}
+  if(w!==MP.lastWhere){MP.lastWhere=w;MP.lobby.presence({w,nm:MP.myName||'Player',nmSet:savedName()?1:0}).catch(()=>{});lobbyUI()}
   const want=wantRoom();if(want!==MP.roomName&&!MP.joining&&now>MP.retryAt)switchRoom(want);
   electHost();updAvatars(dt);
   if(MP.room&&now-MP.lastSend>50){MP.lastSend=now;
-    const pr={nm:MP.myName||'Player',ch:ci,of:OFI[ci]??0,lk:LOOKS[ci]||null,p:[P.position.x,py,P.position.z,face].map(f2),q:poseOf(),sc:score,fr:runFree?1:0,t:[MP.tr.n,MP.tr.s],c:[MP.cl.n,MP.cl.o,MP.cl.k],sb:SB.sent,hb:SB.hits,yw:YS.spray?1:0,z:SB.stun>0?1:0,H:null,wm:WAR.on?[WAR.id,Math.round(WAR.t),WAR.out>0?0:WAR.hp,WAR.kos,WAR.hits]:null,or:raceLive()?[RACE.id,Math.round(time),orbN]:null,sp:RACE.sp.length?RACE.sp:null,tm:TAG.on?[TAG.id,Math.round(TAG.t),+(TAG.itT.me||0).toFixed(1),TAG.it==='me'?1:0,TAG.last]:null};
+    const pr={nm:MP.myName||'Player',nmSet:savedName()?1:0,ch:ci,of:OFI[ci]??0,lk:LOOKS[ci]||null,p:[P.position.x,py,P.position.z,face].map(f2),q:poseOf(),sc:score,fr:runFree?1:0,t:[MP.tr.n,MP.tr.s],c:[MP.cl.n,MP.cl.o,MP.cl.k],sb:SB.sent,hb:SB.hits,yw:YS.spray?1:0,z:SB.stun>0?1:0,H:null,wm:WAR.on?[WAR.id,Math.round(WAR.t),WAR.out>0?0:WAR.hp,WAR.kos,WAR.hits]:null,or:raceLive()?[RACE.id,Math.round(time),orbN]:null,sp:RACE.sp.length?RACE.sp:null,tm:TAG.on?[TAG.id,Math.round(TAG.t),+(TAG.itT.me||0).toFixed(1),TAG.it==='me'?1:0,TAG.last]:null};
     if(MP.host)pr.H={o:orbs.map(o=>[o.id,f2(o.g.position.x),f2(o.y),f2(o.g.position.z),o.gold?1:0,o.v,o.ring.visible?0:1,o.beam?1:0]),h:runHz.filter(h=>!h.dead).map(h=>[h.id,f2(h.g.position.x),f2(h.g.position.z),KINDS.indexOf(h.kind),Math.max(0,FSTATES.indexOf(h.st)),f2(h.face||0)]),g:FX.sent};
     MP.room.presence(pr).catch(()=>{})}
   if(now-MP.lastList>250){MP.lastList=now;mpList()}

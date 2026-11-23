@@ -16,8 +16,16 @@ function parkThumb(M){if(PARK.thumbs[M.key])return PARK.thumbs[M.key];
     c.getContext('2d').drawImage(src,(src.width-16*s)/2,(src.height-9*s)/2,16*s,9*s,0,0,480,270);PARK.thumbs[M.key]=c.toDataURL('image/jpeg',.82);
     RUNMAPS.forEach((q,k)=>q.grp.visible=prevVis[k]);P.visible=pv;cam.position.copy(cp);cam.quaternion.copy(cq);if(inSpad)inSpad.add(spadG)}catch(e){PARK.thumbs[M.key]=''}
   return PARK.thumbs[M.key]}
-function parkMenu(){overlay(false);PARK.on=true;state='menu';if(runL&&userMaps().includes(runL))PARK.tab='user';else if(runL&&devMaps().includes(runL))PARK.tab='dev';const L=parkMaps();PARK.i=Math.max(0,Math.min(L.length-1,L.indexOf(runL)>=0?L.indexOf(runL):PARK.i));
-  $('park').classList.remove('hide');renderPark();setTimeout(()=>{try{$('parkPlay').focus({preventScroll:true})}catch(e){}},60)}
+// your name: shown to friends in multiplayer (name tags, scoreboards). Typed here, saved on this device; until you
+// type one, your claude.ai name is used, or "Player"
+function savedName(){try{return localStorage.getItem('orbRunName')||''}catch(e){return''}}
+const cleanName=n=>String(n||'').replace(/[<>]/g,'').replace(/\s+/g,' ').trim().slice(0,16);
+function setMyName(n){n=cleanName(n);try{n?localStorage.setItem('orbRunName',n):localStorage.removeItem('orbRunName')}catch(e){}
+  MP.myName=n||MP.acctName||'';MP.lastWhere='';if(typeof mpList==='function')mpList()}
+$('parkMe').addEventListener('input',e=>setMyName(e.target.value));
+$('parkMe').addEventListener('change',e=>{e.target.value=cleanName(e.target.value);setMyName(e.target.value)});
+function parkMenu(){$('parkMe').value=savedName()||MP.acctName||'';overlay(false);PARK.on=true;state='menu';if(runL&&userMaps().includes(runL))PARK.tab='user';else if(runL&&devMaps().includes(runL))PARK.tab='dev';const L=parkMaps();PARK.i=Math.max(0,Math.min(L.length-1,L.indexOf(runL)>=0?L.indexOf(runL):PARK.i));
+  $('park').classList.remove('hide');renderPark();setTimeout(()=>{try{(savedName()||document.body.classList.contains('haspad')?$('parkPlay'):$('parkMe')).focus({preventScroll:true})}catch(e){}},60)}
 function closePark(){PARK.on=false;$('park').classList.add('hide')}
 function renderPark(){const L=parkMaps();PARK.i=Math.max(0,Math.min(PARK.i,L.length-1));const M=L[PARK.i],user=PARK.tab==='user';
   $('parkTabDev').classList.toggle('on',!user);$('parkTabUser').classList.toggle('on',user);$('parkTabDev').setAttribute('aria-selected',!user);$('parkTabUser').setAttribute('aria-selected',user);

@@ -3,7 +3,17 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
-## [2.30.0] - 2026-11-23 — Tap to taunt, hold for the wheel
+## [2.31.0] - 2026-11-23 — Your name; solid snowmen
+### Added
+- **Name box on the Trick Park picker** ("Your name"): what friends see on your name tag and the scoreboards. It's
+  saved on this device and used every time you join. The first time, the cursor starts in it; Enter or Esc goes back
+  to the picker. Until you type one, your claude.ai name is used (or "Player"). A typed name beats a friend's account
+  name on your screen too.
+### Fixed
+- **Snowmen could be walked through.** Standing snowmen are solid now, for you and for computer players; knocked down,
+  you can walk through. Dives, belly slides, punches and snowballs still knock them over, and you can still land on top.
+
+ - 2026-11-23 — Tap to taunt, hold for the wheel
 ### Changed
 - **Tapping L1 (Q / right-click) on the ground now taunts straight away** instead of opening the wheel. The quick
   taunt is your last pick from the wheel (Wave to start; Snow Angel and Yellow Snow don't count), and it's remembered.

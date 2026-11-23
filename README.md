@@ -43,6 +43,7 @@ Your look shows up for friends in multiplayer.
 ![Customizing Vex with a crown and wings](docs/media/customize.png)
 
 ### Trick Park
+Type **your name** on the Trick Park picker: it's what friends see in multiplayer.
 Maps to skate, flip and wall-jump around. **Free roam** has no lives: tricks, combos and **named gaps** earn trick
 points (higher orbs are worth more there). Step on the PLAY pad to start a game: **Collectathon** (how many orbs can you
 collect before time runs out?) is a straight count of orbs, **Snowball Wars** is hearts and KOs, and **Tag** is time spent It.
