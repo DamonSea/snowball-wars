@@ -69,6 +69,8 @@ function updateSnow(dt){
 }
 function clearSnow(){clearAngels();clearRollers();clearYellow();resetPound();SB.stun=0;if(CPU.a)CPU.a.init=false;myStars.visible=false;SB.list.forEach(b=>freeTree(b.m));SB.list=[];SB.ammo=T.snow.ammo;SB.regen=0;SB.anim=0;snowHud()}
 // orbs refill snowballs: regular orbs give a few, gold orbs fill you up
+// knocking down a snowman (a target or a Winter Crew snowman) packs you a few snowballs
+function snowmanSnow(){const was=SB.ammo;SB.ammo=Math.min(T.snow.ammo,SB.ammo+T.snow.snowmanAmmo);snowHud();snowFlash('gain');if(SB.ammo>was)toast(`+${SB.ammo-was} snowball${SB.ammo-was>1?'s':''}`)}
 function gainSnow(gold){const was=SB.ammo;SB.ammo=gold?T.snow.ammo:Math.min(T.snow.ammo,SB.ammo+T.snow.orbAmmo);if(SB.ammo>was){snowHud();snowFlash('gain')}}
 function snowFlash(c){const e=$('snowBox');if(!e)return;e.classList.remove('gain','empty');void e.offsetWidth;e.classList.add(c)}
 function snowHud(){const e=$('snowAmmo');if(e)e.innerHTML=Array.from({length:T.snow.ammo},(_,i)=>`<i class="${i<SB.ammo?'':'off'}"></i>`).join('')}
@@ -95,7 +97,7 @@ function makeSnowman(grp,x,z,i){const g=new THREE.Group();g.position.set(x,0,z);
 RUNMAPS.forEach(M=>{M.snowmen=(SNOWMEN_AT[M.name]||[]).map(([x,z],i)=>makeSnowman(M.grp,x,z,i))});
 const snowmen=()=>runL.snowmen||[];
 // snowmen burst into snow: a puff from each body ball, plus a few chunks that tumble out and splat
-function knockSnowman(s){s.up=false;s.t=T.snow.snowmanRespawn;s.g.visible=false;
+function knockSnowman(s){s.up=false;snowmanSnow();s.t=T.snow.snowmanRespawn;s.g.visible=false;
   [[.62,16],[1.5,14],[2.16,10]].forEach(([y,n])=>{burst(V(s.x,y,s.z),0xffffff,n);burst(V(s.x,y,s.z),0xdff4ff,Math.round(n/2))});
   for(let i=0;i<5;i++){const a=Math.random()*PI*2,sp=2.5+Math.random()*2.5;
     launchSnowball([s.x,1+Math.random(),s.z,Math.cos(a)*sp,3+Math.random()*3,Math.sin(a)*sp].map(f2),false,'chunk',-1)}

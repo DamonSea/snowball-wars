@@ -52,7 +52,7 @@ const T={
   bounce:{vy:17,poundVy:22},
   angel:{time:2.6,life:45},
   roll:{r0:.35,rMax:1.5,grow:.045,push:4.2,friction:.55,iceFriction:.2,bounce:.4,bowl:1.8},
-  snow:{speed:20,lift:4,gravity:18,life:2.5,ammo:6,regen:0,orbAmmo:2,cooldown:.3,hitKnock:9,hitLift:5,stun:.9,snowmanRespawn:8},
+  snow:{speed:20,lift:4,gravity:18,life:2.5,ammo:6,regen:0,orbAmmo:2,cooldown:.3,hitKnock:9,hitLift:5,stun:.9,snowmanRespawn:8,snowmanAmmo:2},   // snowmanAmmo: snowballs you get for knocking down a snowman (target or Winter Crew)
   // Snowball Wars: match length (s), hearts, points per hit / trick shot / KO bonus, KO respawn and blink time,
   // computer players when alone, snow piles (count, radius, seconds per snowball), and a slow trickle (s per snowball)
   // Orb Race: a snowball hit knocks up to `spill` points loose as orbs worth `spillOrb` each; rival walking speed

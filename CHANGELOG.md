@@ -3,6 +3,13 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.21.2] - 2026-11-23 — Snowmen drop snowballs
+### Added
+- **Knocking down a snowman gives you 2 snowballs**, up to a full load. This works for the target snowmen in every
+  park and the Winter Crew's snowman enemies, however you take them down: snowball, punch, kick, dive, slide,
+  ground pound, stomp or a rolled giant snowball. Other enemies don't drop any. The amount is
+  `T.snow.snowmanAmmo` in tuning.js.
+
 ## [2.21.1] - 2026-11-23 — Classic stick fix
 ### Fixed
 - **With the Classic camera, the stick could walk you in the wrong direction** after you'd used the Free camera
