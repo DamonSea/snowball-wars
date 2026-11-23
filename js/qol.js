@@ -5,9 +5,9 @@
 const HOLD={id:null,t:0,done:false};
 const HOLD_T={respawn:1,start:.8};
 function holdLabel(id){if(id==='respawn')return mode==='adv'?'Back to the last flag':FR.on&&!FR.done?'Back to your checkpoint':'Back to the spawn point';
-  return mode==='adv'?'Restart level':WAR.on?'Restart match':!runFree||runCD>0?'Restart orb run':'Restart race'}
+  return mode==='adv'?'Restart level':WAR.on?'Restart match':TAG.on?'Restart tag':!runFree||runCD>0?'Restart orb run':'Restart race'}
 // what holding Start would restart right now (nothing in plain free roam, where a tap starts the orb run)
-const retryable=()=>mode==='adv'||(mode==='run'&&WAR.on)||(mode==='run'&&(!runFree||runCD>0))||(mode==='run'&&FR.on&&!runL.spad);
+const retryable=()=>mode==='adv'||(mode==='run'&&(WAR.on||TAG.on))||(mode==='run'&&(!runFree||runCD>0))||(mode==='run'&&FR.on&&!runL.spad);
 function holdFrame(dt){const m=$('holdMeter');
   const want=state!=='play'?null:held('respawn')?'respawn':held('start')&&retryable()?'start':null;
   if(want!==HOLD.id){HOLD.id=want;HOLD.t=0;HOLD.done=false}
@@ -22,6 +22,7 @@ function respawnHere(){SFX.ui(3);
   if(chars[ci].acro)resetAcro();CL.on=false;CL.top=false;LH.on=false;invuln=1;dropCombo();burst(V(P.position.x,py+1,P.position.z),0x5ff3ff,10)}
 function quickRetry(){if(mode==='adv'){retry();return}
   if(WAR.on){startWars();return}
+  if(TAG.on){startTag();return}
   if(!runFree||runCD>0){runFree=true;runCD=0;beginTimed();return}   // fresh countdown right where you are
   if(FR.on)startRun(true)}
 // leave a timed orb run early: back to free roam right where you are

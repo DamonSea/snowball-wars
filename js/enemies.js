@@ -31,8 +31,9 @@ function buildPenguin(parent){const g=new THREE.Group();parent.add(g);const body
   const blk=mat(0x1f2430,{roughness:.5}),wht=mat(0xf4f6f8),org=mat(0xff9a2e),red=mat(0xd83a2e);
   add(Sph(.45,14,10),blk,0,0,0,body).scale.set(1,1.3,.92);add(Sph(.37,14,10),wht,0,-.06,.2,body).scale.set(.95,1.2,.72);
   const head=new THREE.Group();head.position.y=.62;body.add(head);add(Sph(.3,14,10),blk,0,0,0,head);
-  [-1,1].forEach(s=>{add(Sph(.075,8,6),wht,s*.11,.05,.24,head);add(Sph(.04,6,5),mat(0x111111),s*.11,.04,.31,head);
-    const b=add(B(.13,.035,.03),mat(0x111111),s*.11,.15,.27,head);b.rotation.z=s*.45});
+  const brows=[],cheeks=[];[-1,1].forEach(s=>{add(Sph(.075,8,6),wht,s*.11,.05,.24,head);add(Sph(.04,6,5),mat(0x111111),s*.11,.04,.31,head);
+    const b=add(B(.13,.035,.03),mat(0x111111),s*.11,.15,.27,head);b.rotation.z=s*.45;b.side_=s;brows.push(b);
+    const c=add(Sph(.06,8,6),new THREE.MeshBasicMaterial({color:0xff5a5a,transparent:true,opacity:.7}),s*.2,-.04,.22,head);c.scale.set(1,.6,.4);c.visible=false;cheeks.push(c)});
   add(new THREE.ConeGeometry(.07,.22,8),org,0,-.05,.33,head).rotation.x=PI/2;
   add(new THREE.TorusGeometry(.27,.065,6,16),red,0,.4,0,body).rotation.x=PI/2;                  // bandana
   add(B(.12,.2,.05),red,.12,.3,-.27,body).rotation.z=.4;
@@ -41,7 +42,7 @@ function buildPenguin(parent){const g=new THREE.Group();parent.add(g);const body
   // warning "!" shown during the wind-up
   const excl=new THREE.Group();excl.position.y=1.65;excl.visible=false;g.add(excl);
   const exM=new THREE.MeshBasicMaterial({color:0xff4d3a});add(B(.1,.32,.1),exM,0,.12,0,excl);add(Sph(.065,8,6),exM,0,-.13,0,excl);
-  return{g,body,head,flips,feet,excl}}
+  return{g,body,head,flips,feet,excl,brows,cheeks}}
 function buildImp(parent){const g=new THREE.Group();parent.add(g);const body=new THREE.Group();body.position.y=.42;g.add(body);
   const ice=new THREE.MeshStandardMaterial({color:0x8fdcff,roughness:.25,metalness:.1,emissive:0x1a5f80,emissiveIntensity:.4}),
         dk=mat(0x2a5a78),eyeM=new THREE.MeshStandardMaterial({color:0xfff27a,emissive:0xffd400,emissiveIntensity:1.4});
@@ -69,7 +70,11 @@ function foeThink(h,dt){const F_=T.foes,p=h.g.position,tg=nearestTarget(p),dx=tg
     if(d<F_.goonSight){f=to;if(h.throwT<=0){if(d>F_.goonKeep+2){vx=dx/d*F_.goonSpeed;vz=dz/d*F_.goonSpeed}else if(d<F_.goonKeep-2){vx=-dx/d*F_.goonSpeed*.7;vz=-dz/d*F_.goonSpeed*.7}}
       if(h.cool<=0&&d>3&&Math.abs(tg.y-p.y)<4){h.cool=F_.goonEvery+Math.random()*1.2;h.throwT=.35;goonThrow(h,tg,d)}}
     else{[vx,vz,f]=wander(F_.goonSpeed*.5)}}
-  else if(h.kind==='penguin'){h.t-=dt;
+  else if(h.kind==='penguin'&&!h.angry){h.t-=dt;   // calm: waddle about, sometimes come over for a look, never charge
+    if(h.st==='dizzy'){if(h.t<=0){h.st='walk';h.t=1}}
+    else if(d<F_.penguinCurious&&d>2.2&&(h.peek=(h.peek??Math.random()*6)-dt)>-3){vx=dx/d*F_.penguinWalk*.8;vz=dz/d*F_.penguinWalk*.8;f=to}
+    else{if(h.peek<=-3)h.peek=4+Math.random()*6;[vx,vz,f]=d<=2.2?[0,0,to]:wander(F_.penguinWalk*.7)}}
+  else if(h.kind==='penguin'){h.t-=dt;if((h.angry-=dt)<=0&&h.st==='walk'){h.angry=0;h.st='walk'}
     if(h.st==='walk'){if(d<F_.penguinSight){vx=dx/d*F_.penguinWalk;vz=dz/d*F_.penguinWalk;f=to}else{[vx,vz,f]=wander(F_.penguinWalk)}
       if(h.t<=0&&d<F_.penguinSight){h.st='windup';h.t=F_.penguinWindup;f=to;SFX.squawk()}}
     else if(h.st==='windup'){f=to;if(h.t<=0){h.st='slide';h.t=F_.penguinSlide;vx=Math.sin(f)*F_.penguinSlideSpeed;vz=Math.cos(f)*F_.penguinSlideSpeed;SFX.whoosh()}}
@@ -92,6 +97,7 @@ function foeAnim(h,dt){if(!h.m)return;const m=h.m,t=tAll+(h.ph||(h.ph=Math.rando
   if(h.kind==='goon'){m.body.rotation.z=Math.sin(t*7)*Math.min(.14,sp*.06);m.body.position.y=Math.abs(Math.sin(t*7))*Math.min(.08,sp*.03);
     const th=h.throwT||0;m.arms[1].rotation.x=th>0?(th>.18?.9:-1.6):Math.sin(t*2)*.1;m.arms[0].rotation.x=Math.sin(t*2+1)*.1;m.head.rotation.z=Math.sin(t*1.3)*.08}
   else if(h.kind==='penguin'){const sl=h.st==='slide';m.body.rotation.x+=((sl?1.45:0)-m.body.rotation.x)*Math.min(1,dt*12);m.body.position.y=sl?.36:.55;
+    if(m.brows){const ang=!!h.angry;m.brows.forEach(b=>{b.rotation.z=b.side_*(ang?.45:-.15);b.position.y=ang?.15:.17});m.cheeks.forEach(c=>c.visible=ang)}
     m.excl.visible=h.st==='windup';if(m.excl.visible)m.excl.position.y=1.65+Math.sin(t*14)*.05;
     const flap=h.st==='windup'?Math.sin(t*30)*.6:sl?-.9:Math.sin(t*8)*Math.min(.3,sp*.15);m.flips.forEach((f,i)=>f.rotation.z=(i?1:-1)*(.2+Math.abs(flap)));
     m.body.rotation.z=h.st==='walk'?Math.sin(t*9)*Math.min(.15,sp*.1):h.st==='dizzy'?Math.sin(t*6)*.25:0;
@@ -100,7 +106,7 @@ function foeAnim(h,dt){if(!h.m)return;const m=h.m,t=tAll+(h.ph||(h.ph=Math.rando
     m.body.position.y=.42+(air?Math.sin(ph*PI)*.45:0);m.body.scale.set(1,air?1.08:.92+Math.abs(Math.sin(t*3))*.05,1);
     m.body.rotation.z=Math.sin(t*5)*.1;m.bag.visible=h.st==='flee'||(h.mine||0)>0}}
 // ----- contact with the local player -----
-function foeHit(h){return attackHits(h.g.position,foeBase(h))||!!h.sbHit}
+function foeHit(h){if((h.hurtT||0)>0){h.sbHit=false;return false}return attackHits(h.g.position,foeBase(h))||!!h.sbHit}
 function foeStomp(h){if(h.kind==='spike'||grounded||vy>-1)return false;const p=h.g.position,k=FOE[h.kind],b=foeBase(h);
   return Math.hypot(p.x-P.position.x,p.z-P.position.z)<k.r+.15&&py>=b+k.top-.5&&py<=b+k.top+.8}
 // 'hurt', 'steal' or null
@@ -108,7 +114,7 @@ function foeTouch(h){const p=h.g.position,k=FOE[h.kind],b=foeBase(h),d=Math.hypo
   if(h.kind==='spike')return d<1.2&&Math.abs(py-b)<1?'hurt':null;
   if(d>k.r||py>b+k.top-.4||py<b-1)return null;
   if(h.kind==='imp')return(h.robbed||0)>0||h.st==='flee'?null:'steal';
-  if(h.kind==='penguin'&&h.st==='dizzy')return null;return'hurt'}
+  if(h.kind==='penguin'&&(h.st==='dizzy'||!h.angry))return null;return'hurt'}   // calm penguins are harmless
 function impSteal(h){const n=Math.min(T.foes.impSteals,mode==='run'?SB.ammo:0);if(mode==='run'){SB.ammo-=n;snowHud()}
   h.mine=(h.mine||0)+n;h.robbed=4;h.st='flee';h.t=T.foes.impFleeTime;
   const p=h.g.position,dx=P.position.x-p.x,dz=P.position.z-p.z,d=Math.hypot(dx,dz)||1;vel.x+=dx/d*6;vel.z+=dz/d*6;
@@ -128,6 +134,13 @@ function killFoe(h,how){foeFx(h);
   if(mode==='run'&&h.kind==='goon')snowmanSnow();   // the Winter Crew's snowman: snowballs for you
   if((h.mine||0)>0){SB.ammo=Math.min(T.snow.ammo,SB.ammo+h.mine);snowHud();snowFlash('gain');toast(`Got your snowball${h.mine>1?'s':''} back!`);h.mine=0}}
 function smashSnd(){SFX.hit()}
+// hitting a calm penguin doesn't take it out: it reels, gets angry and calls its friends. Returns true if it survived.
+function angerPenguin(h,how){if(h.kind!=='penguin'||h.angry)return false;const F_=T.foes,p=h.g.position;
+  if(how==='stomp'){vy=T.foes.stompBounce;grounded=false;stand=null;if(chars[ci].acro){A.mode='jump';A.jumpN=0;A.canCut=true;A.canDive=true}SFX.stomp()}
+  else{ATK.hits++;hitStop=.05;shake=Math.max(shake,.12);SFX.hit()}
+  const dx=p.x-P.position.x,dz=p.z-P.position.z,d=Math.hypot(dx,dz)||1;h.vx=dx/d*4;h.vz=dz/d*4;h.sbHit=false;h.hurtT=.7;
+  for(const o of runHz)if(o.kind==='penguin'&&!o.dead&&(o===h||Math.hypot(o.g.position.x-p.x,o.g.position.z-p.z)<F_.penguinCall)){o.angry=F_.penguinGrudge;if(o!==h&&o.st!=='dizzy'){o.st='walk';o.t=.3}}
+  h.st='dizzy';h.t=F_.penguinDizzy;SFX.squawk();burst(V(p.x,p.y+1.2,p.z),0xff5a5a,6);if(mode==='run')toast('You made the penguins angry!');return true}
 // snowballs vs enemies
 function hitsFoe(h,p){const g=h.g.position;if(h.kind==='spike')return Math.hypot(g.x-p.x,g.z-p.z)<1.05&&p.y<g.y+1.5&&p.y>g.y-1;
   const k=FOE[h.kind];return Math.hypot(g.x-p.x,g.z-p.z)<k.r*.8+.25&&p.y<g.y+k.top+.15&&p.y>g.y-.2}

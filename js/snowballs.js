@@ -53,7 +53,7 @@ function updateSnow(dt){
       // snowmen
       if(!gone)for(const s of snowmen())if(s.up&&Math.hypot(s.x-p.x,s.z-p.z)<.85&&p.y<2.5){knockSnowman(s);splat(p,true);gone=true;break}
       // other players: splat for show; the hit only counts once they confirm it
-      if(!gone&&(botCatch(p,b)||raceCatch(p,b)||cpuCatch(p,b))){splat(p,true,b.yellow);gone=true}
+      if(!gone&&(botCatch(p,b)||raceCatch(p,b)||tagCatch(p,b)||cpuCatch(p,b))){splat(p,true,b.yellow);gone=true}
       if(!gone)for(const a of MP.av.values()){const g=a.g.position;if(Math.hypot(g.x-p.x,g.z-p.z)<.75&&p.y>g.y&&p.y<g.y+2.1){splat(p,true);gone=true;break}}
     }else if(!gone&&!b.chunk){
       if(Math.hypot(P.position.x-p.x,P.position.z-p.z)<.75&&p.y>py&&p.y<py+2.1){hitMe(b.owner,b.id,p.x-b.vx*.05,p.z-b.vz*.05,b.yellow);gone=true}

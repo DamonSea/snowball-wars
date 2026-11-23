@@ -280,3 +280,4 @@ body.setopen #moves{visibility:hidden}
 @media (max-width:700px){.warsboard{top:auto;bottom:150px;right:8px;min-width:170px;font-size:12px}}
 #ov.wres .ktip,#ov.wres #best,#ov.wres #padInfo{display:none}
 .warsboard .wbr.nohp{grid-template-columns:1fr 60px}
+.warsboard .itdot{font-style:normal;background:#e8252e;color:#fff;border-radius:6px;padding:0 5px;font-size:11px;font-weight:900;margin-right:2px}

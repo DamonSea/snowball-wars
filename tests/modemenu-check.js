@@ -5,7 +5,7 @@ const click=t=>[...document.querySelectorAll('#ov button')].find(b=>b.textConten
 menu();pickMode='run';pickLevel=0;ci=2;showChar();confirmChar();__step(10);
 const sp=runL.spad;__place(sp.x,sp.z,0,0);__step(60);
 ok('standing on the PLAY pad opens the mode menu',state==='paused'&&$('ovT').textContent==='Choose a mode');
-ok('choices: '+btns().join(', '),btns().join('|')==='Orb Race|Snowball Wars|Cancel');
+ok('choices: '+btns().join(', '),btns().join('|')==='Orb Race|Snowball Wars|Tag|Cancel');
 ok('it explains both modes',/Orb Race · 60 seconds/.test($('ovP').textContent)&&/Snowball Wars · 3-minute/.test($('ovP').textContent));
 click('Cancel');__step(60);ok('Cancel: back to playing, and it won\'t reopen while you stay on the pad',state==='play'&&runFree&&!WAR.on);
 __place(sp.x+5,sp.z,0,0);__step(5);__place(sp.x,sp.z,0,0);__step(60);ok('step off and back on: it opens again',state==='paused'&&$('ovT').textContent==='Choose a mode');
@@ -17,9 +17,9 @@ pause();[...document.querySelectorAll('#ov button')].find(b=>b.textContent==='En
 __place(sp.x+6,sp.z+2,0,0);__step(5);press('start');__step(2);ok('△ / Enter opens the same menu',state==='paused'&&$('ovT').textContent==='Choose a mode');
 press('pause');__step(2);ok('Esc / Options / ○ cancels',state==='play');
 // pause menu uses the mode names
-pause();ok('free roam pause: '+btns().join(', '),btns().join('|')==='Resume|Orb Race|Snowball Wars|Moves|Settings|Quit to menu');resume();
+pause();ok('free roam pause: '+btns().join(', '),btns().join('|')==='Resume|Orb Race|Snowball Wars|Tag|Moves|Settings|Quit to menu');resume();
 ok('pad sign and controls card use the new wording',/PLAY pad/.test($('ctlList').textContent)&&/Choose a mode/.test($('ctlList').textContent));
 // on a map without a PLAY pad, the button goes straight to Snowball Wars
-openBuilder(blankMap());BLD.map.opt={enemies:1,orbs:0,flags:0};changed();testBuilder();__step(5);press('start');__step(2);ok('only one mode on offer: it just starts',WAR.on&&state==='play');
+openBuilder(blankMap());BLD.map.opt={enemies:1,orbs:0,flags:0};changed();testBuilder();__step(5);press('start');__step(2);ok('no PLAY pad: the menu offers Snowball Wars and Tag',state==='paused'&&btns().join('|')==='Snowball Wars|Tag|Cancel');click('Tag');__step(3);ok('...and Tag starts',TAG.on);
 pause();backToBuilder();__step(2);exitBuilder();
 menu();__step=_st;return out.join('\n')})()

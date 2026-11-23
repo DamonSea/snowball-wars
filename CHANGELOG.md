@@ -3,6 +3,20 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.22.0] - 2026-11-23 — Tag, and friendly penguins
+### Added
+- **Tag**, a third Trick Park mode (PLAY pad or pause menu → Tag). A 2-minute round: whoever's It wears an "IT!"
+  sign; touch someone to pass it on. No tag-backs for 2 seconds, and a new It counts for 1.5 seconds before they
+  can tag. The scoreboard tracks each player's time as It, and least time wins. Snowballs stun whoever you hit.
+  - Solo: Sleet, Flurry and Drift play. When It they chase and hop up low ledges after you (up to ~4 high, so the
+    tallest rooftops are a real refuge); otherwise they run from the It.
+  - With friends: players only, and starting a game pulls everyone on the map in; tags travel through presence.
+### Changed
+- **Penguins are friendly until you attack them.** Calm penguins waddle about, sometimes come over to look at
+  you, never charge and are harmless to bump into. Hit one (punch, kick, snowball or stomp) and instead of going
+  down it reels, gets angry (scowl and red cheeks), and squawks: penguins within 9 units join in. Angry penguins
+  charge like before; a second hit takes one out. They calm down after 25 seconds.
+
 ## [2.21.2] - 2026-11-23 — Snowmen drop snowballs
 ### Added
 - **Knocking down a snowman gives you 2 snowballs**, up to a full load. This works for the target snowmen in every

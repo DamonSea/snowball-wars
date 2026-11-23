@@ -86,7 +86,7 @@ function raceUpdate(dt){
   if(RACE.on&&(mode!=='run'||runFree||state==='menu'||state==='select'||state==='build')){raceStop();return}
   hostSpills();
   // a friend on this map started an orb run: join it
-  if(!RACE.on&&!WAR.on&&mode==='run'&&runFree&&runL.spad&&state==='play'&&MP.room&&(RACE.tick+=dt)>.5){RACE.tick=0;
+  if(!RACE.on&&!WAR.on&&!TAG.on&&mode==='run'&&runFree&&runL.spad&&state==='play'&&MP.room&&(RACE.tick+=dt)>.5){RACE.tick=0;
     for(const p of warPeers()){const w=p.presence.or;if(Array.isArray(w)&&typeof w[0]==='string'&&w[0].length<40&&!RACE.done.has(w[0])&&Number.isFinite(w[1])&&w[1]>8){
       beginTimed({id:w[0],time:Math.min(T.run.time,w[1]),by:nameOf(p)});break}}}
   if(!RACE.on||state!=='play')return;

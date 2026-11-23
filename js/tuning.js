@@ -40,7 +40,7 @@ const T={
           'Snowman Down':150,'Direct Hit':200,'Ground Pound':100,'Pound Jump':150,'Ledge Climb':50,'Ledge Hop':75,'Hand Over Hand':200,'Bounce':50,'Super Bounce':200,'Snow Angel':100,'Bowled Over':200,'Giant Snowball':250,'Yellow Snow':25,'Stomp':150,'Yellow Snowball':300,'Pole Leap':75,'Pole-top Flip':250},
   run:{time:60,goldEvery:6,goldValue:300,goldBonusTime:5,groundOrb:100,orbsOnField:7,
        hazardSpeed:3.4,hazardSpeedUp:.035,hazardsFree:2,hazardsStart:3,hazardsMax:7,hazardEvery:15,smashRespawn:3.5},
-  foes:{goonSight:16,goonKeep:9,goonSpeed:1.7,goonEvery:2.8,penguinSight:18,penguinWalk:1.3,penguinWindup:.75,penguinSlide:1.5,penguinSlideSpeed:11,penguinDizzy:1.4,penguinRest:2.5,
+  foes:{goonSight:16,goonKeep:9,goonSpeed:1.7,goonEvery:2.8,penguinSight:18,penguinCurious:9,penguinCall:9,penguinGrudge:25,penguinWalk:1.3,penguinWindup:.75,penguinSlide:1.5,penguinSlideSpeed:11,penguinDizzy:1.4,penguinRest:2.5,
         impSight:20,impSpeed:5.5,impHopEvery:.5,impHopTime:.3,impFlee:6.5,impFleeTime:4,impSteals:2,stompBounce:11},
   yellow:{tank:4,refill:30,rate:45,speed:4.2,lift:2.2,gravity:14,walk:2.2,finish:.45,sessionLife:40,maxSessions:6,maxMarks:350},
   pound:{minHeight:1.2,spin:.28,fall:30,recover:.3,radius:3.2,jumpVy:17},
@@ -57,6 +57,9 @@ const T={
   // computer players when alone, snow piles (count, radius, seconds per snowball), and a slow trickle (s per snowball)
   // Orb Race: a snowball hit knocks up to `spill` points loose as orbs worth `spillOrb` each; rival walking speed
   race:{spill:200,spillOrb:100,botSpeed:5.4},
+  // Tag: round length, the new It's count before it can tag, no-tag-back time, touch reach, computer players and
+  // their chase / flee speeds, and how high they can hop after you
+  tag:{time:120,count:1.5,noBack:2,reach:1.3,bots:3,chase:8.6,flee:7.2,hopMax:4.2},
   wars:{time:180,hp:3,hit:100,trick:200,ko:250,respawn:2.5,invuln:2.5,bots:3,piles:4,pileR:1.7,pileRate:.25,regen:3},
   camera:{height:10.5,back:13,autoTurn:2.6}   // autoTurn: Free + auto's turn speed (rad/s) when running fully sideways
 };

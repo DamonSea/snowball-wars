@@ -18,7 +18,7 @@ const fmtClock=s=>{s=Math.max(0,Math.ceil(s));return Math.floor(s/60)+':'+String
 
 // ---------- start / stop ----------
 const warPeers=()=>MP.room?MP.room.peers().filter(p=>!p.sameTab&&p.presence&&Array.isArray(p.presence.p)):[];
-function canWar(){return mode==='run'&&runFree&&!(FR.on&&!FR.done)&&(state==='play'||state==='paused')}
+function canWar(){return mode==='run'&&runFree&&!(FR.on&&!FR.done)&&!TAG.on&&(state==='play'||state==='paused')}
 function startWars(o={}){if(!canWar()&&!WAR.on)return;if(WAR.on)warsStop(false);
   if(state==='paused'){state='play';overlay(false)}
   const W=T.wars;Object.assign(WAR,{on:true,id:o.id||(MP.me?MP.me.slice(-4):'s')+'-'+Date.now().toString(36),t:o.time||W.time,cd:o.time?1.2:3,hp:W.hp,score:0,hits:0,kos:0,downs:0,out:0,inv:0,refill:0,regen:0,by:o.by||'',lastBy:''});

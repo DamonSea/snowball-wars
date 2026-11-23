@@ -121,6 +121,11 @@ needs Flip's or Nova's full moveset (and guard rails help).
 - **Settings** in three tabs: **Game** (camera: Classic, Behind you, Free or Free + auto; graphics quality, performance stats, season, snowfall, side flip style, ledge hang, squash & stretch, yellow snow, enemies, computer player), **Sound** (volume mix and a style for every sound) and **Controls** (rebind anything).
 - **Graphics: Auto** adjusts render resolution to hold a smooth frame rate (or pick High, Balanced or Low). Press **`** (backtick) for a performance overlay: fps, frame time, draw calls and GPU memory.
 - **Pause** swings the camera round to face your character, who waves and idles beside the pause menu.
+- **Tag**: pick Tag on the PLAY pad. Whoever's It wears an IT! sign; touch someone to pass it on. Least time as It after 2 minutes wins. Snowballs stun the It.
+- **Friendly penguins**: they leave you alone until you hit one. Then it and its friends get angry.
+
+  ![Tag](media/tag.png)
+
 - **Christmas Village** (Trick Park map 5): a connected rooftop loop around a town square: climb the giant tree and flip onto the clock tower, wall-jump up Chimney Alley, long-jump to the pond island, and long-jump + dive off the sledding hill onto the rooftops.
 
   ![Christmas Village](media/christmas-village.png)
@@ -183,14 +188,15 @@ by files above it. Nothing is bundled.
 | 28 | `js/snowballs.js` | Snowball fights: throwing, ammo (refilled by orbs), snowmen, hits on players (Trick Park only) |
 | 29 | `js/wars.js` | Snowball Wars mode: matches, hearts, scoring, snow piles, computer players |
 | 30 | `js/orbrace.js` | Orb Race: shared runs with friends, knocked-loose orbs, computer rivals |
-| 31 | `js/yellowsnow.js` | Yellow snow: hold-to-spray stream that marks the snow, yellow snowballs (Settings → Yellow snow) |
-| 32 | `js/winterfun.js` | Snow angels and rolling snowballs that grow |
-| 33 | `js/cpu.js` | Computer player for Trick Park (Settings → Computer player) |
-| 34 | `js/builder/maps.js` | Map Builder asset library, map cleaning, and turning a saved map into a playable Trick Park map |
-| 35 | `js/builder/editor.js` | Map Builder editor: top-down camera, placing, selecting, dragging, inspector, undo, test play |
-| 36 | `js/builder/community.js` | Drafts, publishing to the shared map list, More maps panel, export and import |
-| 37 | `js/qol.js` | Hold to respawn / restart, Stop orb run, Moves list in the pause menu |
-| 38 | `js/main.js` | Startup |
+| 31 | `js/tag.js` | Tag mode: It passing, no tag-backs, time-as-It scoring, computer players |
+| 32 | `js/yellowsnow.js` | Yellow snow: hold-to-spray stream that marks the snow, yellow snowballs (Settings → Yellow snow) |
+| 33 | `js/winterfun.js` | Snow angels and rolling snowballs that grow |
+| 34 | `js/cpu.js` | Computer player for Trick Park (Settings → Computer player) |
+| 35 | `js/builder/maps.js` | Map Builder asset library, map cleaning, and turning a saved map into a playable Trick Park map |
+| 36 | `js/builder/editor.js` | Map Builder editor: top-down camera, placing, selecting, dragging, inspector, undo, test play |
+| 37 | `js/builder/community.js` | Drafts, publishing to the shared map list, More maps panel, export and import |
+| 38 | `js/qol.js` | Hold to respawn / restart, Stop orb run, Moves list in the pause menu |
+| 39 | `js/main.js` | Startup |
 
 ## Tests
 

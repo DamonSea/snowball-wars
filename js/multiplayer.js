@@ -37,10 +37,11 @@ function makeAv(ch){const g=new THREE.Group();scene.add(g);
   return{g,rig,ch,of:-1,tc,tt,tag,kc,kt,trick,txt:'',tn:null,tt0:0,init:false,lx:0,lz:0}}
 function dropAv(a){freeTree(a.g)}
 function clearAv(){MP.av.forEach(dropAv);MP.av.clear()}
+// name tag over a player: sc is a score, or a string shown as-is (Tag: time as It)
 function drawTag(a,name,sc,free){const t=name+'|'+sc+'|'+free;if(t===a.txt)return;a.txt=t;const x=a.tc.getContext('2d');x.clearRect(0,0,320,96);
   x.fillStyle='rgba(10,32,46,.82)';x.beginPath();x.roundRect?x.roundRect(10,6,300,84,22):x.rect(10,6,300,84);x.fill();
   x.textAlign='center';x.textBaseline='middle';x.fillStyle='#fff8e8';x.font='800 34px "Baloo 2", system-ui, sans-serif';x.fillText(name.slice(0,16),160,36);
-  x.fillStyle=free?'#9fb3bf':'#ffd84a';x.font='700 24px "Baloo 2", system-ui, sans-serif';x.fillText(free?`practice · ${sc}`:`score ${sc}`,160,70);a.tt.needsUpdate=true}
+  x.fillStyle=free?'#9fb3bf':'#ffd84a';x.font='700 24px "Baloo 2", system-ui, sans-serif';x.fillText(typeof sc==='string'?sc:free?`practice · ${sc}`:`score ${sc}`,160,70);a.tt.needsUpdate=true}
 function showTrickTag(a,s){const x=a.kc.getContext('2d');x.clearRect(0,0,320,72);x.textAlign='center';x.textBaseline='middle';x.font='800 36px "Baloo 2", system-ui, sans-serif';
   x.lineWidth=6;x.strokeStyle='rgba(60,30,0,.9)';x.strokeText(s,160,36);x.fillStyle='#ffd84a';x.fillText(s,160,36);a.kt.needsUpdate=true;a.tt0=1.3}
 function poseOf(){if(ci===0)return[body.position.y,body.rotation.x,body.rotation.y,body.rotation.z,feet[0].position.z,feet[1].position.z].map(f2);
@@ -81,7 +82,7 @@ function wantRoom(){return MP.on&&mode==='run'&&(state==='play'||state==='paused
 // A map's "room" is a filtered view of the lobby: everyone whose lobby presence says they're on the same map.
 // (Named rooms can be refused for some viewers, e.g. people invited from outside your account, which left
 // players able to see each other in the lobby but never meet on the map.)
-const GAME_KEYS=['wm','or','sp','ch','of','lk','p','q','sc','fr','t','c','sb','hb','yw','z','H'];
+const GAME_KEYS=['wm','or','sp','tm','ch','of','lk','p','q','sc','fr','t','c','sb','hb','yw','z','H'];
 function mapView(want){const L=MP.lobby,w='p'+want.slice(3);
   return{name:want,peers:()=>L.peers().filter(p=>p.sameTab||(p.presence&&p.presence.w===w)),
     presence:pr=>L.presence(Object.assign({},pr,{w,nm:MP.myName||'Player'})).then(()=>{MP.err=''},e=>{MP.err=(e&&e.code)||'error';lobbyUI();throw e}),
@@ -107,7 +108,7 @@ function mpFrame(dt){
   const want=wantRoom();if(want!==MP.roomName&&!MP.joining&&now>MP.retryAt)switchRoom(want);
   electHost();updAvatars(dt);
   if(MP.room&&now-MP.lastSend>50){MP.lastSend=now;
-    const pr={nm:MP.myName||'Player',ch:ci,of:OFI[ci]??0,lk:LOOKS[ci]||null,p:[P.position.x,py,P.position.z,face].map(f2),q:poseOf(),sc:score,fr:runFree?1:0,t:[MP.tr.n,MP.tr.s],c:[MP.cl.n,MP.cl.o,MP.cl.k],sb:SB.sent,hb:SB.hits,yw:YS.spray?1:0,z:SB.stun>0?1:0,H:null,wm:WAR.on?[WAR.id,Math.round(WAR.t),WAR.out>0?0:WAR.hp]:null,or:raceLive()?[RACE.id,Math.round(time)]:null,sp:RACE.sp.length?RACE.sp:null};
+    const pr={nm:MP.myName||'Player',ch:ci,of:OFI[ci]??0,lk:LOOKS[ci]||null,p:[P.position.x,py,P.position.z,face].map(f2),q:poseOf(),sc:score,fr:runFree?1:0,t:[MP.tr.n,MP.tr.s],c:[MP.cl.n,MP.cl.o,MP.cl.k],sb:SB.sent,hb:SB.hits,yw:YS.spray?1:0,z:SB.stun>0?1:0,H:null,wm:WAR.on?[WAR.id,Math.round(WAR.t),WAR.out>0?0:WAR.hp]:null,or:raceLive()?[RACE.id,Math.round(time)]:null,sp:RACE.sp.length?RACE.sp:null,tm:TAG.on?[TAG.id,Math.round(TAG.t),+(TAG.itT.me||0).toFixed(1),TAG.it==='me'?1:0,TAG.last]:null};
     if(MP.host)pr.H={o:orbs.map(o=>[o.id,f2(o.g.position.x),f2(o.y),f2(o.g.position.z),o.gold?1:0,o.v,o.ring.visible?0:1,o.beam?1:0]),h:runHz.filter(h=>!h.dead).map(h=>[h.id,f2(h.g.position.x),f2(h.g.position.z),KINDS.indexOf(h.kind),Math.max(0,FSTATES.indexOf(h.st)),f2(h.face||0)]),g:FX.sent};
     MP.room.presence(pr).catch(()=>{})}
   if(now-MP.lastList>250){MP.lastList=now;mpList()}

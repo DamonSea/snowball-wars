@@ -10,10 +10,12 @@ const fmt=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
 const level=()=>Math.floor(score/5);
 
 function hud(){
-  if(mode==='run'&&typeof WAR!=='undefined'&&WAR.on){$('k1').textContent='Score';$('v1').textContent=WAR.score;$('v2').textContent=WAR.cd>0?'Ready':fmtClock(WAR.t);$('v2').classList.toggle('low',!WAR.cd&&WAR.t<15);lives=WAR.out>0?0:WAR.hp}
+  if(mode==='run'&&typeof TAG!=='undefined'&&TAG.on){$('k1').textContent=TAG.it==='me'?'You\u2019re It':'It time';$('v1').textContent=(TAG.itT.me||0).toFixed(0)+'s';$('v2').textContent=TAG.cd>0?'Ready':fmtClock(TAG.t);$('v2').classList.toggle('low',!TAG.cd&&TAG.t<15)}
+  else if(mode==='run'&&typeof WAR!=='undefined'&&WAR.on){$('k1').textContent='Score';$('v1').textContent=WAR.score;$('v2').textContent=WAR.cd>0?'Ready':fmtClock(WAR.t);$('v2').classList.toggle('low',!WAR.cd&&WAR.t<15);lives=WAR.out>0?0:WAR.hp}
   else if(mode==='run'){$('k1').textContent=runFree?'Practice':'Score';$('v1').textContent=score;$('v2').textContent=runFree?(typeof FR!=='undefined'&&FR.on?fmtRace(FR.t):'Free'):runCD>0?'Ready':Math.ceil(time);$('v2').classList.toggle('low',!runFree&&!runCD&&time<10)}
   else{$('k1').textContent='Cores';$('v1').textContent=`${coreCount}/3`;$('v2').textContent=fmt(atime);$('v2').classList.remove('low')}
   {const sb=$('snowBox');if(sb){sb.style.display=mode==='run'&&state!=='menu'&&state!=='select'?'':'none';snowHud()}}
+  {const lb=$('lv')&&$('lv').parentElement;if(lb)lb.style.display=mode==='run'&&typeof TAG!=='undefined'&&TAG.on?'none':''}
   {const k=$('lvK');if(k)k.textContent=mode==='run'&&typeof WAR!=='undefined'&&WAR.on?'Hearts':'Lives'}
   $('lv').innerHTML=[0,1,2].map(i=>`<i class="${i<lives?'':'off'}"></i>`).join('');
   $('mname').textContent=state==='menu'?'':mode==='run'?runL.name:'Adventure';
@@ -74,11 +76,13 @@ function pause(){if(state!=='play')return;state='paused';wave=1.6;idleT=0;showPa
 // one vertical column: Resume, then this mode's actions, then Moves, Settings and Quit (the character waves on the left)
 function showPause(){const quit=BLD.testing?['Back to builder',()=>backToBuilder()]:['Quit to menu',()=>menu()],tail=[['Moves',()=>openMoves()],['Settings',()=>openSet()],quit];
   let title,line='',acts;
-  if(mode==='run'&&WAR.on){title='Snowball Wars';const st=standings(),pl=st.findIndex(r=>r.me)+1;line=`Score ${WAR.score} \u00b7 ${pl}${['st','nd','rd'][pl-1]||'th'} of ${st.length} \u00b7 ${fmtClock(WAR.t)} left`;
+  if(mode==='run'&&TAG.on){title='Tag';const st=tagRows(),pl=st.findIndex(r=>r.me)+1;line=`${TAG.it==='me'?'You\u2019re It \u00b7 ':''}${(TAG.itT.me||0).toFixed(1)}s as It \u00b7 ${pl}${['st','nd','rd'][pl-1]||'th'} of ${st.length} \u00b7 ${fmtClock(TAG.t)} left`;
+    acts=[['Restart tag',()=>{resume();startTag()}],['End tag',()=>{resume();tagStop(true);toast('Tag ended.')}]]}
+  else if(mode==='run'&&WAR.on){title='Snowball Wars';const st=standings(),pl=st.findIndex(r=>r.me)+1;line=`Score ${WAR.score} \u00b7 ${pl}${['st','nd','rd'][pl-1]||'th'} of ${st.length} \u00b7 ${fmtClock(WAR.t)} left`;
     acts=[['Restart match',()=>{resume();startWars()}],['End match',()=>{resume();warsStop(true);toast('Match ended.')}]]}
   else if(mode==='run'&&runFree){const race=FR.on&&!FR.done,b=FR.on?raceBest():null;title=FR.on?'Flag race':runL.custom?runL.name:'Trick Park';
     if(FR.on)line=FR.done?'Finished! Keep exploring, or race again.':`Race time ${fmtRace(FR.t)}${b?' · best '+fmtRace(b):''} · checkpoints ${FR.reached}/${runL.cps.length}`;
-    acts=[runL.spad?['Orb Race',()=>{resume();beginTimed()}]:null,canWar()?['Snowball Wars',()=>{resume();startWars()}]:null,race&&FR.reached?['Last checkpoint',()=>{resume();frRespawn()}]:null,FR.on?['Restart race',()=>startRun(true)]:null].filter(Boolean)}
+    acts=[runL.spad?['Orb Race',()=>{resume();beginTimed()}]:null,canWar()?['Snowball Wars',()=>{resume();startWars()}]:null,canTag()?['Tag',()=>{resume();startTag()}]:null,race&&FR.reached?['Last checkpoint',()=>{resume();frRespawn()}]:null,FR.on?['Restart race',()=>startRun(true)]:null].filter(Boolean)}
   else if(mode==='run'){title='Orb run';line=`Score ${score} · ${Math.ceil(time)}s left`;acts=[['Restart orb run',()=>{resume();quickRetry()}],['Stop orb run',()=>{resume();stopOrbRun()}]]}
   else{title=curL.name;line=`${fmt(atime)} \u00b7 ${coreCount}/3 cores`;acts=[['Retry',retry]]}
   const B=[['Resume',resume],...acts,...tail],g=k=>B[k]||['',null];
