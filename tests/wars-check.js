@@ -16,11 +16,13 @@ const b=WAR.bots[0];b.inv=0;b.stun=0;b.hp=3;const s0=WAR.score;at(b);ok('hit a c
 b.stun=0;b.inv=0;const id=SB.seq+1;SB.trickIds.add(id);launchSnowball([b.x,b.y+1.1,b.z,.01,0,0],true,null,id);SB.seq=id;__step(2);ok('trick shot: +200',WAR.score===s0+300&&b.hp===1);
 b.stun=0;b.inv=0;at(b);ok('last heart: KO bonus (+100 +250), it drops out',WAR.score===s0+650&&b.out>0&&WAR.kos===1);
 at(b);ok('can\'t hit someone who is knocked out',WAR.score===s0+650);
+__step(40);ok('knocked-out bot stays visible, flat on its back',b.a.g.visible&&b.a.rig.hp.rotation.x<-1.3&&b.a.stars.visible);
 __step(Math.ceil(T.wars.respawn*60)+5);ok('it respawns with full hearts, blinking',b.out<=0&&b.hp===3&&b.inv>0);
 // getting hit (computer players held still so the checks are exact)
 const hold=()=>WAR.bots.forEach(q=>{q.cool=99});hold();WAR.hp=3;WAR.inv=0;WAR.out=0;SB.hitCool=0;const bot1=WAR.bots[1],bs=bot1.score;hitMe('bot1',1,P.position.x+1,P.position.z,false);ok('a computer player hits you: you lose a heart, it scores',WAR.hp===2&&bot1.score===bs+100&&lives===2);
 SB.hitCool=0;hitMe('bot1',2,P.position.x+1,P.position.z,false);SB.hitCool=0;hitMe('bot1',3,P.position.x+1,P.position.z,false);
 ok('third hit knocks you out (it gets the KO bonus)',WAR.out>0&&bot1.score===bs+300+250&&WAR.downs===1);
+__step(40);ok('you fall flat on your back (others see it too)',chars[ci].rig.hp.rotation.x<-1.3&&poseOf()[0]<-1.3&&P.visible);
 ok('your KO is reported to others with a flag',JSON.stringify(SB.hits[SB.hits.length-1])==='["bot1",3,1]');
 SB.ammo=6;throwSnow();ok('can\'t throw while knocked out',SB.ammo===6);
 SB.hitCool=0;hitMe('bot1',4,0,0,false);ok('no hits while you\'re down',WAR.hp===0&&bot1.score===bs+550);

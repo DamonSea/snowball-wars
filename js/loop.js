@@ -160,6 +160,8 @@ function tick(){
     // squash and stretch
     const st=air&&vy>0?1+Math.min(vy/70,.13):1,sy=(1-.26*squash*squash)*st,sxz=1/Math.sqrt(sy);
     if(playingToon())toonScale(H.root,dt,air,m,tookOff,[sxz,sy,sxz]);else{TS.delete(H.root);L(H.root.scale,'y',sy,.5);L(H.root.scale,'x',sxz,.5);L(H.root.scale,'z',sxz,.5)}
+    // Snowball Wars knockout: flat on your back until you respawn
+    if(playing&&typeof WAR!=='undefined'&&WAR.on&&WAR.out>0){applyPose({rig:H},KO_Q,koBlend(T.wars.respawn-WAR.out));koStars(myStars,P.position.x,py,P.position.z,face,dt)}
     if(H.accA&&H.accA.length)accFrame(H,dt,sp,air,dvL);
     if(H.ears)tukPhysics(H,dt,dvL,sp,air,idleT>1.5&&state!=='menu');
     if(H.tails)vexPhysics(H,dt,dvL,sp,air,run,ph,bank,idleT>1.2&&state!=='menu');
@@ -172,7 +174,7 @@ function tick(){
         L(g.rotation,'z',Math.sin(tAll*(3.5+sp*.4)-i*.8)*(.05+fl*.06)-bank*.5,.22)})}
     if(H.eyes){const b=tAll%3.7<.13?.12:1;H.eyes.forEach((e,i)=>L(e.scale,'y',(i%2?1:1.25)*b,.6))}
   }
-  P.visible=!(invuln>0&&state==='play'&&Math.floor(invuln*12)%2);
+  P.visible=!(invuln>0&&state==='play'&&Math.floor(invuln*12)%2)&&!(typeof WAR!=='undefined'&&WAR.on&&WAR.out>0&&WAR.out<=.3);
 
   orbs.forEach(o=>{o.t+=dt;o.m.position.y=1+Math.sin(o.t*2.4)*.2;o.m.rotation.y+=dt*1.8;if(!ORB_FLAT[ORB_SKIN])o.m.rotation.x+=dt*.9;const s=1+Math.sin(o.t*3)*.12;o.ring.scale.set(s,s,s)});
   cores.forEach(c=>{c.t+=dt;c.m.position.y=1.1+Math.sin(c.t*2)*.2;c.m.rotation.y+=dt*2});

@@ -36,7 +36,8 @@ function hitMe(owner,id,bx,bz,yel){
   dropCombo();CL.on=false;CL.top=false;
   const f=$('frost');f.classList.remove('on','yellow');void f.offsetWidth;f.classList.add('on');if(yel){f.classList.add('yellow');toast('Ew. Yellow snowball.')}
   splat(V(P.position.x,py+1.4,P.position.z),true);rumble(160,.4,.8);
-  const ko=WAR.on&&warsHitMe(owner);SB.hits.push(ko?[owner,id,1]:[owner,id]);if(SB.hits.length>6)SB.hits.shift();
+  const ko=WAR.on&&warsHitMe(owner);if(ko)face=Math.atan2(-dx,-dz);   // turn to face the throw, so the fall goes away from it
+SB.hits.push(ko?[owner,id,1]:[owner,id]);if(SB.hits.length>6)SB.hits.shift();
 }
 function updateSnow(dt){
   SB.stun=Math.max(0,SB.stun-dt);dizzy(myStars,SB.stun>0,P.position.x,py,P.position.z,dt);

@@ -3,6 +3,13 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.18.1] - 2026-11-23 — Knockouts fall flat
+### Changed
+- **Knockouts in Snowball Wars** no longer make people vanish. The knocked-out player turns to face the throw, gets
+  knocked back and falls flat on their back with arms and legs splayed and dizzy stars over their face. They lie
+  there for the knockout time, then disappear in a puff of snow and respawn somewhere else. Friends see your fall
+  too, since it's part of your shared pose.
+
 ## [2.18.0] - 2026-11-23 — Snowball Wars mode
 ### Added
 - **Snowball Wars**, a 3-minute free-for-all snowball fight in Trick Park (pause menu → Snowball Wars).
