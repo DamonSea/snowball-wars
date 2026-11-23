@@ -32,7 +32,8 @@ const GAP={from:null,take:null,wasSup:true,found:{}};
 function gapFound(){const k='orbRunGaps_'+runL.key;if(!GAP.found[k]){let a=[];try{a=JSON.parse(localStorage.getItem(k)||'[]')}catch(e){}GAP.found[k]=new Set(Array.isArray(a)?a:[])}return GAP.found[k]}
 const gapTotal=()=>runL.gaps?new Set(runL.gaps.map(g=>g.name)).size:0;
 const gapText=()=>runL.gaps?` Gaps found: ${gapFound().size}/${gapTotal()}.`:'';
-const inReg=(p,r)=>Math.abs(p.y-r.y)<.6&&Math.abs(p.x-r.x)<=r.w/2+.3&&Math.abs(p.z-r.z)<=r.d/2+.3;
+const inReg=(p,r)=>(r.y1!==undefined?p.y>r.y-.6&&p.y<r.y1+.6:Math.abs(p.y-r.y)<.6)&&   // y1: a sloped region (roofs) spans y..y1
+  Math.abs(p.x-r.x)<=r.w/2+.3&&Math.abs(p.z-r.z)<=r.d/2+.3;
 function trackGaps(){
   if(!runL.gaps)return;
   const sup=grounded||(CL.on&&CL.top),here={x:P.position.x,z:P.position.z,y:py};

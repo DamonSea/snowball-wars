@@ -3,6 +3,29 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.21.0] - 2026-11-23 — Christmas Village
+### Added
+- **Christmas Village**, a new Trick Park map built as one connected rooftop loop around a town square. Every jump
+  is sized from the measured moveset: ordinary hops 4-6 apart, long-jump gaps 9.5 (too far for a running jump), an
+  expert gap that needs a long jump *and* a dive, and heights chosen so each tier takes a specific move.
+  - **Giant Tree:** climb it and Tree-top Flip onto the Clock Tower's bell deck.
+  - **Clock Tower:** base deck (backflip / triple jump from the street, or from the rooftops), bell deck (backflip
+    from the base), and a star pole on top to climb and flip off for the sky orb.
+  - **Rooftop Row:** Gingerbread House and Toy Shop with pitched roofs. Run the ridges, hop between them, or
+    butt-slide down a roof and hop off the eave.
+  - **Santa's Workshop:** wall-jump up Chimney Alley (behind a giant wrapped present) or climb the candy cane and
+    flip; double-jump onto the chimney; Sleigh Drop onto the Clock Tower.
+  - **Sledding Hill:** snow terraces, a sled chute down into the square, and the Sky Sled: long jump + dive from
+    the summit onto the rooftops.
+  - **Frozen Pond:** skate it, or long-jump from the pier to the island (Ice Leap).
+  - **Market stalls** whose awnings chain round the square, candy-cane lamp posts you can climb, a reindeer stable,
+    snowmen, string lights and a sign on the workshop.
+  - 13 named gaps for combos and 23 orb spots placed along the routes (worth more the harder they are to reach).
+- **Sloped named-gap regions:** a gap can now land on a pitched roof (a height range instead of a single height).
+### Notes
+- The village merges its static decorations into one mesh per material, so it draws about as many objects
+  as the other maps despite the extra detail.
+
 ## [2.20.0] - 2026-11-23 — Choose a mode
 ### Changed
 - **The START pad is now the PLAY pad, and it asks which mode you want:** Orb Race or Snowball Wars (or Cancel),

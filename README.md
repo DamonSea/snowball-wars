@@ -121,6 +121,10 @@ needs Flip's or Nova's full moveset (and guard rails help).
 - **Settings** in three tabs: **Game** (camera: Classic, Behind you, Free or Free + auto; graphics quality, performance stats, season, snowfall, side flip style, ledge hang, squash & stretch, yellow snow, enemies, computer player), **Sound** (volume mix and a style for every sound) and **Controls** (rebind anything).
 - **Graphics: Auto** adjusts render resolution to hold a smooth frame rate (or pick High, Balanced or Low). Press **`** (backtick) for a performance overlay: fps, frame time, draw calls and GPU memory.
 - **Pause** swings the camera round to face your character, who waves and idles beside the pause menu.
+- **Christmas Village** (Trick Park map 5): a connected rooftop loop around a town square: climb the giant tree and flip onto the clock tower, wall-jump up Chimney Alley, long-jump to the pond island, and long-jump + dive off the sledding hill onto the rooftops.
+
+  ![Christmas Village](media/christmas-village.png)
+
 - **Orb Race**: the orb run is a race now. Friends on the map join the same run; a snowball hit knocks your points loose as orbs anyone can grab; solo, two computer rivals race you (Settings → Orb run rivals).
 
   ![Orb Race](media/orb-race.png)
