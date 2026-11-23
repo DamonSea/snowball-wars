@@ -3,8 +3,8 @@ const btns=()=>[...document.querySelectorAll('#ov .btns button')].filter(b=>b.te
 const click=t=>[...document.querySelectorAll('#ov button')].find(b=>b.textContent.replace(/[○✕]/g,'').trim()===t).click();
 menu();pickMode='run';pickLevel=0;ci=2;showChar();confirmChar();__step(10);
 // pause menu: modes moved into Games
-pause();ok('free roam pause: '+btns().join(', '),btns().join('|')==='Resume|Play|Moves|Settings|Quit to menu');
-click('Play');__step(2);ok('Play: '+btns().join(', '),$('ovT').textContent==='Play'&&btns().join('|')==='Orb Race|Snowball Wars|Tag|Back'&&/Orb Race/.test($('ovP').textContent));
+pause();ok('free roam pause: '+btns().join(', '),btns().join('|')==='Resume|Play|Change map|Moves|Settings|Quit to menu');
+click('Play');__step(2);ok('Play: '+btns().join(', '),$('ovT').textContent==='Play'&&btns().join('|')==='Collectathon|Snowball Wars|Tag|Back'&&/Collectathon/.test($('ovP').textContent));
 click('Back');__step(2);ok('Back returns to the pause menu',state==='paused'&&btns()[1]==='Play');
 click('Play');__step(2);press('pause');__step(2);ok('Esc / Options on Play goes back, not straight to the game',state==='paused'&&btns()[1]==='Play');
 press('pause');__step(2);ok('...and again closes the pause menu',state==='play');

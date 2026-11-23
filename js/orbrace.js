@@ -23,7 +23,7 @@ function raceRows(){const r=[{name:'You',n:orbN,me:1}];RACE.bots.forEach(b=>r.pu
   for(const p of warPeers()){const w=p.presence.or;if(Array.isArray(w)&&w[0]===RACE.id)r.push({name:nameOf(p),n:Number.isInteger(w[2])?w[2]:0})}
   return r.sort((a,b)=>b.n-a.n||(b.me?1:0)-(a.me?1:0))}
 function raceBoard(){const e=$('warsBoard');if(!e||!RACE.on)return;
-  e.innerHTML=`<div class="wbt">${runCD>0?'Orb race':fmtClock(time)}</div>`+raceRows().map(r=>`<div class="wbr nohp${r.me?' me':''}"><b>${warEsc(r.name)}</b><span class="orbct"><i class="orbic" aria-label="orbs"></i>${r.n}</span></div>`).join('')}
+  e.innerHTML=`<div class="wbt">${runCD>0?'Collectathon':fmtClock(time)}</div>`+raceRows().map(r=>`<div class="wbr nohp${r.me?' me':''}"><b>${warEsc(r.name)}</b><span class="orbct"><i class="orbic" aria-label="orbs"></i>${r.n}</span></div>`).join('')}
 // the end-of-run line ("1st of 3 · ...")
 function raceResult(){const rows=raceRows(),pl=rows.findIndex(r=>r.me)+1;return{place:pl,of:rows.length,
   text:`${pl===1?'You win the race!':`${pl}${['st','nd','rd'][pl-1]||'th'} of ${rows.length}.`} `+rows.filter(r=>!r.me).map(r=>`${r.name} ${r.n}`).join(', ')}}

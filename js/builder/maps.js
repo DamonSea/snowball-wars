@@ -24,7 +24,7 @@ const ASSETS={
   snowman:{label:'Snowman target',icon:'☃',cat:'Play',def:{},f:[],tip:'Knock it over for points'},
   roller:{label:'Rolling snowball',icon:'●',cat:'Play',def:{},f:[],tip:'Push it to roll it bigger'},
   spawn:{label:'Spawn point',icon:'◉',cat:'Play',def:{},f:[],tip:'Where players appear (one per map)',unique:true,required:true},
-  start:{label:'PLAY pad',icon:'▶',cat:'Objectives',def:{},f:[],tip:'Stand here to choose a mode: Orb Race or Snowball Wars',unique:true},
+  start:{label:'PLAY pad',icon:'▶',cat:'Objectives',def:{},f:[],tip:'Stand here to choose a mode: Collectathon, Snowball Wars or Tag',unique:true},
   checkpoint:{label:'Checkpoint flag',icon:'⚑',cat:'Objectives',def:{},f:[],tip:'Flag race: touch it to save your spot; you come back here'},
   finish:{label:'Finish flag',icon:'🏁',cat:'Objectives',def:{},f:[],tip:'Flag race: reach it to finish (one per map)',unique:true},
   tree:{label:'Tree',icon:'♣',cat:'Nature',def:{s:1},f:['s'],tip:'Climbable tree'},
@@ -33,7 +33,7 @@ const ASSETS={
 const num=(v,lo,hi,dflt)=>{v=+v;return Number.isFinite(v)?Math.max(lo,Math.min(hi,v)):dflt};
 const newMapId=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 // map settings: enemies on/off, the orb run (PLAY pad game) on/off, the flag race (checkpoints + finish) on/off
-const MAP_OPTS={enemies:['Enemies',1],orbs:['Orb run',1],flags:['Flag race',0]};
+const MAP_OPTS={enemies:['Enemies',1],orbs:['Collectathon',1],flags:['Flag race',0]};
 function blankMap(){return{v:1,id:newMapId(),name:'My map',author:'',opt:{enemies:1,orbs:1,flags:0},items:[{t:'spawn',x:0,z:16},{t:'start',x:0,z:10}]}}
 // make any map safe to build: known items only, numbers in range, inside the arena, one PLAY pad
 function cleanMap(m){const o={v:1,id:/^[a-z0-9]{6,24}$/.test(m&&m.id)?m.id:newMapId(),name:String((m&&m.name)||'Untitled').replace(/[<>]/g,'').slice(0,32)||'Untitled',

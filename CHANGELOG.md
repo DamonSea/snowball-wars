@@ -3,7 +3,15 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
-## [2.27.0] - 2026-11-23 — Simpler scoring
+## [2.28.0] - 2026-11-23 — Collectathon and Change map
+### Changed
+- **Orb Race is now called Collectathon:** "How many orbs can you collect before time runs out?" (mode menu,
+  scoreboard, pause menu, map picker, Settings → Collectathon rivals, the builder's map settings).
+### Added
+- **Change map** in the Trick Park pause menu: opens the map picker (Dev Maps / User Maps) over the paused game.
+  Pick a map to go straight there with the same character; Back returns to the pause menu. Any game in progress ends.
+
+ - 2026-11-23 — Simpler scoring
 ### Fixed
 - **Two scoreboards at once with friends:** the friends' trick-points list showed on top of a game's scoreboard,
   and friends' rows on the game scoreboard showed their free-roam trick points. Now the trick-points list only

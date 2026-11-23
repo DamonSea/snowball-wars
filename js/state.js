@@ -34,7 +34,7 @@ function overlay(show,t,p,goTxt,altTxt,go,alt,alt2Txt='',alt2=null,alt3Txt='',al
   setTimeout(()=>$('go').focus(),50);
 }
 $('go').addEventListener('click',()=>onGo&&onGo());$('alt2').addEventListener('click',()=>onAlt2&&onAlt2());$('alt3').addEventListener('click',()=>onAlt3&&onAlt3());$('alt4').addEventListener('click',()=>onAlt4&&onAlt4());$('alt5').addEventListener('click',()=>onAlt5&&onAlt5());$('alt6').addEventListener('click',()=>onAlt6&&onAlt6());$('alt7').addEventListener('click',()=>onAlt7&&onAlt7());$('alt').addEventListener('click',()=>onAlt&&onAlt());
-function menu(){BLD.testing=false;if(typeof closeMoves==='function'&&movesOpen){movesOpen=false;$('moves').classList.add('hide')}if(typeof closePark==='function')closePark();if(typeof closeMapsPanel==='function')closeMapsPanel();chars.forEach((c,i)=>{if(c.outs&&!unlocked(OFI[i],c.outs)){OFI[i]=0;applyOutfitTo(c.rig.mats,0,c.outs)}});
+function menu(){if(typeof PARK!=='undefined')PARK.fromPause=false;BLD.testing=false;if(typeof closeMoves==='function'&&movesOpen){movesOpen=false;$('moves').classList.add('hide')}if(typeof closePark==='function')closePark();if(typeof closeMapsPanel==='function')closeMapsPanel();chars.forEach((c,i)=>{if(c.outs&&!unlocked(OFI[i],c.outs)){OFI[i]=0;applyOutfitTo(c.rig.mats,0,c.outs)}});
 
   state='menu';mode='run';ci=2;wave=1.6;setWorld('run');resetRun();hint('');hud();freeUI();
   overlay(true,'Snowball Wars','','Trick Park','Adventure',()=>parkMenu(),()=>levelMenu(),'Map Builder',()=>openMapsPanel());
@@ -77,7 +77,7 @@ function resume(){state='play';overlay(false)}
 function retry(){mode==='run'?startRun(runFree):startAdv(curIdx)}
 function pause(){if(state!=='play')return;state='paused';wave=1.6;idleT=0;showPause()}
 // one vertical column: Resume, then this mode's actions, then Moves, Settings and Quit (the character waves on the left)
-function showPause(){const quit=BLD.testing?['Back to builder',()=>backToBuilder()]:['Quit to menu',()=>menu()],tail=[['Moves',()=>openMoves()],['Settings',()=>openSet()],quit];
+function showPause(){const quit=BLD.testing?['Back to builder',()=>backToBuilder()]:['Quit to menu',()=>menu()],tail=[...(mode==='run'&&!BLD.testing?[['Change map',()=>changeMap()]]:[]),['Moves',()=>openMoves()],['Settings',()=>openSet()],quit];
   let title,line='',acts;
   if(mode==='run'&&TAG.on){title='Tag';const st=tagRows(),pl=st.findIndex(r=>r.me)+1;line=`${TAG.it==='me'?'You\u2019re It \u00b7 ':''}${(TAG.itT.me||0).toFixed(1)}s as It \u00b7 ${pl}${['st','nd','rd'][pl-1]||'th'} of ${st.length} \u00b7 ${fmtClock(TAG.t)} left`;
     acts=[['Restart tag',()=>{resume();startTag()}],['End tag',()=>{resume();tagStop(true);toast('Tag ended.')}]]}
@@ -86,7 +86,7 @@ function showPause(){const quit=BLD.testing?['Back to builder',()=>backToBuilder
   else if(mode==='run'&&runFree){const race=FR.on&&!FR.done,b=FR.on?raceBest():null;title=FR.on?'Flag race':runL.custom?runL.name:'Trick Park';
     if(FR.on)line=FR.done?'Finished! Keep exploring, or race again.':`Race time ${fmtRace(FR.t)}${b?' · best '+fmtRace(b):''} · checkpoints ${FR.reached}/${runL.cps.length}`;
     acts=[modeList().length?['Play',()=>gamesMenu()]:null,race&&FR.reached?['Last checkpoint',()=>{resume();frRespawn()}]:null,FR.on?['Restart race',()=>startRun(true)]:null].filter(Boolean)}
-  else if(mode==='run'){title='Orb run';line=`${orbN} orbs · ${Math.ceil(time)}s left`;acts=[['Restart orb run',()=>{resume();quickRetry()}],['Stop orb run',()=>{resume();stopOrbRun()}]]}
+  else if(mode==='run'){title='Collectathon';line=`${orbN} orbs · ${Math.ceil(time)}s left`;acts=[['Restart Collectathon',()=>{resume();quickRetry()}],['Stop Collectathon',()=>{resume();stopOrbRun()}]]}
   else{title=curL.name;line=`${fmt(atime)} \u00b7 ${coreCount}/3 cores`;acts=[['Retry',retry]]}
   const B=[['Resume',resume],...acts,...tail],g=k=>B[k]||['',null];
   overlay(true,title,line,g(0)[0],g(1)[0],g(0)[1],g(1)[1],g(2)[0],g(2)[1],g(3)[0],g(3)[1],g(4)[0],g(4)[1],g(5)[0],g(5)[1],g(6)[0],g(6)[1],g(7)[0],g(7)[1]);

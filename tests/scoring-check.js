@@ -9,7 +9,7 @@ ok('Orb race: the score box counts Orbs',$('k1').textContent==='Orbs'&&$('v1').t
 invuln=0;hurt(P.position.x+1,P.position.z,5);ok('Orb race: getting hurt costs a life',lives===2);__step(90);
 const o=orbs.find(q=>!q.spill);__place(o.g.position.x,o.g.position.z,o.y,0);__step(4);ok('Grabbing an orb counts 1, whatever it was worth',orbN===1&&$('v1').textContent==='1',o.v+' -> '+orbN);
 orbN=7;time=.02;__step(3);ok('End: a count and a best, no points',/7 orbs/.test($('hint').textContent)&&bestO(runL.key)>=7,$('hint').textContent);
-parkMenu();__step(2);ok('Picker shows the best orb race',/Best orb race: \d+ orbs/.test($('parkBest').textContent),$('parkBest').textContent);closePark();
+parkMenu();__step(2);ok('Picker shows the best orb race',/Best Collectathon: \d+ orbs/.test($('parkBest').textContent),$('parkBest').textContent);closePark();
 // friends' name tags say what they're doing
 ok('Name tag: friend in a match shows KOs',peerLine({wm:['x',100,3,2,5],sc:10100,fr:1})==='2 KO');
 ok('Name tag: friend in an orb race shows orbs',peerLine({or:['x',30,6],sc:999})==='6 orbs');

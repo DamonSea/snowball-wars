@@ -19,7 +19,7 @@ function drawSpadSign(){const x=spadCv.getContext('2d');x.clearRect(0,0,512,160)
   x.fillStyle='#fff8e8';x.font='600 28px "Baloo 2", system-ui, sans-serif';x.fillText('stand here',256,118);spadTex.needsUpdate=true}
 drawSpadSign();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(drawSpadSign);
 function freeUI(){const f=mode==='run'&&runFree&&state==='play'&&!!(runL&&runL.spad)&&!WAR.on&&!(typeof TAG!=='undefined'&&TAG.on);document.body.classList.toggle('free',f);spadG.visible=!!(runL&&runL.spad)&&mode==='run'&&runFree&&runCD<=0&&!WAR.on&&!(typeof TAG!=='undefined'&&TAG.on)&&state!=='menu'&&state!=='select'}
-const FREE_HINT='Free roam: practice as long as you like. Stand on the PLAY pad (or press Enter / △) to choose Orb Race or Snowball Wars.';
+const FREE_HINT='Free roam: practice as long as you like. Stand on the PLAY pad (or press Enter / △) to choose Collectathon, Snowball Wars or Tag.';
 const orbGeo=new THREE.IcosahedronGeometry(.42,0),ringGeo=new THREE.RingGeometry(.55,.75,24);
 // ----- trick combos: tricks chain while you stay airborne or land and go again quickly -----
 const TR={pts:0,mult:0,names:[],t:0};
@@ -77,18 +77,18 @@ const foesOn=()=>!(runL&&runL.opt&&!runL.opt.enemies);
 function startRun(free=true){mode='run';setWorld('run');resetRun();runFree=free;runCD=0;padHold=0;state='play';overlay(false);hud();SFX.start();freeUI();renderControls();
   hint('')}
 // from free roam: keep Flip where he is, reset the board, count down 3-2-1, then the clock starts
-function beginTimed(o={}){if(mode!=='run'||!runFree||runCD>0||state!=='play'||WAR.on||TAG.on)return;if(!runL.spad){toast('This map has no orb run.');return}
+function beginTimed(o={}){if(mode!=='run'||!runFree||runCD>0||state!=='play'||WAR.on||TAG.on)return;if(!runL.spad){toast('This map has no Collectathon.');return}
   runFree=false;runCD=3;popScore('3');SFX.ui(3);padHold=0;score=0;orbN=0;time=T.run.time;runT=0;bestCombo=0;lives=3;Object.assign(TR,{pts:0,mult:0,names:[],t:0});showCombo();
   if(!MP.client){orbs.forEach(o=>rmObj(o.g));orbs=[];spawnCount=0;for(let i=0;i<T.run.orbsOnField;i++)spawnOrb();
   runHz.forEach(h=>rmObj(h.g));runHz=[];runQ=[]}
   raceStart({id:o.id,join:!!o.id});if(o.time){time=o.time;runCD=1.5}   // orbrace.js: friends join, or computer rivals
-  hint('');if(o.by)toast(`${o.by} started an orb race!`);hud();freeUI();renderControls()}
+  hint('');if(o.by)toast(`${o.by} started a Collectathon!`);hud();freeUI();renderControls()}
 function backToFree(){startRun(true)}
 // the PLAY pad (or △ / Enter in free roam): pick a mode. With only one on offer, just start it.
 let padLock=false;
 // the modes on offer here, with a one-line description each
 function modeList(){const solo=!warPeers().length,O=[];
-  if(runL.spad)O.push(['Orb Race',()=>{resume();beginTimed()},`<b>Orb Race</b> \u00b7 60 seconds of orb grabbing${solo&&RACE.rivals?' vs '+RACE.rivals+' computer rival'+(RACE.rivals>1?'s':''):''}`]);
+  if(runL.spad)O.push(['Collectathon',()=>{resume();beginTimed()},`<b>Collectathon</b> \u00b7 how many orbs can you collect before time runs out?${solo&&RACE.rivals?' (vs '+RACE.rivals+' computer rival'+(RACE.rivals>1?'s':'')+')':''}`]);
   if(canWar())O.push(['Snowball Wars',()=>{resume();startWars()},`<b>Snowball Wars</b> \u00b7 3-minute snowball fight${solo?' vs 3 computer players':''}`]);
   if(canTag())O.push(['Tag',()=>{resume();startTag()},`<b>Tag</b> \u00b7 2 minutes; least time as It wins${solo?' (vs 3 computer players)':''}`]);
   return O}

@@ -52,10 +52,10 @@ function renderLib(){const cats={};for(const[k,A]of Object.entries(ASSETS))(cats
     Object.entries(cats).map(([c,L])=>`<h4>${c}</h4>`+L.map(([k,A])=>`<button class="bTool${BLD.tool===k?' on':''}" data-tool="${k}" title="${A.tip}"><i>${A.icon}</i>${A.label}</button>`).join('')).join('')}
 function renderInsp(){const it=BLD.map.items[BLD.sel],el=$('bInsp');
   if(!it){const n=BLD.map.items.length,O=BLD.map.opt||{},has=t=>BLD.map.items.some(i=>i.t===t);
-    const warn=[];if(O.orbs&&!has('start'))warn.push('Orb run is on, but there\u2019s no PLAY pad.');if(O.flags&&!has('finish'))warn.push('Flag race is on: add a Finish flag.');
+    const warn=[];if(O.orbs&&!has('start'))warn.push('Collectathon is on, but there\u2019s no PLAY pad.');if(O.flags&&!has('finish'))warn.push('Flag race is on: add a Finish flag.');
     if(!O.flags&&(has('finish')||has('checkpoint')))warn.push('Flags are placed, but Flag race is off.');
     const sets=`<h3>Map settings</h3>${Object.entries(MAP_OPTS).map(([k,[lab]])=>`<div class="bRow"><span>${lab}</span><button class="bTog${O[k]?' on':''}" data-opt="${k}" aria-pressed="${!!O[k]}">${O[k]?'On':'Off'}</button></div>`).join('')}
-      <p class="bHelp">Orb run: stand on the PLAY pad to begin a 60-second orb hunt. Flag race: get from the spawn point to the Finish flag; checkpoints save your spot.</p>${warn.map(w=>`<p class="bHelp bWarn">${w}</p>`).join('')}<hr class="bHr">`;
+      <p class="bHelp">Collectathon: stand on the PLAY pad, then collect as many orbs as you can before time runs out. Flag race: get from the spawn point to the Finish flag; checkpoints save your spot.</p>${warn.map(w=>`<p class="bHelp bWarn">${w}</p>`).join('')}<hr class="bHr">`;
     el.innerHTML=sets+`<h3>${BLD.tool==='select'?'Select':ASSETS[BLD.tool].label}</h3><p class="bHelp">${BLD.tool==='select'?'Click an item to edit it, drag to move it. Drag empty ground to pan, wheel to zoom.':'Click the ground to place one. Keep clicking for more; Esc goes back to Select.'}</p>
     <p class="bHelp"><b>Keys</b>: Delete remove · Ctrl+Z undo · Ctrl+Y redo · Ctrl+D duplicate · R rotate · arrows nudge · [ ] lower/raise · WASD pan</p>
     <p class="bHelp">${n}/${MAP_LIMIT} items. Heights: a jump clears about 1.9, a double jump 2.6, triple 4, backflip 4.7, wall jumps climb any wall gap about 3 wide, ledge hang reaches about 1.9 above a jump.</p>`;return}

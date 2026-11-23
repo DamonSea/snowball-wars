@@ -5,7 +5,7 @@ menu();__step(3);const vis=id=>{const e=$(id);return e&&e.textContent&&getComput
 ok('main menu: title and three buttons',$('ovT').textContent==='Snowball Wars'&&['Trick Park','Adventure','Map Builder'].every(t=>[...document.querySelectorAll('#ov .btns button')].some(b=>b.textContent===t&&getComputedStyle(b).display!=='none')));
 ok('no intro paragraph or score list on the main menu',!vis('ovP')&&getComputedStyle($('best')).display==='none');
 $('go').click();__step(2);ok('Trick Park opens the map picker',PARK.on&&!$('park').classList.contains('hide')&&$('ov').classList.contains('hide'));
-ok('shows one map with its name and best orb race',$('parkName').textContent==='Plaza'&&/orb race/i.test($('parkBest').textContent));
+ok('shows one map with its name and best orb race',$('parkName').textContent==='Plaza'&&/Collectathon/.test($('parkBest').textContent));
 ok('map picture rendered',$('parkImg').src.startsWith('data:image')||$('parkFrame').classList.contains('noimg'));
 $('parkNext').click();ok('▶ goes to the next map',$('parkName').textContent==='Frozen Rink');$('parkPrev').click();$('parkPrev').click();ok('◀ wraps around',$('parkName').textContent===parkMaps()[parkMaps().length-1].name);
 localStorage.setItem('orbsBest_'+parkMaps()[0].key,12);$('parkNext').click();ok('best orb count shows',$('parkBest').textContent.includes('12 orbs'));
