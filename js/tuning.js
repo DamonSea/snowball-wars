@@ -58,5 +58,5 @@ const T={
   // Orb Race: a snowball hit knocks up to `spill` points loose as orbs worth `spillOrb` each; rival walking speed
   race:{spill:200,spillOrb:100,botSpeed:5.4},
   wars:{time:180,hp:3,hit:100,trick:200,ko:250,respawn:2.5,invuln:2.5,bots:3,piles:4,pileR:1.7,pileRate:.25,regen:3},
-  camera:{height:10.5,back:13}
+  camera:{height:10.5,back:13,autoTurn:2.6}   // autoTurn: Free + auto's turn speed (rad/s) when running fully sideways
 };

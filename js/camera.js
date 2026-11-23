@@ -2,7 +2,7 @@
 // always means north. The others turn the camera, so movement becomes camera-relative (Up = away from the camera):
 //   Behind you   - a closer camera that swings round to stay behind you as you run
 //   Free         - aim it yourself: right stick (or Z / X) orbits, stick up/down tilts; it stays where you put it
-//   Free + auto  - like Free, but when you leave it alone it drifts back behind you while you run
+//   Free + auto  - like Free, but when you leave it alone it turns with you as you run sideways
 // R3 (or V) snaps the camera behind you in any turning mode.
 const CAMS=['classic','behind','free','auto'],CAM_NAMES=['Classic','Behind you','Free','Free + auto'];
 const CAM={mode:'classic',yaw:0,pitch:.5,idle:9,inYaw:0,lockDir:null};
@@ -30,7 +30,14 @@ function camFollow(dt){
   const sp=Math.hypot(vel.x,vel.z),rev=Math.abs(angTo(CAM.yaw,face+PI))>2;   // rev: you've turned to face the camera
   if(CAM.mode==='behind'){if(turn)CAM.yaw-=turn*2.4*dt;else if(sp>.8)CAM.yaw+=angTo(CAM.yaw,face+PI)*(1-Math.exp(-(rev?4.2:2.6)*dt))}
   else{if(turn||tilt){CAM.yaw-=turn*2.6*dt;CAM.pitch=Math.max(.15,Math.min(1.2,CAM.pitch+tilt*1.4*dt));CAM.idle=0}else CAM.idle+=dt;
-    if(CAM.mode==='auto'&&(CAM.idle>1.4||rev&&CAM.idle>.4)&&sp>2.5)CAM.yaw+=angTo(CAM.yaw,face+PI)*(1-Math.exp(-(rev?3.2:1.4)*dt))}
+    // Free + auto: follow where you're actually moving (not where you face, which flips during tricks). Moving
+    // sideways turns the camera, more the more sideways you go; straight away from or toward the camera, it holds
+    // still; in the air it barely turns. It takes over 0.6 s after you stop turning it yourself.
+    if(CAM.mode==='auto'&&CAM.idle>.6&&sp>1){const a=angTo(CAM.yaw+PI,Math.atan2(vel.x,vel.z));
+      if(Math.abs(a)<2.4){CAM.toward=0;CAM.yaw+=Math.sin(a)*T.camera.autoTurn*Math.min(1,sp/9)*(grounded?1:.3)*dt}
+      // running at the camera: after a moment, swing steadily round behind you
+      else if(grounded&&(CAM.toward=(CAM.toward||0)+dt)>.7)CAM.yaw+=(a<0?-1:1)*T.camera.autoTurn*.6*dt}
+    else CAM.toward=0}
   const pitch=CAM.mode==='behind'?.42:CAM.pitch,D=CAM.mode==='behind'?9.5:11,h=Math.cos(pitch)*D;
   camPos.set(P.position.x+Math.sin(CAM.yaw)*h,py+1.2+Math.sin(pitch)*D,P.position.z+Math.cos(CAM.yaw)*h);look.set(P.position.x,py+1.3,P.position.z);
   // keep walls and buildings from blocking the view: pull the camera in front of anything solid in the way

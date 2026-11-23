@@ -17,7 +17,7 @@ setCam('free');navigator.getGamepads=()=>[gp];__step(3);const y0=CAM.yaw;gp.axes
 ok('Free: right stick orbits ('+(y1-y0).toFixed(2)+' rad)',Math.abs(y1-y0)>1);gp.axes[3]=-1;__step(20);gp.axes[3]=0;ok('right stick up/down tilts',CAM.pitch<.5);
 __k({KeyD:true});__step(90);__k({});ok('Free: stays where you put it while you run',Math.abs(CAM.yaw-y1)<.01);
 // free + auto: leave the stick alone while running sideways and it swings back toward behind you
-setCam('auto');__place(20,-4,0,0);CAM.yaw=0;__step(3);CAM.idle=0;__k({KeyA:true});__step(40);const ya=CAM.yaw;__step(60);__k({});
+setCam('auto');__place(20,-4,0,0);CAM.yaw=0;__step(3);CAM.idle=0;__k({KeyA:true});__step(30);const ya=CAM.yaw;__step(10);__step(60);__k({});
 ok('Free + auto: waits a moment ('+ya.toFixed(2)+'), then drifts behind you while running ('+CAM.yaw.toFixed(2)+')',Math.abs(ya)<.01&&Math.abs(CAM.yaw)>.3);
 setCam('free');CAM.yaw=0;__place(10,0,0,0);__step(3);__k({KeyD:true});__step(200);__k({});ok('Free (no auto): never moves on its own',CAM.yaw===0);
 // R3 snaps behind

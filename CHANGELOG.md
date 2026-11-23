@@ -3,6 +3,16 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.19.3] - 2026-11-23 — Free + auto camera rebuilt
+### Changed
+- **Free + auto now follows where you're moving, not where you face.** Run sideways and it turns with you; the more
+  sideways, the faster it turns, so it settles behind you smoothly in about a second (was about 1.3 s, with a lazy
+  drift). Run straight away from the camera and it holds still. Run toward it and, after a moment, it swings steadily
+  round behind you. In the air it barely turns. It takes over 0.6 s after you stop using the right stick (was 1.4 s).
+### Fixed
+- **Side flips, wall jumps and other moves that flip your facing no longer yank the camera.** A side flip used to
+  swing it about 125°.
+
 ## [2.19.2] - 2026-11-23 — Fewer pop-ups
 ### Changed
 - **Removed the instruction banners** at the bottom of the screen: the free roam tip, "Get ready!", the Snowball
