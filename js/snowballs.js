@@ -36,7 +36,7 @@ function hitMe(owner,id,bx,bz,yel){
   dropCombo();CL.on=false;CL.top=false;
   const f=$('frost');f.classList.remove('on','yellow');void f.offsetWidth;f.classList.add('on');if(yel){f.classList.add('yellow');toast('Ew. Yellow snowball.')}
   splat(V(P.position.x,py+1.4,P.position.z),true);rumble(160,.4,.8);
-  const ko=WAR.on&&warsHitMe(owner);if(ko)face=Math.atan2(-dx,-dz);   // turn to face the throw, so the fall goes away from it
+  const ko=WAR.on&&warsHitMe(owner);if(ko)face=Math.atan2(-dx,-dz);if(!WAR.on)raceHitMe();   // turn to face the throw, so the fall goes away from it
 SB.hits.push(ko?[owner,id,1]:[owner,id]);if(SB.hits.length>6)SB.hits.shift();
 }
 function updateSnow(dt){
@@ -53,7 +53,7 @@ function updateSnow(dt){
       // snowmen
       if(!gone)for(const s of snowmen())if(s.up&&Math.hypot(s.x-p.x,s.z-p.z)<.85&&p.y<2.5){knockSnowman(s);splat(p,true);gone=true;break}
       // other players: splat for show; the hit only counts once they confirm it
-      if(!gone&&(botCatch(p,b)||cpuCatch(p,b))){splat(p,true,b.yellow);gone=true}
+      if(!gone&&(botCatch(p,b)||raceCatch(p,b)||cpuCatch(p,b))){splat(p,true,b.yellow);gone=true}
       if(!gone)for(const a of MP.av.values()){const g=a.g.position;if(Math.hypot(g.x-p.x,g.z-p.z)<.75&&p.y>g.y&&p.y<g.y+2.1){splat(p,true);gone=true;break}}
     }else if(!gone&&!b.chunk){
       if(Math.hypot(P.position.x-p.x,P.position.z-p.z)<.75&&p.y>py&&p.y<py+2.1){hitMe(b.owner,b.id,p.x-b.vx*.05,p.z-b.vz*.05,b.yellow);gone=true}

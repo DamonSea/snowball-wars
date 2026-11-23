@@ -55,6 +55,8 @@ const T={
   snow:{speed:20,lift:4,gravity:18,life:2.5,ammo:6,regen:0,orbAmmo:2,cooldown:.3,hitKnock:9,hitLift:5,stun:.9,snowmanRespawn:8},
   // Snowball Wars: match length (s), hearts, points per hit / trick shot / KO bonus, KO respawn and blink time,
   // computer players when alone, snow piles (count, radius, seconds per snowball), and a slow trickle (s per snowball)
+  // Orb Race: a snowball hit knocks up to `spill` points loose as orbs worth `spillOrb` each; rival walking speed
+  race:{spill:200,spillOrb:100,botSpeed:5.4},
   wars:{time:180,hp:3,hit:100,trick:200,ko:250,respawn:2.5,invuln:2.5,bots:3,piles:4,pileR:1.7,pileRate:.25,regen:3},
   camera:{height:10.5,back:13}
 };

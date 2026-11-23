@@ -27,7 +27,7 @@ function quickRetry(){if(mode==='adv'){retry();return}
 // leave a timed orb run early: back to free roam right where you are
 function stopOrbRun(){if(mode!=='run'||runFree)return;toFreeInPlace();toast('Orb run stopped.')}
 // a timed run is over (time up, out of lives, or stopped): free roam again, in place, no reset to spawn
-function toFreeInPlace(){runFree=true;runCD=0;time=T.run.time;runT=0;score=0;lives=3;padHold=0;Object.assign(TR,{pts:0,mult:0,names:[],t:0});showCombo();
+function toFreeInPlace(){raceStop();runFree=true;runCD=0;time=T.run.time;runT=0;score=0;lives=3;padHold=0;Object.assign(TR,{pts:0,mult:0,names:[],t:0});showCombo();
   if(!MP.client){const extra=runHz.splice(T.run.hazardsFree);extra.forEach(h=>rmObj(h.g));runQ=[]}
   hud();freeUI();renderControls()}
 // ---------- Moves list (pause menu) ----------

@@ -81,7 +81,7 @@ function wantRoom(){return MP.on&&mode==='run'&&(state==='play'||state==='paused
 // A map's "room" is a filtered view of the lobby: everyone whose lobby presence says they're on the same map.
 // (Named rooms can be refused for some viewers, e.g. people invited from outside your account, which left
 // players able to see each other in the lobby but never meet on the map.)
-const GAME_KEYS=['wm','ch','of','lk','p','q','sc','fr','t','c','sb','hb','yw','z','H'];
+const GAME_KEYS=['wm','or','sp','ch','of','lk','p','q','sc','fr','t','c','sb','hb','yw','z','H'];
 function mapView(want){const L=MP.lobby,w='p'+want.slice(3);
   return{name:want,peers:()=>L.peers().filter(p=>p.sameTab||(p.presence&&p.presence.w===w)),
     presence:pr=>L.presence(Object.assign({},pr,{w,nm:MP.myName||'Player'})).then(()=>{MP.err=''},e=>{MP.err=(e&&e.code)||'error';lobbyUI();throw e}),
@@ -107,7 +107,7 @@ function mpFrame(dt){
   const want=wantRoom();if(want!==MP.roomName&&!MP.joining&&now>MP.retryAt)switchRoom(want);
   electHost();updAvatars(dt);
   if(MP.room&&now-MP.lastSend>50){MP.lastSend=now;
-    const pr={nm:MP.myName||'Player',ch:ci,of:OFI[ci]??0,lk:LOOKS[ci]||null,p:[P.position.x,py,P.position.z,face].map(f2),q:poseOf(),sc:score,fr:runFree?1:0,t:[MP.tr.n,MP.tr.s],c:[MP.cl.n,MP.cl.o,MP.cl.k],sb:SB.sent,hb:SB.hits,yw:YS.spray?1:0,z:SB.stun>0?1:0,H:null,wm:WAR.on?[WAR.id,Math.round(WAR.t),WAR.out>0?0:WAR.hp]:null};
+    const pr={nm:MP.myName||'Player',ch:ci,of:OFI[ci]??0,lk:LOOKS[ci]||null,p:[P.position.x,py,P.position.z,face].map(f2),q:poseOf(),sc:score,fr:runFree?1:0,t:[MP.tr.n,MP.tr.s],c:[MP.cl.n,MP.cl.o,MP.cl.k],sb:SB.sent,hb:SB.hits,yw:YS.spray?1:0,z:SB.stun>0?1:0,H:null,wm:WAR.on?[WAR.id,Math.round(WAR.t),WAR.out>0?0:WAR.hp]:null,or:raceLive()?[RACE.id,Math.round(time)]:null,sp:RACE.sp.length?RACE.sp:null};
     if(MP.host)pr.H={o:orbs.map(o=>[o.id,f2(o.g.position.x),f2(o.y),f2(o.g.position.z),o.gold?1:0,o.v,o.ring.visible?0:1,o.beam?1:0]),h:runHz.filter(h=>!h.dead).map(h=>[h.id,f2(h.g.position.x),f2(h.g.position.z),KINDS.indexOf(h.kind),Math.max(0,FSTATES.indexOf(h.st)),f2(h.face||0)]),g:FX.sent};
     MP.room.presence(pr).catch(()=>{})}
   if(now-MP.lastList>250){MP.lastList=now;mpList()}
@@ -122,7 +122,7 @@ function hostClaims(){
   if(!MP.room||MP.client)return;if(MP.done.size>600)MP.done.clear();
   for(const p of MP.room.peers()){if(p.sameTab)continue;const c=p.presence&&p.presence.c;if(!Array.isArray(c))continue;
     const[_,os,ks]=c;
-    if(Array.isArray(os))for(const id of os){if(typeof id!=='string'||MP.done.has(id))continue;MP.done.add(id);const o=orbs.find(x=>x.id===id);if(o){rmObj(o.g);orbs.splice(orbs.indexOf(o),1);spawnOrb()}}
+    if(Array.isArray(os))for(const id of os){if(typeof id!=='string'||MP.done.has(id))continue;MP.done.add(id);const o=orbs.find(x=>x.id===id);if(o){rmObj(o.g);orbs.splice(orbs.indexOf(o),1);if(!o.spill)spawnOrb()}}
     if(Array.isArray(ks))for(const id of ks){if(typeof id!=='string'||MP.done.has(id))continue;MP.done.add(id);const h=runHz.find(x=>x.id===id);if(h&&!h.dead){foeFx(h);h.dead=true;rmObj(h.g);runQ.push(T.run.smashRespawn)}}}
 }
 function syncFromHost(){

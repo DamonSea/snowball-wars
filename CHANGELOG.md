@@ -3,6 +3,17 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.19.0] - 2026-11-23 — Orb Race
+### Added
+- **The orb run is now a race.**
+  - **With friends:** starting an orb run pulls everyone on the map into the same timed run, racing for the shared
+    orbs. A live scoreboard shows everyone, and the end-of-run banner gives your place.
+  - **Knock orbs loose:** a snowball hit during a run knocks up to 200 of your points loose as 100-point orbs that
+    land around you, free for anyone to grab, including you. Knocked-loose orbs don't respawn once grabbed.
+  - **Solo rivals:** Sleet and Flurry race you for the ground orbs (the high ones are yours) and throw snowballs
+    to make you drop points. Hit them to make *them* drop. Settings → Game → **Orb run rivals**: 2 computer,
+    1 computer, or Off for the classic solo run.
+
 ## [2.18.1] - 2026-11-23 — Knockouts fall flat
 ### Changed
 - **Knockouts in Snowball Wars** no longer make people vanish. The knocked-out player turns to face the throw, gets

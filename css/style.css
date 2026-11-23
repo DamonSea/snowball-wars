@@ -279,3 +279,4 @@ body.setopen #moves{visibility:hidden}
 .warsres li b::before{content:counter(w) ". ";opacity:.6}.warsres li.me{background:rgba(95,243,255,.2)}
 @media (max-width:700px){.warsboard{top:auto;bottom:150px;right:8px;min-width:170px;font-size:12px}}
 #ov.wres .ktip,#ov.wres #best,#ov.wres #padInfo{display:none}
+.warsboard .wbr.nohp{grid-template-columns:1fr 60px}

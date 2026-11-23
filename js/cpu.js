@@ -9,7 +9,7 @@ function cpuPlace(){const s=runL.spad||runL.spawn||{x:0,z:5};CPU.x=s.x+4;CPU.z=s
 function setCpu(on){CPU.on=on;try{localStorage.setItem('orbRunCpu',on?'1':'0')}catch(e){}
   if(on&&mode==='run')cpuPlace();if(CPU.a)CPU.a.g.visible=on&&mode==='run';toast(on?'Computer player joined':'Computer player left')}
 // a snowball of yours reached the computer?
-function cpuCatch(p,b){if(!CPU.on||mode!=='run'||WAR.on)return false;
+function cpuCatch(p,b){if(!CPU.on||mode!=='run'||WAR.on||RACE.bots.length)return false;
   if(Math.hypot(CPU.x-p.x,CPU.z-p.z)>.75||p.y<CPU.y||p.y>CPU.y+2.1)return false;
   if(CPU.stun>T.snow.stun-.5)return true; // already reeling: splat but no second hit
   cpuKnock(b.vx,b.vz,true,b.yellow);return true}
@@ -23,7 +23,7 @@ function cpuPose(dt){const t=tAll,mv=Math.hypot(CPU.vx,CPU.vz),air=CPU.y>groundA
   else if(CPU.throwT>0){const k=1-CPU.throwT/.3;q[1]=k<.4?.35:-.3;q[11]=k<.4?.9:-2.5+(k-.4)*2.2;q[12]=.2;q[13]=k<.4?-.2:.2}
   else if(mv>.5){const s=Math.sin(CPU.walk);q[0]=.12;q[5]=s*.8;q[7]=-s*.8;q[9]=-s*.6;q[11]=s*.6;q[3]=Math.abs(Math.cos(CPU.walk))*.05}
   applyPose(CPU.a,q,Math.min(1,dt*14))}
-function updateCpu(dt){const a=cpuAvatar(),on=CPU.on&&!WAR.on&&mode==='run'&&state!=='menu'&&state!=='select';a.g.visible=on;   // sits out Snowball Wars (it has its own computer players)
+function updateCpu(dt){const a=cpuAvatar(),on=CPU.on&&!WAR.on&&!RACE.bots.length&&mode==='run'&&state!=='menu'&&state!=='select';a.g.visible=on;   // sits out Snowball Wars (it has its own computer players)
   if(!on){a.stars.visible=false;return}
   if(state!=='play')return;
   if(!a.init){cpuPlace();a.init=true}
