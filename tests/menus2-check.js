@@ -3,12 +3,12 @@ const btns=()=>[...document.querySelectorAll('#ov .btns button')].filter(b=>b.te
 const click=t=>[...document.querySelectorAll('#ov button')].find(b=>b.textContent.replace(/[○✕]/g,'').trim()===t).click();
 menu();pickMode='run';pickLevel=0;ci=2;showChar();confirmChar();__step(10);
 // pause menu: modes moved into Games
-pause();ok('free roam pause: '+btns().join(', '),btns().join('|')==='Resume|Games|Moves|Settings|Quit to menu');
-click('Games');__step(2);ok('Games: '+btns().join(', '),$('ovT').textContent==='Games'&&btns().join('|')==='Orb Race|Snowball Wars|Tag|Back'&&/Orb Race/.test($('ovP').textContent));
-click('Back');__step(2);ok('Back returns to the pause menu',state==='paused'&&btns()[1]==='Games');
-click('Games');__step(2);press('pause');__step(2);ok('Esc / Options on Games goes back, not straight to the game',state==='paused'&&btns()[1]==='Games');
+pause();ok('free roam pause: '+btns().join(', '),btns().join('|')==='Resume|Play|Moves|Settings|Quit to menu');
+click('Play');__step(2);ok('Play: '+btns().join(', '),$('ovT').textContent==='Play'&&btns().join('|')==='Orb Race|Snowball Wars|Tag|Back'&&/Orb Race/.test($('ovP').textContent));
+click('Back');__step(2);ok('Back returns to the pause menu',state==='paused'&&btns()[1]==='Play');
+click('Play');__step(2);press('pause');__step(2);ok('Esc / Options on Play goes back, not straight to the game',state==='paused'&&btns()[1]==='Play');
 press('pause');__step(2);ok('...and again closes the pause menu',state==='play');
-pause();click('Games');__step(2);click('Tag');__step(3);ok('starting a mode from Games works',TAG.on&&state==='play');pause();click('End tag');__step(3);
+pause();click('Play');__step(2);click('Tag');__step(3);ok('starting a mode from Play works',TAG.on&&state==='play');pause();click('End tag');__step(3);
 // Moves: pages of cards
 pause();click('Moves');__step(2);ok('title reads "Flip’s Moves"',$('movesT').textContent==='Flip’s Moves');
 ok('first page: Basics, 1 of 5, with cards',$('mvCat').textContent==='Basics'&&$('mvOf').textContent==='1 of 5'&&$('movesList').querySelectorAll('.mvc').length>=4);

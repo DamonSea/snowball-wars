@@ -3,6 +3,14 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.23.1] - 2026-11-23 — Village stars, Play menu
+### Changed
+- **Orb style has a new default, Auto:** each map picks its own style, so Christmas Village uses stars and every
+  other map uses crystals. Choosing a specific style still applies it everywhere. (A saved "Crystal" from before,
+  when it was the default, now counts as Auto.)
+- The giant Christmas tree no longer has a star on top; the star orb that floats there does the job.
+- The pause menu's **Games** is now **Play**.
+
 ## [2.23.0] - 2026-11-23 — Games menu, Moves screen, dive grab
 ### Changed
 - **Pause menu decluttered:** Resume, **Games**, Moves, Settings, Quit. Games opens Orb Race, Snowball Wars and

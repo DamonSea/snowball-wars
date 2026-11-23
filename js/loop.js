@@ -176,7 +176,7 @@ function tick(){
   }
   P.visible=!(invuln>0&&state==='play'&&Math.floor(invuln*12)%2)&&!(typeof WAR!=='undefined'&&WAR.on&&WAR.out>0&&WAR.out<=.3);
 
-  orbs.forEach(o=>{o.t+=dt;o.m.position.y=1+Math.sin(o.t*2.4)*.2;o.m.rotation.y+=dt*1.8;if(!ORB_FLAT[ORB_SKIN])o.m.rotation.x+=dt*.9;const s=1+Math.sin(o.t*3)*.12;o.ring.scale.set(s,s,s)});
+  orbs.forEach(o=>{o.t+=dt;o.m.position.y=1+Math.sin(o.t*2.4)*.2;o.m.rotation.y+=dt*1.8;if(!ORB_FLAT[orbSkin()])o.m.rotation.x+=dt*.9;const s=1+Math.sin(o.t*3)*.12;o.ring.scale.set(s,s,s)});
   cores.forEach(c=>{c.t+=dt;c.m.position.y=1.1+Math.sin(c.t*2)*.2;c.m.rotation.y+=dt*2});
   if(fxT>0){fxT-=dt;const q=1-fxT/.3;fxRing.scale.setScalar(1+q*3.5);fxM.opacity=Math.max(0,1-q)*.9;if(fxT<=0)fxRing.visible=false}
   RUNMAPS.forEach(M=>{if(M.blink)M.blink.emissiveIntensity=tAll%1.4<.35?2.4:.15});

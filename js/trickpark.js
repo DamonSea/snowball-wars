@@ -99,8 +99,8 @@ function showModes(title,lastTxt,last){const O=modeList(),B=[...O.map(o=>[o[0],o
 function modeMenu(){if(state!=='play'||mode!=='run'||!runFree||runCD>0||WAR.on||TAG.on)return;
   const O=modeList();if(!O.length)return;if(O.length===1){O[0][1]();return}
   state='paused';SFX.ui(2);showModes('Choose a mode','Cancel',()=>resume())}
-// pause menu > Games
-function gamesMenu(){if(state!=='paused')return;SFX.ui(2);showModes('Games','Back',()=>showPause())}
+// pause menu > Play
+function gamesMenu(){if(state!=='paused')return;SFX.ui(2);showModes('Play','Back',()=>showPause())}
 // time's up (or out of lives): show the result and keep playing right where you are, back in free roam
 function endRun(){bankCombo();const rr=RACE.on?raceResult():null;const bk=runL.key,fin=score,nb=fin>(bestR[bk]||0);if(nb){bestR[bk]=fin;try{localStorage.setItem(bk,fin)}catch(e){}}
   beep(220,.4,'sawtooth',.08);const why=lives<=0?(FOE_STYLE==='spike'?'Spiked!':'Wiped out!'):'Time\u2019s up!';

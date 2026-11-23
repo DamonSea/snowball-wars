@@ -62,13 +62,11 @@ function candyCane(x,z,top,hookDir=0){add(new THREE.CylinderGeometry(.12,.12,top
   const hk=add(new THREE.TorusGeometry(.38,.12,8,14,PI),red,x+Math.cos(hookDir)*.38,top,z+Math.sin(hookDir)*.38,G);hk.rotation.y=-hookDir;
   advCol.push({x,z,r:.3,tree:true,pole:true,y:0,top:top+.05})}
 
-// the giant Christmas tree: climbable like any tree, dressed with baubles, lights and a star
+// the giant Christmas tree: climbable like any tree, dressed with baubles and lights (the star on top is an orb)
 function xmasTree(x,z,s){const g=new THREE.Group();g.position.set(x,0,z);g.scale.setScalar(s);G.add(g);
   add(new THREE.CylinderGeometry(.22,.3,1.4,8),trunkM,0,.7,0,g);
   const lm=mat(0x1f6b3a,{roughness:.8});[[1.5,2.2,2.0],[1.15,1.9,3.0],[.8,1.5,3.85]].forEach(([r,h,y])=>add(new THREE.ConeGeometry(r,h,10),lm,0,y,0,g));
   [[1.3,1.65],[1.0,2.6],[.68,3.5]].forEach(([r,y],k)=>{for(let i=0;i<9;i++){const a=i/9*PI*2+k;add(new THREE.SphereGeometry(.12,8,6),bulbs[(i+k)%5],Math.cos(a)*r,y,Math.sin(a)*r,g)}});
-  const st=new THREE.Shape();for(let i=0;i<10;i++){const a=PI/2+i*PI/5,r=i%2?.16:.38;i?st.lineTo(Math.cos(a)*r,Math.sin(a)*r):st.moveTo(Math.cos(a)*r,Math.sin(a)*r)}
-  const star=new THREE.Mesh(new THREE.ExtrudeGeometry(st,{depth:.1,bevelEnabled:false}),new THREE.MeshStandardMaterial({color:0xffe066,emissive:0xffc21a,emissiveIntensity:1.3}));star.position.set(0,4.75,-.05);g.add(star);
   advCol.push({x,z,r:.65*s,tree:true,y:0,top:4.05*s});return g}
 // gift boxes: solid presents with a ribbon cross
 function gift(x,z,w,top,col,rib){box(x,z,w,w,top,col,col);add(B(w+.04,.06,.22),rib,x,top+.01,z,G);add(B(.22,.06,w+.04),rib,x,top+.01,z,G);
@@ -204,7 +202,7 @@ const gaps=[
   {name:'Awning Hop',pts:75,from:AWN,to:AWN},
   {name:'Stable Slide',pts:100,from:[STABLE],to:[GROUND]},
   {name:'Bell Dive',pts:150,from:[BELL],to:[GROUND]}];
-RUNMAPS.push({name:'Christmas Village',grp:G,plats,advCol,spad:{x:3.5,z:8.5},key:'orbRunVillage',gaps,
+RUNMAPS.push({name:'Christmas Village',orbSkin:'star',grp:G,plats,advCol,spad:{x:3.5,z:8.5},key:'orbRunVillage',gaps,
   rollers:[[-8,14],[9,2],[-12,-2],[22,-4]],spots:[
   {x:-5,z:1,y:0,v:100,any:1},{x:5,z:-1,y:0,v:100,any:1},{x:-8.5,z:-1.5,y:2,v:150,any:1},{x:6.5,z:5.2,y:2,v:150,any:1},{x:19,z:4,y:3.4,v:150,any:1},{x:6,z:-6.8,y:2,v:150,any:1},
   {x:-19,z:-13,y:3.2,v:150,any:1},{x:-10.25,z:-14,y:4.2,v:200,any:1},{x:-2.8,z:-16,y:4,v:250,any:1},{x:2.8,z:-22,y:4,v:250},

@@ -17,7 +17,7 @@ pause();[...document.querySelectorAll('#ov button')].find(b=>b.textContent==='En
 __place(sp.x+6,sp.z+2,0,0);__step(5);press('start');__step(2);ok('△ / Enter opens the same menu',state==='paused'&&$('ovT').textContent==='Choose a mode');
 press('pause');__step(2);ok('Esc / Options / ○ cancels',state==='play');
 // pause menu uses the mode names
-pause();ok('free roam pause: '+btns().join(', '),btns().join('|')==='Resume|Games|Moves|Settings|Quit to menu');resume();
+pause();ok('free roam pause: '+btns().join(', '),btns().join('|')==='Resume|Play|Moves|Settings|Quit to menu');resume();
 ok('pad sign and controls card use the new wording',/PLAY pad/.test($('ctlList').textContent)&&/Choose a mode/.test($('ctlList').textContent));
 // on a map without a PLAY pad, the button goes straight to Snowball Wars
 openBuilder(blankMap());BLD.map.opt={enemies:1,orbs:0,flags:0};changed();testBuilder();__step(5);press('start');__step(2);ok('no PLAY pad: the menu offers Snowball Wars and Tag',state==='paused'&&btns().join('|')==='Snowball Wars|Tag|Cancel');click('Tag');__step(3);ok('...and Tag starts',TAG.on);

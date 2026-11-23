@@ -3,12 +3,15 @@
 // Shared geometry and materials are built once per style and kept (see KEEP in core.js), so
 // removing an orb never frees them.
 const ORB_SKINS=[
-  {id:'crystal',name:'Crystal'},{id:'donut',name:'Donuts'},{id:'star',name:'Stars'},
+  {id:'auto',name:'Auto'},{id:'crystal',name:'Crystal'},{id:'donut',name:'Donuts'},{id:'star',name:'Stars'},
   {id:'flake',name:'Snowflakes'},{id:'gift',name:'Presents'},{id:'coin',name:'Coins'}];
-let ORB_SKIN='crystal';try{const v=localStorage.getItem('orbRunOrbSkin');if(ORB_SKINS.some(s=>s.id===v))ORB_SKIN=v}catch(e){}
+// Auto (the default): each map picks its own style (Christmas Village: stars), crystals elsewhere. A saved
+// "crystal" under the old key dates from when crystal was the default, so it counts as Auto.
+let ORB_SKIN='auto';try{const v2=localStorage.getItem('orbRunOrbStyle'),v=localStorage.getItem('orbRunOrbSkin');if(ORB_SKINS.some(s=>s.id===v2))ORB_SKIN=v2;else if(ORB_SKINS.some(s=>s.id===v)&&v!=='crystal')ORB_SKIN=v}catch(e){}
+const orbSkin=()=>ORB_SKIN==='auto'?(typeof runL!=='undefined'&&runL&&runL.orbSkin)||'crystal':ORB_SKIN;   // the style in use right now
 // ring/burst/beam colour per style: [normal, gold]
 const ORB_COL={crystal:[0x5ff3ff,0xffcc33],donut:[0xff7fb6,0xffc43a],star:[0xffd21f,0xff8a10],flake:[0xbfeaff,0xffcc33],gift:[0xff4a55,0xffcc33],coin:[0xdfe7f0,0xffc531]};
-const orbCol=gold=>(ORB_COL[ORB_SKIN]||ORB_COL.crystal)[gold?1:0];
+const orbCol=gold=>(ORB_COL[orbSkin()]||ORB_COL.crystal)[gold?1:0];
 // spin only around the vertical axis (flat or upright shapes look wrong tumbling)
 const ORB_FLAT={donut:1,star:1,flake:1,gift:1,coin:1};
 
@@ -67,10 +70,10 @@ const SKIN_CACHE={};
 function skinKit(id,gold){const k=id+(gold?'G':'');if(!SKIN_CACHE[k]){const s=SKIN_BUILD[id](gold);keep(...s.geos,...s.mats);SKIN_CACHE[k]=s}return SKIN_CACHE[k]}
 // the orb's visible body for the current style (the crystal keeps its original per-orb material)
 function orbBody(gold){const col=orbCol(gold);
-  if(ORB_SKIN==='crystal'||!SKIN_BUILD[ORB_SKIN]){const m=new THREE.Mesh(orbGeo,new THREE.MeshStandardMaterial({color:col,emissive:col,emissiveIntensity:.9,flatShading:true}));m.castShadow=true;return m}
-  return skinKit(ORB_SKIN,gold).make()}
+  const sk=orbSkin();if(sk==='crystal'||!SKIN_BUILD[sk]){const m=new THREE.Mesh(orbGeo,new THREE.MeshStandardMaterial({color:col,emissive:col,emissiveIntensity:.9,flatShading:true}));m.castShadow=true;return m}
+  return skinKit(sk,gold).make()}
 // switch style: restyle every orb already out there
-function setOrbSkin(id){if(!ORB_SKINS.some(s=>s.id===id))return;ORB_SKIN=id;try{localStorage.setItem('orbRunOrbSkin',id)}catch(e){}
-  for(const o of orbs){const nm=orbBody(o.gold),old=o.m;nm.position.y=old.position.y;nm.rotation.y=old.rotation.y;nm.rotation.x=ORB_FLAT[ORB_SKIN]?0:old.rotation.x;
+function setOrbSkin(id){if(!ORB_SKINS.some(s=>s.id===id))return;ORB_SKIN=id;try{localStorage.setItem('orbRunOrbStyle',id)}catch(e){}
+  for(const o of orbs){const nm=orbBody(o.gold),old=o.m;nm.position.y=old.position.y;nm.rotation.y=old.rotation.y;nm.rotation.x=ORB_FLAT[orbSkin()]?0:old.rotation.x;
     o.g.remove(old);freeTree(old);o.g.add(nm);o.m=nm;o.col=orbCol(o.gold);
     o.g.children.forEach(c=>{if(c!==nm&&c.material&&c.material.color)c.material.color.setHex(o.col)})}}

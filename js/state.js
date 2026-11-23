@@ -82,7 +82,7 @@ function showPause(){const quit=BLD.testing?['Back to builder',()=>backToBuilder
     acts=[['Restart match',()=>{resume();startWars()}],['End match',()=>{resume();warsStop(true);toast('Match ended.')}]]}
   else if(mode==='run'&&runFree){const race=FR.on&&!FR.done,b=FR.on?raceBest():null;title=FR.on?'Flag race':runL.custom?runL.name:'Trick Park';
     if(FR.on)line=FR.done?'Finished! Keep exploring, or race again.':`Race time ${fmtRace(FR.t)}${b?' · best '+fmtRace(b):''} · checkpoints ${FR.reached}/${runL.cps.length}`;
-    acts=[modeList().length?['Games',()=>gamesMenu()]:null,race&&FR.reached?['Last checkpoint',()=>{resume();frRespawn()}]:null,FR.on?['Restart race',()=>startRun(true)]:null].filter(Boolean)}
+    acts=[modeList().length?['Play',()=>gamesMenu()]:null,race&&FR.reached?['Last checkpoint',()=>{resume();frRespawn()}]:null,FR.on?['Restart race',()=>startRun(true)]:null].filter(Boolean)}
   else if(mode==='run'){title='Orb run';line=`Score ${score} · ${Math.ceil(time)}s left`;acts=[['Restart orb run',()=>{resume();quickRetry()}],['Stop orb run',()=>{resume();stopOrbRun()}]]}
   else{title=curL.name;line=`${fmt(atime)} \u00b7 ${coreCount}/3 cores`;acts=[['Retry',retry]]}
   const B=[['Resume',resume],...acts,...tail],g=k=>B[k]||['',null];
