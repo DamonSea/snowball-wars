@@ -86,14 +86,21 @@ function beginTimed(o={}){if(mode!=='run'||!runFree||runCD>0||state!=='play'||WA
 function backToFree(){startRun(true)}
 // the PLAY pad (or △ / Enter in free roam): pick a mode. With only one on offer, just start it.
 let padLock=false;
-function modeMenu(){if(state!=='play'||mode!=='run'||!runFree||runCD>0||WAR.on||TAG.on)return;
-  const solo=!warPeers().length,O=[];
+// the modes on offer here, with a one-line description each
+function modeList(){const solo=!warPeers().length,O=[];
   if(runL.spad)O.push(['Orb Race',()=>{resume();beginTimed()},`<b>Orb Race</b> \u00b7 60 seconds of orb grabbing${solo&&RACE.rivals?' vs '+RACE.rivals+' computer rival'+(RACE.rivals>1?'s':''):''}`]);
   if(canWar())O.push(['Snowball Wars',()=>{resume();startWars()},`<b>Snowball Wars</b> \u00b7 3-minute snowball fight${solo?' vs 3 computer players':''}`]);
   if(canTag())O.push(['Tag',()=>{resume();startTag()},`<b>Tag</b> \u00b7 2 minutes; least time as It wins${solo?' (vs 3 computer players)':''}`]);
-  if(!O.length)return;if(O.length===1){O[0][1]();return}
-  state='paused';SFX.ui(2);const g=k=>O[k]||['',null];
-  overlay(true,'Choose a mode','',g(0)[0],g(1)[0],g(0)[1],g(1)[1],g(2)[0]||'Cancel',g(2)[1]||(()=>resume()),O.length>2?'Cancel':'',O.length>2?()=>resume():null);$('ovP').innerHTML=O.map(o=>o[2]).join('<br>');$('ov').classList.add('menu','pausem')}
+  return O}
+// show the modes as a menu; last button: Cancel (back to playing) or Back (to the pause menu)
+function showModes(title,lastTxt,last){const O=modeList(),B=[...O.map(o=>[o[0],o[1]]),[lastTxt,last]],g=k=>B[k]||['',null];
+  overlay(true,title,'',g(0)[0],g(1)[0],g(0)[1],g(1)[1],g(2)[0],g(2)[1],g(3)[0],g(3)[1]);$('ovP').innerHTML=O.map(o=>o[2]).join('<br>');$('ov').classList.add('menu','pausem')}
+// the PLAY pad (or △ / Enter in free roam): pick a mode. With only one on offer, just start it.
+function modeMenu(){if(state!=='play'||mode!=='run'||!runFree||runCD>0||WAR.on||TAG.on)return;
+  const O=modeList();if(!O.length)return;if(O.length===1){O[0][1]();return}
+  state='paused';SFX.ui(2);showModes('Choose a mode','Cancel',()=>resume())}
+// pause menu > Games
+function gamesMenu(){if(state!=='paused')return;SFX.ui(2);showModes('Games','Back',()=>showPause())}
 // time's up (or out of lives): show the result and keep playing right where you are, back in free roam
 function endRun(){bankCombo();const rr=RACE.on?raceResult():null;const bk=runL.key,fin=score,nb=fin>(bestR[bk]||0);if(nb){bestR[bk]=fin;try{localStorage.setItem(bk,fin)}catch(e){}}
   beep(220,.4,'sawtooth',.08);const why=lives<=0?(FOE_STYLE==='spike'?'Spiked!':'Wiped out!'):'Time\u2019s up!';

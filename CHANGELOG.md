@@ -3,6 +3,18 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.23.0] - 2026-11-23 — Games menu, Moves screen, dive grab
+### Changed
+- **Pause menu decluttered:** Resume, **Games**, Moves, Settings, Quit. Games opens Orb Race, Snowball Wars and
+  Tag, each with a one-line description, plus Back. ○ / Esc / Options on Games goes back to the pause menu.
+- **The Moves screen is rebuilt like the map picker.** Five pages (Basics, Big Jumps, In the Air,
+  Snowballs & Fighting, Game) you flip with ◀ ▶, ← →, L1 / R1 or the tabs. Each move is a card with its name, the
+  buttons on your device (keyboard or PS5) and a one-line tip. When a move has two buttons they read "○ / R2".
+- The title now reads "Flip's Moves" (or Nova's, or Tuk's).
+### Added
+- **Dive grab:** diving (or belly-sliding) into a tree or pole grabs it and starts the climb. It's a trick
+  worth 100.
+
 ## [2.22.1] - 2026-11-23 — Snowball pickups
 ### Changed
 - **Snowball Wars: snow piles are replaced by snowball pickups that work like orbs.** Glowing bundles of snowballs

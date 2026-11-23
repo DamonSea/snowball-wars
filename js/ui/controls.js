@@ -21,6 +21,32 @@ function renderControls(){
   if(!T_)rows.push(['Hold '+L('respawn'),'Respawn (spawn point / checkpoint)'],['Hold '+L('start'),'Restart the orb run, race or level'],['Settings (gear)','Change any button']);
   $('ctlList').innerHTML=rows.map(([x,y])=>`<dt>${x}</dt><dd>${y}</dd>`).join('');
 }
+// The Moves screen: the same moves, grouped into pages of cards (name, buttons on this device, a one-line tip).
+function moveGroups(){
+  const k=x=>`<kbd>${x}</kbd>`,b=x=>`<span class="ps">${x}</span>`,P=pad.connected,T_=touchUI&&!P;
+  const L=id=>{if(T_)return{jump:'Jump',attack:'Hit',crouch:'Duck',throw:'Snow',pound:'Pound',start:'Start',pause:'II',respawn:'',camL:'',camR:'',camC:''}[id]||'';
+    const l=P?(BIND.pad[id]||[]):BIND.kb[id]||[];return l.length?l.map(c=>P?b(padName(c)):k(keyName(c))).join(' / '):'<i>unbound</i>'};
+  const mv=T_?'Joystick':P?b('L-stick'):(()=>{const ks=['up','left','down','right'].map(id=>BIND.kb[id][0]),n=ks.map(c=>c?keyName(c):'?');return n.every(x=>x.length===1)?k(n.join('')):n.map(k).join(' ')})();
+  const J=L('jump'),C=L('crouch'),A_=L('attack'),acro=!!chars[ci].acro,run=mode==='run',plus=' + ';
+  const G=[
+    {name:'Basics',items:[['Move',mv,'Full speed takes a moment; tap to turn on the spot.'],['Jump',J,'Hold for full height, tap for a hop.'],
+      ...(acro?[['Crouch',C,'Move while crouched to crouch-walk.']]:[]),
+      ['Climb',acro?'Run or dive into a tree or pole':'Run into a tree or pole',acro?'Jump at the top to flip off it.':'Jump to leap off.'],
+      ...(acro?[['Butt slide','On a slope: hold '+C,'Steer with the stick; Jump to hop off.']]:[])]},
+    ...(acro?[{name:'Big Jumps',items:[['Triple jump',J+' as you land \u00d73','Keep running; each jump goes higher.'],['Long jump','Run'+plus+C+plus+J,'Low and far: clears the widest gaps.'],
+      ['Backflip','Stand still'+plus+C+plus+J,'The highest single jump.'],['Side flip','Run, reverse'+plus+J,'Turn hard against your run, then jump.'],
+      ['Wall jump',J+' off a wall','Bounce between two walls to climb.'],['Ledge grab','Fall past a ledge facing it','Push toward it to climb up, '+J+' to hop, sideways to shimmy.']]}]:[]),
+    {name:'In the Air',items:[...(acro?[['Dive',C+' in the air','Stretches a jump; dive into a pole to grab it.']]:[]),['Flying kick','In the air: '+A_,'Knocks over anything you fly into.'],
+      ['Ground pound','In the air: '+L('pound'),'Smashes down and knocks things around you.'],['Pound jump',J+' as you land a pound','Shoots you straight up, very high.']]},
+    {name:'Snowballs & Fighting',items:[['Attack',A_,'Tap \u00d73 for a combo.'],...(acro?[['Sweep kick',C+plus+A_,'Spins round and hits all around you.']]:[]),
+      ...(run?[['Throw a snowball',L('throw'),'Aims where you face (or push the stick). Hit snowmen to get snowballs back.']]:[]),
+      ...(WIN?[['Snow angel',(chars[ci].name==='Nova'?'Standing: ':'Crouch'+plus)+L('pound'),'Lie in the snow and flap.']]:[]),
+      ...(run?[['Giant snowball','Walk into a small snowball','It grows as you roll it; bowl people over.']]:[])]},
+    {name:'Game',items:[...(run&&runFree?[['Choose a mode',L('start')+' or the PLAY pad','Orb Race, Snowball Wars or Tag.']]:[]),
+      ...(T_?[]:[['Respawn','Hold '+L('respawn'),'Back to the spawn point or your checkpoint.'],['Restart','Hold '+L('start'),'Restart the run, match, race or level.']]),
+      ...(camTurns()&&!T_?[['Turn the camera',P?b('R-stick'):L('camL')+' '+L('camR'),'Up and down tilt it. '+L('camC')+' snaps it behind you.']]:[]),
+      ['Pause',L('pause'),'Games, Moves and Settings live here.'],...(T_?[]:[['Sound',P?b('Create'):k('M'),'Turns the sound on or off.']]),['Change buttons','Settings \u2192 Controls','Rebind anything.']]}];
+  return G.filter(g=>g.items.length)}
 function setCtl(h){ctlHidden=h;document.body.classList.toggle('ctlHidden',h);try{localStorage.setItem('orbRunCtlHidden',h?'1':'0')}catch(e){}}
 $('ctlHide').addEventListener('click',()=>setCtl(true));$('ctlShow').addEventListener('click',()=>setCtl(false));
 setCtl(ctlHidden);
@@ -28,7 +54,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)pause()});
 // On a Mac, keys pressed while Cmd is held never send a key-up (Cmd+C, Cmd+Shift+4...), so they'd stay "held" forever:
 // ignore them, and let go of everything when Cmd is released or the page loses focus.
 const releaseAll=()=>{for(const k in keys)keys[k]=false};
-addEventListener('keydown',e=>{if(capKey(e))return;if(movesOpen&&(e.code==='Escape'||e.code==='Backspace')){e.preventDefault();closeMoves();return}if(e.metaKey){if(e.key!=='Meta')return}else keys[e.code]=true;
+addEventListener('keydown',e=>{if(capKey(e))return;if(movesOpen){if(e.code==='Escape'||e.code==='Backspace'){e.preventDefault();closeMoves();return}if(e.code==='ArrowLeft'||e.code==='ArrowRight'){e.preventDefault();moveCat(e.code==='ArrowLeft'?-1:1);return}}if(e.metaKey){if(e.key!=='Meta')return}else keys[e.code]=true;
   if(setOpen){if(e.code==='Escape')closeSet();return}
   const acts=actsOfKey(e.code==='NumpadEnter'?'Enter':e.code);
   if(!e.repeat)for(const id of acts)if(state==='play'||(id==='pause'&&state==='paused'))press(id);

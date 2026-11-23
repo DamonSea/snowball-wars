@@ -33,7 +33,9 @@ const actsOfKey=c=>ACT.filter(a=>BIND.kb[a.id].includes(c)).map(a=>a.id);
 function press(id){
   if(id==='jump')jumpBuf=.15;else if(id==='attack')attackPress();else if(id==='throw')throwSnow();else if(id==='pound')poundOrSnow();
   else if(id==='start'){if(state==='play'&&mode==='run'&&runFree&&!WAR.on&&!(FR.on&&!runL.spad))modeMenu()}   // holding it restarts instead (qol.js)
-  else if(id==='pause'){if(state==='play')pause();else if(state==='paused')resume()}}
+  else if(id==='pause'){if(state==='play')pause();else if(state==='paused')backOrResume()}}
+// on a sub-menu (Games), Esc / Options / ○ goes back to the pause menu; otherwise it closes it
+function backOrResume(){const bk=['go','alt','alt2','alt3','alt4','alt5','alt6','alt7'].map($).find(e=>e&&e.textContent==='Back');if(bk)bk.click();else resume()}
 function keyName(c){const m={Space:'Space',ShiftLeft:'L Shift',ShiftRight:'R Shift',ControlLeft:'L Ctrl',ControlRight:'R Ctrl',AltLeft:'L Alt',AltRight:'R Alt',
   Enter:'Enter',NumpadEnter:'Enter',Backspace:'Backspace',CapsLock:'Caps Lock',Backquote:'`',Minus:'-',Equal:'=',BracketLeft:'[',BracketRight:']',
   Semicolon:';',Quote:"'",Comma:',',Period:'.',Slash:'/',Backslash:'\\',Mouse0:'Left click',Mouse1:'Middle click',Mouse2:'Right click',Mouse3:'Mouse 4',Mouse4:'Mouse 5'};

@@ -65,7 +65,7 @@ function pollPad(){
   const L=pr(14)||se==='l',R=pr(15)||se==='r',U=pr(12)||se==='u',D=pr(13)||se==='d';
   if(capPad(pr))return;
   if(setOpen){setNav(L,R,U,D,pr(0),pr(1)||pr(9),pr(4),pr(5));return}
-  if(movesOpen){movesPad(U,D,pr(1)||pr(9));return}
+  if(movesOpen){movesPad(L,R,U,D,pr(1)||pr(9),pr(4),pr(5));return}
   if(PARK.on){parkPad(L,R,pr(0),pr(1),pr(3));return}
   if(typeof mapsOpen!=='undefined'&&mapsOpen){panelNav($('maps'),L,R,U,D,pr(0));if(pr(1)){closeMapsPanel();parkMenu()}return}
   if(state==='play'){
@@ -79,8 +79,8 @@ function pollPad(){
     if(L||U||R||D){document.body.classList.add('padnav');i=(L||U)?(i<=0?bs.length-1:i-1):(i+1)%bs.length;bs[i].focus()}
     if(state==='paused'&&pr(17))setCtl(!ctlHidden);
     if(pr(0))(bs[i]||bs[0]).click();
-    else if(state==='paused'&&(BIND.pad.pause||[]).some(i=>pr(i)))resume();
-    else if(pr(1)){if(state==='paused')resume();else{const bk=['alt2','alt3','alt4','alt5','alt6','alt7'].map($).find(e=>e.textContent==='Back');bk&&bk.click()}}
+    else if(state==='paused'&&(BIND.pad.pause||[]).some(i=>pr(i)))backOrResume();
+    else if(pr(1)){if(state==='paused')backOrResume();else{const bk=['alt2','alt3','alt4','alt5','alt6','alt7'].map($).find(e=>e.textContent==='Back');bk&&bk.click()}}
   }
 }
 addEventListener('gamepadconnected',()=>pollPad());addEventListener('gamepaddisconnected',()=>pollPad());

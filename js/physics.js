@@ -9,11 +9,13 @@ function rawInput(){let ix=kbAxisX()+joy.x+pad.x,iz=kbAxisZ()+joy.z+pad.z;
 const leafCol=()=>CL.tree&&CL.tree.pole?0xffe2a8:WIN?0xffffff:0x3fa65a;
 const climbName=n=>CL.tree&&CL.tree.pole?n.replace('Tree','Pole'):n;
 function tryGrab(dt){
-  if(CL.on||CL.cool>0||state!=='play'||ATK.t>0||A.knock>0||SB.stun>0||GP.st||YS.t>0||YS.spray||SA.t>0||A.mode==='dive'||A.mode==='slide'){CL.touch=0;return}
-  const[ix,iz]=rawInput(),im=Math.hypot(ix,iz);if(im<.4){CL.touch=0;return}
+  if(CL.on||CL.cool>0||state!=='play'||ATK.t>0||A.knock>0||SB.stun>0||GP.st||YS.t>0||YS.spray||SA.t>0){CL.touch=0;return}
+  // diving (or belly-sliding) into a tree or pole grabs it straight away, aimed the way you're flying
+  const diving=chars[ci].acro&&(A.mode==='dive'||A.mode==='slide'),dsp=Math.hypot(vel.x,vel.z);
+  const[ix,iz]=diving&&dsp>1?[vel.x/dsp,vel.z/dsp]:rawInput(),im=Math.hypot(ix,iz);if(im<.4||(diving&&dsp<=1)){CL.touch=0;return}
   for(const c of advCol){if(!c.tree)continue;const dx=c.x-P.position.x,dz=c.z-P.position.z,d=Math.hypot(dx,dz);
     if(d<c.r+.7&&py>=c.y-.1&&py<c.top-1.3&&(ix*dx+iz*dz)/(d*im)>.6){CL.touch+=dt;
-      if(CL.touch>(grounded?T.climb.grabDelay:0)){Object.assign(CL,{on:true,tree:c,ang:Math.atan2(-dx,-dz),h:Math.max(py,c.y)+.15,top:false,touch:0,stepT:0});
+      if(diving||CL.touch>(grounded?T.climb.grabDelay:0)){if(diving)addTrick('Dive Grab');Object.assign(CL,{on:true,tree:c,ang:Math.atan2(-dx,-dz),h:Math.max(py,c.y)+.15,top:false,touch:0,stepT:0});
         vel.set(0,0,0);vy=0;A.spd=0;A.mode='normal';A.flipT=99;grounded=false;stand=null;SFX.grab();burst(V(P.position.x,py+1.2,P.position.z),leafCol(),8)}
       return}}
   CL.touch=0;

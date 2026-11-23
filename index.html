@@ -41,7 +41,9 @@
 <div id="warsBoard" class="warsboard" aria-live="off"></div>
 <div id="holdMeter" class="holdmeter" aria-live="polite"><span id="holdLab"></span><i><b id="holdBar"></b></i></div>
 <div id="moves" class="ov hide" aria-label="Moves"><div class="card movescard" role="dialog" aria-labelledby="movesT">
-  <h1 id="movesT">Moves</h1><dl id="movesList" class="moveslist"></dl>
+  <h1 id="movesT">Moves</h1>
+  <div class="mvnav"><button id="mvPrev" class="parkarrow" aria-label="Previous">◀<span class="pk pkw" aria-hidden="true">L1</span></button><div class="parkname mvcat"><b id="mvCat"></b><small id="mvOf"></small></div><button id="mvNext" class="parkarrow" aria-label="Next">▶<span class="pk pkw" aria-hidden="true">R1</span></button></div>
+  <div id="mvTabs" class="mvtabs"></div><div id="movesList" class="mvgrid"></div>
   <div class="btns"><button id="movesBack">Back<span class="pk" aria-hidden="true">○</span></button></div></div></div>
 <div id="park" class="park hide" aria-label="Trick Park">
   <div class="parkcard" role="dialog" aria-labelledby="parkT">

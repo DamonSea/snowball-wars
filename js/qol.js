@@ -32,9 +32,16 @@ function toFreeInPlace(){raceStop();runFree=true;runCD=0;time=T.run.time;runT=0;
   if(!MP.client){const extra=runHz.splice(T.run.hazardsFree);extra.forEach(h=>rmObj(h.g));runQ=[]}
   hud();freeUI();renderControls()}
 // ---------- Moves list (pause menu) ----------
-let movesOpen=false;
-function openMoves(){movesOpen=true;$('movesList').innerHTML=$('ctlList').innerHTML;$('movesT').textContent=`Moves · ${chars[ci].name}`;
-  $('moves').classList.remove('hide');$('ov').classList.add('hide');$('movesList').scrollTop=0;setTimeout(()=>{try{$('movesBack').focus({preventScroll:true})}catch(e){}},50)}
+let movesOpen=false,mvCat=0;
+// Moves: pages of move cards, flipped like the map picker (arrows, tabs, L1/R1)
+function openMoves(){movesOpen=true;mvCat=Math.min(mvCat,moveGroups().length-1);$('movesT').textContent=`${chars[ci].name}\u2019s Moves`;renderMoves();
+  $('moves').classList.remove('hide');$('ov').classList.add('hide');setTimeout(()=>{try{$('movesBack').focus({preventScroll:true})}catch(e){}},50)}
+function renderMoves(){const G=moveGroups(),g=G[mvCat];
+  $('mvCat').textContent=g.name;$('mvOf').textContent=`${mvCat+1} of ${G.length}`;
+  $('mvTabs').innerHTML=G.map((q,i)=>`<button class="mvtab${i===mvCat?' on':''}" data-i="${i}" tabindex="-1">${q.name}</button>`).join('');
+  $('movesList').innerHTML=g.items.map(([n,keys,tip])=>`<div class="mvc"><b>${n}</b><div class="mvk">${keys}</div><p>${tip}</p></div>`).join('');$('movesList').scrollTop=0}
+function moveCat(d){const n=moveGroups().length;mvCat=(mvCat+d+n)%n;SFX.ui(1);renderMoves()}
 function closeMoves(){if(!movesOpen)return;movesOpen=false;$('moves').classList.add('hide');showPause()}
-$('movesBack').addEventListener('click',closeMoves);
-function movesPad(U,D,back){if(U||D)$('movesList').scrollBy({top:D?90:-90,behavior:'smooth'});if(back)closeMoves()}
+$('movesBack').addEventListener('click',closeMoves);$('mvPrev').addEventListener('click',()=>moveCat(-1));$('mvNext').addEventListener('click',()=>moveCat(1));
+$('mvTabs').addEventListener('click',e=>{const t=e.target.closest('.mvtab');if(t){mvCat=+t.dataset.i;SFX.ui(1);renderMoves()}});
+function movesPad(L,R,U,D,back,l1,r1){if(L||l1)moveCat(-1);if(R||r1)moveCat(1);if(U||D)$('movesList').scrollBy({top:D?120:-120,behavior:'smooth'});if(back)closeMoves()}

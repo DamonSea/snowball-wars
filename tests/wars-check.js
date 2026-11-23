@@ -3,7 +3,7 @@ const btns=()=>[...document.querySelectorAll('#ov .btns button')].filter(b=>b.te
 const click=t=>[...document.querySelectorAll('#ov button')].find(b=>b.textContent===t).click();
 const at=(b,own=true)=>{launchSnowball([b.x,b.y+1.1,b.z,.01,0,0],own,own?null:'bot1',++SB.seq);__step(2)};
 menu();pickMode='run';pickLevel=0;ci=2;showChar();confirmChar();__step(10);
-pause();ok('free roam pause offers Snowball Wars',btns().includes('Snowball Wars'));click('Snowball Wars');__step(2);
+pause();click('Games');__step(2);ok('pause → Games offers Snowball Wars',btns().includes('Snowball Wars'));click('Snowball Wars');__step(2);
 ok('match starts: 3 computer players, board up',WAR.on&&WAR.bots.length===3&&$('warsBoard').classList.contains('on'));
 ok('orbs and enemies cleared',orbs.length===0&&runHz.length===0);
 ok('6 snowball pickups out, at orb spots',WAR.piles.length===6&&WAR.piles.filter(p=>!p.spot.rand).length>=4);
