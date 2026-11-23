@@ -3,6 +3,20 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.23.2] - 2026-11-23 — Tag bots that actually tag
+### Fixed
+- **A computer player who started a round of Tag as It could never tag anyone**, so the round stalled. Its
+  "ready to tag" timer started unset and was read as "not yet" forever. In a simulated 100 seconds of bots-only
+  Tag they now make about 20 tags (was 0-1).
+- A stunned It (hit by a snowball) can no longer tag anyone until the stun wears off.
+### Added
+- **Tag personalities**, shown on each computer player's name tag:
+  - **Sleet, the Hunter:** the fastest chaser; aims where you're going, not where you are; goes after whoever's
+    winning (least time as It).
+  - **Flurry, the Trickster:** zigzags and hops when running away; creeps up, then lunges.
+  - **Drift, the Sneak:** runs away early, to the far side; as It it picks on you, stalking and then sprinting.
+- `tests/comment_scan.py`: flags code accidentally hidden behind a `//` comment on the same line.
+
 ## [2.23.1] - 2026-11-23 — Village stars, Play menu
 ### Changed
 - **Orb style has a new default, Auto:** each map picks its own style, so Christmas Village uses stars and every

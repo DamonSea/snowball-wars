@@ -59,7 +59,7 @@ const T={
   race:{spill:200,spillOrb:100,botSpeed:5.4},
   // Tag: round length, the new It's count before it can tag, no-tag-back time, touch reach, computer players and
   // their chase / flee speeds, and how high they can hop after you
-  tag:{time:120,count:1.5,noBack:2,reach:1.3,bots:3,chase:8.6,flee:7.2,hopMax:4.2},
+  tag:{time:120,count:1.5,noBack:2,reach:1.3,bots:3,hopMax:4.2},   // chase / flee speeds live in each personality (TAG_PERS in tag.js)
   wars:{time:180,hp:3,hit:100,trick:200,ko:250,respawn:2.5,invuln:2.5,bots:3,packs:6,packSmall:2,packBig:4,regen:8},   // packs: snowball pickups on the map (small on the ground, big up high / mid-air)
   camera:{height:10.5,back:13,autoTurn:2.6}   // autoTurn: Free + auto's turn speed (rad/s) when running fully sideways
 };

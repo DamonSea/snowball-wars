@@ -23,7 +23,7 @@ function startTag(o={}){if(!canTag()&&!TAG.on)return;if(TAG.on)tagStop(false);if
   if(!MP.client){orbs.forEach(q=>rmObj(q.g));orbs=[];runHz.forEach(h=>rmObj(h.g));runHz=[];runQ=[]}
   dropCombo();score=0;
   const peers=warPeers(),n=o.bots!==undefined?o.bots:(peers.length?0:T.tag.bots);TAG.bots=[];
-  for(let k=0;k<n;k++){const b=makeBot(k);b.key='bot'+k;b.it=itSprite();b.a.g.add(b.it);b.it.position.y=3.35;b.cool=0;TAG.bots.push(b);TAG.itT[b.key]=0}
+  for(let k=0;k<n;k++){const b=makeBot(k);b.key='bot'+k;b.it=itSprite();b.a.g.add(b.it);b.it.position.y=3.35;b.cool=0;b.count=0;b.safeT=0;b.pers=TAG_PERS[k%TAG_PERS.length];TAG.bots.push(b);TAG.itT[b.key]=0}
   // who starts as It: a friend's game says; otherwise anyone at random
   if(o.it)TAG.it=o.it;else{const all=['me',...TAG.bots.map(b=>b.key),...peers.map(p=>p.peer)];TAG.it=all[Math.floor(Math.random()*all.length)]}
   if(TAG.it!=='me'&&!TAG.it.startsWith('bot')){TAG.seq++;TAG.last=[TAG.seq,TAG.it]}   // tell that friend they're It
@@ -63,7 +63,8 @@ function tagChecks(){if(TAG.cd>0)return;
     for(const b of TAG.bots)if(!(TAG.safeT>0&&TAG.safeFrom===b.key)&&tagNear(P.position.x,py,P.position.z,b.x,b.y,b.z)){passIt('me',b.key);return}
     for(const p of tagPeers()){if(TAG.safeT>0&&TAG.safeFrom===p.peer)continue;const a=MP.av.get(p.peer);if(a&&tagNear(P.position.x,py,P.position.z,a.g.position.x,a.g.position.y,a.g.position.z)){passIt('me',p.peer);return}}}
   const ib=TAG.bots.find(b=>b.key===TAG.it);
-  if(ib&&ib.count<=0){if(!(ib.safeT>0&&ib.safeFrom==='me')&&tagNear(ib.x,ib.y,ib.z,P.position.x,py,P.position.z)){passIt(ib.key,'me');return}
+  // a stunned It (hit by a snowball) can't tag
+  if(ib&&(ib.count||0)<=0&&ib.stun<=0){if(!(ib.safeT>0&&ib.safeFrom==='me')&&tagNear(ib.x,ib.y,ib.z,P.position.x,py,P.position.z)){passIt(ib.key,'me');return}
     for(const b of TAG.bots)if(b!==ib&&!(ib.safeT>0&&ib.safeFrom===b.key)&&tagNear(ib.x,ib.y,ib.z,b.x,b.y,b.z)){passIt(ib.key,b.key);return}}}
 // a friend tagged me (their presence names me in a tag they haven't sent before)
 function tagFromPeers(){for(const p of tagPeers()){const l=p.presence.tm[4];if(!Array.isArray(l)||!Number.isInteger(l[0]))continue;
@@ -75,22 +76,44 @@ function tagCatch(p,ball){if(!tagLive()||!ball.own)return false;
   return false}
 
 // ---------- computer players ----------
+// Each has a personality, shown on its name tag:
+//   Hunter (Sleet): fastest chaser, aims where you're going, goes after whoever's winning.
+//   Trickster (Flurry): zigzags and hops when running away; creeps up, then lunges.
+//   Sneak (Drift): runs early and far, to the corners; as It it picks on you, stalking then sprinting.
+const TAG_PERS=[
+  {label:'Hunter',chase:9.3,flee:7.4,fleeR:9,lead:1,target:'leader'},
+  {label:'Trickster',chase:8.2,flee:7.7,fleeR:10,lead:.4,target:'nearest',zig:1,hops:1,lunge:1},
+  {label:'Sneak',chase:8.0,flee:7.0,fleeR:15,lead:.6,target:'me',hide:1,stalk:1}];
+const fVel=k=>k==='me'?{x:vel.x,z:vel.z}:(()=>{const b=TAG.bots.find(q=>q.key===k);return b?{x:b.vx,z:b.vz}:{x:0,z:0}})();
 const fPos=k=>k==='me'?{x:P.position.x,y:py,z:P.position.z}:(()=>{const b=TAG.bots.find(q=>q.key===k);if(b)return{x:b.x,y:b.y,z:b.z};const a=MP.av.get(k);return a?{x:a.g.position.x,y:a.g.position.y,z:a.g.position.z}:null})();
-function tagThink(b,dt){const it=TAG.it===b.key,k=1-Math.exp(-8*dt),onG=b.y<=groundAt(b.x,b.z,b.y).h+.05;
-  let tx=b.x,tz=b.z,sp=0,tgt=null;
-  if(it){if(b.count>0){b.count-=dt}else{   // chase whoever's closest (not the one who just tagged it)
-      let bd=1e9;for(const k2 of ['me',...TAG.bots.filter(q=>q!==b).map(q=>q.key)]){if(b.safeT>0&&b.safeFrom===k2)continue;const f=fPos(k2);if(!f)continue;const d=Math.hypot(f.x-b.x,f.z-b.z)+Math.max(0,f.y-b.y)*2;if(d<bd){bd=d;tgt=f}}
-      if(tgt){tx=tgt.x;tz=tgt.z;sp=T.tag.chase}}}
-  else{const f=fPos(TAG.it);if(f&&Math.hypot(f.x-b.x,f.z-b.z)<11){   // run from the It, veering when walls get in the way
-      if((b.retarget-=dt)<=0){b.retarget=.8+Math.random();b.veer=(Math.random()-.5)*1.6}
-      const a=Math.atan2(b.x-f.x,b.z-f.z)+(b.veer||0);tx=b.x+Math.sin(a)*6;tz=b.z+Math.cos(a)*6;sp=T.tag.flee;
-      // keep off the rim
-      if(Math.hypot(tx,tz)>ARENA-3){const r=Math.hypot(b.x,b.z)||1;tx=b.x-b.x/r*4+(b.z/r)*5*(b.veer>0?1:-1);tz=b.z-b.z/r*4-(b.x/r)*5*(b.veer>0?1:-1)}}
-    else if((b.retarget-=dt)<=0){b.retarget=1.5+Math.random()*2;const s=freeSpot(3);b.tx=s.x;b.tz=s.z}else{tx=b.tx??b.x;tz=b.tz??b.z;sp=2.5}}
+function tagThink(b,dt){const it=TAG.it===b.key,k=1-Math.exp(-8*dt),onG=b.y<=groundAt(b.x,b.z,b.y).h+.05,Pe=b.pers||TAG_PERS[0];
+  let tx=b.x,tz=b.z,sp=0,tgt=null;b.lungeT=Math.max(0,(b.lungeT||0)-dt);b.lungeCd=Math.max(0,(b.lungeCd||0)-dt);
+  if(it){if(b.count>0){b.count-=dt}else{
+      // who to chase: Hunter -> whoever's winning, Sneak -> you, Trickster -> whoever's closest (never the one who just tagged it)
+      const opts=['me',...TAG.bots.filter(q=>q!==b).map(q=>q.key)].filter(k2=>!(b.safeT>0&&b.safeFrom===k2)).map(k2=>({k:k2,f:fPos(k2)})).filter(o=>o.f);
+      const reach=o=>o.f.y-b.y<T.tag.hopMax,dist=o=>Math.hypot(o.f.x-b.x,o.f.z-b.z)+Math.max(0,o.f.y-b.y)*2;
+      let pick=null;
+      if(Pe.target==='me'){const m=opts.find(o=>o.k==='me');if(m&&reach(m)&&dist(m)<22)pick=m}
+      if(!pick&&Pe.target==='leader'){const c=opts.filter(o=>reach(o)&&dist(o)<20).sort((a,b2)=>(TAG.itT[a.k]||0)-(TAG.itT[b2.k]||0));pick=c[0]||null}
+      if(!pick)pick=opts.sort((a,b2)=>dist(a)-dist(b2))[0]||null;
+      if(pick){tgt=pick.f;const d=Math.hypot(tgt.x-b.x,tgt.z-b.z),v=fVel(pick.k),lead=Math.min(1.2,d/Pe.chase)*Pe.lead;   // aim where they're going
+        tx=tgt.x+v.x*lead;tz=tgt.z+v.z*lead;sp=Pe.chase;
+        if(Pe.stalk)sp=d>6?Pe.chase*.72:Pe.chase*1.15;                                       // Sneak: stalk, then sprint
+        if(Pe.lunge){if(d<4.5&&b.lungeCd<=0){b.lungeT=.5;b.lungeCd=2.6;SFX.ui(2)}sp=b.lungeT>0?Pe.chase*1.4:d>5?Pe.chase:Pe.chase*.8}}}}   // Trickster: creep, lunge
+  else{const f=fPos(TAG.it),d=f?Math.hypot(f.x-b.x,f.z-b.z):99;
+    if(f&&d<Pe.fleeR){
+      if((b.retarget-=dt)<=0){b.retarget=Pe.zig?.35+Math.random()*.35:.8+Math.random();b.veer=(Math.random()-.5)*(Pe.zig?2.4:1.6)}
+      if(Pe.hide&&((b.hideT=(b.hideT||0)-dt)<=0||!b.hide)){b.hideT=2;let best=null,bd=-1;for(let n=0;n<8;n++){const q=freeSpot(3),dd=Math.hypot(q.x-f.x,q.z-f.z);if(dd>bd){bd=dd;best=q}}b.hide=best}
+      if(Pe.hide&&b.hide&&Math.hypot(b.hide.x-b.x,b.hide.z-b.z)>1.5){tx=b.hide.x;tz=b.hide.z}   // Sneak: head for the far side
+      else{const a=Math.atan2(b.x-f.x,b.z-f.z)+(b.veer||0);tx=b.x+Math.sin(a)*6;tz=b.z+Math.cos(a)*6}
+      sp=Pe.flee;
+      if(Math.hypot(tx,tz)>ARENA-3){const r=Math.hypot(b.x,b.z)||1;tx=b.x-b.x/r*4+(b.z/r)*5*(b.veer>0?1:-1);tz=b.z-b.z/r*4-(b.x/r)*5*(b.veer>0?1:-1)}
+      if(Pe.hops&&onG&&(b.hopT||0)<=0&&Math.random()<dt*1.2){b.vy=8.5;b.hopT=.9}}             // Trickster: hop about
+    else if((b.retarget-=dt)<=0){b.retarget=1.5+Math.random()*2;const q=freeSpot(3);b.tx=q.x;b.tz=q.z}else{tx=b.tx??b.x;tz=b.tz??b.z;sp=2.5}}
   const ex=tx-b.x,ez=tz-b.z,el=Math.hypot(ex,ez);
   b.vx+=((el>.3?ex/el:0)*sp-b.vx)*k;b.vz+=((el>.3?ez/el:0)*sp-b.vz)*k;
   if(Math.hypot(b.vx,b.vz)>.5)b.face+=angD(Math.atan2(b.vx,b.vz),b.face)*Math.min(1,dt*10);
-  // hop up after someone on a low ledge (or over a wall in the way)
+  // hop up after someone on a low ledge
   b.hopT=Math.max(0,(b.hopT||0)-dt);
   if(it&&tgt&&onG&&b.hopT<=0&&b.count<=0){const dy=tgt.y-b.y,dh=Math.hypot(tgt.x-b.x,tgt.z-b.z);
     if(dy>.6&&dy<T.tag.hopMax&&dh<5){b.vy=Math.sqrt(2*T.gravity*(dy+.8));b.hopT=1.2;SFX.ui(1)}}}
@@ -99,7 +122,7 @@ function updateTagBot(b,dt){const a=b.a;a.g.visible=true;
   if(b.stun>0){b.vx*=Math.exp(-2.5*dt);b.vz*=Math.exp(-2.5*dt)}else if(TAG.cd<=0)tagThink(b,dt);else{b.vx*=.8;b.vz*=.8}
   botMove(b,dt);a.stars.visible=b.stun>0;if(b.stun>0){a.stars.position.set(0,2.35,0);a.stars.rotation.y+=dt*7}
   b.it.visible=TAG.it===b.key;if(b.it.visible)b.it.position.y=3.35+Math.sin(tAll*6)*.08;
-  botPose(b,dt);drawTag(a,b.name,`It ${Math.round(TAG.itT[b.key]||0)}s`,false)}
+  botPose(b,dt);drawTag(a,b.name,`${(b.pers||{}).label||''} \u00b7 It ${Math.round(TAG.itT[b.key]||0)}s`,false)}
 
 // ---------- every frame ----------
 function tagUpdate(dt){

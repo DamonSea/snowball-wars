@@ -15,9 +15,14 @@ b.stun=0;b.x=P.position.x+.8;b.z=P.position.z;__step(5);ok('no tag-back right aw
 // after the safe time, the It bot catches me if I stand still
 for(let i=0;i<60*20&&TAG.it!=='me';i++)__step(1);ok('the It chases and tags someone (now It: '+tagName(TAG.it)+')',TAG.it!==b.key||TAG.it==='me');
 // time as It goes to whoever is It
-TAG.it='bot1';const t1=TAG.itT.bot1;__step(60);ok('the clock counts time as It for whoever has it',TAG.itT.bot1>t1+.9);
+TAG.it='bot1';TAG.bots.forEach(q=>q.stun=3);const t1=TAG.itT.bot1;__step(60);ok('the clock counts time as It for whoever has it',TAG.itT.bot1>t1+.9);
 // snowballs stun computer players
 const b2=TAG.bots[2];b2.stun=0;launchSnowball([b2.x,b2.y+1.1,b2.z,.01,0,0],true,null,++SB.seq);__step(2);ok('a snowball stuns a computer player',b2.stun>0);
+// a computer It catches you (the Sneak goes after you), but not while stunned
+{const sn=TAG.bots.find(q=>q.pers.label==='Sneak');TAG.it=sn.key;sn.count=0;sn.safeT=0;sn.stun=0;TAG.safeT=0;sn.x=P.position.x+3;sn.z=P.position.z;sn.y=py;let t=0;for(;t<300&&TAG.it!=='me';t++)__step(1);
+ ok('the Sneak, as It, catches you ('+(t/60).toFixed(1)+'s)',TAG.it==='me');
+ TAG.it=sn.key;sn.count=0;sn.safeT=0;sn.stun=3;sn.x=P.position.x+.5;sn.z=P.position.z;__step(20);ok('a stunned It can\'t tag you',TAG.it===sn.key);sn.stun=0}
+ok('name tags show each personality',TAG.bots.map(q=>q.pers.label).join(',')==='Hunter,Trickster,Sneak');
 // hops: the It hops up after you onto a low ledge
 TAG.it='bot0';const h=TAG.bots[0];h.count=0;h.safeT=0;h.stun=0;h.hopT=0;
 pause();ok('pause during Tag: '+btns().join(', '),btns().join('|')==='Resume|Restart tag|End tag|Moves|Settings|Quit to menu');resume();
