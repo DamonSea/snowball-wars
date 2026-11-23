@@ -3,7 +3,18 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
-## [2.23.2] - 2026-11-23 — Tag bots that actually tag
+## [2.24.0] - 2026-11-23 — User Maps
+### Added
+- **User Maps:** player-made maps that ship with the game, at the end of the Trick Park picker, marked
+  "User Map by <name>". The first is **Ben's Madness Map** by Ben: blocks, stairs, orbs and a forest of 335
+  climbable lamp posts. Every mode works on it (orb run, Orb Race, Snowball Wars, Tag).
+- `js/maps/user-maps.js`: add a map by pasting an exported `.snowmap.json` into `USER_MAPS`.
+### Changed
+- Builder lamps share one glow material, and User Maps merge their static meshes (the same merge the Christmas
+  Village uses, now shared in `js/levels/engine.js`). Ben's map draws in 175 calls instead of 489.
+- 26 exact duplicate items in Ben's map file (same thing, same spot) were removed; nothing visible changed.
+
+ - 2026-11-23 — Tag bots that actually tag
 ### Fixed
 - **A computer player who started a round of Tag as It could never tag anyone**, so the round stalled. Its
   "ready to tag" timer started unset and was read as "not yet" forever. In a simulated 100 seconds of bots-only

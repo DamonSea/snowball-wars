@@ -84,3 +84,17 @@ const blocksAt=(p,x,z,y)=>{if(!inside(p,x,z,T.wallMargin))return false;const t=t
 // a knockback, a moving platform), you can always walk back out instead of freezing in place
 const blockedMove=(ox,oz,nx,nz,y)=>plats.some(p=>blocksAt(p,nx,nz,y)&&(!blocksAt(p,ox,oz,y)||wallDepth(p,nx,nz)>wallDepth(p,ox,oz)+1e-6));
 const blocked=(x,z,y)=>plats.some(p=>{if(!inside(p,x,z,T.wallMargin))return false;const t=topOf(p,x,z),b=botOf(p,x,z);return t>y+T.stepUp&&(b===undefined||y+T.bodyH>b)});
+
+// Merge every static mesh under `root` that shares a material into one mesh: far fewer draw calls for maps full of
+// small decorations. Collision lives in plats/advCol, not in meshes, so this is safe for map scenery. Season-only,
+// textured and non-shadow-casting meshes are left alone.
+function mergeStatic(root){if(typeof root.updateMatrixWorld!=='function'||!THREE.BufferGeometry.prototype.applyMatrix4)return;
+  root.updateMatrixWorld(true);const byMat=new Map();
+  root.traverse(o=>{if(!o.isMesh||!o.castShadow||winterOnly.includes(o)||Array.isArray(o.material)||o.material.map)return;if(!byMat.has(o.material))byMat.set(o.material,[]);byMat.get(o.material).push(o)});
+  for(const[m,list]of byMat){if(list.length<2)continue;let n=0;
+    const gs=list.map(o=>{const g=o.geometry.index?o.geometry.toNonIndexed():o.geometry.clone();g.applyMatrix4(o.matrixWorld);n+=g.attributes.position.count;return g});
+    const pos=new Float32Array(n*3),nor=new Float32Array(n*3);let k=0;
+    for(const g of gs){pos.set(g.attributes.position.array,k*3);if(g.attributes.normal)nor.set(g.attributes.normal.array,k*3);k+=g.attributes.position.count;g.dispose()}
+    const bg=new THREE.BufferGeometry();bg.setAttribute('position',new THREE.BufferAttribute(pos,3));bg.setAttribute('normal',new THREE.BufferAttribute(nor,3));
+    const me=new THREE.Mesh(bg,m);me.castShadow=me.receiveShadow=true;root.add(me);
+    list.forEach(o=>{o.parent.remove(o);o.geometry.dispose()})}}

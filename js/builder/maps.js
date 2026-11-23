@@ -94,7 +94,7 @@ function buildCustom(map,preview=false){const m=cleanMap(map);
       plats.push({k:'b',x,z,w:it.w,d:it.d,top:.12,ice:true});break;
     case'pad':bouncePad(x,z,it.r,.35,col(it.c));spots.push({x,z,y:4,v:200,air:1,any:1});break;
     case'pole':add(new THREE.CylinderGeometry(.1,.1,it.h,10),col(it.c),x,it.h/2,z,grp);add(new THREE.SphereGeometry(.17,10,8),col(it.c),x,it.h,z,grp);advCol.push({x,z,r:.3,tree:true,pole:true,y:0,top:it.h+.05});break;
-    case'lamp':add(new THREE.CylinderGeometry(.09,.13,4,8),steel,x,2,z,grp);add(new THREE.SphereGeometry(.28,12,8),new THREE.MeshStandardMaterial({color:0xffe2a8,emissive:0xffc46b,emissiveIntensity:1.3}),x,4.1,z,grp);
+    case'lamp':add(new THREE.CylinderGeometry(.09,.13,4,8),steel,x,2,z,grp);add(new THREE.SphereGeometry(.28,12,8),lampGlow(),x,4.1,z,grp);
       advCol.push({x,z,r:.3,tree:true,pole:true,y:0,top:4.4});break;
     case'tree':tree(x,z,it.s,grp,advCol,0,i);break;
     case'rock':rock(x,z,it.s,grp,advCol);break;
@@ -118,6 +118,8 @@ function buildCustom(map,preview=false){const m=cleanMap(map);
   const M={name:m.name,author:m.author,grp,plats,advCol,spad,spawn,opt:m.opt,cps,finish:m.opt.flags?finish:null,key:'cm_'+m.id,gaps:[],spots,rollers:rollers.length?rollers:null,custom:true,map:m,
     snowmen:snowAt.map(([x,z],i)=>makeSnowman(grp,x,z,i))};
   advW=saved.advW;plats=saved.plats;advCol=saved.advCol;return M}
+// one glow material shared by every builder lamp (so maps with lots of lamps can be batched)
+let LAMP_GLOW=null;const lampGlow=()=>LAMP_GLOW||(LAMP_GLOW=keep(new THREE.MeshStandardMaterial({color:0xffe2a8,emissive:0xffc46b,emissiveIntensity:1.3})));
 // add (or replace) a custom map in the Trick Park list; returns its index
 function addCustomMap(map){const M=buildCustom(map),i=RUNMAPS.findIndex(q=>q.key===M.key);
   if(i>=0){const old=RUNMAPS[i];if(old===runL&&mode==='run'&&state!=='build'){freeTree(M.grp);return i}freeTree(old.grp);RUNMAPS[i]=M;if(old===runL)runL=M;return i}

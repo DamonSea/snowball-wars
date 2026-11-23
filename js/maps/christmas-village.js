@@ -173,16 +173,7 @@ for(let a=0;a<PI*2;a+=PI/10){const x=Math.cos(a)*25.5,z=Math.sin(a)*25.5;if(!pla
 // ---- performance: the village is mostly small decorations (bulbs, stripes, trim). Collision lives in `plats`/`advCol`,
 // not in the meshes, so every static mesh that shares a material is merged into one: far fewer draw calls.
 // Season-only meshes, textured ones and ones that don't cast shadows stay as they are.
-(function mergeStatic(root){if(typeof root.updateMatrixWorld!=='function'||!THREE.BufferGeometry.prototype.applyMatrix4)return;
-  root.updateMatrixWorld(true);const byMat=new Map();
-  root.traverse(o=>{if(!o.isMesh||!o.castShadow||winterOnly.includes(o)||Array.isArray(o.material)||o.material.map)return;if(!byMat.has(o.material))byMat.set(o.material,[]);byMat.get(o.material).push(o)});
-  for(const[m,list]of byMat){if(list.length<2)continue;let n=0;
-    const gs=list.map(o=>{const g=o.geometry.index?o.geometry.toNonIndexed():o.geometry.clone();g.applyMatrix4(o.matrixWorld);n+=g.attributes.position.count;return g});
-    const pos=new Float32Array(n*3),nor=new Float32Array(n*3);let k=0;
-    for(const g of gs){pos.set(g.attributes.position.array,k*3);if(g.attributes.normal)nor.set(g.attributes.normal.array,k*3);k+=g.attributes.position.count;g.dispose()}
-    const bg=new THREE.BufferGeometry();bg.setAttribute('position',new THREE.BufferAttribute(pos,3));bg.setAttribute('normal',new THREE.BufferAttribute(nor,3));
-    const me=new THREE.Mesh(bg,m);me.castShadow=me.receiveShadow=true;root.add(me);
-    list.forEach(o=>{o.parent.remove(o);o.geometry.dispose()})}})(G);
+mergeStatic(G);
 
 // ---- named gaps (points into the combo) ----
 const R=(x,z,w,d,y)=>({x,z,w,d,y});

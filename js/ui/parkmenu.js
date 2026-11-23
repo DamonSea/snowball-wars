@@ -1,7 +1,8 @@
 // Trick Park menu: one map at a time, with a picture of it, ◀ name ▶ to flip through, and your best score.
 // Pictures are snapshots of each map from above, taken once the first time the menu opens.
 const PARK={on:false,i:0,thumbs:{}};
-const parkMaps=()=>RUNMAPS.filter(M=>!M.custom);
+// built-in maps, then User Maps (made by players, shipped with the game)
+const parkMaps=()=>[...RUNMAPS.filter(M=>!M.custom),...RUNMAPS.filter(M=>M.user)];
 function parkThumb(M){if(PARK.thumbs[M.key])return PARK.thumbs[M.key];
   try{const prevVis=RUNMAPS.map(q=>q.grp.visible),pv=P.visible,cp=cam.position.clone(),cq=cam.quaternion.clone(),inSpad=spadG.parent;
     RUNMAPS.forEach(q=>q.grp.visible=q===M);if(typeof advGroups!=='undefined')advGroups.forEach(g=>g.visible=false);P.visible=false;if(spadG.parent)spadG.parent.remove(spadG);
@@ -15,7 +16,7 @@ function parkMenu(){overlay(false);PARK.on=true;state='menu';const L=parkMaps();
 function closePark(){PARK.on=false;$('park').classList.add('hide')}
 function renderPark(){const L=parkMaps(),M=L[PARK.i],n=mapCount(RUNMAPS.indexOf(M)),b=bestR[M.key];
   $('parkName').textContent=M.name;$('parkBest').textContent=b?`Best score ${b.toLocaleString()}`:'No best score yet';
-  $('parkMeta').textContent=[`${PARK.i+1} of ${L.length}`,n?`${n} friend${n>1?'s':''} here`:''].filter(Boolean).join(' · ');
+  $('parkMeta').textContent=[M.user?`User Map${M.author?' by '+M.author:''}`:'',`${PARK.i+1} of ${L.length}`,n?`${n} friend${n>1?'s':''} here`:''].filter(Boolean).join(' · ');
   const img=$('parkImg'),src=parkThumb(M);if(src){img.src=src;img.alt=M.name+' from above'}img.parentNode.classList.toggle('noimg',!src)}
 function parkStep(d){const n=parkMaps().length;PARK.i=(PARK.i+d+n)%n;renderPark();SFX.ui(2)}
 function parkPlay(){const M=parkMaps()[PARK.i];closePark();select('run',RUNMAPS.indexOf(M))}

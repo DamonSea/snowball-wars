@@ -111,6 +111,13 @@ Build your own Trick Park maps: Trick Park → **More maps & builder** (or **Map
 - **Publish** (claude.ai version): the map joins the More maps list for everyone who opens the game.
   Anywhere else, **Export / Import** map files.
 
+#### User Maps
+Player-made maps that ship with the game. They appear at the end of the Trick Park picker, marked
+**User Map by <name>**. Current User Maps: **Ben's Madness Map** by Ben.
+
+To add one: Export the map from the builder, then add the `.snowmap.json` contents to `USER_MAPS` in
+`js/maps/user-maps.js` (set `name` and `author`).
+
 ### Adventure
 Hand-built levels with cores to collect, checkpoints and a goal: **Lighthouse Isles**, and **Sky Gauntlet**, which
 needs Flip's or Nova's full moveset (and guard rails help).
