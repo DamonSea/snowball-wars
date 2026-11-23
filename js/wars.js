@@ -28,7 +28,7 @@ function startWars(o={}){if(!canWar()&&!WAR.on)return;if(WAR.on)warsStop(false);
   dropCombo();SB.ammo=T.snow.ammo;snowHud();score=0;
   makePiles();freeUI();
   const bots=o.bots!==undefined?o.bots:(warPeers().length?0:W.bots);WAR.bots=[];for(let k=0;k<bots;k++)WAR.bots.push(makeBot(k));
-  $('warsBoard').classList.add('on');hint(o.by?`${o.by} started Snowball Wars! Hit people, dodge, grab snow from the piles.`:'Snowball Wars! Hit people for points. Snow piles refill your snowballs.');
+  $('warsBoard').classList.add('on');hint('');if(o.by)toast(`${o.by} started Snowball Wars!`);
   SFX.start();hud();warsBoard()}
 function warsStop(restore=true){if(!WAR.on)return;WAR.on=false;if(WAR.id)WAR.done.add(WAR.id);
   WAR.bots.forEach(b=>freeTree(b.a.g));WAR.bots=[];WAR.piles.forEach(p=>freeTree(p.g));WAR.piles=[];
@@ -41,7 +41,7 @@ function warsEnd(){const rows=standings(),me=rows.findIndex(r=>r.me),place=me+1,
   const title=place===1?(tied?'Tied for first!':'You win!'):`${place}${['st','nd','rd'][place-1]||'th'} place`;
   const fin={rows,stats:`${WAR.hits} hits · ${WAR.kos} KOs · knocked out ${WAR.downs}×${nb?' · New best!':''}`};
   warsStop(true);state='over';SFX[place===1?'start':'ui'](3);
-  overlay(true,title,'','Play again','Keep playing',()=>{state='play';overlay(false);startWars()},()=>{state='play';overlay(false);hint(freeHint())});
+  overlay(true,title,'','Play again','Keep playing',()=>{state='play';overlay(false);startWars()},()=>{state='play';overlay(false)});
   hint('');$('ov').classList.add('wres');
   $('ovP').innerHTML=`<ol class="warsres">${fin.rows.map(r=>`<li class="${r.me?'me':''}"><b>${warEsc(r.name)}</b><span>${r.score}</span></li>`).join('')}</ol><small>${fin.stats}</small>`}
 // everyone in the match, best first

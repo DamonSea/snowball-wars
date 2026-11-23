@@ -8,7 +8,7 @@ function resetAdv(){
   respawn(false);
 }
 function startAdv(lv=curIdx){clearSnow();useLevel(lv);mode='adv';setWorld('adv');[...orbs,...runHz].forEach(o=>rmObj(o.g));orbs=[];runHz=[];
-  resetAdv();state='play';overlay(false);hud();hint(curL.intro);SFX.start()}
+  resetAdv();state='play';overlay(false);hud();hint('');SFX.start()}
 function respawn(count=true){ATK.t=0;resetPound();CL.on=false;CL.top=false;P.position.set(cp.x,cp.y,cp.z+(cp===flags[0]?0:.8));py=cp.y;vy=0;vel.set(0,0,0);stand=null;invuln=1;resetAcro();if(count)lives=3;hud()}
 function fall(){rumble(320,.6,.7);falls++;SFX.splash();shake=.25;respawn()}
 function winAdv(){

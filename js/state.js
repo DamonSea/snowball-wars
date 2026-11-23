@@ -18,7 +18,9 @@ function hud(){
   $('lv').innerHTML=[0,1,2].map(i=>`<i class="${i<lives?'':'off'}"></i>`).join('');
   $('mname').textContent=state==='menu'?'':mode==='run'?runL.name:'Adventure';
 }
-function hint(t){const h=$('hint');if(h.textContent===t)return;h.textContent=t;h.classList.remove('pop');void h.offsetWidth;if(t)h.classList.add('pop')}
+// the bottom banner: short news only (results, Adventure progress). It clears itself after a few seconds.
+let hintAuto=null;
+function hint(t){const h=$('hint');clearTimeout(hintAuto);if(t)hintAuto=setTimeout(()=>{if(h.textContent===t)hint('')},5500);if(h.textContent===t)return;h.textContent=t;h.classList.remove('pop');void h.offsetWidth;if(t)h.classList.add('pop')}
 let onGo=null,onAlt=null,onAlt2=null,onAlt3=null,onAlt4=null,onAlt5=null,onAlt6=null,onAlt7=null;
 function overlay(show,t,p,goTxt,altTxt,go,alt,alt2Txt='',alt2=null,alt3Txt='',alt3=null,alt4Txt='',alt4=null,alt5Txt='',alt5=null,alt6Txt='',alt6=null,alt7Txt='',alt7=null){
   $('ov').classList.toggle('hide',!show);$('ov').classList.remove('menu','pausem','wres');if(!show){document.activeElement&&document.activeElement.blur&&document.activeElement.blur();return}
@@ -73,7 +75,7 @@ function pause(){if(state!=='play')return;state='paused';wave=1.6;idleT=0;showPa
 function showPause(){const quit=BLD.testing?['Back to builder',()=>backToBuilder()]:['Quit to menu',()=>menu()],tail=[['Moves',()=>openMoves()],['Settings',()=>openSet()],quit];
   let title,line='',acts;
   if(mode==='run'&&WAR.on){title='Snowball Wars';const st=standings(),pl=st.findIndex(r=>r.me)+1;line=`Score ${WAR.score} \u00b7 ${pl}${['st','nd','rd'][pl-1]||'th'} of ${st.length} \u00b7 ${fmtClock(WAR.t)} left`;
-    acts=[['Restart match',()=>{resume();startWars()}],['End match',()=>{resume();warsStop(true);hint(freeHint());toast('Match ended.')}]]}
+    acts=[['Restart match',()=>{resume();startWars()}],['End match',()=>{resume();warsStop(true);toast('Match ended.')}]]}
   else if(mode==='run'&&runFree){const race=FR.on&&!FR.done,b=FR.on?raceBest():null;title=FR.on?'Flag race':runL.custom?runL.name:'Trick Park';
     if(FR.on)line=FR.done?'Finished! Keep exploring, or race again.':`Race time ${fmtRace(FR.t)}${b?' · best '+fmtRace(b):''} · checkpoints ${FR.reached}/${runL.cps.length}`;
     acts=[runL.spad?['Start game',()=>{resume();beginTimed()}]:null,canWar()?['Snowball Wars',()=>{resume();startWars()}]:null,race&&FR.reached?['Last checkpoint',()=>{resume();frRespawn()}]:null,FR.on?['Restart race',()=>startRun(true)]:null].filter(Boolean)}

@@ -3,6 +3,14 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.19.2] - 2026-11-23 — Fewer pop-ups
+### Changed
+- **Removed the instruction banners** at the bottom of the screen: the free roam tip, "Get ready!", the Snowball
+  Wars and Orb Race intros, the Adventure level intro and the map-tester tip. When a friend starts a match or race,
+  a small toast tells you instead.
+- **The banners that remain clear themselves after a few seconds.** These are end-of-run results and Adventure
+  progress such as "Core found!" and what a door needs.
+
 ## [2.19.1] - 2026-11-23 — No more walking in circles
 ### Fixed
 - **Pulling back with the Behind or Free + auto camera walked you in a circle.** You'd turn to face the camera, the

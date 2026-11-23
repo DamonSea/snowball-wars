@@ -117,6 +117,6 @@ function builderFrame(dt){const k=1-Math.exp(-10*dt),C=BLD.cam,S=BLD.cs,pan=8*dt
   const t=BLD.tool,g=BLD.cursor;bGhost.visible=t!=='select'&&!!g;if(bGhost.visible){const A=ASSETS[t];fitBox(bGhost,itemBox({t,x:snap(g.x),z:snap(g.z),...A.def}))}}
 // ----- test play -----
 function testBuilder(){saveDraftNow();const idx=addCustomMap(BLD.map);closeBuilderUI();BLD.testing=true;ci=pickCi;useRunMap(idx);startRun(true);
-  hint('Testing your map. Pause (P / Options) and choose Back to builder to keep editing.')}
+  hint('')}
 function closeBuilderUI(){dropPreview();bGrid.visible=bGhost.visible=bSel.visible=false;document.body.classList.remove('building');$('bld').classList.add('hide');P.visible=true}
 function backToBuilder(){const m=BLD.map;resetRun();setWorld('none');openBuilder(m);BLD.undo=[]}

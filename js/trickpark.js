@@ -74,20 +74,19 @@ function resetRun(){if(WAR.on)warsStop(false);raceStop();[...orbs,...runHz].forE
   for(let i=0;i<T.run.orbsOnField;i++)spawnOrb();if(foesOn())for(let i=0;i<T.run.hazardsStart;i++)spawnRunHz();spawnRollers()}
 const foesOn=()=>!(runL&&runL.opt&&!runL.opt.enemies);
 function startRun(free=true){mode='run';setWorld('run');resetRun();runFree=free;runCD=0;padHold=0;state='play';overlay(false);hud();SFX.start();freeUI();renderControls();
-  const t=free?freeHint():'Trick Park: chain tricks for a combo multiplier. Higher orbs are worth more!';hint(t);clearTimeout(hintTimer);
-  if(!free)hintTimer=setTimeout(()=>{if($('hint').textContent===t)hint('')},6000)}
+  hint('')}
 // from free roam: keep Flip where he is, reset the board, count down 3-2-1, then the clock starts
 function beginTimed(o={}){if(mode!=='run'||!runFree||runCD>0||state!=='play'||WAR.on)return;if(!runL.spad){toast('This map has no orb run.');return}
   runFree=false;runCD=3;popScore('3');SFX.ui(3);padHold=0;score=0;time=T.run.time;runT=0;bestCombo=0;lives=3;Object.assign(TR,{pts:0,mult:0,names:[],t:0});showCombo();
   if(!MP.client){orbs.forEach(o=>rmObj(o.g));orbs=[];spawnCount=0;for(let i=0;i<T.run.orbsOnField;i++)spawnOrb();
   runHz.forEach(h=>rmObj(h.g));runHz=[];runQ=[]}
   raceStart({id:o.id,join:!!o.id});if(o.time){time=o.time;runCD=1.5}   // orbrace.js: friends join, or computer rivals
-  hint(o.by?`${o.by} started an orb race!`:RACE.on?'Orb race! Snowball hits knock points loose.':'Get ready!');hud();freeUI();renderControls()}
+  hint('');if(o.by)toast(`${o.by} started an orb race!`);hud();freeUI();renderControls()}
 function backToFree(){startRun(true)}
 // time's up (or out of lives): show the result and keep playing right where you are, back in free roam
 function endRun(){bankCombo();const rr=RACE.on?raceResult():null;const bk=runL.key,fin=score,nb=fin>(bestR[bk]||0);if(nb){bestR[bk]=fin;try{localStorage.setItem(bk,fin)}catch(e){}}
   beep(220,.4,'sawtooth',.08);const why=lives<=0?(FOE_STYLE==='spike'?'Spiked!':'Wiped out!'):'Time\u2019s up!';
-  toFreeInPlace();popScore(why);const msg=`${why} ${rr?rr.text+' \u00b7 ':''}Score ${fin} \u00b7 best combo ${bestCombo}${nb?' \u00b7 New best!':''}`;hint(msg);clearTimeout(hintTimer);hintTimer=setTimeout(()=>{if($('hint').textContent===msg)hint(freeHint())},7000)}
+  toFreeInPlace();popScore(why);const msg=`${why} ${rr?rr.text+' \u00b7 ':''}Score ${fin} \u00b7 best combo ${bestCombo}${nb?' \u00b7 New best!':''}`;hint(msg)}
 function updateRun(dt){
   advT+=dt;
   if(runCD>0){const a=Math.ceil(runCD);runCD-=dt;const b=Math.ceil(runCD);
