@@ -4,10 +4,12 @@
 //   Free         - aim it yourself: right stick (or Z / X) orbits, stick up/down tilts; it stays where you put it
 //   Free + auto  - like Free, but when you leave it alone it turns with you as you run sideways
 // R3 (or V) snaps the camera behind you in any turning mode.
-const CAMS=['classic','behind','free','auto'],CAM_NAMES=['Classic','Behind you','Free','Free + auto'];
+// Only Classic and Free are offered for now; Behind you and Free + auto are parked (code kept, not selectable in
+// Settings). A saved parked mode moves to Free, the closest match.
+const CAM_ALL=['classic','behind','free','auto'],CAMS=['classic','free'],CAM_NAMES=['Classic','Free'];
 const CAM={mode:'classic',yaw:0,pitch:.5,idle:9,inYaw:0,lockDir:null};
-try{const m=localStorage.getItem('orbRunCam');if(CAMS.includes(m))CAM.mode=m}catch(e){}
-function setCam(m){if(!CAMS.includes(m))m='classic';CAM.mode=m;CAM.idle=9;if(m==='classic')CAM.yaw=0;try{localStorage.setItem('orbRunCam',m)}catch(e){}if(typeof renderControls==='function')renderControls()}
+try{const m=localStorage.getItem('orbRunCam');if(CAMS.includes(m))CAM.mode=m;else if(m==='behind'||m==='auto'){CAM.mode='free';localStorage.setItem('orbRunCam','free')}}catch(e){}
+function setCam(m){if(!CAM_ALL.includes(m))m='classic';CAM.mode=m;CAM.idle=9;if(m==='classic')CAM.yaw=0;CAM.inYaw=CAM.yaw;CAM.lockDir=null;try{localStorage.setItem('orbRunCam',m)}catch(e){}if(typeof renderControls==='function')renderControls()}
 const camTurns=()=>CAM.mode!=='classic';
 const angTo=(a,b)=>{let d=(b-a)%(2*PI);if(d>PI)d-=2*PI;if(d<-PI)d+=2*PI;return d};
 // Input lock: while you hold a direction, it keeps meaning the same way in the world, even as the camera swings.
@@ -18,7 +20,8 @@ function camInputFrame(manual){const ix=kbAxisX()+joy.x+pad.x,iz=kbAxisZ()+joy.z
   if(!camTurns()||Math.hypot(ix,iz)<.25){CAM.inYaw=CAM.yaw;CAM.lockDir=null;return}
   const d=Math.atan2(ix,iz);if(manual||CAM.lockDir===null||Math.abs(angTo(CAM.lockDir,d))>.8){CAM.inYaw=CAM.yaw;CAM.lockDir=d}}
 // rotate a stick/keys input (screen space: x right, z down) into world space for the current camera
-function camInput(ix,iz){const y=CAM.inYaw;if(!y)return[ix,iz];const c=Math.cos(y),s=Math.sin(y);return[ix*c+iz*s,-ix*s+iz*c]}
+// Classic: the stick maps straight to the world (Up is always north). Free: camera-relative, through the input lock.
+function camInput(ix,iz){if(!camTurns())return[ix,iz];const y=CAM.inYaw;if(!y)return[ix,iz];const c=Math.cos(y),s=Math.sin(y);return[ix*c+iz*s,-ix*s+iz*c]}
 function camSnap(){CAM.yaw=face+PI;CAM.idle=9;CAM.inYaw=CAM.yaw;CAM.lockDir=null}
 // per frame while playing: update yaw / pitch, then where the camera sits and looks
 function camFollow(dt){

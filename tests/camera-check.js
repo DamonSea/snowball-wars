@@ -2,7 +2,7 @@
 const calm=()=>{runHz.forEach(h=>{h.g.position.set(0,.75,60);h.vx=h.vz=0});SB.stun=0};__step=n=>{for(let i=0;i<n;i++){calm();_st(1)}};
 const gp={id:'DualSense Wireless Controller',mapping:'standard',connected:true,timestamp:1,buttons:Array.from({length:18},()=>({pressed:false,value:0})),axes:[0,0,0,0]};
 ok('new players get Classic',localStorage.getItem('orbRunCam')===null&&CAM.mode==='classic');
-ok('Camera row in Settings → Game',LOOK.camera&&LOOK.camera.opts.join('|')==='Classic|Behind you|Free|Free + auto');
+ok('Camera row in Settings → Game',LOOK.camera&&LOOK.camera.opts.join('|')==='Classic|Free');
 menu();pickMode='run';pickLevel=0;ci=2;showChar();confirmChar();__step(5);
 // classic: same view as before, Up goes north
 __place(10,0,0,0);__step(120);ok('Classic: camera sits south of you at the old offset',Math.abs(cam.position.x-P.position.x)<.3&&Math.abs(cam.position.z-(P.position.z+T.camera.back))<.6&&CAM.yaw===0);

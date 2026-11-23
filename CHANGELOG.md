@@ -3,6 +3,16 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.21.1] - 2026-11-23 — Classic stick fix
+### Fixed
+- **With the Classic camera, the stick could walk you in the wrong direction** after you'd used the Free camera
+  (introduced in 2.19.1). The input lock kept the Free camera's last angle, and Classic never reset it, so "up"
+  could mean south-east. Each camera now has its own movement setup: **Classic** maps the stick straight to the
+  world (Up is always north); **Free** is camera-relative with the input lock.
+### Changed
+- **Camera options are now just Classic and Free.** Behind you and Free + auto are parked: their code is kept but
+  they're not in Settings. If you had one saved, you're moved to Free.
+
 ## [2.21.0] - 2026-11-23 — Christmas Village
 ### Added
 - **Christmas Village**, a new Trick Park map built as one connected rooftop loop around a town square. Every jump
