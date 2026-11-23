@@ -149,6 +149,9 @@ needs Flip's or Nova's full moveset (and guard rails help).
 
   ![Orb Race](media/orb-race.png)
 
+- **Aim and charge snowballs:** hold Throw (R1 / F / left-click / Snow) to see a dotted arc of where it will land;
+  hold it a second and the arc turns gold. Let go for a **charged snowball**: double damage (2 hearts in Snowball Wars,
+  twice the orbs knocked loose in a Collectathon) and a longer stun. A quick tap still throws straight away.
 - **Snowball Wars mode**: pause in Trick Park and pick *Snowball Wars* for a 3-minute free-for-all. 3 hearts each, most KOs wins (no points), snowball pickups to grab (the high ones hold more). Solo you face three computer players; with friends on the map it's players only.
 
   ![Snowball Wars match](media/snowball-wars-match.png)

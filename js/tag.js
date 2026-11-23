@@ -72,7 +72,7 @@ function tagFromPeers(){for(const p of tagPeers()){const l=p.presence.tm[4];if(!
 // my snowball hit a computer player: stun it (handy against the It)
 function tagCatch(p,ball){if(!tagLive()||!ball.own)return false;
   for(const b of TAG.bots){if(Math.hypot(b.x-p.x,b.z-p.z)>.75||p.y<b.y||p.y>b.y+2.1)continue;if(b.stun>T.snow.stun-.4)return true;
-    const d=Math.hypot(ball.vx,ball.vz)||1;b.vx=ball.vx/d*T.snow.hitKnock;b.vz=ball.vz/d*T.snow.hitKnock;b.vy=T.snow.hitLift;b.stun=T.snow.stun;SFX.hurt();addTrick('Direct Hit');return true}
+    const d=Math.hypot(ball.vx,ball.vz)||1;b.vx=ball.vx/d*T.snow.hitKnock;b.vz=ball.vz/d*T.snow.hitKnock;b.vy=T.snow.hitLift;b.stun=T.snow.stun*(ball.ch?T.snow.chargeStun:1);SFX.hurt();addTrick(ball.ch?'Charged Hit':'Direct Hit');return true}
   return false}
 
 // ---------- computer players ----------

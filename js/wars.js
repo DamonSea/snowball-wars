@@ -135,12 +135,14 @@ function botCatch(p,ball){if(!WAR.on)return false;
     if(Math.hypot(b.x-p.x,b.z-p.z)>.75||p.y<b.y||p.y>b.y+2.1)continue;
     if(b.inv>0||b.stun>T.snow.stun-.4)return true;   // splat, no damage while blinking or already reeling
     const by=ball.own?'me':ball.owner,d=Math.hypot(ball.vx,ball.vz)||1;b.vx=ball.vx/d*T.snow.hitKnock;b.vz=ball.vz/d*T.snow.hitKnock;b.vy=T.snow.hitLift;b.stun=T.snow.stun;b.throwT=0;
-    b.hp--;b.last=by;const ko=b.hp<=0;award(by,ko,ball.own&&SB.trickIds.has(ball.id));SFX.hurt();
+    b.hp=Math.max(0,b.hp-(ball.ch?2:1));b.last=by;const ko=b.hp<=0;   // charged snowballs take 2 hearts
+    if(ball.ch){b.stun=T.snow.stun*T.snow.chargeStun}
+   award(by,ko,ball.own&&SB.trickIds.has(ball.id));SFX.hurt();
     if(ko){b.out=T.wars.respawn;b.face=Math.atan2(-ball.vx,-ball.vz);b.stun=0;burst(V(b.x,1.2,b.z),0xffffff,22);if(by==='me')toast(`You knocked out ${b.name}!`)}
     return true}
   return false}
 // I got hit (called from hitMe). Returns true when that was my last heart.
-function warsHitMe(owner){WAR.hp--;WAR.lastBy=owner;const ko=WAR.hp<=0;
+function warsHitMe(owner,dmg=1){WAR.hp=Math.max(0,WAR.hp-dmg);WAR.lastBy=owner;const ko=WAR.hp<=0;
   if(typeof owner==='string'&&owner.startsWith('bot'))award(owner,ko,false);
   if(ko){WAR.out=T.wars.respawn;WAR.poof=false;WAR.downs++;SB.stun=T.wars.respawn;
     const who=owner&&owner.startsWith('bot')?warName(owner):(warPeers().find(p=>p.peer===owner)?nameOf(warPeers().find(p=>p.peer===owner)):'someone');

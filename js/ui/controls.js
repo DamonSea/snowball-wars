@@ -80,7 +80,8 @@ J.addEventListener('pointerup',endJoy);J.addEventListener('pointercancel',endJoy
 function moveJoy(e){const r=J.getBoundingClientRect();let dx=e.clientX-r.left-r.width/2,dy=e.clientY-r.top-r.height/2;
   const m=Math.hypot(dx,dy),max=r.width/2-20;if(m>max){dx*=max/m;dy*=max/m}K.style.transform=`translate(${dx}px,${dy}px)`;joy.x=dx/max;joy.z=dy/max}
 $('sb').addEventListener('click',()=>{$('sb').blur();beginTimed()});
-$('snowBtn').addEventListener('pointerdown',e=>{e.preventDefault();throwSnow()});
+$('snowBtn').addEventListener('pointerdown',e=>{e.preventDefault();joy.snow=true;aimStart()});
+['pointerup','pointercancel','pointerleave'].forEach(t=>$('snowBtn').addEventListener(t,()=>joy.snow=false));
 $('hb').addEventListener('pointerdown',e=>{e.preventDefault();attackPress()});
 $('jb').addEventListener('pointerdown',e=>{e.preventDefault();jumpBuf=.15;joy.jump=true});
 $('pb').addEventListener('pointerdown',e=>{e.preventDefault();joy.pound=true;poundOrSnow()});

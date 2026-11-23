@@ -39,7 +39,7 @@ function dropOrbs(x,z,y0,n){if(n<1)return;
 // how many orbs a hit knocks loose
 const spillOf=n=>Math.max(0,Math.min(n,T.race.spillN));
 // I got hit by a snowball during a run
-function raceHitMe(){if(mode!=='run'||runFree||runCD>0)return;const k=spillOf(orbN);if(k<=0)return;
+function raceHitMe(m=1){if(mode!=='run'||runFree||runCD>0)return;const k=Math.min(orbN,spillOf(orbN)*m);if(k<=0)return;
   orbN-=k;popScore('-'+k,true);dropOrbs(P.position.x,P.position.z,py,k);hud()}
 // host: make the orbs other players asked for
 function hostSpills(){if(!MP.room||MP.client)return;
@@ -53,7 +53,7 @@ function raceCatch(p,ball){if(!raceLive()||!ball.own)return false;
   for(const b of RACE.bots){if(Math.hypot(b.x-p.x,b.z-p.z)>.75||p.y<b.y||p.y>b.y+2.1)continue;
     if(b.stun>T.snow.stun-.4)return true;
     const d=Math.hypot(ball.vx,ball.vz)||1;b.vx=ball.vx/d*T.snow.hitKnock;b.vz=ball.vz/d*T.snow.hitKnock;b.vy=T.snow.hitLift;b.stun=T.snow.stun;b.throwT=0;b.goal=null;SFX.hurt();
-    const k=spillOf(b.n||0);if(k>0){b.n-=k;spawnSpill(b.x,b.z,b.y,k)}else addTrick('Direct Hit');
+    const k=Math.min(b.n||0,spillOf(b.n||0)*(ball.ch?2:1));if(k>0){b.n-=k;spawnSpill(b.x,b.z,b.y,k)}else addTrick('Direct Hit');
     return true}
   return false}
 function rivalThink(b,dt){

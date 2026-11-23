@@ -14,7 +14,9 @@ function tryGrab(dt){
   const diving=chars[ci].acro&&(A.mode==='dive'||A.mode==='slide'),dsp=Math.hypot(vel.x,vel.z);
   const[ix,iz]=diving&&dsp>1?[vel.x/dsp,vel.z/dsp]:rawInput(),im=Math.hypot(ix,iz);if(im<.4||(diving&&dsp<=1)){CL.touch=0;return}
   for(const c of advCol){if(!c.tree)continue;const dx=c.x-P.position.x,dz=c.z-P.position.z,d=Math.hypot(dx,dz);
-    if(d<c.r+.7&&py>=c.y-.1&&py<c.top-1.3&&(ix*dx+iz*dz)/(d*im)>.6){CL.touch+=dt;
+    // reach a bit past where the trunk stops your body (T.bodyRadius), so jumping into a tree grabs it every time;
+    // in the air, aiming roughly at it is enough
+    if(d<c.r+T.bodyRadius+.4&&py>=c.y-.1&&py<c.top-1.3&&(ix*dx+iz*dz)/(d*im)>(grounded?.6:.4)){CL.touch+=dt;
       if(diving||CL.touch>(grounded?T.climb.grabDelay:0)){if(diving)addTrick('Dive Grab');Object.assign(CL,{on:true,tree:c,ang:Math.atan2(-dx,-dz),h:Math.max(py,c.y)+.15,top:false,touch:0,stepT:0});
         vel.set(0,0,0);vy=0;A.spd=0;A.mode='normal';A.flipT=99;grounded=false;stand=null;SFX.grab();burst(V(P.position.x,py+1.2,P.position.z),leafCol(),8)}
       return}}

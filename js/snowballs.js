@@ -3,21 +3,29 @@
 // multiplayer hit other players. Each throw is shared through presence as an origin and velocity, so
 // every player simulates the same arc. The player who gets hit decides the hit (it's their screen),
 // knocks themself back, and reports it; the thrower sees the report and scores a Direct Hit.
-const SB={list:[],ammo:T.snow.ammo,regen:0,cool:0,anim:0,seq:0,sent:[],hits:[],credited:new Set(),hitCool:0,stun:0};
+// Hold Throw to aim: a dotted arc shows where it will fly. Hold it T.snow.chargeTime seconds and the arc turns gold:
+// let go for a charged snowball (bigger, glowing): double damage (2 hearts in Snowball Wars, twice the orbs knocked
+// loose in a Collectathon) and a longer stun. Tap Throw to throw straight away, as before.
+const SB={aim:{on:false,t:0,full:false},chIds:new Set(),list:[],ammo:T.snow.ammo,regen:0,cool:0,anim:0,seq:0,sent:[],hits:[],credited:new Set(),hitCool:0,stun:0};
 const sbGeo=new THREE.SphereGeometry(.18,10,8),sbMat=new THREE.MeshStandardMaterial({color:0xf8fbff,roughness:.9});
 const sbYellow=new THREE.MeshStandardMaterial({color:0xf2d64b,roughness:.9});
-function launchSnowball(o,own,owner,id,yellow=false){
-  const m=new THREE.Mesh(sbGeo,yellow?sbYellow:sbMat);m.castShadow=true;m.position.set(o[0],o[1],o[2]);scene.add(m);
-  SB.list.push({m,vx:o[3],vy:o[4],vz:o[5],t:0,own,owner,id,yellow,chunk:owner==='chunk'})}
-function throwSnow(){
-  if(mode!=='run'||state!=='play'||CL.on||SB.cool>0||SB.stun>0||YS.t>0||YS.spray||SA.t>0||(WAR.on&&(WAR.cd>0||WAR.out>0)))return;
+const sbCharged=new THREE.MeshStandardMaterial({color:0xfff6d8,emissive:0xffc531,emissiveIntensity:.9,roughness:.5});
+function launchSnowball(o,own,owner,id,yellow=false,ch=false){
+  const m=new THREE.Mesh(sbGeo,yellow?sbYellow:ch?sbCharged:sbMat);m.castShadow=true;m.position.set(o[0],o[1],o[2]);if(ch)m.scale.setScalar(1.5);scene.add(m);
+  SB.list.push({m,vx:o[3],vy:o[4],vz:o[5],t:0,own,owner,id,yellow,ch,chunk:owner==='chunk'})}
+const canThrow=()=>!(mode!=='run'||state!=='play'||CL.on||SB.cool>0||SB.stun>0||YS.t>0||YS.spray||SA.t>0||(WAR.on&&(WAR.cd>0||WAR.out>0)));
+// where a throw would go right now: origin and velocity (the same numbers the throw uses, so the arc is exact)
+function throwVec(f){const fx=Math.sin(f),fz=Math.cos(f),s=T.snow;
+  return[P.position.x+fx*.5,py+1.45,P.position.z+fz*.5,fx*s.speed+vel.x*.5,s.lift+Math.max(0,vy)*.3,fz*s.speed+vel.z*.5].map(f2)}
+function throwSnow(ch=false){
+  if(!canThrow())return;
   if(SB.ammo<1){SFX.deny();if(!SB.told){SB.told=true;toast('Out of snowballs: grab orbs to refill')}snowFlash('empty');return}
   SB.ammo--;SB.cool=T.snow.cooldown;SB.anim=.3;snowHud();
   const d=inputDir();if(d!==null&&ATK.t<=0)face=d;
-  const fx=Math.sin(face),fz=Math.cos(face),s=T.snow;
-  const o=[P.position.x+fx*.5,py+1.45,P.position.z+fz*.5,fx*s.speed+vel.x*.5,s.lift+Math.max(0,vy)*.3,fz*s.speed+vel.z*.5].map(f2);
-  const id=++SB.seq,yel=YS.armed&&YS.on;YS.armed=false;if(yel)YS.yIds.add(id);launchSnowball(o,true,null,id,yel);if(WAR.on)warsThrew(id);
-  SB.sent.push([id,...o,yel?1:0]);if(SB.sent.length>4)SB.sent.shift();
+  const o=throwVec(face);
+  const id=++SB.seq,yel=YS.armed&&YS.on;YS.armed=false;if(yel)YS.yIds.add(id);launchSnowball(o,true,null,id,yel,ch);if(WAR.on)warsThrew(id);
+  if(ch){SB.chIds.add(id);burst(V(o[0],o[1],o[2]),0xffd84a,10)}
+  SB.sent.push([id,...o,yel?1:0,ch?1:0]);if(SB.sent.length>4)SB.sent.shift();
   SFX.snowThrow();
 }
 // spikeballs sit low and are spiky: count anything passing over them up to head height
@@ -28,18 +36,19 @@ function solidAt(x,y,z){
   for(const p of plats)if(inside(p,x,z,.05)&&topOf(p,x,z)>y&&(botOf(p,x,z)===undefined||y>botOf(p,x,z))&&!(p.k==='c'&&p.r>20&&y>p.top-.05))return true;
   for(const c of advCol)if(Math.hypot(c.x-x,c.z-z)<c.r*(c.tree?.6:1)&&y<(c.tree?c.top:2.2))return true;
   return false}
-function hitMe(owner,id,bx,bz,yel){
-  if(SB.hitCool>0||warsShielded())return;SB.hitCool=.5;SB.stun=T.snow.stun;ATK.t=0;resetPound();
-  const dx=P.position.x-bx,dz=P.position.z-bz,d=Math.hypot(dx,dz)||1;
-  vel.x=dx/d*T.snow.hitKnock;vel.z=dz/d*T.snow.hitKnock;vy=Math.max(vy,T.snow.hitLift);grounded=false;stand=null;
+function hitMe(owner,id,bx,bz,yel,ch=false){
+  if(SB.hitCool>0||warsShielded())return;SB.hitCool=.5;SB.stun=T.snow.stun*(ch?T.snow.chargeStun:1);ATK.t=0;resetPound();
+  const dx=P.position.x-bx,dz=P.position.z-bz,d=Math.hypot(dx,dz)||1,kn=T.snow.hitKnock*(ch?T.snow.chargeKnock:1);
+  vel.x=dx/d*kn;vel.z=dz/d*kn;vy=Math.max(vy,T.snow.hitLift);grounded=false;stand=null;
   if(chars[ci].acro){A.mode='normal';A.flipT=99;A.spd=0}SFX.hurt();
   dropCombo();CL.on=false;CL.top=false;
   const f=$('frost');f.classList.remove('on','yellow');void f.offsetWidth;f.classList.add('on');if(yel){f.classList.add('yellow');toast('Ew. Yellow snowball.')}
   splat(V(P.position.x,py+1.4,P.position.z),true);rumble(160,.4,.8);
-  const ko=WAR.on&&warsHitMe(owner);if(ko)face=Math.atan2(-dx,-dz);if(!WAR.on)raceHitMe();   // turn to face the throw, so the fall goes away from it
+  const ko=WAR.on&&warsHitMe(owner,ch?2:1);if(ko)face=Math.atan2(-dx,-dz);if(!WAR.on)raceHitMe(ch?2:1);   // turn to face the throw, so the fall goes away from it
 SB.hits.push(ko?[owner,id,1]:[owner,id]);if(SB.hits.length>6)SB.hits.shift();
 }
 function updateSnow(dt){
+  updateAim(dt);
   SB.stun=Math.max(0,SB.stun-dt);dizzy(myStars,SB.stun>0,P.position.x,py,P.position.z,dt);
   SB.cool=Math.max(0,SB.cool-dt);SB.anim=Math.max(0,SB.anim-dt);SB.hitCool=Math.max(0,SB.hitCool-dt);
   if(T.snow.regen>0&&SB.ammo<T.snow.ammo&&(SB.regen+=dt)>=T.snow.regen){SB.regen=0;SB.ammo++;snowHud()}
@@ -56,7 +65,7 @@ function updateSnow(dt){
       if(!gone&&(botCatch(p,b)||raceCatch(p,b)||tagCatch(p,b)||cpuCatch(p,b))){splat(p,true,b.yellow);gone=true}
       if(!gone)for(const a of MP.av.values()){const g=a.g.position;if(Math.hypot(g.x-p.x,g.z-p.z)<.75&&p.y>g.y&&p.y<g.y+2.1){splat(p,true);gone=true;break}}
     }else if(!gone&&!b.chunk){
-      if(Math.hypot(P.position.x-p.x,P.position.z-p.z)<.75&&p.y>py&&p.y<py+2.1){hitMe(b.owner,b.id,p.x-b.vx*.05,p.z-b.vz*.05,b.yellow);gone=true}
+      if(Math.hypot(P.position.x-p.x,P.position.z-p.z)<.75&&p.y>py&&p.y<py+2.1){hitMe(b.owner,b.id,p.x-b.vx*.05,p.z-b.vz*.05,b.yellow,b.ch);gone=true}
       else if(botCatch(p,b)){splat(p,true);gone=true}
       else for(const h of runHz)if(!h.dead&&!(b.owner==='goon'&&h.kind==='goon')&&hitsFoe(h,p)){splat(p,false);gone=true;break}
     }
@@ -67,7 +76,7 @@ function updateSnow(dt){
     else if(chars[ci].acro&&(A.mode==='dive'||A.mode==='slide')&&d<1.15){shake=Math.max(shake,.2);rumble(120,.6,.8);SFX.splat(true);knockSnowman(s)}}
   for(const s of snowmen())if(!s.up&&(s.t-=dt)<=0){s.up=true;s.g.visible=true;burst(V(s.x,1.2,s.z),0xffffff,10)}
 }
-function clearSnow(){clearAngels();clearRollers();clearYellow();resetPound();SB.stun=0;if(CPU.a)CPU.a.init=false;myStars.visible=false;SB.list.forEach(b=>freeTree(b.m));SB.list=[];SB.ammo=T.snow.ammo;SB.regen=0;SB.anim=0;snowHud()}
+function clearSnow(){aimEnd(false);clearAngels();clearRollers();clearYellow();resetPound();SB.stun=0;if(CPU.a)CPU.a.init=false;myStars.visible=false;SB.list.forEach(b=>freeTree(b.m));SB.list=[];SB.ammo=T.snow.ammo;SB.regen=0;SB.anim=0;snowHud()}
 // orbs refill snowballs: regular orbs give a few, gold orbs fill you up
 // knocking down a snowman (a target or a Winter Crew snowman) packs you a few snowballs
 function snowmanSnow(){const was=SB.ammo;SB.ammo=Math.min(T.snow.ammo,SB.ammo+T.snow.snowmanAmmo);snowHud();snowFlash('gain');if(SB.ammo>was)toast(`+${SB.ammo-was} snowball${SB.ammo-was>1?'s':''}`)}
@@ -79,7 +88,7 @@ function snowFromPeer(peer,a){const pr=peer.presence||{};yellowFromPeer(pr,a);
   if(!a.stars){a.stars=makeStars();a.g.add(a.stars)}a.stars.visible=!!pr.z;if(pr.z){a.stars.position.set(0,2.35,0);a.stars.rotation.y+=.12}
   if(!a.sbSeen){a.sbSeen=new Set();if(Array.isArray(pr.sb))pr.sb.forEach(s=>Array.isArray(s)&&a.sbSeen.add(s[0]));return}
   if(Array.isArray(pr.sb))for(const s of pr.sb){if(!Array.isArray(s)||s.length<7||a.sbSeen.has(s[0])||!s.slice(1).every(v=>Number.isFinite(v)))continue;
-    a.sbSeen.add(s[0]);if(mode==='run'&&state==='play')launchSnowball(s.slice(1,7),false,peer.peer,s[0],s[7]===1)}
+    a.sbSeen.add(s[0]);if(mode==='run'&&state==='play')launchSnowball(s.slice(1,7),false,peer.peer,s[0],s[7]===1,s[8]===1)}
   if(Array.isArray(pr.hb))for(const h of pr.hb){if(!Array.isArray(h)||h[0]!==MP.me||!Number.isInteger(h[1]))continue;
     const k=peer.peer+':'+h[1];if(SB.credited.has(k)||h[1]>SB.seq)continue;SB.credited.add(k);
     const yel=YS.yIds.has(h[1]);if(WAR.on){warsCreditRemote(h);SFX.splat(true);toast(h[2]===1?`You knocked out ${nameOf(peer)}!`:`Direct hit on ${nameOf(peer)}!`);continue}addTrick(yel?'Yellow Snowball':'Direct Hit');toast(yel?`Yellow snowball on ${nameOf(peer)}!`:`Direct hit on ${nameOf(peer)}!`);SFX.splat(true)}
@@ -108,3 +117,30 @@ function makeStars(){const g=new THREE.Group(),m=new THREE.MeshBasicMaterial({co
   g.visible=false;return g}
 const myStars=makeStars();scene.add(myStars);
 function dizzy(g,on,x,y,z,dt){g.visible=on;if(on){g.position.set(x,y+2.35,z);g.rotation.y+=dt*7}}
+
+// ---------- aiming and charging (hold Throw) ----------
+// dots are sky blue (white would vanish against the snow); gold once charged
+const AIM_N=28,aimDotGeo=new THREE.SphereGeometry(.1,8,6),aimM=new THREE.MeshBasicMaterial({color:0x2fb8ff,transparent:true,opacity:.95,depthWrite:false}),
+  aimGold=new THREE.MeshBasicMaterial({color:0xffb400,transparent:true,opacity:1,depthWrite:false}),
+  aimRing=new THREE.Mesh(new THREE.RingGeometry(.3,.48,24),new THREE.MeshBasicMaterial({color:0x2fb8ff,transparent:true,opacity:.8,side:THREE.DoubleSide,depthWrite:false}));
+const aimDots=Array.from({length:AIM_N},()=>{const m=new THREE.Mesh(aimDotGeo,aimM);m.visible=false;scene.add(m);return m});
+aimRing.rotation.x=-PI/2;aimRing.visible=false;scene.add(aimRing);keep(aimDotGeo,aimM,aimGold,aimRing.geometry,aimRing.material);aimDots.forEach(m=>keep(m));
+function aimStart(){if(!canThrow())return;
+  if(SB.ammo<1){SFX.deny();if(!SB.told){SB.told=true;toast('Out of snowballs: grab orbs to refill')}snowFlash('empty');return}
+  Object.assign(SB.aim,{on:true,t:0,full:false})}
+function aimEnd(fire){if(!SB.aim.on&&!aimRing.visible)return;const full=SB.aim.full;SB.aim.on=false;SB.aim.full=false;aimDots.forEach(m=>m.visible=false);aimRing.visible=false;if(fire)throwSnow(full)}
+function updateAim(dt){const A_=SB.aim;if(!A_.on)return;
+  if(!canThrow()||SB.ammo<1){aimEnd(false);return}
+  if(!(held('throw')||joy.snow)){aimEnd(true);return}
+  A_.t+=dt;if(!A_.full&&A_.t>=T.snow.chargeTime){A_.full=true;SFX.ui(6);rumble(80,.2,.5);burst(V(P.position.x,py+1.45,P.position.z),0xffd84a,8)}
+  // turn to aim while holding, like the throw does
+  const d=inputDir();if(d!==null&&ATK.t<=0)face+=angD(d,face)*Math.min(1,dt*14);
+  // trace the arc with the throw's own numbers until it hits something
+  const o=throwVec(face),g=T.snow.gravity,mat=A_.full?aimGold:aimM,step=.035,pulse=A_.full?1+.25*Math.sin(tAll*14):1;
+  let x=o[0],y=o[1],z=o[2],vx=o[3],vy_=o[4],vz=o[5],n=0,hit=null;
+  for(let i=0;i<AIM_N*2&&n<AIM_N;i++){vy_-=g*step;x+=vx*step;y+=vy_*step;z+=vz*step;
+    const gh=groundAt(x,z,y+.4).h;if(y<=(isFinite(gh)?gh:0)+.02){hit={x,z,y:isFinite(gh)?gh:0};break}
+    if(solidAt(x,y,z)){hit={x,z,y:Math.max(0,y-.2)};break}
+    {const m=aimDots[n++];m.visible=true;m.material=mat;m.position.set(x,y,z);m.scale.setScalar((1-n/AIM_N*.45)*pulse)}}
+  for(let k=n;k<AIM_N;k++)aimDots[k].visible=false;
+  aimRing.visible=!!hit;if(hit){aimRing.position.set(hit.x,hit.y+.04,hit.z);aimRing.material.color.setHex(A_.full?0xffb400:0x2fb8ff);aimRing.scale.setScalar(A_.full?1.35:1)}}

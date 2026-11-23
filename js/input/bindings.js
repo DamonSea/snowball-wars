@@ -32,7 +32,7 @@ const kbAxisZ=()=>(kbHeld('down')||keys.ArrowDown?1:0)-(kbHeld('up')||keys.Arrow
 const actsOfKey=c=>ACT.filter(a=>BIND.kb[a.id].includes(c)).map(a=>a.id);
 function press(id){
   if(emotePress(id))return;
-  if(id==='jump')jumpBuf=.15;else if(id==='attack')attackPress();else if(id==='throw')throwSnow();else if(id==='pound')poundOrSnow();
+  if(id==='jump')jumpBuf=.15;else if(id==='attack')attackPress();else if(id==='throw')aimStart();else if(id==='pound')poundOrSnow();
   else if(id==='start'){if(state==='play'&&mode==='run'&&runFree&&!WAR.on&&!(FR.on&&!runL.spad))modeMenu()}   // holding it restarts instead (qol.js)
   else if(id==='pause'){if(state==='play')pause();else if(state==='paused')backOrResume()}}
 // on a sub-menu (Games), Esc / Options / ○ goes back to the pause menu; otherwise it closes it

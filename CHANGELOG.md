@@ -3,7 +3,19 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
-## [2.28.0] - 2026-11-23 — Collectathon and Change map
+## [2.29.0] - 2026-11-23 — Aim arc and charged snowballs; easier tree grabs
+### Added
+- **Hold Throw to aim:** a dotted sky-blue arc shows exactly where the snowball will fly, with a ring where it lands.
+  Turn to aim while holding. A quick tap still throws immediately.
+- **Charged snowballs:** hold for 1 second and the arc turns gold; let go for a bigger, glowing snowball with double
+  damage: 2 hearts in Snowball Wars, twice the orbs knocked loose in a Collectathon, and a longer stun (also on Tag
+  and computer players). Friends see it charged and take the double damage too.
+### Fixed
+- **Jumping into a tree didn't always grab it** (some Plaza trees only worked with a dive): the grab reach sat right
+  where the trunk stops your body, so a jump that bumped off a few centimetres short missed. It now reaches a little
+  further, and in the air aiming roughly at the tree is enough. All 15 Plaza trees grab from a running jump.
+
+ - 2026-11-23 — Collectathon and Change map
 ### Changed
 - **Orb Race is now called Collectathon:** "How many orbs can you collect before time runs out?" (mode menu,
   scoreboard, pause menu, map picker, Settings → Collectathon rivals, the builder's map settings).
