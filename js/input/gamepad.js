@@ -18,7 +18,9 @@ function panelNav(root,L,R,U,D,ok){
       const sc=p+s*(U||D?1.6:3);if(sc<bs){bs=sc;best=e}}
     if(best)padFocus(best);return}
   if(ok)cur.click()}
-function padChanged(){document.body.classList.toggle('haspad',pad.connected);renderControls();toast(pad.connected?'Controller connected \u00b7 \u2715 select \u00b7 \u25cb back':'Controller disconnected')}
+// Button names follow the controller in use (PlayStation symbols, or B / A / Y / X on a Switch 2 Pro via js/input/pads.js)
+function padNames(){if(window.Pads&&pad.gp){const n=Pads.names(pad.gp);for(let i=0;i<PADN.length;i++)PADN[i]=n[i]}}
+function padChanged(){padNames();document.body.classList.toggle('haspad',pad.connected);renderControls();toast(pad.connected?`Controller connected \u00b7 ${PADN[0]} select \u00b7 ${PADN[1]} back`:'Controller disconnected')}
 function updatePadInfo(){let t;if(!pad.connected)t='Controller: none detected. Press a button on it; if this stays, open the game on its own page.';
   else{const g=pad.gp,n=(g.id.replace(/\(.*?\)/g,'').trim()||'Gamepad').slice(0,32);t=`Controller: ${n} \u00b7 ${g.mapping==='standard'?'standard':SONY.test(g.id)?'PlayStation layout':'non-standard'} \u00b7 last button ${padLast||'none'}`}
   if(t!==padInfoTxt){padInfoTxt=t;$('padInfo').textContent=t}}
@@ -41,6 +43,7 @@ function readButtons(gp){
 function pollPad(){
   // pick the most recently active controller, skipping idle virtual devices
   let gp=null;try{const l=navigator.getGamepads?navigator.getGamepads():[];for(const g of l)if(g&&g.connected&&g.buttons.length&&(!gp||g.timestamp>gp.timestamp))gp=g}catch(e){}
+  if(gp&&pad.gp&&gp.id!==pad.gp.id){pad.gp=gp;padNames();renderControls()}
   pad.gp=gp;
   if(!gp){pad.x=pad.z=0;pad.jump=pad.crouch=false;padNow=[];if(pad.connected){pad.connected=false;padChanged()}padPrev=[];return}
   // without focus the browser may stop updating the controller and keep reporting the last buttons as held (a stuck

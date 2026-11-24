@@ -3,6 +3,16 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.32.0] - 2026-11-23 — Switch 2 Pro Controller
+### Added
+- **Switch 2 Pro Controller support** (wired, in Chrome or Edge on a computer), from Controller Tester. Every button
+  and both sticks land where the game expects them, so it plays exactly like a DualSense. Over USB the controller sends
+  nothing until it's woken: the first time, a small button in the corner asks you to click it and pick the controller;
+  after that it wakes by itself when the game loads or the controller is plugged in. Player light 1 turns on.
+- **Rumble on the Switch 2 Pro** through its HD rumble (one optional click to allow it).
+- **Nintendo button names on screen while you use it:** prompts, the Controls card, help text and rebinding show B / A /
+  Y / X, L / R, ZL / ZR and + / − instead of ✕ / ○ / □ / △. Pick up a DualSense and they switch back.
+
 ## [2.31.0] - 2026-11-23 — Your name; solid snowmen
 ### Added
 - **Name box on the Trick Park picker** ("Your name"): what friends see on your name tag and the scoreboards. It's
