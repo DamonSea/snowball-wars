@@ -133,7 +133,10 @@ needs Flip's or Nova's full moveset (and guard rails help).
 
 ### Play your way
 - **Multiplayer** (in the claude.ai version): play Trick Park with friends, with shared orbs and enemies, name tags and trick callouts.
-- **Controls:** keyboard & mouse, PS5 / standard controllers and touch; rebind anything in Settings → Controls. Every menu works with a controller, with on-screen ✕ / △ / ○ / L1 / R1 prompts.
+- **Controls:** keyboard & mouse, PS5 / standard controllers, the Switch 2 Pro Controller and touch; rebind anything in Settings → Controls. Every menu works with a controller, with on-screen ✕ / △ / ○ / L1 / R1 prompts (B / X / A / L / R on a Switch 2 Pro).
+- **Switch 2 Pro Controller (wired, Chrome or Edge on a computer):** it stays silent over USB until it's woken up, so the
+  first time a small "Switch 2 Pro Controller found" button appears in the corner: click it and pick the controller.
+  After that it wakes on its own whenever you load the game. A second, optional click turns on rumble.
 - **Settings** in three tabs: **Game** (camera: Classic, Behind you, Free or Free + auto; graphics quality, performance stats, season, snowfall, side flip style, ledge hang, squash & stretch, yellow snow, enemies, computer player), **Sound** (volume mix and a style for every sound) and **Controls** (rebind anything).
 - **Graphics: Auto** adjusts render resolution to hold a smooth frame rate (or pick High, Balanced or Low). Press **`** (backtick) for a performance overlay: fps, frame time, draw calls and GPU memory.
 - **Pause** swings the camera round to face your character, who waves and idles beside the pause menu.
@@ -177,6 +180,7 @@ by files above it. Nothing is bundled.
 
 | Order | File | What it does |
 |---|---|---|
+| 0 | `js/input/pads.js` | Switch 2 Pro Controller support, loaded before everything else: remaps it to the standard layout, wakes it over USB, rumble, player light, B / A / Y / X prompts |
 | 1 | `js/tuning.js` | **Every gameplay number**: gravity, jumps, speeds, ice, climbing, attacks, combo, scoring, camera |
 | 2 | `js/core.js` | Renderer, scene, lights, material helpers, season registry, trees/rocks/flowers |
 | 3 | `js/characters.js` | Rigs and wardrobes for Flip, Nova and Tuk (plus benched Sunny, Rook and Vex), spring physics for dangly bits, character table and roster |
@@ -240,7 +244,7 @@ where a region is a box `{x,z,w,d,y}` at a surface height. Taking off from a `fr
 in a `to` region without touching anything in between awards the gap into the combo. First discoveries
 are saved per map and counted in the pause menu. Plaza has 13; Frozen Rink and Rooftops have none yet.
 
-`snowballs-check.js`, `ammo-check.js`, `cpu-check.js`, `moves-check.js` and `nova-check.js` are quick checks of snowball hits, orb refills,
+`procon-check.js` checks the Switch 2 Pro Controller layout, prompts and switching back to a DualSense. `snowballs-check.js`, `ammo-check.js`, `cpu-check.js`, `moves-check.js` and `nova-check.js` are quick checks of snowball hits, orb refills,
 the computer player, and ground pound / rebinding / pole climbing: pass a file's contents as the second argument,
 e.g. `python3 tests/lines.py index.html "$(cat tests/moves-check.js)"`.
 
