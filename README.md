@@ -166,6 +166,21 @@ needs Flip's or Nova's full moveset (and guard rails help).
 - **Hold to respawn** (L3 / R) takes you back to the spawn point or your last checkpoint; **hold to restart** (△ / Enter) restarts the orb run, race or level. A meter fills while you hold.
 - **Moves** in the pause menu lists every move for the character you're playing. During an orb run the pause menu also has **Restart** and **Stop orb run**, and when a run ends you keep playing right where you are.
 
+### Multiplayer on GitHub
+The GitHub Pages copy has multiplayer too, with no server: browsers find each other through public Nostr relays
+([Trystero](https://github.com/dmotz/trystero), MIT, loaded from a CDN and pinned to 0.25.2) and then connect directly.
+- **Play together:** send friends the game's link. Everyone who opens it is in the public lobby; anyone on the same
+  Trick Park map plays with you. Type your name on the map picker so they know who you are.
+- **Private group:** add `?room=` and any name to the link, e.g. `https://damonsea.github.io/snowball-wars/?room=bens-crew`.
+  Only people with that exact link share a room.
+- **Can't connect?** Some strict networks (school, work, hotel Wi-Fi, some phone networks) block direct connections.
+  The fix is a TURN relay: get free credentials (e.g. Cloudflare Realtime TURN or Metered's Open Relay) and add them to
+  `P2P.turn` at the top of `js/net/p2p.js`:
+  `turn:[{urls:'turn:…',username:'…',credential:'…'}]`.
+- The GitHub copy and the claude.ai copy are separate: players on one don't see players on the other.
+- Publishing maps to User Maps needs claude.ai's database, so on GitHub, share maps by Export / Import instead.
+- Test: `tests/p2p/p2p-check.py` runs two game windows against a stand-in for Trystero (see the file for how to run it).
+
 ## Project guide
 
 (Formerly "Orb Run", then briefly "Frosty Falls". Saved data keeps its `orbRun…` storage keys so scores, gaps and unlocks carry over.)
@@ -207,20 +222,21 @@ by files above it. Nothing is bundled.
 | 24 | `js/input/gamepad.js` | PS5 / standard controller support |
 | 25 | `js/loop.js` | The frame loop: update, animate, camera, render |
 | 26 | `js/seasons.js` | Snowfall, breath, Winter/Summer switching |
-| 27 | `js/multiplayer.js` | Trick Park multiplayer over the page's room capability |
-| 28 | `js/snowballs.js` | Snowball fights: throwing, ammo (refilled by orbs), snowmen, hits on players (Trick Park only) |
-| 29 | `js/wars.js` | Snowball Wars mode: matches, hearts, scoring, snow piles, computer players |
-| 30 | `js/orbrace.js` | Orb Race: shared runs with friends, knocked-loose orbs, computer rivals |
-| 31 | `js/tag.js` | Tag mode: It passing, no tag-backs, time-as-It scoring, computer players |
-| 32 | `js/yellowsnow.js` | Yellow snow: spray stream (from the emote wheel) that marks the snow, yellow snowballs (Settings → Yellow snow) |
-| 33 | `js/winterfun.js` | Snow angels and rolling snowballs that grow |
-| 34 | `js/emotes.js` | Emote wheel (hold Ground pound standing): wave, cheer, dances, snow angel, yellow snow |
-| 35 | `js/cpu.js` | Computer player for Trick Park (Settings → Computer player) |
-| 36 | `js/builder/maps.js` | Map Builder asset library, map cleaning, and turning a saved map into a playable Trick Park map |
-| 37 | `js/builder/editor.js` | Map Builder editor: top-down camera, placing, selecting, dragging, inspector, undo, test play |
-| 38 | `js/builder/community.js` | Drafts, publishing to the shared map list, More maps panel, export and import |
-| 39 | `js/qol.js` | Hold to respawn / restart, Stop orb run, Moves list in the pause menu |
-| 40 | `js/main.js` | Startup |
+| 27 | `js/net/p2p.js` | Multiplayer outside claude.ai: peer-to-peer stand-in for the room (Trystero) |
+| 28 | `js/multiplayer.js` | Trick Park multiplayer over the page's room capability (or the P2P stand-in) |
+| 29 | `js/snowballs.js` | Snowball fights: throwing, ammo (refilled by orbs), snowmen, hits on players (Trick Park only) |
+| 30 | `js/wars.js` | Snowball Wars mode: matches, hearts, scoring, snow piles, computer players |
+| 31 | `js/orbrace.js` | Orb Race: shared runs with friends, knocked-loose orbs, computer rivals |
+| 32 | `js/tag.js` | Tag mode: It passing, no tag-backs, time-as-It scoring, computer players |
+| 33 | `js/yellowsnow.js` | Yellow snow: spray stream (from the emote wheel) that marks the snow, yellow snowballs (Settings → Yellow snow) |
+| 34 | `js/winterfun.js` | Snow angels and rolling snowballs that grow |
+| 35 | `js/emotes.js` | Emote wheel (hold Ground pound standing): wave, cheer, dances, snow angel, yellow snow |
+| 36 | `js/cpu.js` | Computer player for Trick Park (Settings → Computer player) |
+| 37 | `js/builder/maps.js` | Map Builder asset library, map cleaning, and turning a saved map into a playable Trick Park map |
+| 38 | `js/builder/editor.js` | Map Builder editor: top-down camera, placing, selecting, dragging, inspector, undo, test play |
+| 39 | `js/builder/community.js` | Drafts, publishing to the shared map list, More maps panel, export and import |
+| 40 | `js/qol.js` | Hold to respawn / restart, Stop orb run, Moves list in the pause menu |
+| 41 | `js/main.js` | Startup |
 
 ## Tests
 

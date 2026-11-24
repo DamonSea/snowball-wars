@@ -10,8 +10,11 @@ const MP={on:false,lobby:null,user:null,room:null,roomName:'',joining:false,retr
 let orbSeq=0,hzSeq=0;
 const mkId=p=>(MP.me?MP.me.slice(-5):'s')+p;
 const f2=x=>Math.round(x*100)/100;
-async function mpInit(){try{if(!window.claude||typeof window.claude.use!=='function')return;
-  const[room,user]=await Promise.all([window.claude.use('room'),window.claude.use('user')]);if(!room)return;
+// On claude.ai the page's room capability; anywhere else (the GitHub Pages copy) the peer-to-peer stand-in in net/p2p.js
+async function mpInit(){try{let room,user;
+  if(window.claude&&typeof window.claude.use==='function')[room,user]=await Promise.all([window.claude.use('room'),window.claude.use('user')]);
+  else if(p2pPossible()){MP.p2p=true;lobbyUI();try{room=await p2pRoom();user=p2pUser}catch(e){P2P.status='off';MP.err='couldn\u2019t reach the matchmaking network';lobbyUI();return}}
+  if(!room)return;
   MP.lobby=room;MP.user=user;MP.on=true;
   try{const me=user&&await user.me();MP.acctName=(me&&me.name)||''}catch(e){}MP.myName=savedName()||MP.acctName;
   room.onPeers(()=>lobbyUI(),e=>{MP.on=false;MP.err=(e&&e.code)||'error';lobbyUI()});lobbyUI()}catch(e){MP.on=false}}
@@ -24,9 +27,11 @@ function nameOf(peer){
 const whereName=w=>w==='menu'?'in the menu':w==='adv'?'in Adventure':/^p\d$/.test(w||'')&&RUNMAPS[+w[1]]?'in '+RUNMAPS[+w[1]].name:'';
 function lobbyUI(){const e=$('online');if(!e)return;
   if(MP.err&&(!MP.on||!MP.lobby)){e.textContent='Multiplayer couldn\u2019t connect ('+MP.err+').';return}
+  if(MP.p2p&&!MP.lobby){e.textContent='Multiplayer: connecting\u2026';return}
   if(!MP.on||!MP.lobby){e.textContent='';return}
-  const ps=MP.lobby.peers();if(ps.length<2){e.textContent='Multiplayer: share this game from claude.ai to invite friends. Anyone on the same Trick Park map plays with you.';return}
-  e.textContent=(MP.err?'Multiplayer problem ('+MP.err+'). ':'')+'Online now: '+ps.map(p=>(p.sameTab?'You':nameOf(p))+(p.sameTab?'':(' ('+(whereName(p.presence.w)||'here')+')'))).join(', ')}
+  const room=MP.p2p&&P2P.room!=='lobby'?' (room \u201c'+P2P.room+'\u201d)':'';
+  const ps=MP.lobby.peers();if(ps.length<2){e.textContent=MP.p2p?'Multiplayer'+room+': send friends this page\u2019s link. Anyone on the same Trick Park map plays with you.':'Multiplayer: share this game from claude.ai to invite friends. Anyone on the same Trick Park map plays with you.';return}
+  e.textContent=(MP.err?'Multiplayer problem ('+MP.err+'). ':'')+(P2P.err?'Note: '+P2P.err+'. ':'')+'Online now'+(MP.p2p?room:'')+': '+ps.map(p=>(p.sameTab?'You':nameOf(p))+(p.sameTab?'':(' ('+(whereName(p.presence.w)||'here')+')'))).join(', ')}
 // players are matched by map key (custom maps sit at different list positions on different screens)
 const mapCount=i=>{const M=RUNMAPS[i];return M&&MP.on&&MP.lobby?MP.lobby.peers().filter(p=>!p.sameTab&&p.presence&&p.presence.w==='p'+M.key).length:0};
 // --- remote avatars ---

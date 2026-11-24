@@ -13,7 +13,18 @@ Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub
 - **Nintendo button names on screen while you use it:** prompts, the Controls card, help text and rebinding show B / A /
   Y / X, L / R, ZL / ZR and + / − instead of ✕ / ○ / □ / △. Pick up a DualSense and they switch back.
 
-## [2.31.0] - 2026-11-23 — Your name; solid snowmen
+## [2.32.0] - 2026-11-24 — Multiplayer on the GitHub copy
+### Added
+- **Peer-to-peer multiplayer outside claude.ai** (`js/net/p2p.js`): the GitHub Pages copy now has the same Trick Park
+  multiplayer (avatars, names, shared orbs and spikeballs, Snowball Wars, Collectathon, Tag), with no server. Browsers
+  meet through public Nostr relays via Trystero 0.25.2 (pinned, from esm.run) and then talk directly over WebRTC.
+  It's a stand-in for claude.ai's room capability, so the game code is unchanged; on claude.ai nothing changes.
+- Public lobby by default; `?room=name` in the link for a private group (shown on the title screen).
+- Only changed parts of your state are sent (about 100 bytes an update); players who go silent for 20 s are dropped.
+- Optional TURN relay setting (`P2P.turn`) for networks that block direct connections.
+- `tests/p2p/p2p-check.py`: two game windows against a BroadcastChannel stand-in for Trystero (16 checks).
+
+ - 2026-11-23 — Your name; solid snowmen
 ### Added
 - **Name box on the Trick Park picker** ("Your name"): what friends see on your name tag and the scoreboards. It's
   saved on this device and used every time you join. The first time, the cursor starts in it; Enter or Esc goes back
