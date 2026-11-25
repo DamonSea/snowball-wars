@@ -168,6 +168,7 @@ function tick(){
     if(playing&&typeof WAR!=='undefined'&&WAR.on&&WAR.out>0){applyPose({rig:H},KO_Q,koBlend(T.wars.respawn-WAR.out));koStars(myStars,P.position.x,py,P.position.z,face,dt)}
     if(H.accA&&H.accA.length)accFrame(H,dt,sp,air,dvL);
     if(H.ears)tukPhysics(H,dt,dvL,sp,air,idleT>1.5&&state!=='menu');
+    if(H.locks)hairPhysics(H,dt,dvL,sp,air,air&&vy<-2);
     if(H.tails)vexPhysics(H,dt,dvL,sp,air,run,ph,bank,idleT>1.2&&state!=='menu');
     if(H.scarf){const fl=Math.min(1.25,sp*.11)+(air?.35:0)+(state==='select'?.15:0);
       H.scarf.forEach((g,i)=>{L(g.rotation,'x',(i?fl*.12:.25+fl)+Math.sin(tAll*(6+sp)-i*1.1)*(.08+fl*.12),.25);

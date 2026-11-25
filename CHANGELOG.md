@@ -3,7 +3,14 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
-## [2.35.1] - 2026-11-25 — Back to the chunky locks
+## [2.36.0] - 2026-11-25 — Hair physics
+### Added
+- **Flip's hair reacts to movement** (Off Duty, Super Flip): each of its 28 locks hangs from a pivot at its root on a
+  damped spring. Speeding up flings the locks back, stopping throws them forward and they wobble back, running
+  streams them back a little, jumping and landing bounce them, falling lifts them, and they sway gently at rest.
+  Friends' Flips sway and stream too. Nothing runs when the hair is hidden under his cap.
+
+ - 2026-11-25 — Back to the chunky locks
 ### Changed
 - Flip's hair is the tousled chunky-lock mop again (two shades of ginger, fuller at the back, fringe swept to his
   left, a few locks sticking up), instead of the one-piece mop.

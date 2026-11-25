@@ -80,6 +80,7 @@ function updAvatars(dt){
     if(a.rig.pony){const fl=Math.min(1,sp*.08);a.rig.pony.forEach((g,i)=>{g.rotation.x=(i?.12+fl*.22:.45+fl*.75)+Math.sin(tAll*(5+sp*.6)-i*1.2)*(.05+fl*.08)})}
     if(a.rig.tails){const fl=Math.min(1,sp*.09);a.rig.tails.forEach((c,j)=>c.forEach((g,i)=>{g.rotation.x=(i?.15+fl*.22:.35+fl*.85)+Math.sin(tAll*(5+sp*.7)-i*1.3+j*1.7)*(.03+fl*.09)}));a.rig.hawk.forEach((g,i)=>g.rotation.x=g._b-fl*.22*(i+1)/5)}
     if(a.rig.accA&&a.rig.accA.length)accFrame(a.rig,dt,sp,false,{f:0,s:0,u:0});
+    if(a.rig.locks)hairPhysics(a.rig,dt,{f:0,s:0,u:0},sp,false,false);
     if(a.rig.scarf){const fl=Math.min(1.25,sp*.11);a.rig.scarf.forEach((g,i)=>{g.rotation.x=(i?fl*.12:.25+fl)+Math.sin(tAll*(6+sp)-i*1.1)*(.08+fl*.12)})}
     snowFromPeer(peer,a);
     drawTag(a,nameOf(peer),peerLine(pr),!!pr.fr);

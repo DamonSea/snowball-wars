@@ -97,9 +97,12 @@ function buildChibi(parent=P){
   // fuller at the back, short at the sides so the ears show, with a fringe swept to his left
   {const g=new THREE.Group();head.add(g);const dark=sm(0xb5521d,{roughness:.85}),LS=new THREE.SphereGeometry(1,10,8);
     const base=add(new THREE.SphereGeometry(.47,22,14,0,2*PI,0,PI*.5),hair,0,.02,-.03,g);base.rotation.x=-.42;base.scale.set(1.02,1,1.03);
-    // lock(x,y,z, size, length, tip direction): an egg-shaped clump stretched toward its tip
-    const lock=(x,y,z,r,len,dx,dy,dz,m=hair)=>{const o=add(LS,m,x,y,z,g);o.scale.set(r,r*.78,len);
-      const L=Math.hypot(dx,dy,dz)||1;o.rotation.order='YXZ';o.rotation.set(-Math.asin(dy/L),Math.atan2(dx,dz),0);return o};   // point the lock's long axis along (dx,dy,dz)
+    // lock(x,y,z, size, length, tip direction): an egg-shaped clump stretched toward its tip, hung from a pivot at its
+    // root so it can swing (hairPhysics)
+    const locks=[];
+    const lock=(x,y,z,r,len,dx,dy,dz,m=hair)=>{const L=Math.hypot(dx,dy,dz)||1,t=[dx/L,dy/L,dz/L],h=len*.55;
+      const pv=new THREE.Group();pv.position.set(x-t[0]*h,y-t[1]*h,z-t[2]*h);g.add(pv);pv._t=t;pv._w=len/.2;pv._ph=locks.length*1.7;locks.push(pv);
+      const o=add(LS,m,t[0]*h,t[1]*h,t[2]*h,pv);o.scale.set(r,r*.78,len);o.rotation.order='YXZ';o.rotation.set(-Math.asin(t[1]),Math.atan2(t[0],t[2]),0);return o};
     // crown and back: locks fanning back and down from the top of the head
     for(let i=0;i<9;i++){const a=PI*.55+i/8*PI*.9,c=Math.cos(a),s=Math.sin(a);
       lock(s*.3,.3-Math.abs(c)*.05,c*.3-.06,.15,.24,s*.5,-.35,c,i%2?dark:hair)}
@@ -110,7 +113,7 @@ function buildChibi(parent=P){
     [-1,1].forEach(s=>{lock(s*.4,.2,.06,.11,.16,s*.7,-.6,.3);lock(s*.41,.12,-.12,.11,.16,s*.6,-.8,-.2,dark)});
     // fringe: swept across to his left, sitting above the brows
     [[.22,.3,.3,-.9,-.35,.35,.13,.22],[.08,.33,.34,-1,-.25,.3,.13,.24],[-.07,.33,.35,-1,-.4,.25,.12,.21],[-.2,.29,.31,-.8,-.6,.3,.11,.17]].forEach(([x,y,z,dx,dy,dz,r,l],i)=>lock(x,y,z,r,l,dx,dy,dz,i===2?dark:hair));
-    parts.hair=[g]}
+    parts.hair=[g];g._locks=locks}
   // summer: sunglasses, bare forearms under short sleeves and bare calves under the shorts
   {const m=sm(0x14151a,{roughness:.12,metalness:.35}),g=new THREE.Group();g.position.set(0,.03,.46);head.add(g);
     [-1,1].forEach(s=>{const l=add(B(.18,.12,.04),m,s*.14,0,0,g);l.rotation.y=-s*.18});add(B(.1,.025,.03),m,0,.035,.02,g);
@@ -126,7 +129,7 @@ function buildChibi(parent=P){
     const bolt=add(B(.04,.15,.04),gold,0,0,.012,g);bolt.rotation.z=.5;parts.emblem=[g];
     parts.belt=[T(.37,.045,gold,0,-.17,0,hp)];parts.belt[0].scale.set(1,.92,1)}
   const PART_EXTRAS=['hair','shades','calves','forearms','mask','emblem','belt'];PART_EXTRAS.forEach(k=>parts[k].forEach(m=>{m.visible=false}));
-  return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,scarf,parts,partExtras:PART_EXTRAS,pantsLegs,sleeves,gogG,anc:{hr:.45,top:.56,eyeY:0,face:.5,nose:[0,-.09,.52],backY:.1,backZ:-.4},
+  return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,scarf,parts,partExtras:PART_EXTRAS,pantsLegs,sleeves,gogG,locks:parts.hair[0]._locks,anc:{hr:.45,top:.56,eyeY:0,face:.5,nose:[0,-.09,.52],backY:.1,backZ:-.4},
     mats:{jacket,fleece,leather,pants,boot,sole,glove,scarf:scarfM,metal,lens,rib}};
 }
 // Nova: backcountry snowboarder. Her own rig with the same interface (root > hp > limbs, head, eyes, mats):
@@ -327,6 +330,15 @@ function tukPhysics(H,dt,dv,sp,air,idle){const cl=x=>Math.max(-12,Math.min(12,x)
   const B=H.belly,v=B._jv||(B._jv={y:0});v.y-=Math.max(0,cl(dv.u))*.26;v.y+=((.95-B.scale.y)*240-v.y*9)*dt;B.scale.y+=v.y*dt;B.scale.x=1.05+(.95-B.scale.y)*.6;
   // standing around: tips his head back and catches snowflakes on his tongue
   H.tongue.visible=idle&&Math.sin(tAll*1.3)>-.2;if(H.tongue.visible)H.tongue.scale.z=Math.min(.7,(H.tongue.scale.z||0)+dt*2);else H.tongue.scale.z=.001}
+// Flip's hair (when it shows): every lock lags behind changes in his speed, overshoots and wobbles back; running
+// streams it back, falling lifts it, and it sways a little at rest. dv as in vexPhysics (f forward, s right, u up).
+// A lock's tip moves along a direction D when it turns about the axis tip x D (small angles).
+function hairPhysics(H,dt,dv,sp,air,falling){if(!H.locks||!H.parts.hair[0].visible)return;const cl=x=>Math.max(-12,Math.min(12,x));
+  const D=[cl(dv.s)*.12,-cl(dv.u)*.07,-cl(dv.f)*.12],W=[0,falling?.25:0,-Math.min(.32,sp*.04)];
+  for(const p of H.locks){const t=p._t,w=p._w,c=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+    const k=c(t,D),r=c(t,W),sw=Math.sin(tAll*(2.2+sp*.35)+p._ph)*(.025+Math.min(.07,sp*.008));
+    kick(p,'x',k[0]*w*7);kick(p,'y',k[1]*w*7);kick(p,'z',k[2]*w*7);
+    spring(p,'x',r[0]*w+sw*.5,dt,85,5.5);spring(p,'y',r[1]*w,dt,85,5.5);spring(p,'z',r[2]*w+sw,dt,85,5.5)}}
 // A damped spring on one rotation axis (velocity kept on the object): dangly bits overshoot and wobble instead of easing.
 function spring(o,ax,target,dt,k=120,c=9){const v=o._sv||(o._sv={x:0,y:0,z:0});v[ax]+=((target-o.rotation[ax])*k-v[ax]*c)*dt;v[ax]=Math.max(-40,Math.min(40,v[ax]));o.rotation[ax]+=v[ax]*dt}
 const kick=(o,ax,dv)=>{const v=o._sv||(o._sv={x:0,y:0,z:0});v[ax]+=dv};
