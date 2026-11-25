@@ -94,8 +94,9 @@ function buildChibi(parent=P){
   // ---- outfit-only pieces, hidden unless an outfit shows them (OUTFITS .show / .hide / .shorts) ----
   const parts={cap:capParts,goggles:gog,gogStrap:[gog[0]],scarf:[scarfRing,scarf[0]],collar:[collar],zip:[zip],pockets,cuffs};
   // hair when the cap is off: a tousled ginger mop made of chunky locks (two shades for depth) over a snug base,
-  // fuller at the back, short at the sides so the ears show, with a fringe swept to his left
-  {const g=new THREE.Group();head.add(g);const dark=sm(0xb5521d,{roughness:.85}),LS=new THREE.SphereGeometry(1,10,8);
+  // fuller at the back, short at the sides so the ears show, with a fringe falling over his forehead
+  const dark=sm(0xb5521d,{roughness:.85});
+  {const g=new THREE.Group();head.add(g);const LS=new THREE.SphereGeometry(1,10,8);
     const base=add(new THREE.SphereGeometry(.47,22,14,0,2*PI,0,PI*.5),hair,0,.02,-.03,g);base.rotation.x=-.42;base.scale.set(1.02,1,1.03);
     // lock(x,y,z, size, length, tip direction): an egg-shaped clump stretched toward its tip, hung from a pivot at its
     // root so it can swing (hairPhysics)
@@ -111,8 +112,8 @@ function buildChibi(parent=P){
     [[-.12,.47,-.02,.5,1,-.4],[.08,.49,.06,-.2,1,-.2],[.2,.42,-.12,.5,.9,-.6],[-.24,.4,-.14,-.6,.8,-.6]].forEach(([x,y,z,dx,dy,dz],i)=>lock(x,y,z,.12,.19,dx,dy,dz,i%2?dark:hair));
     // sides: short, above the ears
     [-1,1].forEach(s=>{lock(s*.4,.2,.06,.11,.16,s*.7,-.6,.3);lock(s*.41,.12,-.12,.11,.16,s*.6,-.8,-.2,dark)});
-    // fringe: swept across to his left, sitting above the brows
-    [[.22,.3,.3,-.9,-.35,.35,.13,.22],[.08,.33,.34,-1,-.25,.3,.13,.24],[-.07,.33,.35,-1,-.4,.25,.12,.21],[-.2,.29,.31,-.8,-.6,.3,.11,.17]].forEach(([x,y,z,dx,dy,dz,r,l],i)=>lock(x,y,z,r,l,dx,dy,dz,i===2?dark:hair));
+    // fringe: locks falling straight down over the forehead (fanning out a little), stopping just above the brows
+    [[-.25,.31,.3,-.35,-1,.45,.11,.16],[-.09,.34,.35,-.1,-1,.5,.12,.18],[.08,.34,.35,.1,-1,.5,.12,.18],[.24,.31,.3,.35,-1,.45,.11,.16]].forEach(([x,y,z,dx,dy,dz,r,l],i)=>lock(x,y,z,r,l,dx,dy,dz,i%2?dark:hair));
     parts.hair=[g];g._locks=locks}
   // summer: sunglasses, bare forearms under short sleeves and bare calves under the shorts
   {const m=sm(0x14151a,{roughness:.12,metalness:.35}),g=new THREE.Group();g.position.set(0,.03,.46);head.add(g);
@@ -130,7 +131,7 @@ function buildChibi(parent=P){
     parts.belt=[T(.37,.045,gold,0,-.17,0,hp)];parts.belt[0].scale.set(1,.92,1)}
   const PART_EXTRAS=['hair','shades','calves','forearms','mask','emblem','belt'];PART_EXTRAS.forEach(k=>parts[k].forEach(m=>{m.visible=false}));
   return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,scarf,parts,partExtras:PART_EXTRAS,pantsLegs,sleeves,gogG,locks:parts.hair[0]._locks,anc:{hr:.45,top:.56,eyeY:0,face:.5,nose:[0,-.09,.52],backY:.1,backZ:-.4},
-    mats:{jacket,fleece,leather,pants,boot,sole,glove,scarf:scarfM,metal,lens,rib}};
+    mats:{jacket,fleece,leather,pants,boot,sole,glove,scarf:scarfM,metal,lens,rib,hair,hairDark:dark}};
 }
 // Nova: backcountry snowboarder. Her own rig with the same interface (root > hp > limbs, head, eyes, mats):
 // slouchy beanie with a swinging tip and pom-pom, headphones, curly hair, quilted puffer, baggy snow pants,
@@ -407,12 +408,15 @@ function outfitParts(rig,o){if(!rig||!rig.parts)return;const ex=rig.partExtras||
   if(rig.gogG){const up=(o.show||[]).includes('hair');rig.gogG.scale.setScalar(up?1.1:1);rig.gogG.position.set(0,up?.1:0,up?-.03:0)}
   // summer: short sleeves too
   (rig.sleeves||[]).forEach(m=>{m.scale.y=o.shorts?.45:1;m.position.y=o.shorts?-.063:-.14})}
-function applyOutfitTo(M,i,list=OUTFITS,rig){const o=list[i];outfitParts(rig,o);
+// hair: ginger unless the outfit says otherwise; the darker locks are always the same color a shade darker
+const HAIR=0xd9692b;
+function setHair(M,hex){if(!M.hair)return;M.hair.color.setHex(hex);if(M.hairDark)M.hairDark.color.setHex(hex).multiplyScalar(.82)}
+function applyOutfitTo(M,i,list=OUTFITS,rig){const o=list[i];outfitParts(rig,o);setHair(M,o.hair??HAIR);
   ['jacket','fleece','leather','pants','boot','sole','glove','scarf','metal','lens'].forEach(k=>M[k].color.setHex(o[k]));
   M.lens.emissive.setHex(o.lensE);M.rib.color.setHex(o.jacket).multiplyScalar(.78);
   M.jacket.metalness=o.shiny?.55:0;M.jacket.roughness=o.shiny?.35:.75;M.rib.metalness=o.shiny?.4:0;}
 // paintable parts per wardrobe character, in Colors-tab order: [material key, label]
-const PARTS={Flip:[['jacket','Jacket'],['fleece','Collar & trim'],['leather','Cap'],['scarf','Scarf'],['pants','Pants'],['boot','Boots'],['sole','Soles'],['glove','Gloves'],['lens','Goggle lenses'],['metal','Goggle frames']],
+const PARTS={Flip:[['jacket','Jacket'],['fleece','Collar & trim'],['leather','Cap'],['hair','Hair'],['scarf','Scarf'],['pants','Pants'],['boot','Boots'],['sole','Soles'],['glove','Gloves'],['lens','Goggle lenses'],['metal','Goggle frames']],
   Nova:[['jacket','Puffer'],['fleece','Collar & patches'],['leather','Beanie'],['glove','Mittens'],['scarf','Headphones & pom'],['pants','Snow pants'],['boot','Boots'],['sole','Soles & straps'],['metal','Snowboard'],['lens','Board stripe']],
   Tuk:[['jacket','Sweater'],['fleece','Zigzag & trim'],['leather','Fur'],['pants','Face & belly'],['scarf','Scarf'],['glove','Cheeks & ears'],['boot','Nose & paw pads'],['sole','Horns & claws'],['metal','Toggles'],['lens','Eyes']],
   Vex:[['jacket','Hoodie'],['leather','Mohawk'],['scarf','Bandana'],['fleece','Laces & strings'],['lens','Bolts'],['pants','Jeans'],['boot','Sneakers'],['sole','Soles & toe caps'],['glove','Wristbands'],['metal','Studs & chain']]};

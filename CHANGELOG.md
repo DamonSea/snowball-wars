@@ -3,7 +3,15 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
-## [2.36.0] - 2026-11-25 — Hair physics
+## [2.37.0] - 2026-11-25 — Fringe and hair color
+### Changed
+- Flip's fringe falls straight down over his forehead (fanning out a little, stopping above the brows) instead of being
+  swept to one side.
+### Added
+- **Hair color in Customize** (Flip, Colors tab): its own palette of natural shades (gingers, blondes, browns, black,
+  grey, white) plus a few bold ones. The darker locks follow a shade darker. Friends see it; ↺ resets to ginger.
+
+ - 2026-11-25 — Hair physics
 ### Added
 - **Flip's hair reacts to movement** (Off Duty, Super Flip): each of its 28 locks hangs from a pivot at its root on a
   damped spring. Speeding up flings the locks back, stopping throws them forward and they wobble back, running

@@ -2,6 +2,8 @@
 // accessories in three slots (head, face, back). Opened from character select with Customize. Looks save per
 // character in this browser and travel in multiplayer presence ("lk"), so friends see them too.
 // A look is {c:{part:hex}, a:{top,face,back}, ac:hex|null}: c overrides the preset's colors, ac recolors accessories.
+// hair has its own palette: natural shades first, then a few bold ones
+const HPAL=[0xd9692b,0x9a3b1e,0xe8995a,0xf0cf72,0xfff0b8,0x9a6a3e,0x5a3a22,0x3a2418,0x1b1b20,0xa8acb2,0xf2f2f2,0xff8ac2,0x37d7ff,0x39c46b,0x6b2cff,0xe23b3b];
 const CPAL=[0xffffff,0xd9d9e0,0x8a8f99,0x2b2b33,0x111114,0x5a3a22,0xa8582c,0xe23b3b,0xff8a3d,0xffd84a,0xb6ff3b,0x39c46b,0x2bb3a8,0x37d7ff,0x2f6fd0,0x6b2cff,0xff3fb4,0xff8ac2];
 const hexS=n=>'#'+(n>>>0).toString(16).padStart(6,'0');
 const accM=(c,o={})=>new THREE.MeshStandardMaterial({color:c,roughness:.5,...o});
@@ -52,6 +54,7 @@ function saveLook(ch){try{localStorage.setItem('orbRunLook_'+chars[ch].name,JSON
 function applyLook(rig,ch,of,L){const list=chars[ch].outs;if(!list)return;applyOutfitTo(rig.mats,of,list,rig);
   for(const k in L.c){const M=rig.mats[k];if(!M)continue;M.color.setHex(L.c[k]);if(k==='lens')M.emissive.setHex(L.c[k]).multiplyScalar(.35)}
   if(L.c.jacket!==undefined)rig.mats.rib.color.setHex(L.c.jacket).multiplyScalar(.78);
+  if(L.c.hair!==undefined)setHair(rig.mats,L.c.hair);
   buildAcc(rig,L,list[of])}
 // your accessories, plus any the outfit comes with (Super Flip's cape) in slots you've left empty
 function buildAcc(rig,L,o){(rig.accA||[]).forEach(it=>freeTree(it.g));rig.accA=[];const a=rig.anc;if(!a)return;
@@ -85,7 +88,7 @@ function renderCust(){const c=chars[ci],L=LOOKS[ci],list=c.outs;$('custName').te
   if(CUST.tab==='outfit'){h='<p class="bHelp">Pick a starting outfit. Picking one resets your custom colors (accessories stay).</p><div class="cgrid">'+
     list.map((o,i)=>`<button class="cpre${OFI[ci]===i?' on':''}${unlocked(i,list)?'':' locked'}" data-o="${i}"><i style="background:linear-gradient(135deg,${hexS(o.jacket)} 50%,${hexS(o.scarf)} 50%)"></i>${o.name}${unlocked(i,list)?'':'<small>'+o.lock+'</small>'}</button>`).join('')+'</div>'}
   else if(CUST.tab==='color'){const base=list[OFI[ci]];
-    h=(PARTS[c.name]||[]).map(([k,lab])=>{const cur=L.c[k]??base[k];return`<div class="crow"><span>${lab}${L.c[k]!==undefined?` <button class="cundo" data-u="${k}" title="Back to the outfit's color" aria-label="Reset ${lab}">↺</button>`:''}</span><div class="cpal">${CPAL.map(v=>sw('data-c',v,v===cur,lab+' '+hexS(v))).join('').replace(/data-c=/g,`data-p="${k}" data-c=`)}</div></div>`}).join('')}
+    h=(PARTS[c.name]||[]).map(([k,lab])=>{const cur=L.c[k]??base[k]??(k==='hair'?HAIR:undefined);return`<div class="crow"><span>${lab}${L.c[k]!==undefined?` <button class="cundo" data-u="${k}" title="Back to the outfit's color" aria-label="Reset ${lab}">↺</button>`:''}</span><div class="cpal">${(k==='hair'?HPAL:CPAL).map(v=>sw('data-c',v,v===cur,lab+' '+hexS(v))).join('').replace(/data-c=/g,`data-p="${k}" data-c=`)}</div></div>`}).join('')}
   else{h=ACC_SLOTS.map(([s,lab])=>`<div class="crow"><span>${lab}</span><div class="copts"><button class="opt${!L.a[s]?' on':''}" data-s="${s}" data-a="">None</button>${ACC[s].map(i=>`<button class="opt${L.a[s]===i.id?' on':''}" data-s="${s}" data-a="${i.id}">${i.label}</button>`).join('')}</div></div>`).join('')+
     `<div class="crow"><span>Accessory color${L.ac!==null?' <button class="cundo" data-u="ac" aria-label="Reset accessory color">↺</button>':''}</span><div class="cpal">${CPAL.map(v=>sw('data-ac',v,v===L.ac,'Accessory '+hexS(v))).join('')}</div></div>`}
   const a=document.activeElement,key=a&&$('cust').contains(a)?[...a.attributes].filter(x=>x.name.startsWith('data-')).map(x=>`[${x.name}="${x.value}"]`).join(''):'';

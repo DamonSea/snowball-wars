@@ -36,7 +36,8 @@ wobble back, punches that reach, and ground pounds that ball up, stretch down an
 
 ### Make them yours
 On character select, **Customize** (Flip, Nova and Tuk) opens a dressing room: start from an outfit, repaint every part
-(jacket, hat or hair, scarf or bandana, pants, boots, gloves and more) and add accessories. Head: crown, party hat,
+(jacket, hat or hair, scarf or bandana, pants, boots, gloves and more; Flip's hair has its own palette of natural
+shades) and add accessories. Head: crown, party hat,
 propeller cap, cat ears, halo. Face: shades, round specs, mustache, clown nose. Back: backpack, cape, jetpack, wings.
 They move, too: the propeller spins faster as you run, the jetpack fires in the air, wings flap and the cape streams.
 Your look shows up for friends in multiplayer.

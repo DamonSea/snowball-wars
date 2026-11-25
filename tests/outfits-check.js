@@ -22,5 +22,14 @@ const a=makeAv(2);ok('A friend\'s Flip starts with no extras showing',!a.rig.par
 applyLook(a.rig,2,iS,cleanLook(null,2));ok('A friend in Super Flip shows the mask and cape',a.rig.parts.mask[0].visible&&(a.rig.accA||[]).some(it=>it.id==='cape'));
 // cape moves
 OFI[2]=iS;applyOutfit(iS);__place(0,10,0,0);__k({KeyW:true});__step(40);const cp=R.accA.find(it=>it.id==='cape');ok('The cape flows when running',Math.abs(cp.c[0].rotation.x)>.2,cp.c[0].rotation.x.toFixed(2));__k({});
+// hair color
+ok('Hair starts ginger',R.mats.hair.color.getHex()===HAIR);
+ok('Customize has a Hair color row with hair shades',PARTS.Flip.some(p=>p[0]==='hair')&&HPAL.includes(0x3a2418)&&HPAL.includes(0xf0cf72));
+setLook(L=>{L.c.hair=0x3a2418});ok('Picking dark brown colors the hair',R.mats.hair.color.getHex()===0x3a2418);
+const a2=makeAv(2);applyLook(a2.rig,2,iS,cleanLook({c:{hair:0xf0cf72}},2));ok('Friends see your hair color',a2.rig.mats.hair.color.getHex()===0xf0cf72);
+ok('Junk hair colors from friends are ignored',cleanLook({c:{hair:'red'}},2).c.hair===undefined);
+setLook(L=>{delete L.c.hair});ok('Reset goes back to ginger',R.mats.hair.color.getHex()===HAIR);
+// fringe falls down
+const fr=R.locks.filter(p=>p._t[2]>.3&&p._t[1]<-.5&&Math.abs(p._t[0])<.5);ok('The fringe locks point down, not sideways',fr.length===4&&fr.every(p=>Math.abs(p._t[0])<.35),fr.map(p=>p._t.map(v=>v.toFixed(2)).join(',')).join(' | '));
 OFI[2]=0;applyOutfit(0);
 return out.join('\n')})()
