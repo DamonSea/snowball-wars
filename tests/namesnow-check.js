@@ -18,15 +18,16 @@ __place(s.x,s.z,2.6,0);__step(1);ok('Above a snowman you are not pushed sideways
 setRivals(2);beginTimed();__step(200);const b=RACE.bots[0];b.x=s.x+.2;b.z=s.z;b.y=0;__step(2);ok('Computer players bump off snowmen',Math.hypot(b.x-s.x,b.z-s.z)>=1,(Math.hypot(b.x-s.x,b.z-s.z)).toFixed(2));stopOrbRun();__step(3);
 // ---- name
 localStorage.removeItem('orbRunName');MP.acctName='';MP.myName='';
-menu();__step(2);$('go').click();__step(3);ok('Trick Park picker has a name box',!!$('parkMe')&&$('parkMe').offsetParent!==null);
-ok('With no name yet, the cursor starts in the name box',document.activeElement===$('parkMe')||true);
-const inp=$('parkMe');inp.value='  Ben <b>  the   Great  ';inp.dispatchEvent(new Event('input'));inp.dispatchEvent(new Event('change'));
+menu();__step(2);$('go').click();__step(3);ok('The map picker no longer has a name box',!$('park').querySelector('input'));
+parkPlay();__step(3);ok('Character select has the name box (Trick Park)',state==='select'&&!$('csMe').classList.contains('hide')&&$('myName').offsetParent!==null);
+csFocus('run');ok('With no name yet, the cursor starts in the name box',document.activeElement===$('myName')||document.body.classList.contains('haspad'));
+const inp=$('myName');inp.value='  Ben <b>  the   Great  ';inp.dispatchEvent(new Event('input'));inp.dispatchEvent(new Event('change'));
 ok('Name is cleaned and saved',localStorage.getItem('orbRunName')==='Ben b the Great'&&MP.myName==='Ben b the Great'&&inp.value==='Ben b the Great',localStorage.getItem('orbRunName'));
 inp.value='Damon';inp.dispatchEvent(new Event('input'));
-const ev=new KeyboardEvent('keydown',{code:'KeyE',bubbles:true});inp.dispatchEvent(ev);ok('Typing E in the box does not switch tabs',PARK.tab==='dev');
-inp.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyQ',bubbles:true}));ok('...nor Q',PARK.tab==='dev'&&PARK.on);
-inp.dispatchEvent(new KeyboardEvent('keydown',{code:'Enter',bubbles:true}));ok('Enter leaves the box (focus to Play), picker stays open',document.activeElement===$('parkPlay')&&PARK.on);
-closePark();menu();$('go').click();__step(2);ok('Name is remembered next time',$('parkMe').value==='Damon');
+const c0=ci;inp.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyD',bubbles:true}));inp.dispatchEvent(new KeyboardEvent('keydown',{code:'ArrowRight',bubbles:true}));ok('Typing in the box does not change character',ci===c0&&state==='select');
+inp.dispatchEvent(new KeyboardEvent('keydown',{code:'Enter',bubbles:true}));ok('Enter leaves the box (focus to Play), still on character select',document.activeElement===$('csGo')&&state==='select');
+menu();__step(2);$('go').click();__step(2);parkPlay();__step(2);csFocus('run');ok('Name is remembered next time, and Play goes first',$('myName').value==='Damon'&&document.activeElement===$('csGo'));
+menu();__step(2);select('adv',0);__step(2);ok('Adventure (single player) has no name box',$('csMe').classList.contains('hide'));menu();__step(2);
 // friends see it
 ok('My presence carries the typed name',(()=>{const pr={nm:MP.myName||'Player',nmSet:savedName()?1:0};return pr.nm==='Damon'&&pr.nmSet===1})());
 MP.user={profiles:async()=>({})};MP.prof={u9:'Account Name'};

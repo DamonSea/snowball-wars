@@ -97,9 +97,9 @@ const DROPS=[];
 function snowmanSnow(x,y,z){if(!isFinite(x))return;const n=T.snow.snowmanAmmo,g=new THREE.Group();g.position.set(x,y||0,z);scene.add(g);
   const b=new THREE.Group();b.position.y=.9;g.add(b);
   for(let i=0;i<n+1;i++){const m=new THREE.Mesh(sbGeo,packBall),a=i/(n+1)*PI*2;m.position.set(Math.cos(a)*.22,0,Math.sin(a)*.22);if(i===0)m.position.set(0,.24,0);m.castShadow=true;b.add(m)}
-  const ring=new THREE.Mesh(ringGeo,packMat);ring.rotation.x=-PI/2;ring.position.y=.03;g.add(ring);
-  DROPS.push({g,b,x,y:y||0,z,v:n,t:0})}
-function updateDrops(dt){for(const d of [...DROPS]){d.t+=dt;d.b.position.y=.9+Math.sin(d.t*2.4)*.15;d.b.rotation.y+=dt*1.6;const left=T.snow.dropLife-d.t;
+  const ring=new THREE.Mesh(ringGeo,packMat);ring.rotation.x=-PI/2;ring.position.y=.03;g.add(ring);ring._s=1;packMarks(g,ring,b);
+  DROPS.push({g,b,ring,x,y:y||0,z,v:n,t:0})}
+function updateDrops(dt){for(const d of [...DROPS]){d.t+=dt;d.b.position.y=.9+Math.sin(d.t*2.4)*.15;d.b.rotation.y+=dt*1.6;packPulse(d.ring,d.t);const left=T.snow.dropLife-d.t;
   d.g.visible=left>3||Math.floor(left*7)%2===0;
   let take=false;if(left<=0)take=true;
   else if(SB.ammo<T.snow.ammo&&Math.hypot(d.x-P.position.x,d.z-P.position.z)<1.15&&Math.abs(py-d.y)<1.7){take=true;

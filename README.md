@@ -46,7 +46,7 @@ Your look shows up for friends in multiplayer.
 ![Customizing Vex with a crown and wings](docs/media/customize.png)
 
 ### Trick Park
-Type **your name** on the Trick Park picker: it's what friends see in multiplayer.
+Type **your name** on the character select screen: it's what friends see in multiplayer.
 Maps to skate, flip and wall-jump around. **Free roam** has no lives: tricks, combos and **named gaps** earn trick
 points (higher orbs are worth more there). Step on the PLAY pad to start a game: **Collectathon** (how many orbs can you
 collect before time runs out?) is a straight count of orbs, **Snowball Wars** is hearts and KOs, and **Tag** is time spent It.
@@ -176,7 +176,7 @@ needs Flip's or Nova's full moveset (and guard rails help).
 The GitHub Pages copy has multiplayer too, with no server: browsers find each other through public Nostr relays
 ([Trystero](https://github.com/dmotz/trystero), MIT, loaded from a CDN and pinned to 0.25.2) and then connect directly.
 - **Play together:** send friends the game's link. Everyone who opens it is in the public lobby; anyone on the same
-  Trick Park map plays with you. Type your name on the map picker so they know who you are.
+  Trick Park map plays with you. Type your name on the character select screen so they know who you are.
 - **Private group:** add `?room=` and any name to the link, e.g. `https://damonsea.github.io/snowball-wars/?room=bens-crew`.
   Only people with that exact link share a room.
 - **Can't connect?** Some strict networks (school, work, hotel Wi-Fi, some phone networks) block direct connections.

@@ -55,16 +55,22 @@ function warsBoard(){const e=$('warsBoard');if(!e)return;
 // ---------- snowball pickups: bundles at the map's orb spots, collected like orbs ----------
 // High and mid-air spots hold bigger bundles, so the hard routes keep you stocked. Grab one and another appears
 // somewhere else. Each player has their own (they're ammo, not points).
-const packMat=keep(new THREE.MeshBasicMaterial({color:0x9fe3ff,transparent:true,opacity:.55,side:THREE.DoubleSide})),
-  packBall=keep(new THREE.MeshStandardMaterial({color:0xf2fbff,emissive:0x6fcfff,emissiveIntensity:.55,roughness:.6})),
-  packBeam=keep(new THREE.MeshBasicMaterial({color:0x9fe3ff,transparent:true,opacity:.2,depthWrite:false,blending:THREE.AdditiveBlending})),packBeamGeo=keep(new THREE.CylinderGeometry(.09,.09,14,6,1,true));
+// snowball pickups have to stand out on white snow: glowing blue snowballs, a bold blue ring that pulses, and a
+// short blue beam (normal blending: an additive beam vanishes against snow); big ones keep their tall beam
+const packMat=keep(new THREE.MeshBasicMaterial({color:0x1f8fff,transparent:true,opacity:.9,side:THREE.DoubleSide})),
+  packBall=keep(new THREE.MeshStandardMaterial({color:0xcdeeff,emissive:0x2a9dff,emissiveIntensity:.9,roughness:.5})),
+  packBeam=keep(new THREE.MeshBasicMaterial({color:0x9fe3ff,transparent:true,opacity:.2,depthWrite:false,blending:THREE.AdditiveBlending})),packBeamGeo=keep(new THREE.CylinderGeometry(.09,.09,14,6,1,true)),
+  packGlow=keep(new THREE.MeshBasicMaterial({color:0x3aa0ff,transparent:true,opacity:.5,depthWrite:false})),packGlowGeo=keep(new THREE.CylinderGeometry(.07,.16,3,8,1,true));
+// the short beam and a pulsing ring, shared by Snowball Wars packs and snowman drops
+function packMarks(g,ring,b){const bm=new THREE.Mesh(packGlowGeo,packGlow);bm.position.y=1.5;bm.castShadow=false;g.add(bm);ring.renderOrder=1;if(b)b.scale.setScalar(1.3);return bm}
+const packPulse=(ring,t)=>ring.scale.setScalar((ring._s||1)*(1+.12*Math.sin(t*4)));
 function packSpot(){const used=WAR.piles.map(p=>p.spot),pool=(runL.spots||[]).filter(s=>(chars[ci].acro||s.any)&&!used.includes(s)&&Math.hypot(s.x-P.position.x,s.z-P.position.z)>5);
   if(pool.length&&Math.random()<.85)return pool[Math.floor(Math.random()*pool.length)];
   const f=freeSpot(5),y=groundAt(f.x,f.z,20).h;return{x:f.x,z:f.z,y:isFinite(y)?y:0,rand:1}}
 function makePack(){const s=packSpot(),big=!s.rand&&(s.y>=3||s.air),n=big?T.wars.packBig:T.wars.packSmall,g=new THREE.Group();g.position.set(s.x,s.y,s.z);runL.grp.add(g);
   const b=new THREE.Group();b.position.y=1;g.add(b);
   for(let i=0;i<n+1;i++){const m=new THREE.Mesh(sbGeo,packBall);const a=i/(n+1)*PI*2;m.position.set(Math.cos(a)*(big?.3:.22),i===0?.22:0,Math.sin(a)*(big?.3:.22));if(i===0)m.position.set(0,.24,0);m.scale.setScalar(big?1.25:1);m.castShadow=true;b.add(m)}
-  const ring=new THREE.Mesh(ringGeo,packMat);ring.rotation.x=-PI/2;ring.position.y=.03;ring.visible=!s.air;if(big){ring.scale.setScalar(1.25);const bm=new THREE.Mesh(packBeamGeo,packBeam);bm.position.y=7;g.add(bm)}g.add(ring);
+  const ring=new THREE.Mesh(ringGeo,packMat);ring.rotation.x=-PI/2;ring.position.y=.03;ring.visible=!s.air;if(big){ring.scale.setScalar(1.25);const bm=new THREE.Mesh(packBeamGeo,packBeam);bm.position.y=7;g.add(bm)}g.add(ring);ring._s=ring.scale.x;packMarks(g,ring,b);
   WAR.piles.push({g,b,ring,spot:s,x:s.x,z:s.z,y:s.y,v:n,t:Math.random()*6})}
 function makePiles(){WAR.piles.forEach(p=>freeTree(p.g));WAR.piles=[];for(let k=0;k<T.wars.packs;k++)makePack()}
 
@@ -169,7 +175,7 @@ function warsUpdate(dt){
   if(WAR.inv>0)WAR.inv-=dt;
   if(WAR.out>0&&WAR.out<=.3&&!WAR.poof){WAR.poof=true;burst(V(P.position.x,py+.5,P.position.z),0xffffff,18);burst(V(P.position.x,py+.5,P.position.z),0xdff4ff,8)}
   // snowball pickups (bob and spin like orbs; grab one if you have room) and a slow trickle
-  for(const p of [...WAR.piles]){p.t+=dt;p.b.position.y=1+Math.sin(p.t*2.4)*.18;p.b.rotation.y+=dt*1.6;
+  for(const p of [...WAR.piles]){p.t+=dt;p.b.position.y=1+Math.sin(p.t*2.4)*.18;p.b.rotation.y+=dt*1.6;packPulse(p.ring,p.t);
     if(SB.ammo<T.snow.ammo&&Math.hypot(p.x-P.position.x,p.z-P.position.z)<1.15&&Math.abs(py-p.y)<1.7){
       const was=SB.ammo;SB.ammo=Math.min(T.snow.ammo,SB.ammo+p.v);snowHud();snowFlash('gain');SFX.orb(p.v>T.wars.packSmall);popScore(`+${SB.ammo-was} snow`);
       burst(V(p.x,p.y+1,p.z),0xffffff,10);freeTree(p.g);WAR.piles.splice(WAR.piles.indexOf(p),1);makePack()}}

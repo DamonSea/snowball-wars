@@ -3,7 +3,14 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
-## [2.39.0] - 2026-11-25 — Wind
+## [2.40.0] - 2026-11-25 — Name on character select; pickups you can see
+### Changed
+- **"Your name" moved to the character select screen** (Trick Park only; Adventure is single-player). The first time,
+  the cursor starts in it; Enter goes to Play. Typing there doesn't change character.
+- **Snowball pickups stand out on the snow** (Snowball Wars packs and snowman drops): glowing blue snowballs in a
+  bigger bundle, a bold blue ring that pulses, and a short blue beam.
+
+ - 2026-11-25 — Wind
 ### Added
 - **Trees sway in the wind:** their branches (and the snow on them) move gently, more toward the top, each tree a
   little out of step with its neighbours. It's done in the vertex shader, so it costs next to nothing. Off on Low
