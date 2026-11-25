@@ -45,21 +45,23 @@ function buildChibi(parent=P){
         freck=sm(0xc0794d),rib=sm(0x8a4521,{roughness:.8});
   const T=(r,t,m,x,y,z,parent,rx=PI/2)=>{const o=add(new THREE.TorusGeometry(r,t,8,24),m,x,y,z,parent);o.rotation.x=rx;return o};
   // legs + boots
-  const pantsLegs=[],soles=[];
+  const pantsLegs=[],soles=[],bootGs=[];
   const legs=[-1,1].map(s=>{const g=new THREE.Group();g.position.set(s*.17,-.25,0);hp.add(g);
-    pantsLegs.push(add(Cy(.12,.26),pants,0,-.13,0,g));
-    add(S(.2),boot,0,-.34,.08,g).scale.set(1,.7,1.45);
-    soles.push(add(B(.32,.07,.52),sole,0,-.45,.08,g));T(.12,.03,boot,0,-.24,0,g);return g});
+    pantsLegs.push(add(Cy(.12,.26),pants,0,-.13,0,g));const bg=new THREE.Group();g.add(bg);bootGs.push(bg);
+    add(S(.2),boot,0,-.34,.08,bg).scale.set(1,.7,1.45);
+    soles.push(add(B(.32,.07,.52),sole,0,-.45,.08,bg));T(.12,.03,boot,0,-.24,0,bg);return g});
+  // the torso and everything on it live in one group, so a body type can reshape it in one go
+  const torso=new THREE.Group();hp.add(torso);
   // bomber jacket: a rounded body with a fitted ribbed waistband, a shearling collar with lapels folding down the
   // chest, a zip with a pull tab, slanted slash pockets, and a round pilot's patch on one sleeve
-  add(S(.42,20,16),jacket,0,.08,0,hp).scale.set(1,.95,.9);
-  {const w=T(.315,.055,rib,0,-.2,0,hp);w.scale.set(1,.88,1);for(let i=0;i<14;i++){const a=i/14*2*PI,r=add(B(.012,.07,.012),rib,Math.sin(a)*.37,-.2,Math.cos(a)*.33,hp);r.rotation.y=a}}
-  const collar=new THREE.Group();hp.add(collar);
+  add(S(.42,20,16),jacket,0,.08,0,torso).scale.set(1,.95,.9);
+  {const w=T(.315,.055,rib,0,-.2,0,torso);w.scale.set(1,.88,1);for(let i=0;i<14;i++){const a=i/14*2*PI,r=add(B(.012,.07,.012),rib,Math.sin(a)*.37,-.2,Math.cos(a)*.33,torso);r.rotation.y=a}}
+  const collar=new THREE.Group();torso.add(collar);
   {const c=T(.25,.075,fleece,0,.36,-.02,collar);c.scale.set(1,1,.8);
     [-1,1].forEach(s=>{const l=add(new THREE.SphereGeometry(1,12,10),fleece,s*.085,.28,.325,collar);l.scale.set(.05,.1,.022);l.rotation.set(-.45,s*.35,s*.6)})}
-  const zip=new THREE.Group();hp.add(zip);
+  const zip=new THREE.Group();torso.add(zip);
   {const tr=add(B(.022,.34,.02),metal,0,.0,.382,zip);tr.rotation.x=.08;const tab=add(B(.035,.06,.014),metal,0,.15,.392,zip);tab.rotation.x=.25;add(S(.012,6,4),metal,0,.12,.395,zip)}
-  const pockets=[-1,1].map(s=>{const g=new THREE.Group();g.position.set(s*.22,-.06,.315);g.rotation.set(-.15,s*.55,s*.75);hp.add(g);
+  const pockets=[-1,1].map(s=>{const g=new THREE.Group();g.position.set(s*.22,-.06,.315);g.rotation.set(-.15,s*.55,s*.75);torso.add(g);
     add(B(.15,.032,.025),rib,0,0,0,g);add(B(.15,.008,.026),fleece,0,.019,0,g);return g});
   // arms + gloves
   const sleeves=[],cuffs=[],patch=[];
@@ -167,12 +169,12 @@ function buildChibi(parent=P){
   {const m=sm(0x1b1e3a,{roughness:.4}),g=new THREE.Group();head.add(g);
     [-1,1].forEach(s=>{const r=add(new THREE.TorusGeometry(.11,.055,8,18),m,s*.14,0,.4,g);r.scale.set(.95,1.2,1);
       const w=add(new THREE.ConeGeometry(.07,.2,4),m,s*.3,.06,.34,g);w.rotation.z=-s*1.1;w.rotation.y=-s*.6});add(B(.12,.07,.06),m,0,.02,.445,g);parts.mask=[g]}
-  {const gold=sm(0xffd84a,{roughness:.35,metalness:.3}),red=sm(0xe23b3b,{roughness:.5}),g=new THREE.Group();g.position.set(0,.12,.37);hp.add(g);
+  {const gold=sm(0xffd84a,{roughness:.35,metalness:.3}),red=sm(0xe23b3b,{roughness:.5}),g=new THREE.Group();g.position.set(0,.12,.37);torso.add(g);
     const a=add(B(.24,.24,.03),gold,0,0,0,g);a.rotation.z=PI/4;const b2=add(B(.16,.16,.035),red,0,0,.005,g);b2.rotation.z=PI/4;
     const bolt=add(B(.04,.15,.04),gold,0,0,.012,g);bolt.rotation.z=.5;parts.emblem=[g];
-    parts.belt=[T(.37,.045,gold,0,-.17,0,hp)];parts.belt[0].scale.set(1,.92,1)}
+    parts.belt=[T(.37,.045,gold,0,-.17,0,torso)];parts.belt[0].scale.set(1,.92,1)}
   const PART_EXTRAS=['hair','shades','calves','forearms','mask','emblem','belt'];PART_EXTRAS.forEach(k=>parts[k].forEach(m=>{m.visible=false}));
-  return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,scarf,face:FACE,blinkOf,parts,partExtras:PART_EXTRAS,pantsLegs,sleeves,gogG,locks:parts.hair[0]._locks,anc:{hr:.45,top:.56,eyeY:0,face:.5,nose:[0,-.09,.52],backY:.1,backZ:-.4},
+  return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,scarf,face:FACE,blinkOf,parts,partExtras:PART_EXTRAS,pantsLegs,sleeves,gogG,torso,bootGs,hipY:.8,locks:parts.hair[0]._locks,anc:{hr:.45,top:.56,eyeY:0,face:.5,nose:[0,-.09,.52],backY:.1,backZ:-.4},
     mats:{jacket,fleece,leather,pants,boot,sole,glove,scarf:scarfM,metal,lens,rib,hair,hairDark:dark}};
 }
 // Nova: backcountry snowboarder. Her own rig with the same interface (root > hp > limbs, head, eyes, mats):
@@ -444,12 +446,21 @@ const OFI={}; // each wardrobe character's current outfit, by character index
 function applyOutfit(i){const c=chars[ci];if(!c.outs)return;if(typeof LOOKS!=='undefined'&&LOOKS[ci]){LOOKS[ci].c={};saveLook(ci);applyLook(c.rig,ci,i,LOOKS[ci])}else applyOutfitTo(c.rig.mats,i,c.outs,c.rig)}
 // which of the rig's pieces an outfit shows: everything normal, extras hidden, then the outfit's own hide/show/shorts
 // cap: undefined = the outfit decides; 1 = wear it; 0 = take it off (his hair shows, goggles pushed up on it)
+// Body types (Customize → Outfits): Stout is Flip's own build; Slender is Nova's: hips higher, legs longer (boots move
+// down so his feet stay on the ground), torso narrower and a little taller, shoulders in. The head doesn't change.
+const BODY_TYPES=[['stout','Stout'],['slender','Slender']];
+function applyBody(rig){if(!rig||!rig.torso)return;const sl=rig._body==='slender',D=sl?.15:0,sh=rig._shorts;
+  rig.hp.position.y=rig.hipY+D;rig.torso.scale.set(sl?.85:1,sl?1.08:1,sl?.88:1);
+  [rig.armL,rig.armR].forEach((a,i)=>{a.position.x=(i?1:-1)*(sl?.385:.44)});
+  (rig.pantsLegs||[]).forEach(m=>{const L=sh?.13:.26+D;m.scale.y=L/.26;m.position.y=-L/2});
+  (rig.parts.calves||[]).forEach(m=>{m.scale.y=(.14+D)/.14;m.position.y=-.19-D/2});
+  (rig.bootGs||[]).forEach(g=>{g.position.y=-D})}
 // soles: 0 = plain boots (no flat soles under them)
 function outfitParts(rig,o,cap,soles){if(!rig||!rig.parts)return;const ex=rig.partExtras||[],hide=new Set(o.hide||[]),show=new Set(o.show||[]);
   if(soles===0)hide.add('soles');
   if(rig.parts.cap&&cap!==undefined){if(cap){hide.delete('cap');show.delete('hair');if(!hide.has('goggles'))hide.delete('gogStrap')}else{hide.add('cap');show.add('hair');hide.add('gogStrap')}}
   for(const k in rig.parts){const on=ex.includes(k)?show.has(k):!hide.has(k);rig.parts[k].forEach(m=>{m.visible=on})}
-  (rig.pantsLegs||[]).forEach(m=>{m.scale.y=o.shorts?.5:1;m.position.y=o.shorts?-.065:-.13});
+  rig._shorts=!!o.shorts;applyBody(rig);
   // goggles pushed up over hair sit a touch bigger and higher
   if(rig.gogG){const up=show.has('hair');rig.gogG.scale.setScalar(up?1.1:1);rig.gogG.position.set(0,up?.1:0,up?-.03:0)}
   // summer: short sleeves too

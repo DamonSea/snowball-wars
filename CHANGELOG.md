@@ -3,6 +3,12 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.44.0] - 2026-11-25 — Body types and face switches
+### Added
+- **Body type** (Customize → Outfits, Flip): **Stout** is his usual build; **Slender** uses Nova's proportions: longer legs, a narrower, slightly taller torso and narrower shoulders. Works with every outfit (including Off Duty's shorts) and friends see it too.
+### Changed
+- **Face switches**: Nose, Freckles and Blush each get their own clear On / Off row in the Face tab.
+
 ## [2.43.0] - 2026-11-25 — Jacket polish
 ### Changed
 - **Flip's bomber jacket, polished:** a shearling collar with small lapels folding down the chest; a zip track with a
