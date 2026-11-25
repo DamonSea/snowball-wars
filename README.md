@@ -15,8 +15,8 @@ claude.ai version).
 
 ### A cast with a real moveset
 Pick **Flip** the stunt pilot, **Nova** the snowboarder or **Tuk** the yeti cub. All three have the full acrobat
-moveset and five outfits each; the gold one unlocks by beating Sky Gauntlet. Flip also has **Beach Day** (tee and
-shorts) and **Super Flip** (mask, emblem and cape).
+moveset and five outfits each; the gold one unlocks by beating Sky Gauntlet. Flip also has **Off Duty** (his summer
+look: linen pilot shirt, shorts, goggles pushed up on his hair) and **Super Flip** (mask, emblem and cape).
 
 Double and triple jumps, a skid into a side somersault, backflips, long jumps, dives, wall jumps, a ground pound and
 **Pound Jump** (Jump right after a ground pound to rocket straight up), plus **ledge hang**: grab edges as you fall past,

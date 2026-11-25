@@ -85,18 +85,31 @@ function buildChibi(parent=P){
   [-1,1].forEach(s=>{const f=add(B(.09,.34,.26),leather,s*.43,-.06,-.02,head);f.rotation.z=s*.12;
     capParts.push(f,add(S(.035,6,5),metal,s*.47,-.2,.02,head))});
   capParts.push(add(B(.05,.03,.4),leather,0,.55,-.05,head));
-  // ginger tufts peeking out at the front
-  [[-.14,.0],[0,.06],[.13,-.02]].forEach(([x,t])=>{const c=add(new THREE.ConeGeometry(.06,.18,5),hair,x,.2,.39,head);c.rotation.x=1.9+t;c.rotation.z=-x*2});
   // goggles pushed up on the cap
-  const gog=[T(.465,.025,rib,0,.3,-.01,head,PI/2-.1)];
-  [-1,1].forEach(s=>{const rim=add(new THREE.TorusGeometry(.085,.03,8,16),metal,s*.12,.33,.37,head);rim.rotation.x=-.45;
-    const l=add(new THREE.CylinderGeometry(.075,.075,.03,14),lens,s*.12,.33,.37,head);l.rotation.x=PI/2-.45;gog.push(rim,l)});
-  gog.push(add(B(.07,.03,.03),metal,0,.33,.39,head));
+  const gogG=new THREE.Group();head.add(gogG);
+  const gog=[T(.465,.025,rib,0,.3,-.01,gogG,PI/2-.1)];
+  [-1,1].forEach(s=>{const rim=add(new THREE.TorusGeometry(.085,.03,8,16),metal,s*.12,.33,.37,gogG);rim.rotation.x=-.45;
+    const l=add(new THREE.CylinderGeometry(.075,.075,.03,14),lens,s*.12,.33,.37,gogG);l.rotation.x=PI/2-.45;gog.push(rim,l)});
+  gog.push(add(B(.07,.03,.03),metal,0,.33,.39,gogG));
   // ---- outfit-only pieces, hidden unless an outfit shows them (OUTFITS .show / .hide / .shorts) ----
-  const parts={cap:capParts,goggles:gog,scarf:[scarfRing,scarf[0]],collar:[collar],zip:[zip],pockets,cuffs};
-  // hair when the cap is off: a ginger mop with a little swoop at the front
-  {const g=new THREE.Group();head.add(g);add(new THREE.SphereGeometry(.47,20,12,0,2*PI,0,PI/2.4),hair,0,.05,-.03,g);
-    [[-.2,.36],[0,.4],[.2,.36]].forEach(([x,z])=>{const c=add(new THREE.ConeGeometry(.08,.22,5),hair,x,.24,z-.04,g);c.rotation.x=1.3;c.rotation.z=-x*1.5});parts.hair=[g]}
+  const parts={cap:capParts,goggles:gog,gogStrap:[gog[0]],scarf:[scarfRing,scarf[0]],collar:[collar],zip:[zip],pockets,cuffs};
+  // hair when the cap is off: one low-poly mop (flat-shaded like the rest of the game) shaped from a sphere. Its hem
+  // follows the head: high at the forehead with spiky bangs swept to his left, short over the ears, longer at the nape.
+  // Two cowlick spikes on the crown for some bounce.
+  {const g=new THREE.Group();head.add(g);const hm=sm(0xd9692b,{roughness:.8,flatShading:true});
+    const geo=new THREE.SphereGeometry(.475,30,14,0,2*PI,0,PI*.72),pos=geo.attributes.position,v=new THREE.Vector3();
+    const sm01=(a,b,x)=>{const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t)};
+    if(pos)for(let k=0;k<pos.count;k++){v.fromBufferAttribute(pos,k);const r=v.length(),th=Math.acos(Math.max(-1,Math.min(1,v.y/r))),a=Math.atan2(v.x,v.z),aa=Math.abs(a);
+      const front=1-sm01(.5,1.5,aa),back=sm01(1.9,2.8,aa);
+      // where the hair ends at this angle around the head, plus spikes along the edge (bigger at the front)
+      const n=front>.5?9:14,tri=1-2*Math.abs(((a*n/(2*PI))%1+1)%1-.5),hem=PI*(.4*front+.53*(1-front-back)+.63*back)+tri*PI*(.03+.05*front);
+      const t=Math.min(th,hem),f=t/hem;
+      // a little puff on top, a tousled surface, and the bangs swept toward his left (+x)
+      const R=.475*(1.05+.06*(1-f)+.01*Math.sin(a*5)*Math.sin(t*6)),sw=.09*front*f*f*f;
+      v.set(Math.sin(t)*Math.sin(a)*R+sw,Math.cos(t)*R,Math.sin(t)*Math.cos(a)*R);pos.setXYZ(k,v.x,v.y,v.z)}
+    geo.computeVertexNormals();const mop=add(geo,hm,0,.03,-.01,g);mop.castShadow=true;
+    [[.05,.6,-.06,.35,-.55,.2],[-.11,.58,-.14,-.45,-.75,.16]].forEach(([x,y,z,rz,rx,h])=>{const c=add(new THREE.ConeGeometry(.08,h,5),hm,x,y,z,g);c.rotation.set(rx,0,rz)});
+    parts.hair=[g]}
   // summer: sunglasses, bare forearms under short sleeves and bare calves under the shorts
   {const m=sm(0x14151a,{roughness:.12,metalness:.35}),g=new THREE.Group();g.position.set(0,.03,.46);head.add(g);
     [-1,1].forEach(s=>{const l=add(B(.18,.12,.04),m,s*.14,0,0,g);l.rotation.y=-s*.18});add(B(.1,.025,.03),m,0,.035,.02,g);
@@ -112,7 +125,7 @@ function buildChibi(parent=P){
     const bolt=add(B(.04,.15,.04),gold,0,0,.012,g);bolt.rotation.z=.5;parts.emblem=[g];
     parts.belt=[T(.37,.045,gold,0,-.17,0,hp)];parts.belt[0].scale.set(1,.92,1)}
   const PART_EXTRAS=['hair','shades','calves','forearms','mask','emblem','belt'];PART_EXTRAS.forEach(k=>parts[k].forEach(m=>{m.visible=false}));
-  return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,scarf,parts,partExtras:PART_EXTRAS,pantsLegs,sleeves,anc:{hr:.45,top:.56,eyeY:0,face:.5,nose:[0,-.09,.52],backY:.1,backZ:-.4},
+  return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,scarf,parts,partExtras:PART_EXTRAS,pantsLegs,sleeves,gogG,anc:{hr:.45,top:.56,eyeY:0,face:.5,nose:[0,-.09,.52],backY:.1,backZ:-.4},
     mats:{jacket,fleece,leather,pants,boot,sole,glove,scarf:scarfM,metal,lens,rib}};
 }
 // Nova: backcountry snowboarder. Her own rig with the same interface (root > hp > limbs, head, eyes, mats):
@@ -341,12 +354,13 @@ const OUTFITS=[
   {name:'Racer',jacket:0xd83a2e,fleece:0xffffff,leather:0xf4f4f4,pants:0x1f1f24,boot:0xf4f4f4,sole:0xd83a2e,glove:0x1f1f24,scarf:0xffd84a,lens:0x3a3f45,lensE:0x000000,metal:0xc8ccd0},
   {name:'Arctic',jacket:0xe9eff2,fleece:0xffffff,leather:0x7fb3d9,pants:0x5d7a91,boot:0x8a9aa6,sole:0x3d4a55,glove:0x7fb3d9,scarf:0xff8a3d,lens:0xb8f0ff,lensE:0x2a6a80,metal:0xa0a8b0},
   {name:'Golden Ace',jacket:0xd9a630,fleece:0xfff4d6,leather:0x3a2a1a,pants:0x2a2a30,boot:0x3a2a1a,sole:0xd9a630,glove:0xffffff,scarf:0xffffff,lens:0xffd84a,lensE:0x8a5a00,metal:0xd9a630,shiny:true,lock:'Beat Sky Gauntlet to unlock'},
-  // Beach Day: a plain tee, cargo shorts, sneakers, shades and his own hair; no cap, goggles, scarf or gloves
-  {name:'Beach Day',jacket:0x2bb3a8,fleece:0xffffff,leather:0x6b3f22,pants:0x8a7a55,boot:0xf2f2f2,sole:0xe2493b,glove:0xe8b087,scarf:0xe2493b,lens:0x9fe3f0,lensE:0x1d5a66,metal:0xd8dde2,
-    hide:['cap','goggles','scarf','collar','zip','pockets','cuffs'],show:['hair','shades','calves','forearms'],shorts:true},
+  // Off Duty: the stunt pilot on a summer day. Short-sleeve linen pilot shirt (collar, chest pockets, wooden buttons,
+  // rolled cuffs), olive shorts, canvas sneakers with gum soles, his own hair with the goggles pushed up on it
+  {name:'Off Duty',jacket:0xe3d3ad,fleece:0xf1e6cc,leather:0x6b3f22,pants:0x6f7a4a,boot:0xece4d2,sole:0x9a6a3e,glove:0xe8b087,scarf:0xe2493b,lens:0x9fe3f0,lensE:0x1d5a66,metal:0x8a5a35,
+    hide:['cap','scarf','gogStrap'],show:['hair','calves','forearms'],shorts:true},
   // Super Flip: blue suit, red cape, boots and gloves, gold emblem and belt, domino mask
   {name:'Super Flip',jacket:0x2a5bd7,fleece:0xffd84a,leather:0xe23b3b,pants:0x2a5bd7,boot:0xe23b3b,sole:0xffd84a,glove:0xe23b3b,scarf:0xe23b3b,lens:0xffd84a,lensE:0x7a5a00,metal:0xffd84a,
-    hide:['cap','goggles','scarf','collar','zip'],show:['hair','mask','emblem','belt'],acc:{back:{id:'cape',col:0xe23b3b}}}];
+    hide:['cap','goggles','gogStrap','scarf','collar','zip'],show:['hair','mask','emblem','belt'],acc:{back:{id:'cape',col:0xe23b3b}}}];
 // Nova's wardrobe (jacket / beanie+mittens = leather+glove / headphones+pom = scarf / board = metal)
 const OUTFITS_NOVA=[
   {name:'Backcountry',jacket:0xf2b33d,fleece:0xfff4dc,leather:0x2f4f8f,pants:0x3d4a5c,boot:0x2a2a30,sole:0xf2b33d,glove:0x2f4f8f,scarf:0xff5a5f,lens:0x7ff0ff,lensE:0x1d6070,metal:0x1f2a36},
@@ -376,6 +390,8 @@ function applyOutfit(i){const c=chars[ci];if(!c.outs)return;if(typeof LOOKS!=='u
 function outfitParts(rig,o){if(!rig||!rig.parts)return;const ex=rig.partExtras||[];
   for(const k in rig.parts){const on=ex.includes(k)?(o.show||[]).includes(k):!(o.hide||[]).includes(k);rig.parts[k].forEach(m=>{m.visible=on})}
   (rig.pantsLegs||[]).forEach(m=>{m.scale.y=o.shorts?.5:1;m.position.y=o.shorts?-.065:-.13});
+  // goggles pushed up over hair sit a touch bigger and higher
+  if(rig.gogG){const up=(o.show||[]).includes('hair');rig.gogG.scale.setScalar(up?1.08:1);rig.gogG.position.set(0,up?.02:0,up?-.02:0)}
   // summer: short sleeves too
   (rig.sleeves||[]).forEach(m=>{m.scale.y=o.shorts?.45:1;m.position.y=o.shorts?-.063:-.14})}
 function applyOutfitTo(M,i,list=OUTFITS,rig){const o=list[i];outfitParts(rig,o);
