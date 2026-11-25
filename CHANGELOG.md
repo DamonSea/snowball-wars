@@ -3,10 +3,15 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
-## [2.35.0] - 2026-11-25 — Flip's new hair; Off Duty
+## [2.35.1] - 2026-11-25 — Back to the chunky locks
 ### Changed
-- **Flip's hair, rebuilt:** one flat-shaded ginger mop shaped to his head (high at the forehead with spiky bangs swept
-  to his left, short over the ears, longer at the nape) with two cowlicks on the crown, instead of a plain dome.
+- Flip's hair is the tousled chunky-lock mop again (two shades of ginger, fuller at the back, fringe swept to his
+  left, a few locks sticking up), instead of the one-piece mop.
+- Off Duty's goggles sit higher, on top of the locks.
+
+ - 2026-11-25 — Flip's new hair; Off Duty
+### Changed
+- **Flip's hair, rebuilt** (see 2.35.1 for the version that stuck).
 - **Off Duty replaces Beach Day:** the stunt pilot on a summer day, in a short-sleeve linen pilot shirt (collar, chest
   pockets, wooden buttons, rolled cuffs), olive shorts and canvas sneakers with gum soles, with his goggles pushed up
   on his hair. Same slot in the list, so a saved choice carries over.

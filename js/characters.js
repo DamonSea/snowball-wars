@@ -93,22 +93,23 @@ function buildChibi(parent=P){
   gog.push(add(B(.07,.03,.03),metal,0,.33,.39,gogG));
   // ---- outfit-only pieces, hidden unless an outfit shows them (OUTFITS .show / .hide / .shorts) ----
   const parts={cap:capParts,goggles:gog,gogStrap:[gog[0]],scarf:[scarfRing,scarf[0]],collar:[collar],zip:[zip],pockets,cuffs};
-  // hair when the cap is off: one low-poly mop (flat-shaded like the rest of the game) shaped from a sphere. Its hem
-  // follows the head: high at the forehead with spiky bangs swept to his left, short over the ears, longer at the nape.
-  // Two cowlick spikes on the crown for some bounce.
-  {const g=new THREE.Group();head.add(g);const hm=sm(0xd9692b,{roughness:.8,flatShading:true});
-    const geo=new THREE.SphereGeometry(.475,30,14,0,2*PI,0,PI*.72),pos=geo.attributes.position,v=new THREE.Vector3();
-    const sm01=(a,b,x)=>{const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t)};
-    if(pos)for(let k=0;k<pos.count;k++){v.fromBufferAttribute(pos,k);const r=v.length(),th=Math.acos(Math.max(-1,Math.min(1,v.y/r))),a=Math.atan2(v.x,v.z),aa=Math.abs(a);
-      const front=1-sm01(.5,1.5,aa),back=sm01(1.9,2.8,aa);
-      // where the hair ends at this angle around the head, plus spikes along the edge (bigger at the front)
-      const n=front>.5?9:14,tri=1-2*Math.abs(((a*n/(2*PI))%1+1)%1-.5),hem=PI*(.4*front+.53*(1-front-back)+.63*back)+tri*PI*(.03+.05*front);
-      const t=Math.min(th,hem),f=t/hem;
-      // a little puff on top, a tousled surface, and the bangs swept toward his left (+x)
-      const R=.475*(1.05+.06*(1-f)+.01*Math.sin(a*5)*Math.sin(t*6)),sw=.09*front*f*f*f;
-      v.set(Math.sin(t)*Math.sin(a)*R+sw,Math.cos(t)*R,Math.sin(t)*Math.cos(a)*R);pos.setXYZ(k,v.x,v.y,v.z)}
-    geo.computeVertexNormals();const mop=add(geo,hm,0,.03,-.01,g);mop.castShadow=true;
-    [[.05,.6,-.06,.35,-.55,.2],[-.11,.58,-.14,-.45,-.75,.16]].forEach(([x,y,z,rz,rx,h])=>{const c=add(new THREE.ConeGeometry(.08,h,5),hm,x,y,z,g);c.rotation.set(rx,0,rz)});
+  // hair when the cap is off: a tousled ginger mop made of chunky locks (two shades for depth) over a snug base,
+  // fuller at the back, short at the sides so the ears show, with a fringe swept to his left
+  {const g=new THREE.Group();head.add(g);const dark=sm(0xb5521d,{roughness:.85}),LS=new THREE.SphereGeometry(1,10,8);
+    const base=add(new THREE.SphereGeometry(.47,22,14,0,2*PI,0,PI*.5),hair,0,.02,-.03,g);base.rotation.x=-.42;base.scale.set(1.02,1,1.03);
+    // lock(x,y,z, size, length, tip direction): an egg-shaped clump stretched toward its tip
+    const lock=(x,y,z,r,len,dx,dy,dz,m=hair)=>{const o=add(LS,m,x,y,z,g);o.scale.set(r,r*.78,len);
+      const L=Math.hypot(dx,dy,dz)||1;o.rotation.order='YXZ';o.rotation.set(-Math.asin(dy/L),Math.atan2(dx,dz),0);return o};   // point the lock's long axis along (dx,dy,dz)
+    // crown and back: locks fanning back and down from the top of the head
+    for(let i=0;i<9;i++){const a=PI*.55+i/8*PI*.9,c=Math.cos(a),s=Math.sin(a);
+      lock(s*.3,.3-Math.abs(c)*.05,c*.3-.06,.15,.24,s*.5,-.35,c,i%2?dark:hair)}
+    for(let i=0;i<7;i++){const a=PI*.72+i/6*PI*.56,c=Math.cos(a),s=Math.sin(a);lock(s*.36,.05,c*.36-.04,.14,.2,s*.6,-.7,c,i%2?hair:dark)}
+    // top: a few locks sticking up and back for some bounce
+    [[-.12,.47,-.02,.5,1,-.4],[.08,.49,.06,-.2,1,-.2],[.2,.42,-.12,.5,.9,-.6],[-.24,.4,-.14,-.6,.8,-.6]].forEach(([x,y,z,dx,dy,dz],i)=>lock(x,y,z,.12,.19,dx,dy,dz,i%2?dark:hair));
+    // sides: short, above the ears
+    [-1,1].forEach(s=>{lock(s*.4,.2,.06,.11,.16,s*.7,-.6,.3);lock(s*.41,.12,-.12,.11,.16,s*.6,-.8,-.2,dark)});
+    // fringe: swept across to his left, sitting above the brows
+    [[.22,.3,.3,-.9,-.35,.35,.13,.22],[.08,.33,.34,-1,-.25,.3,.13,.24],[-.07,.33,.35,-1,-.4,.25,.12,.21],[-.2,.29,.31,-.8,-.6,.3,.11,.17]].forEach(([x,y,z,dx,dy,dz,r,l],i)=>lock(x,y,z,r,l,dx,dy,dz,i===2?dark:hair));
     parts.hair=[g]}
   // summer: sunglasses, bare forearms under short sleeves and bare calves under the shorts
   {const m=sm(0x14151a,{roughness:.12,metalness:.35}),g=new THREE.Group();g.position.set(0,.03,.46);head.add(g);
@@ -391,7 +392,7 @@ function outfitParts(rig,o){if(!rig||!rig.parts)return;const ex=rig.partExtras||
   for(const k in rig.parts){const on=ex.includes(k)?(o.show||[]).includes(k):!(o.hide||[]).includes(k);rig.parts[k].forEach(m=>{m.visible=on})}
   (rig.pantsLegs||[]).forEach(m=>{m.scale.y=o.shorts?.5:1;m.position.y=o.shorts?-.065:-.13});
   // goggles pushed up over hair sit a touch bigger and higher
-  if(rig.gogG){const up=(o.show||[]).includes('hair');rig.gogG.scale.setScalar(up?1.08:1);rig.gogG.position.set(0,up?.02:0,up?-.02:0)}
+  if(rig.gogG){const up=(o.show||[]).includes('hair');rig.gogG.scale.setScalar(up?1.1:1);rig.gogG.position.set(0,up?.1:0,up?-.03:0)}
   // summer: short sleeves too
   (rig.sleeves||[]).forEach(m=>{m.scale.y=o.shorts?.45:1;m.position.y=o.shorts?-.063:-.14})}
 function applyOutfitTo(M,i,list=OUTFITS,rig){const o=list[i];outfitParts(rig,o);
