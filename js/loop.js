@@ -177,7 +177,7 @@ function tick(){
     if(H.pony){const fl=Math.min(1,sp*.08)+(air?(vy<0?.7:.3):0)+(state==='select'?.1:0),bob=run?Math.sin(ph*2)*.12:0;
       H.pony.forEach((g,i)=>{L(g.rotation,'x',(i?.12+fl*.22:.45+fl*.75)+bob+Math.sin(tAll*(5+sp*.6)-i*1.2)*(.05+fl*.08),.22);
         L(g.rotation,'z',Math.sin(tAll*(3.5+sp*.4)-i*.8)*(.05+fl*.06)-bank*.5,.22)})}
-    if(H.eyes){const b=tAll%3.7<.13?.12:1;H.eyes.forEach((e,i)=>L(e.scale,'y',(i%2?1:1.25)*b,.6))}
+    if(H.eyes){const b=tAll%3.7<.13?.12:1;H.eyes.forEach((e,i)=>L(e.scale,'y',(e._by??(i%2?1:1.25))*b,.6))}
   }
   P.visible=!(invuln>0&&state==='play'&&Math.floor(invuln*12)%2)&&!(typeof WAR!=='undefined'&&WAR.on&&WAR.out>0&&WAR.out<=.3);
 
@@ -189,7 +189,7 @@ function tick(){
   for(let i=parts.length-1;i>=0;i--){const q=parts[i];q.life-=dt;q.v.y-=12*dt;q.m.position.addScaledVector(q.v,dt);
     q.m.material.opacity=Math.max(0,q.life/.7);if(q.life<=0){freeTree(q.m);parts.splice(i,1)}}
 
-  if(state==='select'&&CUST.on){const wide=innerWidth>=760;camPos.set(0,1.5,wide?4.3:5.4);look.set(wide?.85:0,wide?.85:.15,0);cam.position.lerp(camPos,1-Math.exp(-6*dt))}
+  if(state==='select'&&CUST.on){const wide=innerWidth>=760,fz=CUST.tab==='face';camPos.set(0,fz?1.75:1.5,fz?(wide?2.3:2.9):(wide?4.3:5.4));look.set(wide?(fz?.42:.85):0,fz?1.5:(wide?.85:.15),0);cam.position.lerp(camPos,1-Math.exp(-6*dt))}
   else if(state==='select'){camPos.set(0,1.9,innerWidth<600?7:5.6);look.set(0,innerWidth<600?.1:.45,0);cam.position.lerp(camPos,1-Math.exp(-6*dt))}
   // paused: swing round in front of the character so they face the camera, standing to the left of the pause card
   else if(state==='paused'){const fx=Math.sin(face),fz=Math.cos(face),wide=innerWidth>=900,d=wide?4.6:5.4,o=wide?1.9:0;

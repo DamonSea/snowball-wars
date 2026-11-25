@@ -330,3 +330,4 @@ body.setopen #moves{visibility:hidden}
 .parkme{display:flex;align-items:center;justify-content:center;gap:8px;margin:-4px 0 10px;font:700 13px "Inter",sans-serif;color:#cfe3ec}
 .parkme input{width:170px;padding:6px 12px;border-radius:999px;border:2px solid rgba(255,255,255,.25);background:#13303f;color:#fff;font:700 15px "Inter",sans-serif;text-align:center}
 .parkme input:focus{outline:none;border-color:#ffd84a}
+.ctab.hide{display:none}

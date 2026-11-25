@@ -69,16 +69,43 @@ function buildChibi(parent=P){
   // head
   const head=new THREE.Group();head.position.set(0,.84,0);hp.add(head);
   add(S(.45,20,16),skin,0,0,0,head);
-  const eyes=[];
+  // ---- face: every style is built once and shown or hidden (applyFace). Blinking scales whatever is in `eyes`. ----
+  const FACE={eyes:{},mouth:{},brows:{},freckles:[],blush:[],nose:[]},grp=(set,k)=>{const g=new THREE.Group();head.add(g);set[k]=g;return g};
+  const white=sm(0xffffff,{roughness:.3}),pupilM=sm(0x2a1a10,{roughness:.2}),glintM=sm(0xffffff),lidM=skin;
+  const blinkOf={};   // style -> meshes that close on a blink (each remembers its open height in _by)
+  const eyeBase=(g,st,lid,tilt=0,py=0)=>{blinkOf[st]=[];[-1,1].forEach(s=>{
+      const e=add(S(.11),white,s*.14,0,.39,g);e.scale.set(.85,1.25,.5);e._by=1.25;blinkOf[st].push(e);
+      const p=add(S(.058,10,8),pupilM,s*.13,py,.44,g);p._by=1;blinkOf[st].push(p);add(S(.018,6,4),glintM,s*.11,.04+py,.475,g);
+      if(lid){const l=add(new THREE.SphereGeometry(.118,14,8,0,2*PI,0,PI*lid),lidM,s*.14,0,.392,g);l.scale.set(.88,1.28,.56);l.rotation.z=s*tilt;
+        const lash=add(B(.2,.022,.03),darkM,s*.14,.135*Math.cos(PI*lid)/.9,.445,g);lash.rotation.z=s*tilt}})};
+  // eyes: big and round (the original) / relaxed (half-lidded) / focused (lids slanting in) / happy (closed arcs) /
+  // chill (flat lines) / beady (small dark ovals)
+  eyeBase(grp(FACE.eyes,'round'),'round',0);
+  eyeBase(grp(FACE.eyes,'relaxed'),'relaxed',.43,0,-.025);
+  eyeBase(grp(FACE.eyes,'focused'),'focused',.4,.38,-.01);
+  {const g=grp(FACE.eyes,'happy');blinkOf.happy=[];[-1,1].forEach(s=>{const a=add(new THREE.TorusGeometry(.065,.022,6,12,PI),darkM,s*.14,-.01,.43,g)})}
+  {const g=grp(FACE.eyes,'chill');blinkOf.chill=[];[-1,1].forEach(s=>{const l=add(B(.13,.026,.03),darkM,s*.14,-.01,.435,g);l.rotation.z=-s*.12})}
+  {const g=grp(FACE.eyes,'beady');blinkOf.beady=[];[-1,1].forEach(s=>{const d=add(S(.05,10,8),pupilM,s*.13,0,.43,g);d.scale.set(.8,1.3,.6);d._by=1.3;blinkOf.beady.push(d);add(S(.013,6,4),glintM,s*.115,.03,.475,g)})}
+  // brows (in his hair color): none / soft arcs / bold / raised / worried
+  grp(FACE.brows,'none');
+  [['soft',.016,.11,.148,0],['bold',.028,.13,.148,.1],['raised',.018,.11,.155,-.2],['worried',.02,.11,.148,-.35]].forEach(([k,th,w,y,rz])=>{const g=grp(FACE.brows,k);
+    [-1,1].forEach(s=>{const b=add(B(w,th*2,.03),hair,s*.14,y,.43,g);b.rotation.z=s*rz;b.rotation.x=-.3})});   // just under the cap's edge
+  // mouths: smile (the original) / calm / grin / smirk / flat / "o" / none
+  {const g=grp(FACE.mouth,'smile');const m=add(new THREE.TorusGeometry(.07,.018,6,12,PI),darkM,0,-.2,.41,g);m.rotation.z=PI}
+  {const g=grp(FACE.mouth,'calm');const m=add(new THREE.TorusGeometry(.05,.014,6,12,PI*.8),darkM,0,-.19,.425,g);m.rotation.z=PI*1.1}
+  {const g=grp(FACE.mouth,'grin');const m=add(new THREE.CircleGeometry(.085,16,PI,PI),darkM,0,-.17,.425,g);m.rotation.x=-.25;
+    const t=add(B(.12,.025,.01),white,0,-.18,.43,g);t.rotation.x=-.25}
+  {const g=grp(FACE.mouth,'smirk');const m=add(new THREE.TorusGeometry(.06,.016,6,12,PI*.6),darkM,.04,-.19,.42,g);m.rotation.z=PI*1.25}
+  {const g=grp(FACE.mouth,'flat');add(B(.1,.02,.02),darkM,0,-.2,.42,g)}
+  {const g=grp(FACE.mouth,'o');const m=add(S(.035,10,8),darkM,0,-.2,.42,g);m.scale.set(1,1.2,.5)}
+  grp(FACE.mouth,'none');
+  // freckles, blush and nose can be switched off
   [-1,1].forEach(s=>{
-    const e=add(S(.11),sm(0xffffff,{roughness:.3}),s*.14,0,.39,head);e.scale.set(.85,1.25,.5);eyes.push(e);
-    eyes.push(add(S(.058,10,8),sm(0x2a1a10,{roughness:.2}),s*.13,0,.44,head));
-    add(S(.018,6,4),sm(0xffffff),s*.11,.04,.475,head);
-    [[.0,0],[.05,.04],[.05,-.03]].forEach(([dx,dy])=>add(S(.015,5,4),freck,s*(.25+dx),-.12+dy,.37-dx*.4,head));
-    add(S(.05,8,6),sm(0xef9a85,{roughness:.8,transparent:true,opacity:.55}),s*.27,-.14,.33,head);
-  });
-  add(S(.075),sm(0xd99a70),0,-.09,.45,head);
-  const smile=add(new THREE.TorusGeometry(.07,.018,6,12,PI),darkM,0,-.2,.41,head);smile.rotation.z=PI;
+    [[.0,0],[.05,.04],[.05,-.03]].forEach(([dx,dy])=>FACE.freckles.push(add(S(.015,5,4),freck,s*(.25+dx),-.12+dy,.37-dx*.4,head)));
+    FACE.blush.push(add(S(.05,8,6),sm(0xef9a85,{roughness:.8,transparent:true,opacity:.55}),s*.27,-.14,.33,head))});
+  FACE.nose.push(add(S(.075),sm(0xd99a70),0,-.09,.45,head));
+  for(const k of ['eyes','brows','mouth'])for(const st in FACE[k])FACE[k][st].visible=st===({eyes:'round',brows:'none',mouth:'smile'})[k];
+  const eyes=blinkOf.round;
   // aviator cap with ear flaps
   const capParts=[add(new THREE.SphereGeometry(.475,22,14,0,2*PI,0,PI/2.25),leather,0,.08,-.02,head)];
   {const t=T(.43,.035,leather,0,.17,0,head);t.scale.set(1,1.03,1);capParts.push(t)}
@@ -130,7 +157,7 @@ function buildChibi(parent=P){
     const bolt=add(B(.04,.15,.04),gold,0,0,.012,g);bolt.rotation.z=.5;parts.emblem=[g];
     parts.belt=[T(.37,.045,gold,0,-.17,0,hp)];parts.belt[0].scale.set(1,.92,1)}
   const PART_EXTRAS=['hair','shades','calves','forearms','mask','emblem','belt'];PART_EXTRAS.forEach(k=>parts[k].forEach(m=>{m.visible=false}));
-  return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,scarf,parts,partExtras:PART_EXTRAS,pantsLegs,sleeves,gogG,locks:parts.hair[0]._locks,anc:{hr:.45,top:.56,eyeY:0,face:.5,nose:[0,-.09,.52],backY:.1,backZ:-.4},
+  return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,scarf,face:FACE,blinkOf,parts,partExtras:PART_EXTRAS,pantsLegs,sleeves,gogG,locks:parts.hair[0]._locks,anc:{hr:.45,top:.56,eyeY:0,face:.5,nose:[0,-.09,.52],backY:.1,backZ:-.4},
     mats:{jacket,fleece,leather,pants,boot,sole,glove,scarf:scarfM,metal,lens,rib,hair,hairDark:dark}};
 }
 // Nova: backcountry snowboarder. Her own rig with the same interface (root > hp > limbs, head, eyes, mats):
@@ -408,6 +435,15 @@ function outfitParts(rig,o){if(!rig||!rig.parts)return;const ex=rig.partExtras||
   if(rig.gogG){const up=(o.show||[]).includes('hair');rig.gogG.scale.setScalar(up?1.1:1);rig.gogG.position.set(0,up?.1:0,up?-.03:0)}
   // summer: short sleeves too
   (rig.sleeves||[]).forEach(m=>{m.scale.y=o.shorts?.45:1;m.position.y=o.shorts?-.063:-.14})}
+// face options for the Customize Face tab (first = default). A look stores only the choices that differ: L.f.
+const FACE_OPTS={eyes:[['round','Round'],['relaxed','Relaxed'],['focused','Focused'],['happy','Happy'],['chill','Chill'],['beady','Beady']],
+  brows:[['none','None'],['soft','Soft'],['bold','Bold'],['raised','Raised'],['worried','Worried']],
+  mouth:[['smile','Smile'],['calm','Calm'],['grin','Grin'],['smirk','Smirk'],['flat','Flat'],['o','Oh'],['none','None']]};
+const FACE_TOGGLES=[['nose','Nose'],['freckles','Freckles'],['blush','Blush']];
+function applyFace(rig,f={}){const F=rig.face;if(!F)return;
+  for(const k in FACE_OPTS){const pick=f[k]||FACE_OPTS[k][0][0];for(const st in F[k])F[k][st].visible=st===pick}
+  for(const[k]of FACE_TOGGLES)F[k].forEach(m=>{m.visible=f[k]!==0});
+  rig.eyes=rig.blinkOf[f.eyes||'round']||rig.blinkOf.round}
 // hair: ginger unless the outfit says otherwise; the darker locks are always the same color a shade darker
 const HAIR=0xd9692b;
 function setHair(M,hex){if(!M.hair)return;M.hair.color.setHex(hex);if(M.hairDark)M.hairDark.color.setHex(hex).multiplyScalar(.82)}

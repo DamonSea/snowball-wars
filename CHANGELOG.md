@@ -3,7 +3,18 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
-## [2.37.0] - 2026-11-25 — Fringe and hair color
+## [2.38.0] - 2026-11-25 — Face options for Flip
+### Added
+- **Face tab in Customize** (Flip): the camera zooms in on his face while you pick.
+  - **Eyes:** Round (the original), Relaxed (half-lidded), Focused (determined), Happy (closed arcs), Chill (flat
+    lines), Beady (small dark ovals). Round, Relaxed, Focused and Beady blink.
+  - **Eyebrows:** None (the original), Soft, Bold, Raised, Worried, in his hair color.
+  - **Mouth:** Smile (the original), Calm, Grin, Smirk, Flat, Oh, None.
+  - **Show:** switch his nose, freckles and blush off (or back on).
+  Choices are saved with your look, survive outfit changes, reset with Reset look, and friends see them. Q / E and
+  L1 / R1 cycle through the tab; characters without face options skip it.
+
+ - 2026-11-25 — Fringe and hair color
 ### Changed
 - Flip's fringe falls straight down over his forehead (fanning out a little, stopping above the brows) instead of being
   swept to one side.
