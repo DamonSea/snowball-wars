@@ -3,6 +3,11 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.45.0] - 2026-11-25 — Eye switches
+### Added
+- **Eye whites** and **Eye shine** switches in Flip's Face tab (On / Off). With the whites off his pupils grow to fill
+  the eye for solid cartoon eyes; with the shine off the little highlights go (on every eye style, beady included).
+
 ## [2.44.0] - 2026-11-25 — Body types and face switches
 ### Added
 - **Body type** (Customize → Outfits, Flip): **Stout** is his usual build; **Slender** uses Nova's proportions: longer legs, a narrower, slightly taller torso and narrower shoulders. Works with every outfit (including Off Duty's shorts) and friends see it too.

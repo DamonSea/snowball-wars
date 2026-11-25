@@ -4,7 +4,7 @@ const R=chars[2].rig,F=R.face,shown=k=>Object.keys(F[k]).filter(s=>F[k][s].visib
 ok('Flip has a Face tab',!$('cust').querySelector('.ctab[data-t="face"]').classList.contains('hide'));
 ok('Default face: round eyes, no brows, smile, nose/freckles/blush on',shown('eyes').join()==='round'&&shown('brows').join()==='none'&&shown('mouth').join()==='smile'&&F.nose[0].visible&&F.freckles[0].visible&&F.blush[0].visible);
 CUST.tab='face';renderCust();__step(30);
-ok('The Face tab lists eyes, eyebrows, mouth and switches',$('custBody').querySelectorAll('[data-fk="eyes"]').length===6&&$('custBody').querySelectorAll('[data-fk="brows"]').length===5&&$('custBody').querySelectorAll('[data-fk="mouth"]').length===7&&$('custBody').querySelectorAll('[data-fs][data-fo="0"]').length===3);
+ok('The Face tab lists eyes, eyebrows, mouth and switches',$('custBody').querySelectorAll('[data-fk="eyes"]').length===6&&$('custBody').querySelectorAll('[data-fk="brows"]').length===5&&$('custBody').querySelectorAll('[data-fk="mouth"]').length===7&&$('custBody').querySelectorAll('[data-fs][data-fo="0"]').length===5);
 const click=sel=>{$('custBody').querySelector(sel).click();__step(2)};
 click('[data-fk="eyes"][data-fv="relaxed"]');ok('Relaxed eyes',shown('eyes').join()==='relaxed'&&LOOKS[2].f.eyes==='relaxed');
 ok('Relaxed eyes still blink',R.eyes===R.blinkOf.relaxed&&R.eyes.length===4);

@@ -80,12 +80,12 @@ function buildChibi(parent=P){
   const head=new THREE.Group();head.position.set(0,.84,0);hp.add(head);
   add(S(.45,20,16),skin,0,0,0,head);
   // ---- face: every style is built once and shown or hidden (applyFace). Blinking scales whatever is in `eyes`. ----
-  const FACE={eyes:{},mouth:{},brows:{},freckles:[],blush:[],nose:[]},grp=(set,k)=>{const g=new THREE.Group();head.add(g);set[k]=g;return g};
+  const FACE={eyes:{},mouth:{},brows:{},freckles:[],blush:[],nose:[],whites:[],shine:[],pupils:[]},grp=(set,k)=>{const g=new THREE.Group();head.add(g);set[k]=g;return g};
   const white=sm(0xffffff,{roughness:.3}),pupilM=sm(0x2a1a10,{roughness:.2}),glintM=sm(0xffffff),lidM=skin;
   const blinkOf={};   // style -> meshes that close on a blink (each remembers its open height in _by)
   const eyeBase=(g,st,lid,tilt=0,py=0)=>{blinkOf[st]=[];[-1,1].forEach(s=>{
-      const e=add(S(.11),white,s*.14,0,.39,g);e.scale.set(.85,1.25,.5);e._by=1.25;blinkOf[st].push(e);
-      const p=add(S(.058,10,8),pupilM,s*.13,py,.44,g);p._by=1;blinkOf[st].push(p);add(S(.018,6,4),glintM,s*.11,.04+py,.475,g);
+      const e=add(S(.11),white,s*.14,0,.39,g);e.scale.set(.85,1.25,.5);e._by=1.25;blinkOf[st].push(e);FACE.whites.push(e);
+      const p=add(S(.058,10,8),pupilM,s*.13,py,.44,g);p._by=1;p._s=s;blinkOf[st].push(p);FACE.pupils.push(p);FACE.shine.push(add(S(.018,6,4),glintM,s*.11,.04+py,.475,g));
       if(lid){const l=add(new THREE.SphereGeometry(.118,14,8,0,2*PI,0,PI*lid),lidM,s*.14,0,.392,g);l.scale.set(.88,1.28,.56);l.rotation.z=s*tilt;
         const lash=add(B(.2,.022,.03),darkM,s*.14,.135*Math.cos(PI*lid)/.9,.445,g);lash.rotation.z=s*tilt}})};
   // eyes: big and round (the original) / relaxed (half-lidded) / focused (lids slanting in) / happy (closed arcs) /
@@ -95,7 +95,7 @@ function buildChibi(parent=P){
   eyeBase(grp(FACE.eyes,'focused'),'focused',.4,.38,-.01);
   {const g=grp(FACE.eyes,'happy');blinkOf.happy=[];[-1,1].forEach(s=>{const a=add(new THREE.TorusGeometry(.065,.022,6,12,PI),darkM,s*.14,-.01,.43,g)})}
   {const g=grp(FACE.eyes,'chill');blinkOf.chill=[];[-1,1].forEach(s=>{const l=add(B(.13,.026,.03),darkM,s*.14,-.01,.435,g);l.rotation.z=-s*.12})}
-  {const g=grp(FACE.eyes,'beady');blinkOf.beady=[];[-1,1].forEach(s=>{const d=add(S(.05,10,8),pupilM,s*.13,0,.43,g);d.scale.set(.8,1.3,.6);d._by=1.3;blinkOf.beady.push(d);add(S(.013,6,4),glintM,s*.115,.03,.475,g)})}
+  {const g=grp(FACE.eyes,'beady');blinkOf.beady=[];[-1,1].forEach(s=>{const d=add(S(.05,10,8),pupilM,s*.13,0,.43,g);d.scale.set(.8,1.3,.6);d._by=1.3;blinkOf.beady.push(d);FACE.shine.push(add(S(.013,6,4),glintM,s*.115,.03,.475,g))})}
   // brows (in his hair color): none / soft arcs / bold / raised / worried
   grp(FACE.brows,'none');
   [['soft',.016,.11,.148,0],['bold',.028,.13,.148,.1],['raised',.018,.11,.155,-.2],['worried',.02,.11,.148,-.35]].forEach(([k,th,w,y,rz])=>{const g=grp(FACE.brows,k);
@@ -469,10 +469,12 @@ function outfitParts(rig,o,cap,soles){if(!rig||!rig.parts)return;const ex=rig.pa
 const FACE_OPTS={eyes:[['round','Round'],['relaxed','Relaxed'],['focused','Focused'],['happy','Happy'],['chill','Chill'],['beady','Beady']],
   brows:[['none','None'],['soft','Soft'],['bold','Bold'],['raised','Raised'],['worried','Worried']],
   mouth:[['smile','Smile'],['calm','Calm'],['grin','Grin'],['smirk','Smirk'],['flat','Flat'],['o','Oh'],['none','None']]};
-const FACE_TOGGLES=[['nose','Nose'],['freckles','Freckles'],['blush','Blush']];
+const FACE_TOGGLES=[['whites','Eye whites'],['shine','Eye shine'],['nose','Nose'],['freckles','Freckles'],['blush','Blush']];
 function applyFace(rig,f={}){const F=rig.face;if(!F)return;
   for(const k in FACE_OPTS){const pick=f[k]||FACE_OPTS[k][0][0];for(const st in F[k])F[k][st].visible=st===pick}
   for(const[k]of FACE_TOGGLES)F[k].forEach(m=>{m.visible=f[k]!==0});
+  // with the whites off, the pupils grow to fill the whole eye: solid dark cartoon eyes
+  const solid=f.whites===0;F.pupils.forEach(p=>{p.position.x=p._s*(solid?.14:.13);p.scale.set(solid?1.6:1,solid?2.35:1,solid?.5:1);p._by=solid?2.35:1});
   rig.eyes=rig.blinkOf[f.eyes||'round']||rig.blinkOf.round}
 // hair: ginger unless the outfit says otherwise; the darker locks are always the same color a shade darker
 const HAIR=0xd9692b;
