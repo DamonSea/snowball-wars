@@ -14,5 +14,10 @@ setOutfit(0);setLook(L=>{L.cap=0});
 const a=makeAv(2);applyLook(a.rig,2,0,cleanLook(LOOKS[2],2));ok('Friends see you without the cap',!a.rig.parts.cap[0].visible&&a.rig.parts.hair[0].visible);
 ok('Junk cap values from friends are ignored',cleanLook({cap:'yes'},2).cap===undefined&&cleanLook({cap:0},2).cap===0);
 $('custReset').click();$('custReset').click();__step(2);ok('Reset look puts the cap back',vis('cap')&&!vis('hair')&&LOOKS[2].cap===undefined);
+setLook(L=>{delete L.soles});renderCust();ok('Shoes switch, with soles by default',!!$('custBody').querySelector('[data-soles="1"].on')&&vis('soles'));
+$('custBody').querySelector('[data-soles="0"]').click();__step(2);ok('Plain shoes: no soles',!vis('soles')&&LOOKS[2].soles===0&&!!$('custBody').querySelector('[data-soles="0"].on'));
+setOutfit(2);__step(2);ok('...kept across outfits',!vis('soles'));
+const a2=makeAv(2);applyLook(a2.rig,2,2,cleanLook(LOOKS[2],2));ok('Friends see plain shoes',!a2.rig.parts.soles[0].visible);
+$('custBody').querySelector('[data-soles="1"]').click();__step(2);ok('Back to soles',vis('soles')&&LOOKS[2].soles===undefined);setOutfit(0);
 closeCust();ci=3;showChar();openCust();CUST.tab='acc';renderCust();ok('Nova has no cap switch',!$('custBody').querySelector('[data-cap]'));closeCust();
 return out.join('\n')})()

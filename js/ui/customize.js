@@ -45,12 +45,13 @@ const ACC={
 const ACC_SLOTS=[['top','Head'],['face','Face'],['back','Back']];
 // ---------- looks ----------
 const LOOKS={};
-const blankLook=()=>({c:{},a:{top:'',face:'',back:''},ac:null,f:{},cap:undefined});
+const blankLook=()=>({c:{},a:{top:'',face:'',back:''},ac:null,f:{},cap:undefined,soles:undefined});
 function cleanLook(L,ch){const o=blankLook();if(!L||typeof L!=='object')return o;const parts=(PARTS[chars[ch].name]||[]).map(p=>p[0]);
   if(L.c&&typeof L.c==='object')for(const k of parts)if(Number.isInteger(L.c[k])&&L.c[k]>=0&&L.c[k]<=0xffffff)o.c[k]=L.c[k];
   if(L.a&&typeof L.a==='object')for(const[s]of ACC_SLOTS)if(ACC[s].some(i=>i.id===L.a[s]))o.a[s]=L.a[s];
   if(Number.isInteger(L.ac)&&L.ac>=0&&L.ac<=0xffffff)o.ac=L.ac;
   if(L.cap===0||L.cap===1)o.cap=L.cap;
+  if(L.soles===0)o.soles=0;
   // face: only known styles, and toggles as 0 (off)
   if(L.f&&typeof L.f==='object'){for(const k in FACE_OPTS)if(FACE_OPTS[k].some(([v])=>v===L.f[k])&&L.f[k]!==FACE_OPTS[k][0][0])o.f[k]=L.f[k];
     for(const[k]of FACE_TOGGLES)if(L.f[k]===0)o.f[k]=0}
@@ -60,7 +61,7 @@ function applyLook(rig,ch,of,L){const list=chars[ch].outs;if(!list)return;applyO
   for(const k in L.c){const M=rig.mats[k];if(!M)continue;M.color.setHex(L.c[k]);if(k==='lens')M.emissive.setHex(L.c[k]).multiplyScalar(.35)}
   if(L.c.jacket!==undefined)rig.mats.rib.color.setHex(L.c.jacket).multiplyScalar(.78);
   if(L.c.hair!==undefined)setHair(rig.mats,L.c.hair);
-  if(rig.parts)outfitParts(rig,list[of],L.cap);
+  if(rig.parts)outfitParts(rig,list[of],L.cap,L.soles);
   applyFace(rig,L.f||{});
   buildAcc(rig,L,list[of])}
 // your accessories, plus any the outfit comes with (Super Flip's cape) in slots you've left empty
@@ -103,7 +104,8 @@ function renderCust(){const c=chars[ci],L=LOOKS[ci],list=c.outs;$('custName').te
     h=[['eyes','Eyes'],['brows','Eyebrows'],['mouth','Mouth']].map(([k,lab])=>`<div class="crow"><span>${lab}</span><div class="copts">${FACE_OPTS[k].map(([v,n],i)=>`<button class="opt${(f[k]||FACE_OPTS[k][0][0])===v?' on':''}" data-fk="${k}" data-fv="${v}">${n}</button>`).join('')}</div></div>`).join('')+
       `<div class="crow"><span>Show</span><div class="copts">${FACE_TOGGLES.map(([k,n])=>`<button class="opt${f[k]!==0?' on':''}" data-ft="${k}" aria-pressed="${f[k]!==0}">${n}</button>`).join('')}</div></div>`}
   else{const capRow=c.rig.parts&&c.rig.parts.cap?(()=>{const on=L.cap!==undefined?!!L.cap:!(list[OFI[ci]].hide||[]).includes('cap');
-      return`<div class="crow"><span>Aviator cap</span><div class="copts"><button class="opt${on?' on':''}" data-cap="1">On</button><button class="opt${on?'':' on'}" data-cap="0">Off</button></div></div>`})():'';
+      return`<div class="crow"><span>Aviator cap</span><div class="copts"><button class="opt${on?' on':''}" data-cap="1">On</button><button class="opt${on?'':' on'}" data-cap="0">Off</button></div></div>`+
+      `<div class="crow"><span>Shoes</span><div class="copts"><button class="opt${L.soles!==0?' on':''}" data-soles="1">With soles</button><button class="opt${L.soles===0?' on':''}" data-soles="0">Plain</button></div></div>`})():'';
     h=capRow+ACC_SLOTS.map(([s,lab])=>`<div class="crow"><span>${lab}</span><div class="copts"><button class="opt${!L.a[s]?' on':''}" data-s="${s}" data-a="">None</button>${ACC[s].map(i=>`<button class="opt${L.a[s]===i.id?' on':''}" data-s="${s}" data-a="${i.id}">${i.label}</button>`).join('')}</div></div>`).join('')+
     `<div class="crow"><span>Accessory color${L.ac!==null?' <button class="cundo" data-u="ac" aria-label="Reset accessory color">↺</button>':''}</span><div class="cpal">${CPAL.map(v=>sw('data-ac',v,v===L.ac,'Accessory '+hexS(v))).join('')}</div></div>`}
   const a=document.activeElement,key=a&&$('cust').contains(a)?[...a.attributes].filter(x=>x.name.startsWith('data-')).map(x=>`[${x.name}="${x.value}"]`).join(''):'';
@@ -117,6 +119,7 @@ $('cust').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)
   if(d.o!==undefined){setOutfit(+d.o);renderCust();return}
   if(d.p){setLook(L=>L.c[d.p]=+d.c);SFX.ui(4);return}
   if(d.u){setLook(L=>{if(d.u==='ac')L.ac=null;else delete L.c[d.u]});SFX.ui(1);return}
+  if(d.soles!==undefined){setLook(L=>{if(d.soles==='0')L.soles=0;else delete L.soles});SFX.ui(4);return}
   if(d.cap!==undefined){setLook(L=>{L.cap=+d.cap});SFX.ui(4);return}
   if(d.fk){setLook(L=>{L.f=L.f||{};if(d.fv===FACE_OPTS[d.fk][0][0])delete L.f[d.fk];else L.f[d.fk]=d.fv});SFX.ui(4);return}
   if(d.ft){setLook(L=>{L.f=L.f||{};if(L.f[d.ft]===0)delete L.f[d.ft];else L.f[d.ft]=0});SFX.ui(4);return}

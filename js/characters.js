@@ -45,11 +45,11 @@ function buildChibi(parent=P){
         freck=sm(0xc0794d),rib=sm(0x8a4521,{roughness:.8});
   const T=(r,t,m,x,y,z,parent,rx=PI/2)=>{const o=add(new THREE.TorusGeometry(r,t,8,24),m,x,y,z,parent);o.rotation.x=rx;return o};
   // legs + boots
-  const pantsLegs=[];
+  const pantsLegs=[],soles=[];
   const legs=[-1,1].map(s=>{const g=new THREE.Group();g.position.set(s*.17,-.25,0);hp.add(g);
     pantsLegs.push(add(Cy(.12,.26),pants,0,-.13,0,g));
     add(S(.2),boot,0,-.34,.08,g).scale.set(1,.7,1.45);
-    add(B(.32,.07,.52),sole,0,-.45,.08,g);T(.12,.03,boot,0,-.24,0,g);return g});
+    soles.push(add(B(.32,.07,.52),sole,0,-.45,.08,g));T(.12,.03,boot,0,-.24,0,g);return g});
   // bomber jacket
   add(S(.42,18,14),jacket,0,.08,0,hp).scale.set(1,.95,.9);
   T(.36,.06,rib,0,-.2,0,hp).scale.set(1,.92,1);
@@ -126,7 +126,7 @@ function buildChibi(parent=P){
     const l=add(new THREE.CylinderGeometry(.075,.075,.03,14),lens,s*.125,.33,.37,gogG);l.rotation.order='YXZ';l.rotation.set(PI/2-.55,s*.28,0);gog.push(rim,l)});
   gog.push(add(B(.06,.028,.03),metal,0,.335,.395,gogG));
   // ---- outfit-only pieces, hidden unless an outfit shows them (OUTFITS .show / .hide / .shorts) ----
-  const parts={cap:capParts,goggles:gog,gogStrap:[gog[0]],scarf:[scarfRing,scarf[0]],collar:[collar],zip:[zip],pockets,cuffs};
+  const parts={cap:capParts,goggles:gog,gogStrap:[gog[0]],scarf:[scarfRing,scarf[0]],collar:[collar],zip:[zip],pockets,cuffs,soles};
   // hair when the cap is off: a tousled ginger mop made of chunky locks (two shades for depth) over a snug base,
   // fuller at the back, short at the sides so the ears show, with a fringe falling over his forehead
   const dark=sm(0xb5521d,{roughness:.85});
@@ -436,7 +436,9 @@ const OFI={}; // each wardrobe character's current outfit, by character index
 function applyOutfit(i){const c=chars[ci];if(!c.outs)return;if(typeof LOOKS!=='undefined'&&LOOKS[ci]){LOOKS[ci].c={};saveLook(ci);applyLook(c.rig,ci,i,LOOKS[ci])}else applyOutfitTo(c.rig.mats,i,c.outs,c.rig)}
 // which of the rig's pieces an outfit shows: everything normal, extras hidden, then the outfit's own hide/show/shorts
 // cap: undefined = the outfit decides; 1 = wear it; 0 = take it off (his hair shows, goggles pushed up on it)
-function outfitParts(rig,o,cap){if(!rig||!rig.parts)return;const ex=rig.partExtras||[],hide=new Set(o.hide||[]),show=new Set(o.show||[]);
+// soles: 0 = plain boots (no flat soles under them)
+function outfitParts(rig,o,cap,soles){if(!rig||!rig.parts)return;const ex=rig.partExtras||[],hide=new Set(o.hide||[]),show=new Set(o.show||[]);
+  if(soles===0)hide.add('soles');
   if(rig.parts.cap&&cap!==undefined){if(cap){hide.delete('cap');show.delete('hair');if(!hide.has('goggles'))hide.delete('gogStrap')}else{hide.add('cap');show.add('hair');hide.add('gogStrap')}}
   for(const k in rig.parts){const on=ex.includes(k)?show.has(k):!hide.has(k);rig.parts[k].forEach(m=>{m.visible=on})}
   (rig.pantsLegs||[]).forEach(m=>{m.scale.y=o.shorts?.5:1;m.position.y=o.shorts?-.065:-.13});

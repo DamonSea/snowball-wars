@@ -3,7 +3,12 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
-## [2.41.0] - 2026-11-25 — Cap polish; take the cap off
+## [2.42.0] - 2026-11-25 — Plain shoes
+### Added
+- **Shoes: With soles / Plain** in Customize → Accessories (Flip): Plain takes off the flat soles under his boots and
+  leaves just the rounded boots. Kept across outfits; friends see it; Reset look brings the soles back.
+
+ - 2026-11-25 — Cap polish; take the cap off
 ### Changed
 - **Flip's aviator cap, polished:** the goggle strap no longer crosses in front of the lenses; it runs round the sides
   and back (with a little buckle) and ends at the frames, and the lenses sit on the dome tilted to its surface. A
