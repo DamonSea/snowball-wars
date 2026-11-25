@@ -131,7 +131,7 @@ function killFoe(h,how){foeFx(h);
   if(how==='stomp'){vy=T.foes.stompBounce;grounded=false;stand=null;if(chars[ci].acro){A.mode='jump';A.jumpN=0;A.canCut=true;A.canDive=true}SFX.stomp();rumble(100,.5,.7)}
   else{ATK.hits++;hitStop=.07;shake=Math.max(shake,.18);rumble(120,.7,.9);if(h.kind!=='spike')SFX.hit();else smashSnd()}
   if(mode==='run')addTrick(how==='stomp'?'Stomp':'Smash');
-  if(mode==='run'&&h.kind==='goon')snowmanSnow();   // the Winter Crew's snowman: snowballs for you
+  if(mode==='run'&&h.kind==='goon'){const q=h.g.position,gh=groundAt(q.x,q.z,q.y+1).h;snowmanSnow(q.x,isFinite(gh)?gh:0,q.z)}   // the Winter Crew's snowman drops snowballs to grab
   if((h.mine||0)>0){SB.ammo=Math.min(T.snow.ammo,SB.ammo+h.mine);snowHud();snowFlash('gain');toast(`Got your snowball${h.mine>1?'s':''} back!`);h.mine=0}}
 function smashSnd(){SFX.hit()}
 // hitting a calm penguin doesn't take it out: it reels, gets angry and calls its friends. Returns true if it survived.

@@ -49,17 +49,19 @@ function cleanLook(L,ch){const o=blankLook();if(!L||typeof L!=='object')return o
   if(L.a&&typeof L.a==='object')for(const[s]of ACC_SLOTS)if(ACC[s].some(i=>i.id===L.a[s]))o.a[s]=L.a[s];
   if(Number.isInteger(L.ac)&&L.ac>=0&&L.ac<=0xffffff)o.ac=L.ac;return o}
 function saveLook(ch){try{localStorage.setItem('orbRunLook_'+chars[ch].name,JSON.stringify(LOOKS[ch]))}catch(e){}}
-function applyLook(rig,ch,of,L){const list=chars[ch].outs;if(!list)return;applyOutfitTo(rig.mats,of,list);
+function applyLook(rig,ch,of,L){const list=chars[ch].outs;if(!list)return;applyOutfitTo(rig.mats,of,list,rig);
   for(const k in L.c){const M=rig.mats[k];if(!M)continue;M.color.setHex(L.c[k]);if(k==='lens')M.emissive.setHex(L.c[k]).multiplyScalar(.35)}
   if(L.c.jacket!==undefined)rig.mats.rib.color.setHex(L.c.jacket).multiplyScalar(.78);
-  buildAcc(rig,L)}
-function buildAcc(rig,L){(rig.accA||[]).forEach(it=>freeTree(it.g));rig.accA=[];const a=rig.anc;if(!a)return;
-  for(const[slot]of ACC_SLOTS){const def=ACC[slot].find(i=>i.id===L.a[slot]);if(!def)continue;const m=accM(L.ac??def.col),it={kind:def.kind,id:def.id};
+  buildAcc(rig,L,list[of])}
+// your accessories, plus any the outfit comes with (Super Flip's cape) in slots you've left empty
+function buildAcc(rig,L,o){(rig.accA||[]).forEach(it=>freeTree(it.g));rig.accA=[];const a=rig.anc;if(!a)return;
+  for(const[slot]of ACC_SLOTS){const own=ACC[slot].find(i=>i.id===L.a[slot]),oa=!own&&o&&o.acc&&o.acc[slot],def=own||(oa&&ACC[slot].find(i=>i.id===oa.id));if(!def)continue;
+    const m=accM(own?(L.ac??def.col):oa.col),it={kind:def.kind,id:def.id,fromOutfit:!own};
     let g;if(slot==='top'){const pv=new THREE.Group();pv.rotation.z=-(a.tilt||0);rig.head.add(pv);g=new THREE.Group();g.position.y=a.top;pv.add(g);it.g=pv}
     else if(slot==='face'){g=new THREE.Group();g.position.set(0,a.eyeY,a.face);rig.head.add(g);it.g=g}
     else{g=new THREE.Group();g.position.set(0,a.backY,a.backZ);rig.hp.add(g);it.g=g}
     def.make(g,a,m,it);rig.accA.push(it)}
-  if(rig.board)rig.board.visible=!L.a.back}
+  if(rig.board)rig.board.visible=!L.a.back&&!(o&&o.acc&&o.acc.back)}
 // per frame: propeller spins with speed, halo bobs, jetpack fires in the air, wings flap, cape rides the springs
 function accFrame(H,dt,sp,air,dv){for(const it of H.accA){
   if(it.kind==='prop')it.p.rotation.y+=dt*(6+sp*2.5+(air?18:0));

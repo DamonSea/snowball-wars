@@ -3,7 +3,21 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
-## [2.33.0] - 2026-11-25 — The aim arc knows what it will hit
+## [2.34.0] - 2026-11-25 — Flip's summer and superhero outfits; snowmen drop snowballs
+### Added
+- **Beach Day** (Flip): a plain tee with short sleeves, cargo shorts, sneakers, shades and his own hair (no cap,
+  goggles, scarf or gloves).
+- **Super Flip** (Flip): blue suit, domino mask, gold-and-red chest emblem, gold belt, red boots and gloves, and a red
+  cape that flows when he runs. Your own Back accessory replaces the cape; clear it and the cape comes back.
+- Outfits can now show and hide pieces of the model (`show`, `hide`, `shorts` in `OUTFITS`, `rig.parts` in
+  `buildChibi`), and come with an accessory (`acc`). Friends see the new outfits in multiplayer.
+  Both are added at the end of the list, so saved outfit choices keep their numbers.
+### Changed
+- **Knocking down a snowman** (a target or a Winter Crew snowman) **drops a snowball pickup** where it stood instead
+  of giving snowballs straight away: the same bobbing bundle as Snowball Wars, worth 2. Walk into it to grab it (if
+  you have room); it blinks and disappears after 15 seconds.
+
+ - 2026-11-25 — The aim arc knows what it will hit
 ### Changed
 - **The aim arc stops at whatever the snowball would hit first:** walls, ledges, trees and the ground. The ring sits
   where it hits, flat on the ground or upright against a wall or tree.

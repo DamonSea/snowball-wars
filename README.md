@@ -15,7 +15,8 @@ claude.ai version).
 
 ### A cast with a real moveset
 Pick **Flip** the stunt pilot, **Nova** the snowboarder or **Tuk** the yeti cub. All three have the full acrobat
-moveset and five outfits each; the gold one unlocks by beating Sky Gauntlet.
+moveset and five outfits each; the gold one unlocks by beating Sky Gauntlet. Flip also has **Beach Day** (tee and
+shorts) and **Super Flip** (mask, emblem and cape).
 
 Double and triple jumps, a skid into a side somersault, backflips, long jumps, dives, wall jumps, a ground pound and
 **Pound Jump** (Jump right after a ground pound to rocket straight up), plus **ledge hang**: grab edges as you fall past,
@@ -66,6 +67,7 @@ Run into a tree, lamp post or antenna to grab on, climb to a handstand, aim with
 ![Climbing the big tree and flipping to the Crow's Nest](docs/media/climb.gif)
 
 ### Snowball fights
+Knock down a snowman and it **drops a snowball pickup**: walk into it for 2 snowballs before it melts (15 s).
 Throw snowballs (F / R1 / touch) at friends, snowmen and enemies. A hit knocks the target back and stuns it with
 dizzy stars; orbs refill your snowballs. Turn on the **computer player** in Settings for someone to fight solo.
 **Emotes:** standing on the ground, **tap** Ground pound (L1 / Q / right-click) for a quick taunt (your last emote,

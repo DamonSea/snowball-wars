@@ -55,7 +55,7 @@ function hitMe(owner,id,bx,bz,yel,ch=false){
 SB.hits.push(ko?[owner,id,1]:[owner,id]);if(SB.hits.length>6)SB.hits.shift();
 }
 function updateSnow(dt){
-  updateAim(dt);
+  updateAim(dt);updateDrops(dt);
   SB.stun=Math.max(0,SB.stun-dt);dizzy(myStars,SB.stun>0,P.position.x,py,P.position.z,dt);
   SB.cool=Math.max(0,SB.cool-dt);SB.anim=Math.max(0,SB.anim-dt);SB.hitCool=Math.max(0,SB.hitCool-dt);
   if(T.snow.regen>0&&SB.ammo<T.snow.ammo&&(SB.regen+=dt)>=T.snow.regen){SB.regen=0;SB.ammo++;snowHud()}
@@ -89,10 +89,23 @@ function updateSnow(dt){
     else if(chars[ci].acro&&(A.mode==='dive'||A.mode==='slide')&&d<1.15){shake=Math.max(shake,.2);rumble(120,.6,.8);SFX.splat(true);knockSnowman(s)}}
   for(const s of snowmen())if(!s.up&&(s.t-=dt)<=0){s.up=true;s.g.visible=true;burst(V(s.x,1.2,s.z),0xffffff,10)}
 }
-function clearSnow(){aimEnd(false);clearAngels();clearRollers();clearYellow();resetPound();SB.stun=0;if(CPU.a)CPU.a.init=false;myStars.visible=false;SB.list.forEach(b=>freeTree(b.m));SB.list=[];SB.ammo=T.snow.ammo;SB.regen=0;SB.anim=0;snowHud()}
+function clearSnow(){aimEnd(false);clearDrops();clearAngels();clearRollers();clearYellow();resetPound();SB.stun=0;if(CPU.a)CPU.a.init=false;myStars.visible=false;SB.list.forEach(b=>freeTree(b.m));SB.list=[];SB.ammo=T.snow.ammo;SB.regen=0;SB.anim=0;snowHud()}
 // orbs refill snowballs: regular orbs give a few, gold orbs fill you up
-// knocking down a snowman (a target or a Winter Crew snowman) packs you a few snowballs
-function snowmanSnow(){const was=SB.ammo;SB.ammo=Math.min(T.snow.ammo,SB.ammo+T.snow.snowmanAmmo);snowHud();snowFlash('gain');if(SB.ammo>was)toast(`+${SB.ammo-was} snowball${SB.ammo-was>1?'s':''}`)}
+// knocking down a snowman (a target or a Winter Crew snowman) leaves a snowball pickup where it stood (the same
+// bobbing bundle as Snowball Wars): go and grab it. It lasts T.snow.dropLife seconds, blinking at the end.
+const DROPS=[];
+function snowmanSnow(x,y,z){if(!isFinite(x))return;const n=T.snow.snowmanAmmo,g=new THREE.Group();g.position.set(x,y||0,z);scene.add(g);
+  const b=new THREE.Group();b.position.y=.9;g.add(b);
+  for(let i=0;i<n+1;i++){const m=new THREE.Mesh(sbGeo,packBall),a=i/(n+1)*PI*2;m.position.set(Math.cos(a)*.22,0,Math.sin(a)*.22);if(i===0)m.position.set(0,.24,0);m.castShadow=true;b.add(m)}
+  const ring=new THREE.Mesh(ringGeo,packMat);ring.rotation.x=-PI/2;ring.position.y=.03;g.add(ring);
+  DROPS.push({g,b,x,y:y||0,z,v:n,t:0})}
+function updateDrops(dt){for(const d of [...DROPS]){d.t+=dt;d.b.position.y=.9+Math.sin(d.t*2.4)*.15;d.b.rotation.y+=dt*1.6;const left=T.snow.dropLife-d.t;
+  d.g.visible=left>3||Math.floor(left*7)%2===0;
+  let take=false;if(left<=0)take=true;
+  else if(SB.ammo<T.snow.ammo&&Math.hypot(d.x-P.position.x,d.z-P.position.z)<1.15&&Math.abs(py-d.y)<1.7){take=true;
+    const was=SB.ammo;SB.ammo=Math.min(T.snow.ammo,SB.ammo+d.v);snowHud();snowFlash('gain');SFX.orb(false);popScore(`+${SB.ammo-was} snow`);burst(V(d.x,d.y+1,d.z),0xffffff,10)}
+  if(take){freeTree(d.g);DROPS.splice(DROPS.indexOf(d),1)}}}
+function clearDrops(){DROPS.forEach(d=>freeTree(d.g));DROPS.length=0}
 function gainSnow(gold){const was=SB.ammo;SB.ammo=gold?T.snow.ammo:Math.min(T.snow.ammo,SB.ammo+T.snow.orbAmmo);if(SB.ammo>was){snowHud();snowFlash('gain')}}
 function snowFlash(c){const e=$('snowBox');if(!e)return;e.classList.remove('gain','empty');void e.offsetWidth;e.classList.add(c)}
 function snowHud(){const e=$('snowAmmo');if(e)e.innerHTML=Array.from({length:T.snow.ammo},(_,i)=>`<i class="${i<SB.ammo?'':'off'}"></i>`).join('')}
@@ -119,7 +132,7 @@ function makeSnowman(grp,x,z,i){const g=new THREE.Group();g.position.set(x,0,z);
 RUNMAPS.forEach(M=>{M.snowmen=(SNOWMEN_AT[M.name]||[]).map(([x,z],i)=>makeSnowman(M.grp,x,z,i))});
 const snowmen=()=>runL.snowmen||[];
 // snowmen burst into snow: a puff from each body ball, plus a few chunks that tumble out and splat
-function knockSnowman(s){s.up=false;snowmanSnow();s.t=T.snow.snowmanRespawn;s.g.visible=false;
+function knockSnowman(s){s.up=false;snowmanSnow(s.x,s.y||0,s.z);s.t=T.snow.snowmanRespawn;s.g.visible=false;
   [[.62,16],[1.5,14],[2.16,10]].forEach(([y,n])=>{burst(V(s.x,y,s.z),0xffffff,n);burst(V(s.x,y,s.z),0xdff4ff,Math.round(n/2))});
   for(let i=0;i<5;i++){const a=Math.random()*PI*2,sp=2.5+Math.random()*2.5;
     launchSnowball([s.x,1+Math.random(),s.z,Math.cos(a)*sp,3+Math.random()*3,Math.sin(a)*sp].map(f2),false,'chunk',-1)}

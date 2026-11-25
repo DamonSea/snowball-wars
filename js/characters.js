@@ -45,23 +45,25 @@ function buildChibi(parent=P){
         freck=sm(0xc0794d),rib=sm(0x8a4521,{roughness:.8});
   const T=(r,t,m,x,y,z,parent,rx=PI/2)=>{const o=add(new THREE.TorusGeometry(r,t,8,24),m,x,y,z,parent);o.rotation.x=rx;return o};
   // legs + boots
+  const pantsLegs=[];
   const legs=[-1,1].map(s=>{const g=new THREE.Group();g.position.set(s*.17,-.25,0);hp.add(g);
-    add(Cy(.12,.26),pants,0,-.13,0,g);
+    pantsLegs.push(add(Cy(.12,.26),pants,0,-.13,0,g));
     add(S(.2),boot,0,-.34,.08,g).scale.set(1,.7,1.45);
     add(B(.32,.07,.52),sole,0,-.45,.08,g);T(.12,.03,boot,0,-.24,0,g);return g});
   // bomber jacket
   add(S(.42,18,14),jacket,0,.08,0,hp).scale.set(1,.95,.9);
   T(.36,.06,rib,0,-.2,0,hp).scale.set(1,.92,1);
-  T(.24,.09,fleece,0,.36,-.01,hp);
-  add(B(.035,.42,.03),metal,0,.06,.385,hp);
-  [-1,1].forEach(s=>{const pk=add(B(.14,.1,.04),rib,s*.2,-.03,.35,hp);pk.rotation.y=s*.35});
+  const collar=T(.24,.09,fleece,0,.36,-.01,hp);
+  const zip=add(B(.035,.42,.03),metal,0,.06,.385,hp);
+  const pockets=[-1,1].map(s=>{const pk=add(B(.14,.1,.04),rib,s*.2,-.03,.35,hp);pk.rotation.y=s*.35;return pk});
   // arms + gloves
+  const sleeves=[],cuffs=[];
   const arms=[-1,1].map(s=>{const g=new THREE.Group();g.position.set(s*.44,.3,0);hp.add(g);
-    add(Cy(.1,.28),jacket,0,-.14,0,g);T(.1,.035,rib,0,-.27,0,g);
+    sleeves.push(add(Cy(.1,.28),jacket,0,-.14,0,g));cuffs.push(T(.1,.035,rib,0,-.27,0,g));
     add(S(.16),glove,0,-.38,0,g);return g});
   // scarf: chain of segments hanging from the back of the neck
   const scarf=[];let sp=hp,sy=.45,sz=-.24;
-  T(.22,.055,scarfM,0,.46,0,hp);
+  const scarfRing=T(.22,.055,scarfM,0,.46,0,hp);
   for(let i=0;i<5;i++){const g=new THREE.Group();g.position.set(i?0:.08,sy,sz);sp.add(g);
     add(B(.16-i*.012,.17,.05),scarfM,0,-.085,0,g);scarf.push(g);sp=g;sy=-.17;sz=0}
   // head
@@ -78,19 +80,39 @@ function buildChibi(parent=P){
   add(S(.075),sm(0xd99a70),0,-.09,.45,head);
   const smile=add(new THREE.TorusGeometry(.07,.018,6,12,PI),darkM,0,-.2,.41,head);smile.rotation.z=PI;
   // aviator cap with ear flaps
-  add(new THREE.SphereGeometry(.475,22,14,0,2*PI,0,PI/2.25),leather,0,.08,-.02,head);
-  T(.43,.035,leather,0,.17,0,head).scale.set(1,1.03,1);
+  const capParts=[add(new THREE.SphereGeometry(.475,22,14,0,2*PI,0,PI/2.25),leather,0,.08,-.02,head)];
+  {const t=T(.43,.035,leather,0,.17,0,head);t.scale.set(1,1.03,1);capParts.push(t)}
   [-1,1].forEach(s=>{const f=add(B(.09,.34,.26),leather,s*.43,-.06,-.02,head);f.rotation.z=s*.12;
-    add(S(.035,6,5),metal,s*.47,-.2,.02,head)});
-  add(B(.05,.03,.4),leather,0,.55,-.05,head);
+    capParts.push(f,add(S(.035,6,5),metal,s*.47,-.2,.02,head))});
+  capParts.push(add(B(.05,.03,.4),leather,0,.55,-.05,head));
   // ginger tufts peeking out at the front
   [[-.14,.0],[0,.06],[.13,-.02]].forEach(([x,t])=>{const c=add(new THREE.ConeGeometry(.06,.18,5),hair,x,.2,.39,head);c.rotation.x=1.9+t;c.rotation.z=-x*2});
   // goggles pushed up on the cap
-  T(.465,.025,rib,0,.3,-.01,head,PI/2-.1);
+  const gog=[T(.465,.025,rib,0,.3,-.01,head,PI/2-.1)];
   [-1,1].forEach(s=>{const rim=add(new THREE.TorusGeometry(.085,.03,8,16),metal,s*.12,.33,.37,head);rim.rotation.x=-.45;
-    const l=add(new THREE.CylinderGeometry(.075,.075,.03,14),lens,s*.12,.33,.37,head);l.rotation.x=PI/2-.45});
-  add(B(.07,.03,.03),metal,0,.33,.39,head);
-  return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,scarf,anc:{hr:.45,top:.56,eyeY:0,face:.5,nose:[0,-.09,.52],backY:.1,backZ:-.4},
+    const l=add(new THREE.CylinderGeometry(.075,.075,.03,14),lens,s*.12,.33,.37,head);l.rotation.x=PI/2-.45;gog.push(rim,l)});
+  gog.push(add(B(.07,.03,.03),metal,0,.33,.39,head));
+  // ---- outfit-only pieces, hidden unless an outfit shows them (OUTFITS .show / .hide / .shorts) ----
+  const parts={cap:capParts,goggles:gog,scarf:[scarfRing,scarf[0]],collar:[collar],zip:[zip],pockets,cuffs};
+  // hair when the cap is off: a ginger mop with a little swoop at the front
+  {const g=new THREE.Group();head.add(g);add(new THREE.SphereGeometry(.47,20,12,0,2*PI,0,PI/2.4),hair,0,.05,-.03,g);
+    [[-.2,.36],[0,.4],[.2,.36]].forEach(([x,z])=>{const c=add(new THREE.ConeGeometry(.08,.22,5),hair,x,.24,z-.04,g);c.rotation.x=1.3;c.rotation.z=-x*1.5});parts.hair=[g]}
+  // summer: sunglasses, bare forearms under short sleeves and bare calves under the shorts
+  {const m=sm(0x14151a,{roughness:.12,metalness:.35}),g=new THREE.Group();g.position.set(0,.03,.46);head.add(g);
+    [-1,1].forEach(s=>{const l=add(B(.18,.12,.04),m,s*.14,0,0,g);l.rotation.y=-s*.18});add(B(.1,.025,.03),m,0,.035,.02,g);
+    [-1,1].forEach(s=>add(B(.025,.025,.34),m,s*.3,.03,-.17,g));parts.shades=[g]}
+  parts.calves=legs.map(g=>add(Cy(.1,.14),skin,0,-.19,0,g));
+  parts.forearms=arms.map(g=>add(Cy(.08,.16),skin,0,-.22,0,g));
+  // superhero: a domino mask round the eyes, a shield emblem on the chest, a gold belt (the cape is an outfit accessory)
+  {const m=sm(0x1b1e3a,{roughness:.4}),g=new THREE.Group();head.add(g);
+    [-1,1].forEach(s=>{const r=add(new THREE.TorusGeometry(.11,.055,8,18),m,s*.14,0,.4,g);r.scale.set(.95,1.2,1);
+      const w=add(new THREE.ConeGeometry(.07,.2,4),m,s*.3,.06,.34,g);w.rotation.z=-s*1.1;w.rotation.y=-s*.6});add(B(.12,.07,.06),m,0,.02,.445,g);parts.mask=[g]}
+  {const gold=sm(0xffd84a,{roughness:.35,metalness:.3}),red=sm(0xe23b3b,{roughness:.5}),g=new THREE.Group();g.position.set(0,.12,.37);hp.add(g);
+    const a=add(B(.24,.24,.03),gold,0,0,0,g);a.rotation.z=PI/4;const b2=add(B(.16,.16,.035),red,0,0,.005,g);b2.rotation.z=PI/4;
+    const bolt=add(B(.04,.15,.04),gold,0,0,.012,g);bolt.rotation.z=.5;parts.emblem=[g];
+    parts.belt=[T(.37,.045,gold,0,-.17,0,hp)];parts.belt[0].scale.set(1,.92,1)}
+  const PART_EXTRAS=['hair','shades','calves','forearms','mask','emblem','belt'];PART_EXTRAS.forEach(k=>parts[k].forEach(m=>{m.visible=false}));
+  return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,scarf,parts,partExtras:PART_EXTRAS,pantsLegs,sleeves,anc:{hr:.45,top:.56,eyeY:0,face:.5,nose:[0,-.09,.52],backY:.1,backZ:-.4},
     mats:{jacket,fleece,leather,pants,boot,sole,glove,scarf:scarfM,metal,lens,rib}};
 }
 // Nova: backcountry snowboarder. Her own rig with the same interface (root > hp > limbs, head, eyes, mats):
@@ -318,7 +340,13 @@ const OUTFITS=[
   {name:'Night Flyer',jacket:0x2a3048,fleece:0x8a93a8,leather:0x1b1e28,pants:0x1e2230,boot:0x15171d,sole:0x2bb3a8,glove:0x3a4058,scarf:0x2bb3a8,lens:0xffd84a,lensE:0x6b4a00,metal:0x2f333a},
   {name:'Racer',jacket:0xd83a2e,fleece:0xffffff,leather:0xf4f4f4,pants:0x1f1f24,boot:0xf4f4f4,sole:0xd83a2e,glove:0x1f1f24,scarf:0xffd84a,lens:0x3a3f45,lensE:0x000000,metal:0xc8ccd0},
   {name:'Arctic',jacket:0xe9eff2,fleece:0xffffff,leather:0x7fb3d9,pants:0x5d7a91,boot:0x8a9aa6,sole:0x3d4a55,glove:0x7fb3d9,scarf:0xff8a3d,lens:0xb8f0ff,lensE:0x2a6a80,metal:0xa0a8b0},
-  {name:'Golden Ace',jacket:0xd9a630,fleece:0xfff4d6,leather:0x3a2a1a,pants:0x2a2a30,boot:0x3a2a1a,sole:0xd9a630,glove:0xffffff,scarf:0xffffff,lens:0xffd84a,lensE:0x8a5a00,metal:0xd9a630,shiny:true,lock:'Beat Sky Gauntlet to unlock'}];
+  {name:'Golden Ace',jacket:0xd9a630,fleece:0xfff4d6,leather:0x3a2a1a,pants:0x2a2a30,boot:0x3a2a1a,sole:0xd9a630,glove:0xffffff,scarf:0xffffff,lens:0xffd84a,lensE:0x8a5a00,metal:0xd9a630,shiny:true,lock:'Beat Sky Gauntlet to unlock'},
+  // Beach Day: a plain tee, cargo shorts, sneakers, shades and his own hair; no cap, goggles, scarf or gloves
+  {name:'Beach Day',jacket:0x2bb3a8,fleece:0xffffff,leather:0x6b3f22,pants:0x8a7a55,boot:0xf2f2f2,sole:0xe2493b,glove:0xe8b087,scarf:0xe2493b,lens:0x9fe3f0,lensE:0x1d5a66,metal:0xd8dde2,
+    hide:['cap','goggles','scarf','collar','zip','pockets','cuffs'],show:['hair','shades','calves','forearms'],shorts:true},
+  // Super Flip: blue suit, red cape, boots and gloves, gold emblem and belt, domino mask
+  {name:'Super Flip',jacket:0x2a5bd7,fleece:0xffd84a,leather:0xe23b3b,pants:0x2a5bd7,boot:0xe23b3b,sole:0xffd84a,glove:0xe23b3b,scarf:0xe23b3b,lens:0xffd84a,lensE:0x7a5a00,metal:0xffd84a,
+    hide:['cap','goggles','scarf','collar','zip'],show:['hair','mask','emblem','belt'],acc:{back:{id:'cape',col:0xe23b3b}}}];
 // Nova's wardrobe (jacket / beanie+mittens = leather+glove / headphones+pom = scarf / board = metal)
 const OUTFITS_NOVA=[
   {name:'Backcountry',jacket:0xf2b33d,fleece:0xfff4dc,leather:0x2f4f8f,pants:0x3d4a5c,boot:0x2a2a30,sole:0xf2b33d,glove:0x2f4f8f,scarf:0xff5a5f,lens:0x7ff0ff,lensE:0x1d6070,metal:0x1f2a36},
@@ -343,8 +371,14 @@ const OUTFITS_TUK=[
   {...OUTFITS[4],name:'Golden Fleece',leather:0xffe08a,pants:0xfff4cc,sole:0xffffff,lens:0xffd84a,lensE:0x7a5a00}];
 const unlocked=(o,list=OUTFITS)=>!list[o].lock||!!bestA.orbRunAdv2;
 const OFI={}; // each wardrobe character's current outfit, by character index
-function applyOutfit(i){const c=chars[ci];if(!c.outs)return;if(typeof LOOKS!=='undefined'&&LOOKS[ci]){LOOKS[ci].c={};saveLook(ci);applyLook(c.rig,ci,i,LOOKS[ci])}else applyOutfitTo(c.rig.mats,i,c.outs)}
-function applyOutfitTo(M,i,list=OUTFITS){const o=list[i];
+function applyOutfit(i){const c=chars[ci];if(!c.outs)return;if(typeof LOOKS!=='undefined'&&LOOKS[ci]){LOOKS[ci].c={};saveLook(ci);applyLook(c.rig,ci,i,LOOKS[ci])}else applyOutfitTo(c.rig.mats,i,c.outs,c.rig)}
+// which of the rig's pieces an outfit shows: everything normal, extras hidden, then the outfit's own hide/show/shorts
+function outfitParts(rig,o){if(!rig||!rig.parts)return;const ex=rig.partExtras||[];
+  for(const k in rig.parts){const on=ex.includes(k)?(o.show||[]).includes(k):!(o.hide||[]).includes(k);rig.parts[k].forEach(m=>{m.visible=on})}
+  (rig.pantsLegs||[]).forEach(m=>{m.scale.y=o.shorts?.5:1;m.position.y=o.shorts?-.065:-.13});
+  // summer: short sleeves too
+  (rig.sleeves||[]).forEach(m=>{m.scale.y=o.shorts?.45:1;m.position.y=o.shorts?-.063:-.14})}
+function applyOutfitTo(M,i,list=OUTFITS,rig){const o=list[i];outfitParts(rig,o);
   ['jacket','fleece','leather','pants','boot','sole','glove','scarf','metal','lens'].forEach(k=>M[k].color.setHex(o[k]));
   M.lens.emissive.setHex(o.lensE);M.rib.color.setHex(o.jacket).multiplyScalar(.78);
   M.jacket.metalness=o.shiny?.55:0;M.jacket.roughness=o.shiny?.35:.75;M.rib.metalness=o.shiny?.4:0;}
@@ -361,7 +395,7 @@ const chars=[
 chars.push({name:'Nova',desc:'A fearless backcountry snowboarder with a board on her back and beats in her ears. Same trick moveset as Flip.',speed:1.1,jump:9.5,sp:5,jp:4,ag:5,g:NV.root,rig:NV,outs:OUTFITS_NOVA,ofKey:'orbRunOutfitNova',acro:true,moves:chars[2].moves});
 chars.push({name:'Vex',desc:'A mouthy skate punk who never asked for your help and won\u2019t say thanks. Same trick moveset as Flip.',speed:1.1,jump:9.5,sp:5,jp:4,ag:5,g:VX.root,rig:VX,outs:OUTFITS_VEX,ofKey:'orbRunOutfitVex',acro:true,moves:chars[2].moves});
 chars.push({name:'Tuk',desc:'A yeti cub in a hand-knit sweater. Cuddly, curious, and much bouncier than he looks. Same trick moveset as Flip.',speed:1.05,jump:9.6,sp:4,jp:5,ag:4,g:TK.root,rig:TK,outs:OUTFITS_TUK,ofKey:'orbRunOutfitTuk',acro:true,moves:chars[2].moves});
-chars.forEach((c,i)=>{if(!c.outs)return;let v=0;try{v=+localStorage.getItem(c.ofKey)||0}catch(e){}if(!c.outs[v])v=0;OFI[i]=v;applyOutfitTo(c.rig.mats,v,c.outs)});
+chars.forEach((c,i)=>{if(!c.outs)return;let v=0;try{v=+localStorage.getItem(c.ofKey)||0}catch(e){}if(!c.outs[v])v=0;OFI[i]=v;applyOutfitTo(c.rig.mats,v,c.outs,c.rig)});
 const A={wallT:0,lock:0,wnx:0,wnz:0,spd:0,mode:'normal',t:0,air:false,landT:0,jumpN:0,canCut:false,canDive:true,prevC:false,flipT:99,flipAxis:'x',flipDir:1,knock:0,skidTo:0,twirlT:99};
 const resetAcro=()=>Object.assign(A,{wallT:0,lock:0,spd:0,mode:'normal',t:0,air:false,landT:0,jumpN:0,canCut:false,canDive:true,flipT:99,knock:0,twirlT:99});
 let jumpBuf=0;
