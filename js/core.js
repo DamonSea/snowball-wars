@@ -38,12 +38,21 @@ const add=(geo,m,x=0,y=0,z=0,parent=scene)=>{const me=new THREE.Mesh(geo,m);me.p
 const water=new THREE.Mesh(new THREE.PlaneGeometry(500,500),seas(mat(0x2a85a8,{roughness:.3,metalness:.1}),0x5f93ae));
 water.rotation.x=-PI/2;water.position.y=-.8;scene.add(water);
 
-const trunkM=seas(mat(0x8a5a35),0x5a3d2a),leafM=[seas(mat(0x2f8f4e),0x1f4f3e),seas(mat(0x3fa65a),0x2a5e48),seas(mat(0x267a45),0x1a4636)],rockM=seas(mat(0x9aa3a8),0xb4bec6),grassM=seas(mat(0x6fbf4a),0xf2f6fa),sandM=seas(mat(0xe8cf8f),0xcfd8e0);
+// Wind: tree foliage (and the snow on it) sways a little, done in the vertex shader so it costs next to nothing and
+// works on merged meshes too. Points move with their height above the ground and their spot in the world, so
+// neighbouring trees sway out of step. WIND.amp is 0 on Low graphics (loop.js), which stops it.
+const WIND={t:{value:0},amp:{value:1}};
+function windy(m){m.onBeforeCompile=sh=>{sh.uniforms.uWindT=WIND.t;sh.uniforms.uWindA=WIND.amp;
+  sh.vertexShader='uniform float uWindT;\nuniform float uWindA;\n'+sh.vertexShader.replace('#include <begin_vertex>',
+  '#include <begin_vertex>\n{vec4 wp=modelMatrix*vec4(transformed,1.0);float h=clamp((wp.y-0.9)*0.35,0.0,1.0);float ph=wp.x*0.31+wp.z*0.23;'+
+  'float s=sin(uWindT*1.25+ph)*0.65+sin(uWindT*2.7+ph*1.7)*0.25;transformed.xz+=vec2(s,s*0.55)*0.09*h*h*uWindA;}')};
+  m.customProgramCacheKey=()=>'windy';return m}
+const trunkM=seas(mat(0x8a5a35),0x5a3d2a),leafM=[seas(mat(0x2f8f4e),0x1f4f3e),seas(mat(0x3fa65a),0x2a5e48),seas(mat(0x267a45),0x1a4636)].map(windy),treeSnowM=windy(snowM.clone()),rockM=seas(mat(0x9aa3a8),0xb4bec6),grassM=seas(mat(0x6fbf4a),0xf2f6fa),sandM=seas(mat(0xe8cf8f),0xcfd8e0);
 function tree(x,z,s,parent,list,y=0,i=0){
   const g=new THREE.Group();g.position.set(x,y,z);g.scale.setScalar(s);parent.add(g);
   add(new THREE.CylinderGeometry(.22,.3,1.4,6),trunkM,0,.7,0,g);
   const lm=leafM[i%3];add(new THREE.ConeGeometry(1.4,2.2,7),lm,0,2.1,0,g);add(new THREE.ConeGeometry(1,1.7,7),lm,0,3.2,0,g);
-  winterOnly.push(add(new THREE.ConeGeometry(.68,.72,7),snowM,0,3.72,0,g),add(new THREE.CylinderGeometry(1.02,1.42,.16,7),snowM,0,1.95,0,g));
+  winterOnly.push(add(new THREE.ConeGeometry(.68,.72,7),treeSnowM,0,3.72,0,g),add(new THREE.CylinderGeometry(1.02,1.42,.16,7),treeSnowM,0,1.95,0,g));
   list.push({x,z,r:.65*s,tree:true,y,top:y+4.05*s});
 }
 function rock(x,z,s,parent,list,y=0){const m=add(new THREE.DodecahedronGeometry(1,0),rockM,x,y+s*.4,z,parent);m.scale.set(s,s*.7,s);m.rotation.y=x*z;list.push({x,z,r:s*.9});
