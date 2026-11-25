@@ -3,7 +3,18 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
-## [2.40.0] - 2026-11-25 — Name on character select; pickups you can see
+## [2.41.0] - 2026-11-25 — Cap polish; take the cap off
+### Changed
+- **Flip's aviator cap, polished:** the goggle strap no longer crosses in front of the lenses; it runs round the sides
+  and back (with a little buckle) and ends at the frames, and the lenses sit on the dome tilted to its surface. A
+  fleece lining rolls out at the edge, a seam with a button runs over the top (instead of the flat bar), and the ear
+  flaps are rounded, fleece-lined, with snaps.
+### Added
+- **Aviator cap On / Off** in Customize → Accessories (Flip): take it off to show his hair with the goggles pushed up
+  on it, or put it on with outfits that don't come with it. Kept across outfit changes; Reset look restores the
+  outfit's choice; friends see it.
+
+ - 2026-11-25 — Name on character select; pickups you can see
 ### Changed
 - **"Your name" moved to the character select screen** (Trick Park only; Adventure is single-player). The first time,
   the cursor starts in it; Enter goes to Play. Typing there doesn't change character.

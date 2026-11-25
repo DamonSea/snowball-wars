@@ -106,18 +106,25 @@ function buildChibi(parent=P){
   FACE.nose.push(add(S(.075),sm(0xd99a70),0,-.09,.45,head));
   for(const k of ['eyes','brows','mouth'])for(const st in FACE[k])FACE[k][st].visible=st===({eyes:'round',brows:'none',mouth:'smile'})[k];
   const eyes=blinkOf.round;
-  // aviator cap with ear flaps
-  const capParts=[add(new THREE.SphereGeometry(.475,22,14,0,2*PI,0,PI/2.25),leather,0,.08,-.02,head)];
-  {const t=T(.43,.035,leather,0,.17,0,head);t.scale.set(1,1.03,1);capParts.push(t)}
-  [-1,1].forEach(s=>{const f=add(B(.09,.34,.26),leather,s*.43,-.06,-.02,head);f.rotation.z=s*.12;
-    capParts.push(f,add(S(.035,6,5),metal,s*.47,-.2,.02,head))});
-  capParts.push(add(B(.05,.03,.4),leather,0,.55,-.05,head));
-  // goggles pushed up on the cap
+  // aviator cap: a leather dome (centre y .08, radius .475) with a fleece lining rolled at the edge, a seam over the
+  // top with a button, and rounded fleece-lined ear flaps with snaps
+  const capParts=[add(new THREE.SphereGeometry(.475,24,14,0,2*PI,0,PI/2.25),leather,0,.08,-.02,head)];
+  capParts.push(T(.462,.042,fleece,0,.165,-.02,head));
+  {const seam=add(new THREE.TorusGeometry(.479,.012,6,28,PI*.86),leather,0,.08,-.02,head);seam.rotation.set(0,PI/2,PI*.07);capParts.push(seam,add(S(.034,8,6),leather,0,.558,-.02,head))}
+  const LS=new THREE.SphereGeometry(1,14,10);
+  [-1,1].forEach(s=>{const lin=add(LS,fleece,s*.43,-.04,-.02,head);lin.scale.set(.045,.17,.13);lin.rotation.z=s*.1;
+    const f=add(LS,leather,s*.455,-.04,-.02,head);f.scale.set(.05,.155,.115);f.rotation.z=s*.1;
+    capParts.push(lin,f,add(S(.028,8,6),metal,s*.5,-.17,.03,head))});
+  // goggles pushed up on the cap: lenses sit on the front of the dome (tilted to its surface), and the strap runs
+  // round the sides and back, ending at the frames instead of crossing in front of the lenses
   const gogG=new THREE.Group();head.add(gogG);
-  const gog=[T(.465,.025,rib,0,.3,-.01,gogG,PI/2-.1)];
-  [-1,1].forEach(s=>{const rim=add(new THREE.TorusGeometry(.085,.03,8,16),metal,s*.12,.33,.37,gogG);rim.rotation.x=-.45;
-    const l=add(new THREE.CylinderGeometry(.075,.075,.03,14),lens,s*.12,.33,.37,gogG);l.rotation.x=PI/2-.45;gog.push(rim,l)});
-  gog.push(add(B(.07,.03,.03),metal,0,.33,.39,gogG));
+  const strapG=new THREE.Group();strapG.position.set(0,.325,-.02);strapG.rotation.x=PI/2;gogG.add(strapG);
+  {const st=add(new THREE.TorusGeometry(.425,.022,6,32,2*PI-1.05),rib,0,0,0,strapG);st.rotation.z=PI/2+.525;
+    add(B(.05,.05,.03),metal,0,-.425,0,strapG).rotation.x=PI/2}
+  const gog=[strapG];
+  [-1,1].forEach(s=>{const rim=add(new THREE.TorusGeometry(.085,.03,8,16),metal,s*.125,.33,.37,gogG);rim.rotation.x=-.55;rim.rotation.y=s*.28;
+    const l=add(new THREE.CylinderGeometry(.075,.075,.03,14),lens,s*.125,.33,.37,gogG);l.rotation.order='YXZ';l.rotation.set(PI/2-.55,s*.28,0);gog.push(rim,l)});
+  gog.push(add(B(.06,.028,.03),metal,0,.335,.395,gogG));
   // ---- outfit-only pieces, hidden unless an outfit shows them (OUTFITS .show / .hide / .shorts) ----
   const parts={cap:capParts,goggles:gog,gogStrap:[gog[0]],scarf:[scarfRing,scarf[0]],collar:[collar],zip:[zip],pockets,cuffs};
   // hair when the cap is off: a tousled ginger mop made of chunky locks (two shades for depth) over a snug base,
@@ -428,11 +435,13 @@ const unlocked=(o,list=OUTFITS)=>!list[o].lock||!!bestA.orbRunAdv2;
 const OFI={}; // each wardrobe character's current outfit, by character index
 function applyOutfit(i){const c=chars[ci];if(!c.outs)return;if(typeof LOOKS!=='undefined'&&LOOKS[ci]){LOOKS[ci].c={};saveLook(ci);applyLook(c.rig,ci,i,LOOKS[ci])}else applyOutfitTo(c.rig.mats,i,c.outs,c.rig)}
 // which of the rig's pieces an outfit shows: everything normal, extras hidden, then the outfit's own hide/show/shorts
-function outfitParts(rig,o){if(!rig||!rig.parts)return;const ex=rig.partExtras||[];
-  for(const k in rig.parts){const on=ex.includes(k)?(o.show||[]).includes(k):!(o.hide||[]).includes(k);rig.parts[k].forEach(m=>{m.visible=on})}
+// cap: undefined = the outfit decides; 1 = wear it; 0 = take it off (his hair shows, goggles pushed up on it)
+function outfitParts(rig,o,cap){if(!rig||!rig.parts)return;const ex=rig.partExtras||[],hide=new Set(o.hide||[]),show=new Set(o.show||[]);
+  if(rig.parts.cap&&cap!==undefined){if(cap){hide.delete('cap');show.delete('hair');if(!hide.has('goggles'))hide.delete('gogStrap')}else{hide.add('cap');show.add('hair');hide.add('gogStrap')}}
+  for(const k in rig.parts){const on=ex.includes(k)?show.has(k):!hide.has(k);rig.parts[k].forEach(m=>{m.visible=on})}
   (rig.pantsLegs||[]).forEach(m=>{m.scale.y=o.shorts?.5:1;m.position.y=o.shorts?-.065:-.13});
   // goggles pushed up over hair sit a touch bigger and higher
-  if(rig.gogG){const up=(o.show||[]).includes('hair');rig.gogG.scale.setScalar(up?1.1:1);rig.gogG.position.set(0,up?.1:0,up?-.03:0)}
+  if(rig.gogG){const up=show.has('hair');rig.gogG.scale.setScalar(up?1.1:1);rig.gogG.position.set(0,up?.1:0,up?-.03:0)}
   // summer: short sleeves too
   (rig.sleeves||[]).forEach(m=>{m.scale.y=o.shorts?.45:1;m.position.y=o.shorts?-.063:-.14})}
 // face options for the Customize Face tab (first = default). A look stores only the choices that differ: L.f.

@@ -1,0 +1,18 @@
+(()=>{closePark();const out=[];const ok=(n,c,x='')=>out.push((c?'OK   ':'FAIL ')+n+(x!==''?' -> '+x:''));
+menu();pickMode='run';pickLevel=0;ci=2;showChar();__step(3);setOutfit(0);setLook(L=>{delete L.cap});openCust();CUST.tab='acc';renderCust();__step(2);
+const R=chars[2].rig,vis=k=>R.parts[k].every(m=>m.visible);
+ok('Accessories tab has an Aviator cap switch (On)',!!$('custBody').querySelector('[data-cap="1"].on'));
+$('custBody').querySelector('[data-cap="0"]').click();__step(2);
+ok('Cap off: cap gone, hair shows',!vis('cap')&&vis('hair'),LOOKS[2].cap);
+ok('...goggles stay, pushed up on his hair (no strap)',R.parts.goggles[1].visible&&!R.parts.gogStrap[0].visible&&R.gogG.scale.x>1);
+ok('...the switch shows Off',!!$('custBody').querySelector('[data-cap="0"].on'));
+setOutfit(1);__step(2);ok('Changing outfit keeps the cap off',!vis('cap')&&vis('hair'));
+setOutfit(5);__step(2);$('custBody').querySelector('[data-cap="1"]')&&renderCust();$('custBody').querySelector('[data-cap="1"]').click();__step(2);
+ok('Off Duty with the cap put back on: cap on, hair hidden',vis('cap')&&!vis('hair'));
+setLook(L=>{delete L.cap});ok('Off Duty by default: no cap',!vis('cap')&&vis('hair'));
+setOutfit(0);setLook(L=>{L.cap=0});
+const a=makeAv(2);applyLook(a.rig,2,0,cleanLook(LOOKS[2],2));ok('Friends see you without the cap',!a.rig.parts.cap[0].visible&&a.rig.parts.hair[0].visible);
+ok('Junk cap values from friends are ignored',cleanLook({cap:'yes'},2).cap===undefined&&cleanLook({cap:0},2).cap===0);
+$('custReset').click();$('custReset').click();__step(2);ok('Reset look puts the cap back',vis('cap')&&!vis('hair')&&LOOKS[2].cap===undefined);
+closeCust();ci=3;showChar();openCust();CUST.tab='acc';renderCust();ok('Nova has no cap switch',!$('custBody').querySelector('[data-cap]'));closeCust();
+return out.join('\n')})()
