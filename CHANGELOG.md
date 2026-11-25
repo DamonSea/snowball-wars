@@ -3,7 +3,14 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
-## [2.42.0] - 2026-11-25 — Plain shoes
+## [2.43.0] - 2026-11-25 — Jacket polish
+### Changed
+- **Flip's bomber jacket, polished:** a shearling collar with small lapels folding down the chest; a zip track with a
+  pull tab (instead of a flat bar); slanted slash pockets with fleece-trimmed welts (instead of boxes); a fitted,
+  ribbed waistband; rounded shoulders on the sleeves; and a round pilot's patch with little wings on his left sleeve
+  (not on the Super Flip suit).
+
+ - 2026-11-25 — Plain shoes
 ### Added
 - **Shoes: With soles / Plain** in Customize → Accessories (Flip): Plain takes off the flat soles under his boots and
   leaves just the rounded boots. Kept across outfits; friends see it; Reset look brings the soles back.

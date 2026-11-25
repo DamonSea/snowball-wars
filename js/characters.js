@@ -50,16 +50,24 @@ function buildChibi(parent=P){
     pantsLegs.push(add(Cy(.12,.26),pants,0,-.13,0,g));
     add(S(.2),boot,0,-.34,.08,g).scale.set(1,.7,1.45);
     soles.push(add(B(.32,.07,.52),sole,0,-.45,.08,g));T(.12,.03,boot,0,-.24,0,g);return g});
-  // bomber jacket
-  add(S(.42,18,14),jacket,0,.08,0,hp).scale.set(1,.95,.9);
-  T(.36,.06,rib,0,-.2,0,hp).scale.set(1,.92,1);
-  const collar=T(.24,.09,fleece,0,.36,-.01,hp);
-  const zip=add(B(.035,.42,.03),metal,0,.06,.385,hp);
-  const pockets=[-1,1].map(s=>{const pk=add(B(.14,.1,.04),rib,s*.2,-.03,.35,hp);pk.rotation.y=s*.35;return pk});
+  // bomber jacket: a rounded body with a fitted ribbed waistband, a shearling collar with lapels folding down the
+  // chest, a zip with a pull tab, slanted slash pockets, and a round pilot's patch on one sleeve
+  add(S(.42,20,16),jacket,0,.08,0,hp).scale.set(1,.95,.9);
+  {const w=T(.315,.055,rib,0,-.2,0,hp);w.scale.set(1,.88,1);for(let i=0;i<14;i++){const a=i/14*2*PI,r=add(B(.012,.07,.012),rib,Math.sin(a)*.37,-.2,Math.cos(a)*.33,hp);r.rotation.y=a}}
+  const collar=new THREE.Group();hp.add(collar);
+  {const c=T(.25,.075,fleece,0,.36,-.02,collar);c.scale.set(1,1,.8);
+    [-1,1].forEach(s=>{const l=add(new THREE.SphereGeometry(1,12,10),fleece,s*.085,.28,.325,collar);l.scale.set(.05,.1,.022);l.rotation.set(-.45,s*.35,s*.6)})}
+  const zip=new THREE.Group();hp.add(zip);
+  {const tr=add(B(.022,.34,.02),metal,0,.0,.382,zip);tr.rotation.x=.08;const tab=add(B(.035,.06,.014),metal,0,.15,.392,zip);tab.rotation.x=.25;add(S(.012,6,4),metal,0,.12,.395,zip)}
+  const pockets=[-1,1].map(s=>{const g=new THREE.Group();g.position.set(s*.22,-.06,.315);g.rotation.set(-.15,s*.55,s*.75);hp.add(g);
+    add(B(.15,.032,.025),rib,0,0,0,g);add(B(.15,.008,.026),fleece,0,.019,0,g);return g});
   // arms + gloves
-  const sleeves=[],cuffs=[];
+  const sleeves=[],cuffs=[],patch=[];
   const arms=[-1,1].map(s=>{const g=new THREE.Group();g.position.set(s*.44,.3,0);hp.add(g);
-    sleeves.push(add(Cy(.1,.28),jacket,0,-.14,0,g));cuffs.push(T(.1,.035,rib,0,-.27,0,g));
+    sleeves.push(add(Cy(.1,.28),jacket,0,-.14,0,g));add(S(.104,14,10),jacket,0,-.005,0,g);cuffs.push(T(.1,.035,rib,0,-.27,0,g));   // rounded shoulder on top of the sleeve
+    if(s>0){const pg=new THREE.Group();pg.position.set(.1,-.08,0);pg.rotation.z=-PI/2;g.add(pg);
+      add(new THREE.CylinderGeometry(.07,.07,.012,18),metal,0,0,0,pg);add(new THREE.CylinderGeometry(.056,.056,.016,18),scarfM,0,0,0,pg);
+      [-1,1].forEach(w=>{const wg=add(new THREE.SphereGeometry(1,8,6),fleece,.012,.01,w*.024,pg);wg.scale.set(.011,.008,.032);wg.rotation.x=w*.35});patch.push(pg)}
     add(S(.16),glove,0,-.38,0,g);return g});
   // scarf: chain of segments hanging from the back of the neck
   const scarf=[];let sp=hp,sy=.45,sz=-.24;
@@ -126,7 +134,7 @@ function buildChibi(parent=P){
     const l=add(new THREE.CylinderGeometry(.075,.075,.03,14),lens,s*.125,.33,.37,gogG);l.rotation.order='YXZ';l.rotation.set(PI/2-.55,s*.28,0);gog.push(rim,l)});
   gog.push(add(B(.06,.028,.03),metal,0,.335,.395,gogG));
   // ---- outfit-only pieces, hidden unless an outfit shows them (OUTFITS .show / .hide / .shorts) ----
-  const parts={cap:capParts,goggles:gog,gogStrap:[gog[0]],scarf:[scarfRing,scarf[0]],collar:[collar],zip:[zip],pockets,cuffs,soles};
+  const parts={cap:capParts,goggles:gog,gogStrap:[gog[0]],scarf:[scarfRing,scarf[0]],collar:[collar],zip:[zip],pockets,cuffs,soles,patch};
   // hair when the cap is off: a tousled ginger mop made of chunky locks (two shades for depth) over a snug base,
   // fuller at the back, short at the sides so the ears show, with a fringe falling over his forehead
   const dark=sm(0xb5521d,{roughness:.85});
@@ -408,7 +416,7 @@ const OUTFITS=[
     hide:['cap','scarf','gogStrap'],show:['hair','calves','forearms'],shorts:true},
   // Super Flip: blue suit, red cape, boots and gloves, gold emblem and belt, domino mask
   {name:'Super Flip',jacket:0x2a5bd7,fleece:0xffd84a,leather:0xe23b3b,pants:0x2a5bd7,boot:0xe23b3b,sole:0xffd84a,glove:0xe23b3b,scarf:0xe23b3b,lens:0xffd84a,lensE:0x7a5a00,metal:0xffd84a,
-    hide:['cap','goggles','gogStrap','scarf','collar','zip'],show:['hair','mask','emblem','belt'],acc:{back:{id:'cape',col:0xe23b3b}}}];
+    hide:['cap','goggles','gogStrap','scarf','collar','zip','patch'],show:['hair','mask','emblem','belt'],acc:{back:{id:'cape',col:0xe23b3b}}}];
 // Nova's wardrobe (jacket / beanie+mittens = leather+glove / headphones+pom = scarf / board = metal)
 const OUTFITS_NOVA=[
   {name:'Backcountry',jacket:0xf2b33d,fleece:0xfff4dc,leather:0x2f4f8f,pants:0x3d4a5c,boot:0x2a2a30,sole:0xf2b33d,glove:0x2f4f8f,scarf:0xff5a5f,lens:0x7ff0ff,lensE:0x1d6070,metal:0x1f2a36},
