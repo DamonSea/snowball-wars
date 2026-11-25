@@ -3,7 +3,18 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
-## [2.32.0] - 2026-11-23 — Switch 2 Pro Controller
+## [2.33.0] - 2026-11-25 — The aim arc knows what it will hit
+### Changed
+- **The aim arc stops at whatever the snowball would hit first:** walls, ledges, trees and the ground. The ring sits
+  where it hits, flat on the ground or upright against a wall or tree.
+- **Red when a target is in its path:** a player, a computer rival, an enemy, a penguin or a snowman turns the dots
+  red, with a bigger red ring at its feet. Red wins over the gold charged colour (a charged shot still pulses).
+  The arc uses the same hit tests as a real snowball, so red means it will hit.
+### Fixed
+- **Snowballs (and the arc) flew through tree branches;** only the thin trunk counted. Trees now block snowballs with
+  their real shape: trunk, then the two layers of branches.
+
+ - 2026-11-23 — Switch 2 Pro Controller
 ### Added
 - **Switch 2 Pro Controller support** (wired, in Chrome or Edge on a computer), from Controller Tester. Every button
   and both sticks land where the game expects them, so it plays exactly like a DualSense. Over USB the controller sends

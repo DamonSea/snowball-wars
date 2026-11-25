@@ -34,8 +34,15 @@ function splat(p,big,yel){burst(p.clone(),yel?0xf2d64b:0xffffff,big?16:9);SFX.sp
 // does a point sit inside something solid?
 function solidAt(x,y,z){
   for(const p of plats)if(inside(p,x,z,.05)&&topOf(p,x,z)>y&&(botOf(p,x,z)===undefined||y>botOf(p,x,z))&&!(p.k==='c'&&p.r>20&&y>p.top-.05))return true;
-  for(const c of advCol)if(Math.hypot(c.x-x,c.z-z)<c.r*(c.tree?.6:1)&&y<(c.tree?c.top:2.2))return true;
+  for(const c of advCol){const d=Math.hypot(c.x-x,c.z-z);
+    if(c.tree&&!c.pole){if(treeSolid(c,d,y))return true}
+    else if(d<c.r*(c.tree?.6:1)&&y<(c.tree?c.top:2.2)&&(!c.tree||y>(c.y||0)))return true}
   return false}
+// snowballs hit a tree's branches, not just its trunk: the shape of tree() in core.js (scale s = r/.65):
+// trunk up to 1, a wide cone from 1 to 3.2 (radius 1.4 at the bottom), a smaller one from 2.35 to 4.05
+function treeSolid(c,d,y){const s=c.r/.65,h=(y-(c.y||0))/s,r=d/s;if(h<0||h>4.05||r>1.4)return false;
+  if(h<.85)return r<.3;   // the lowest branches hang a little below where the cone starts
+  const lo=h<=3.2?1.4*(3.2-Math.max(h,1))/2.2:0,hi=h>=2.35?(4.05-h)/1.7:0;return r<Math.max(lo,hi,.3)*.92}
 function hitMe(owner,id,bx,bz,yel,ch=false){
   if(SB.hitCool>0||warsShielded())return;SB.hitCool=.5;SB.stun=T.snow.stun*(ch?T.snow.chargeStun:1);ATK.t=0;resetPound();
   const dx=P.position.x-bx,dz=P.position.z-bz,d=Math.hypot(dx,dz)||1,kn=T.snow.hitKnock*(ch?T.snow.chargeKnock:1);
@@ -125,12 +132,13 @@ const myStars=makeStars();scene.add(myStars);
 function dizzy(g,on,x,y,z,dt){g.visible=on;if(on){g.position.set(x,y+2.35,z);g.rotation.y+=dt*7}}
 
 // ---------- aiming and charging (hold Throw) ----------
-// dots are sky blue (white would vanish against the snow); gold once charged
+// dots are sky blue (white would vanish against the snow); gold once charged; red with a target in its path
 const AIM_N=28,aimDotGeo=new THREE.SphereGeometry(.1,8,6),aimM=new THREE.MeshBasicMaterial({color:0x2fb8ff,transparent:true,opacity:.95,depthWrite:false}),
   aimGold=new THREE.MeshBasicMaterial({color:0xffb400,transparent:true,opacity:1,depthWrite:false}),
+  aimRed=new THREE.MeshBasicMaterial({color:0xff3b3b,transparent:true,opacity:1,depthWrite:false}),
   aimRing=new THREE.Mesh(new THREE.RingGeometry(.3,.48,24),new THREE.MeshBasicMaterial({color:0x2fb8ff,transparent:true,opacity:.8,side:THREE.DoubleSide,depthWrite:false}));
 const aimDots=Array.from({length:AIM_N},()=>{const m=new THREE.Mesh(aimDotGeo,aimM);m.visible=false;scene.add(m);return m});
-aimRing.rotation.x=-PI/2;aimRing.visible=false;scene.add(aimRing);keep(aimDotGeo,aimM,aimGold,aimRing.geometry,aimRing.material);aimDots.forEach(m=>keep(m));
+aimRing.rotation.x=-PI/2;aimRing.visible=false;scene.add(aimRing);keep(aimDotGeo,aimM,aimGold,aimRed,aimRing.geometry,aimRing.material);aimDots.forEach(m=>keep(m));
 function aimStart(){if(!canThrow())return;
   if(SB.ammo<1){SFX.deny();if(!SB.told){SB.told=true;toast('Out of snowballs: grab orbs to refill')}snowFlash('empty');return}
   Object.assign(SB.aim,{on:true,t:0,full:false})}
@@ -141,12 +149,30 @@ function updateAim(dt){const A_=SB.aim;if(!A_.on)return;
   A_.t+=dt;if(!A_.full&&A_.t>=T.snow.chargeTime){A_.full=true;SFX.ui(6);rumble(80,.2,.5);burst(V(P.position.x,py+1.45,P.position.z),0xffd84a,8)}
   // turn to aim while holding, like the throw does
   const d=inputDir();if(d!==null&&ATK.t<=0)face+=angD(d,face)*Math.min(1,dt*14);
-  // trace the arc with the throw's own numbers until it hits something
-  const o=throwVec(face),g=T.snow.gravity,mat=A_.full?aimGold:aimM,step=.035,pulse=A_.full?1+.25*Math.sin(tAll*14):1;
-  let x=o[0],y=o[1],z=o[2],vx=o[3],vy_=o[4],vz=o[5],n=0,hit=null;
-  for(let i=0;i<AIM_N*2&&n<AIM_N;i++){vy_-=g*step;x+=vx*step;y+=vy_*step;z+=vz*step;
-    const gh=groundAt(x,z,y+.4).h;if(y<=(isFinite(gh)?gh:0)+.02){hit={x,z,y:isFinite(gh)?gh:0};break}
-    if(solidAt(x,y,z)){hit={x,z,y:Math.max(0,y-.2)};break}
-    {const m=aimDots[n++];m.visible=true;m.material=mat;m.position.set(x,y,z);m.scale.setScalar((1-n/AIM_N*.45)*pulse)}}
-  for(let k=n;k<AIM_N;k++)aimDots[k].visible=false;
-  aimRing.visible=!!hit;if(hit){aimRing.position.set(hit.x,hit.y+.04,hit.z);aimRing.material.color.setHex(A_.full?0xffb400:0x2fb8ff);aimRing.scale.setScalar(A_.full?1.35:1)}}
+  // trace the arc with the throw's own numbers until it hits something: the ground, a wall or tree, or a target.
+  // A target (a player, rival, enemy, penguin or snowman) turns the arc red, with a ring at its feet.
+  const o=throwVec(face),g=T.snow.gravity,step=.0175,pulse=A_.full?1+.25*Math.sin(tAll*14):1;
+  let x=o[0],y=o[1],z=o[2],vx=o[3],vy_=o[4],vz=o[5],hit=null;const pts=[];
+  for(let i=0;i<AIM_N*4&&pts.length<AIM_N;i++){vy_-=g*step;x+=vx*step;y+=vy_*step;z+=vz*step;
+    const gh=groundAt(x,z,y+.4).h,gy=isFinite(gh)?gh:0;
+    if(y<=gy+.02){hit={x,z,y:gy,k:'ground'};break}
+    const tg=aimHits(x,y,z);if(tg){hit=Object.assign(tg,{k:'target'});break}
+    if(solidAt(x,y,z)){hit={x,z,y,k:'wall',vx,vy:vy_,vz};break}
+    if(i%2===1)pts.push([x,y,z])}
+  A_.hit=hit;const red=hit&&hit.k==='target',mat=red?aimRed:A_.full?aimGold:aimM;
+  pts.forEach((q,n)=>{const m=aimDots[n];m.visible=true;m.material=mat;m.position.set(q[0],q[1],q[2]);m.scale.setScalar((1-(n+1)/AIM_N*.45)*pulse*(red?1.15:1))});
+  for(let k=pts.length;k<AIM_N;k++)aimDots[k].visible=false;
+  aimRing.visible=!!hit;if(!hit)return;
+  aimRing.material.color.setHex(red?0xff3b3b:A_.full?0xffb400:0x2fb8ff);aimRing.scale.setScalar((A_.full?1.35:1)*(red?1.6:1));
+  if(hit.k==='wall'){aimRing.position.set(hit.x-hit.vx*.02,hit.y-hit.vy*.02,hit.z-hit.vz*.02);aimRing.lookAt(hit.x-hit.vx,hit.y-hit.vy,hit.z-hit.vz)}   // flat against what it hits, facing you
+  else{aimRing.position.set(hit.x,hit.y+.04,hit.z);aimRing.rotation.set(-PI/2,0,0)}}
+// what a snowball at (x,y,z) would hit, for the aim arc (the same tests the flying snowball uses); the target's feet
+function aimHits(x,y,z){const body=(bx,by,bz)=>Math.hypot(bx-x,bz-z)<.75&&y>by&&y<by+2.1?{x:bx,y:by,z:bz}:null;let r;
+  for(const a of MP.av.values()){const q=a.g.position;if(a.g.visible!==false&&(r=body(q.x,q.y,q.z)))return r}
+  if(WAR.on)for(const b of WAR.bots)if(b.out<=0&&(r=body(b.x,b.y||0,b.z)))return r;
+  for(const b of RACE.bots)if(r=body(b.x,b.y||0,b.z))return r;
+  if(TAG.on)for(const b of TAG.bots)if(r=body(b.x,b.y||0,b.z))return r;
+  if(CPU.on&&!WAR.on&&!TAG.on&&!RACE.bots.length&&(r=body(CPU.x,CPU.y||0,CPU.z)))return r;
+  for(const h of runHz)if(!h.dead&&!h.sbHit&&hitsFoe(h,{x,y,z})){const q=h.g.position;return{x:q.x,y:q.y,z:q.z}}
+  for(const s of snowmen())if(s.up&&Math.hypot(s.x-x,s.z-z)<.85&&y<2.5)return{x:s.x,y:0,z:s.z};
+  return null}
