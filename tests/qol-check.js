@@ -8,7 +8,7 @@ ok('hold R shows a meter, then respawns at the spawn point',mid&&Math.hypot(P.po
 keys.KeyR=true;__step(20);keys.KeyR=false;__step(2);ok('a short tap does nothing',Math.hypot(P.position.x,P.position.z)<.5);
 // orb run: start, pause has Restart / Stop, Stop keeps you where you are
 __place(10,-3,0,0);__step(3);beginTimed();__step(200);ok('orb run running',!runFree&&runCD<=0);
-pause();__step(2);const b1=btns();ok('pause during an orb run: '+b1.join(', '),b1.join('|')==='Resume|Restart Collectathon|Stop Collectathon|Change map|Moves|Settings|Quit to menu');
+pause();__step(2);const b1=btns();ok('pause during an orb run: '+b1.join(', '),b1.join('|')==='Resume|Restart Collectathon|Stop Collectathon|Change map|Edit character|Moves|Settings|Quit to menu');
 resume();__place(9,-2,0,0);__step(3);pause();[...document.querySelectorAll('#ov button')].find(b=>b.textContent.startsWith('Stop Collectathon')).click();__step(3);
 ok('Stop orb run: back to free roam, right where you were',runFree&&state==='play'&&Math.hypot(P.position.x-9,P.position.z+2)<.6);
 // hold Enter during a run: fresh countdown in place
@@ -22,7 +22,7 @@ beginTimed();__step(200);__place(6,-3,0,0);__step(3);lives=0;endRun();__step(2);
 pause();[...document.querySelectorAll('#ov button')].find(b=>b.textContent==='Moves').click();__step(2);ok('Moves opens a list of moves',!$('moves').classList.contains('hide')&&$('movesList').querySelectorAll('.mvc').length>=4);
 dispatchEvent(new KeyboardEvent('keydown',{code:'Escape',bubbles:true}));__step(2);ok('Esc goes back to the pause menu',$('moves').classList.contains('hide')&&state==='paused'&&!$('ov').classList.contains('hide'));resume();
 // free roam pause
-pause();ok('free roam pause: '+btns().join(', '),btns().join('|')==='Resume|Play|Change map|Moves|Settings|Quit to menu');resume();
+pause();ok('free roam pause: '+btns().join(', '),btns().join('|')==='Resume|Play|Change map|Edit character|Moves|Settings|Quit to menu');resume();
 // controller: L3 hold respawns
 const gp={id:'DualSense',mapping:'standard',connected:true,timestamp:1,buttons:Array.from({length:18},()=>({pressed:false,value:0})),axes:[0,0,0,0]};navigator.getGamepads=()=>[gp];
 __place(11,-4,0,0);__step(3);gp.buttons[10].pressed=true;gp.timestamp++;__step(70);gp.buttons[10].pressed=false;gp.timestamp++;__step(2);ok('hold L3 respawns on the controller',Math.hypot(P.position.x,P.position.z)<.5);
@@ -35,5 +35,5 @@ const t1=FR.t;keys.Enter=true;__step(60);keys.Enter=false;__step(2);ok('hold Ent
 pause();backToBuilder();__step(2);exitBuilder();
 // adventure: hold Enter restarts the level
 menu();pickMode='adv';pickLevel=0;ci=2;showChar();confirmChar();__step(10);const at=atime;__step(60);keys.Enter=true;__step(60);keys.Enter=false;__step(2);ok('Adventure: hold Enter restarts the level',atime<1);
-pause();ok('Adventure pause: '+btns().join(', '),btns().join('|')==='Resume|Retry|Moves|Settings|Quit to menu');resume();
+pause();ok('Adventure pause: '+btns().join(', '),btns().join('|')==='Resume|Retry|Edit character|Moves|Settings|Quit to menu');resume();
 menu();__step=_st;return out.join('\n')})()

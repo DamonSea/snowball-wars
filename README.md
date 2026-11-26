@@ -147,7 +147,8 @@ needs Flipper's or Parker's full moveset (and guard rails help).
   After that it wakes on its own whenever you load the game. A second, optional click turns on rumble.
 - **Settings** in three tabs: **Game** (camera: Classic, Behind you, Free or Free + auto; graphics quality, performance stats, season, snowfall, side flip style, ledge hang, squash & stretch, yellow snow, enemies, computer player), **Sound** (volume mix and a style for every sound) and **Controls** (rebind anything).
 - **Graphics: Auto** adjusts render resolution to hold a smooth frame rate (or pick High, Balanced or Low). Press **`** (backtick) for a performance overlay: fps, frame time, draw calls and GPU memory.
-- **Pause** swings the camera round to face your character, who waves and idles beside the pause menu.
+- **Pause** swings the camera round to face your character, who waves and idles beside the pause menu. **Edit character** there opens
+  the customizer right where you're standing.
 - **Tag**: pick Tag on the PLAY pad. Whoever's It wears an IT! sign; touch someone to pass it on. Least time as It after 2 minutes wins. Snowballs stun the It.
 - **Friendly penguins**: they leave you alone until you hit one. Then it and its friends get angry.
 

@@ -2,7 +2,7 @@
 menu();pickMode='run';pickLevel=0;ci=2;showChar();__step(3);setLook(L=>{L.f={}});openCust();__step(3);
 const R=chars[2].rig,F=R.face,shown=k=>Object.keys(F[k]).filter(s=>F[k][s].visible);
 ok('Flip has a Face tab',!$('cust').querySelector('.ctab[data-t="face"]').classList.contains('hide'));
-ok('Default face: round eyes, no brows, smile, nose/freckles/blush on',shown('eyes').join()==='round'&&shown('brows').join()==='none'&&shown('mouth').join()==='smile'&&F.nose[0].visible&&F.freckles[0].visible&&F.blush[0].visible);
+ok('Default face: beady eyes with no shine, no brows, smile, nose/freckles/blush on',shown('eyes').join()==='beady'&&F.shine.every(m=>!m.visible)&&shown('brows').join()==='none'&&shown('mouth').join()==='smile'&&F.nose[0].visible&&F.freckles[0].visible&&F.blush[0].visible);
 CUST.tab='face';renderCust();__step(30);
 ok('The Face tab lists eyes, eyebrows, mouth and switches',$('custBody').querySelectorAll('[data-fk="eyes"]').length===6&&$('custBody').querySelectorAll('[data-fk="brows"]').length===5&&$('custBody').querySelectorAll('[data-fk="mouth"]').length===7&&$('custBody').querySelectorAll('[data-fs][data-fo="0"]').length===5);
 const click=sel=>{$('custBody').querySelector(sel).click();__step(2)};
@@ -13,7 +13,7 @@ click('[data-fk="eyes"][data-fv="happy"]');ok('Happy eyes (closed arcs) don\'t b
 click('[data-fs="freckles"][data-fo="0"]');click('[data-fs="nose"][data-fo="0"]');ok('Freckles and nose switched off',!F.freckles[0].visible&&!F.nose[0].visible&&F.blush[0].visible&&LOOKS[2].f.freckles===0);
 click('[data-fs="nose"][data-fo="1"]');ok('...and the nose back on',F.nose[0].visible&&LOOKS[2].f.nose===undefined);
 click('[data-fk="mouth"][data-fv="none"]');ok('No mouth at all',shown('mouth').join()==='none');
-click('[data-fk="eyes"][data-fv="round"]');ok('Picking the default isn\'t stored',LOOKS[2].f.eyes===undefined&&shown('eyes').join()==='round');
+click('[data-fk="eyes"][data-fv="beady"]');ok('Picking the default isn\'t stored',LOOKS[2].f.eyes===undefined&&shown('eyes').join()==='beady');
 // saved and shared
 const saved=JSON.parse(localStorage.getItem('orbRunLook_Flipper'));ok('Saved on this device',saved.f.mouth==='none'&&saved.f.freckles===0);
 const a=makeAv(2);applyLook(a.rig,2,0,cleanLook(LOOKS[2],2));ok('Friends see your face choices',Object.keys(a.rig.face.mouth).filter(s=>a.rig.face.mouth[s].visible).join()==='none'&&!a.rig.face.freckles[0].visible);

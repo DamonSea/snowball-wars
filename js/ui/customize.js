@@ -169,7 +169,11 @@ const CUST={on:false,tab:'outfit',rot:0,drag:null,rotTo:null,acT:'top'};
 const custTabs=()=>['outfit','color',...(chars[ci].rig&&chars[ci].rig.face?['face']:[]),'wear','acc'];
 function openCust(){if(!chars[ci].outs)return;CUST.on=true;CUST.rot=0;CUST.rotTo=null;$('cs').classList.add('hide');$('cust').classList.remove('hide');renderCust();wave=0;SFX.ui(3);
   setTimeout(()=>{const b=$('cust').querySelector('.ctab.on');b&&b.focus()},50)}
-function closeCust(){CUST.on=false;$('cust').classList.add('hide');$('cs').classList.remove('hide');showChar();setTimeout(()=>$('csGo').focus(),50)}
+function closeCust(){CUST.on=false;$('cust').classList.add('hide');
+  if(CUST.fromPause){CUST.fromPause=false;face=CUST.face0;showPause();return}   // back to the pause menu, facing the way they were
+  $('cs').classList.remove('hide');showChar();setTimeout(()=>$('csGo').focus(),50)}
+// Pause menu → Edit character: the same dressing room, over the paused game, framed on wherever you're standing
+function editCharacter(){if(state!=='paused'||!chars[ci].outs)return;CUST.fromPause=true;CUST.face0=face;overlay(false);openCust();CUST.rot=face;CUST.rotTo=.25}
 // every change can be undone (Undo button / Z): a snapshot of the look and outfit goes on a stack first
 const CHIST=[];
 function snapLook(){CHIST.push({ci,of:OFI[ci],L:JSON.stringify(LOOKS[ci])});if(CHIST.length>40)CHIST.shift();updUndo()}

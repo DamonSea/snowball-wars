@@ -39,7 +39,7 @@ WAR.bots.forEach(q=>{q.cool=1});
 const before=WAR.bots.reduce((a,q)=>a+q.hits,0)+WAR.downs;let thrown=0;const L0=launchSnowball;launchSnowball=(...a)=>{if(String(a[2]).startsWith('bot'))thrown++;return L0(...a)};__step(600);launchSnowball=L0;
 ok('computer players throw ('+thrown+' in 10s)',thrown>=6);
 // pause menu during a match
-pause();ok('pause during a match: '+btns().join(', '),btns().join('|')==='Resume|Restart match|End match|Change map|Moves|Settings|Quit to menu');resume();
+pause();ok('pause during a match: '+btns().join(', '),btns().join('|')==='Resume|Restart match|End match|Change map|Edit character|Moves|Settings|Quit to menu');resume();
 ok('pause line shows place and time',true);
 // time up: results
 WAR.t=.02;__step(3);ok('time up: results screen',state==='over'&&!$('ov').classList.contains('hide')&&$('ovP').querySelectorAll('.warsres li').length===4);

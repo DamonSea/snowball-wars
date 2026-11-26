@@ -18,9 +18,7 @@ function panelNav(root,L,R,U,D,ok){
       const sc=p+s*(U||D?1.6:3);if(sc<bs){bs=sc;best=e}}
     if(best)padFocus(best);return}
   if(ok)cur.click()}
-// Button names follow the controller in use (PlayStation symbols, or B / A / Y / X on a Switch 2 Pro via js/input/pads.js)
-function padNames(){if(window.Pads&&pad.gp){const n=Pads.names(pad.gp);for(let i=0;i<PADN.length;i++)PADN[i]=n[i]}}
-function padChanged(){padNames();document.body.classList.toggle('haspad',pad.connected);renderControls();toast(pad.connected?`Controller connected \u00b7 ${PADN[0]} select \u00b7 ${PADN[1]} back`:'Controller disconnected')}
+function padChanged(){document.body.classList.toggle('haspad',pad.connected);renderControls();toast(pad.connected?'Controller connected \u00b7 \u2715 select \u00b7 \u25cb back':'Controller disconnected')}
 function updatePadInfo(){let t;if(!pad.connected)t='Controller: none detected. Press a button on it; if this stays, open the game on its own page.';
   else{const g=pad.gp,n=(g.id.replace(/\(.*?\)/g,'').trim()||'Gamepad').slice(0,32);t=`Controller: ${n} \u00b7 ${g.mapping==='standard'?'standard':SONY.test(g.id)?'PlayStation layout':'non-standard'} \u00b7 last button ${padLast||'none'}`}
   if(t!==padInfoTxt){padInfoTxt=t;$('padInfo').textContent=t}}
@@ -43,7 +41,6 @@ function readButtons(gp){
 function pollPad(){
   // pick the most recently active controller, skipping idle virtual devices
   let gp=null;try{const l=navigator.getGamepads?navigator.getGamepads():[];for(const g of l)if(g&&g.connected&&g.buttons.length&&(!gp||g.timestamp>gp.timestamp))gp=g}catch(e){}
-  if(gp&&pad.gp&&gp.id!==pad.gp.id){pad.gp=gp;padNames();renderControls()}
   pad.gp=gp;
   if(!gp){pad.x=pad.z=0;pad.jump=pad.crouch=false;padNow=[];if(pad.connected){pad.connected=false;padChanged()}padPrev=[];return}
   // without focus the browser may stop updating the controller and keep reporting the last buttons as held (a stuck
@@ -73,17 +70,17 @@ function pollPad(){
   if(typeof mapsOpen!=='undefined'&&mapsOpen){panelNav($('maps'),L,R,U,D,pr(0));if(pr(1)){closeMapsPanel();parkMenu()}return}
   if(state==='play'){
     for(const a of ACT)if(BIND.pad[a.id]&&BIND.pad[a.id].some(i=>pr(i))){press(a.id);if(state!=='play')break}if(pr(17))setCtl(!ctlHidden);
-  }else if(state==='select'&&CUST.on){custPad(L,R,U,D,pr(0),pr(1),pr(4),pr(5),gp);
+  }else if((state==='select'||state==='paused')&&CUST.on){custPad(L,R,U,D,pr(0),pr(1),pr(4),pr(5),gp);
   }else if(state==='select'){if(pr(3)&&chars[ci].outs){openCust();return}
     if(L)cycle(-1);if(R)cycle(1);if(U)cycleOutfit(-1);if(D)cycleOutfit(1);
     if(pr(0))confirmChar();else if(pr(1)){$('cs').classList.add('hide');menu()}
   }else if(!$('ov').classList.contains('hide')){
-    const bs=['go','alt','alt2','alt3','alt4','alt5','alt6','alt7'].map($).filter(e=>e.textContent);let i=bs.indexOf(document.activeElement);
+    const bs=['go','alt','alt2','alt3','alt4','alt5','alt6','alt7','alt8'].map($).filter(e=>e.textContent);let i=bs.indexOf(document.activeElement);
     if(L||U||R||D){document.body.classList.add('padnav');i=(L||U)?(i<=0?bs.length-1:i-1):(i+1)%bs.length;bs[i].focus()}
     if(state==='paused'&&pr(17))setCtl(!ctlHidden);
     if(pr(0))(bs[i]||bs[0]).click();
     else if(state==='paused'&&(BIND.pad.pause||[]).some(i=>pr(i)))backOrResume();
-    else if(pr(1)){if(state==='paused')backOrResume();else{const bk=['alt2','alt3','alt4','alt5','alt6','alt7'].map($).find(e=>e.textContent==='Back');bk&&bk.click()}}
+    else if(pr(1)){if(state==='paused')backOrResume();else{const bk=['alt2','alt3','alt4','alt5','alt6','alt7','alt8'].map($).find(e=>e.textContent==='Back');bk&&bk.click()}}
   }
 }
 addEventListener('gamepadconnected',()=>pollPad());addEventListener('gamepaddisconnected',()=>pollPad());

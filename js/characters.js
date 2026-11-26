@@ -73,7 +73,8 @@ function buildFace(head,{skin,hair,freck,noseC=0xd99a70,blushC=0xef9a85,k=1,oy=0
     [[.0,0],[.05,.04],[.05,-.03]].forEach(([dx,dy])=>FACE.freckles.push(add(S(.015,5,4),freck,s*(.25+dx),-.12+dy,.37-dx*.4,fg)));
     FACE.blush.push(add(S(.05,8,6),sm(blushC,{roughness:.8,transparent:true,opacity:.55}),s*.27,-.14,.33,fg))});
   FACE.nose.push(add(S(.075),sm(noseC),0,-.09,.45,fg));
-  for(const k of ['eyes','brows','mouth'])for(const st in FACE[k])FACE[k][st].visible=st===({eyes:'round',brows:'none',mouth:'smile'})[k];
+  for(const k of ['eyes','brows','mouth'])for(const st in FACE[k])FACE[k][st].visible=st===({eyes:'beady',brows:'none',mouth:'smile'})[k];
+  FACE.shine.forEach(m=>{m.visible=false});
   return{FACE,blinkOf}}
 // Flip: pint-sized stunt pilot. Same rig interface (root > hp > limbs), chunky mascot proportions
 function buildChibi(parent=P){
@@ -122,7 +123,7 @@ function buildChibi(parent=P){
   add(S(.45,20,16),skin,0,0,0,head);
   // ---- face: every style is built once and shown or hidden (applyFace). Blinking scales whatever is in `eyes`. ----
   const{FACE,blinkOf}=buildFace(head,{skin,hair,freck});
-  const eyes=blinkOf.round;
+  const eyes=blinkOf.beady;
   // aviator cap: a leather dome (centre y .08, radius .475) with a fleece lining rolled at the edge, a seam over the
   // top with a button, and rounded fleece-lined ear flaps with snaps
   const capParts=[add(new THREE.SphereGeometry(.475,24,14,0,2*PI,0,PI/2.25),leather,0,.08,-.02,head)];
@@ -229,7 +230,7 @@ function buildNova(parent=P){
         add(S(r+(i%3)*.01,10,8),(i+row)%4?hair:hair2,Math.sin(a)*R,y+((i%2)?.012:-.012),Math.cos(a)*R-.01,head)}})}
   // the same face kit as Flipper, sized to her head; her defaults: soft brows, no freckles
   const{FACE,blinkOf}=buildFace(head,{skin,hair,freck:sm(0x5e3a26,{roughness:.8}),noseC:0x7a4a30,blushC:0xd9776a,k:.4/.45,oy:-.025});
-  const eyes=blinkOf.round;
+  const eyes=blinkOf.beady;
   // curls on top for when the hat comes off (Customize → Accessories): a swept-back base with a clean hairline, then
   // curls spread evenly over it (golden-angle spiral) in two tones, and a row of small ones along the hairline
   const hairTop=new THREE.Group();head.add(hairTop);hairTop.visible=false;
@@ -493,7 +494,9 @@ const FACE_OPTS={eyes:[['round','Round'],['relaxed','Relaxed'],['focused','Focus
   mouth:[['smile','Smile'],['calm','Calm'],['grin','Grin'],['smirk','Smirk'],['flat','Flat'],['o','Oh'],['none','None']]};
 const FACE_TOGGLES=[['whites','Eye whites'],['shine','Eye shine'],['nose','Nose'],['freckles','Freckles'],['blush','Blush']];
 // a face setting: yours, else the character's own default (rig.faceDef), else the first option / on
-const faceVal=(rig,f,k)=>f[k]??(rig.faceDef||{})[k]??(FACE_OPTS[k]?FACE_OPTS[k][0][0]:1);
+// everyone's default face: beady eyes, no eye shine (a character's own faceDef can add to this)
+const FACE_DEF={eyes:'beady',shine:0};
+const faceVal=(rig,f,k)=>f[k]??(rig.faceDef||{})[k]??FACE_DEF[k]??(FACE_OPTS[k]?FACE_OPTS[k][0][0]:1);
 function applyFace(rig,f={}){const F=rig.face;if(!F)return;
   for(const k in FACE_OPTS){const pick=faceVal(rig,f,k);for(const st in F[k])F[k][st].visible=st===pick}
   for(const[k]of FACE_TOGGLES)F[k].forEach(m=>{m.visible=faceVal(rig,f,k)!==0});

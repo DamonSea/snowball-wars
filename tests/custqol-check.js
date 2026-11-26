@@ -4,7 +4,7 @@ menu();pickMode='run';pickLevel=0;ci=3;showChar();__step(2);OFI[3]=0;applyOutfit
 const B=q=>$('custBody').querySelector(q),click=q=>{B(q).click();__step(2)},tab=t=>{CUST.tab=t;renderCust()};
 // Parker's face
 tab('face');ok('Parker has the full face kit: 6 eyes, 5 brows, 7 mouths, 5 switches',$('custBody').querySelectorAll('[data-fk="eyes"]').length===6&&$('custBody').querySelectorAll('[data-fk="mouth"]').length===7&&$('custBody').querySelectorAll('[data-fs][data-fo="0"]').length===5);
-ok('Her defaults: soft brows on, freckles off, round eyes, smile',N.face.brows.soft.visible&&N.face.freckles.every(m=>!m.visible)&&N.face.eyes.round.visible&&!!B('[data-fk="brows"][data-fv="soft"].on')&&!!B('[data-fs="freckles"][data-fo="0"].on'));
+ok('Her defaults: soft brows on, freckles off, beady eyes without shine, smile',N.face.brows.soft.visible&&N.face.freckles.every(m=>!m.visible)&&N.face.eyes.beady.visible&&N.face.shine.every(m=>!m.visible)&&!!B('[data-fk="brows"][data-fv="soft"].on')&&!!B('[data-fs="freckles"][data-fo="0"].on'));
 click('[data-fs="freckles"][data-fo="1"]');ok('Freckles on for her (stored as 1, since her default is off)',N.face.freckles.every(m=>m.visible)&&LOOKS[3].f.freckles===1);
 click('[data-fk="eyes"][data-fv="relaxed"]');click('[data-fs="whites"][data-fo="0"]');ok('Relaxed eyes, no whites',N.face.eyes.relaxed.visible&&N.face.whites.every(m=>!m.visible));
 click('[data-fk="brows"][data-fv="soft"]');ok('Picking her default brows stores nothing',LOOKS[3].f.brows===undefined);

@@ -26,14 +26,14 @@ function hud(){
 // the bottom banner: short news only (results, Adventure progress). It clears itself after a few seconds.
 let hintAuto=null;
 function hint(t){const h=$('hint');clearTimeout(hintAuto);if(t)hintAuto=setTimeout(()=>{if(h.textContent===t)hint('')},5500);if(h.textContent===t)return;h.textContent=t;h.classList.remove('pop');void h.offsetWidth;if(t)h.classList.add('pop')}
-let onGo=null,onAlt=null,onAlt2=null,onAlt3=null,onAlt4=null,onAlt5=null,onAlt6=null,onAlt7=null;
-function overlay(show,t,p,goTxt,altTxt,go,alt,alt2Txt='',alt2=null,alt3Txt='',alt3=null,alt4Txt='',alt4=null,alt5Txt='',alt5=null,alt6Txt='',alt6=null,alt7Txt='',alt7=null){
+let onGo=null,onAlt=null,onAlt2=null,onAlt3=null,onAlt4=null,onAlt5=null,onAlt6=null,onAlt7=null,onAlt8=null;
+function overlay(show,t,p,goTxt,altTxt,go,alt,alt2Txt='',alt2=null,alt3Txt='',alt3=null,alt4Txt='',alt4=null,alt5Txt='',alt5=null,alt6Txt='',alt6=null,alt7Txt='',alt7=null,alt8Txt='',alt8=null){
   $('ov').classList.toggle('hide',!show);$('ov').classList.remove('menu','pausem','wres');if(!show){document.activeElement&&document.activeElement.blur&&document.activeElement.blur();return}
-  $('ovT').textContent=t;$('ovT').classList.toggle('logo',t==='Snowball Wars');$('ovP').textContent=p;$('go').textContent=goTxt;$('alt').textContent=altTxt;onGo=go;onAlt=alt;$('alt2').textContent=alt2Txt;onAlt2=alt2;$('alt3').textContent=alt3Txt;onAlt3=alt3;$('alt4').textContent=alt4Txt;onAlt4=alt4;$('alt5').textContent=alt5Txt;onAlt5=alt5;$('alt6').textContent=alt6Txt;onAlt6=alt6;$('alt7').textContent=alt7Txt;onAlt7=alt7;
+  $('ovT').textContent=t;$('ovT').classList.toggle('logo',t==='Snowball Wars');$('ovP').textContent=p;$('go').textContent=goTxt;$('alt').textContent=altTxt;onGo=go;onAlt=alt;$('alt2').textContent=alt2Txt;onAlt2=alt2;$('alt3').textContent=alt3Txt;onAlt3=alt3;$('alt4').textContent=alt4Txt;onAlt4=alt4;$('alt5').textContent=alt5Txt;onAlt5=alt5;$('alt6').textContent=alt6Txt;onAlt6=alt6;$('alt7').textContent=alt7Txt;onAlt7=alt7;$('alt8').textContent=alt8Txt;onAlt8=alt8;
   $('best').textContent=RUNMAPS.filter(M=>!M.custom).map(M=>{const b=typeof bestO==='function'?bestO(M.key):0;return`${M.name}: ${b?b+' orbs':'not yet'}`}).join(' \u00b7 ')+levels.map(L=>` · ${L.name}: ${bestA[L.key]?fmt(bestA[L.key]):'not yet'}`).join('');
   setTimeout(()=>$('go').focus(),50);
 }
-$('go').addEventListener('click',()=>onGo&&onGo());$('alt2').addEventListener('click',()=>onAlt2&&onAlt2());$('alt3').addEventListener('click',()=>onAlt3&&onAlt3());$('alt4').addEventListener('click',()=>onAlt4&&onAlt4());$('alt5').addEventListener('click',()=>onAlt5&&onAlt5());$('alt6').addEventListener('click',()=>onAlt6&&onAlt6());$('alt7').addEventListener('click',()=>onAlt7&&onAlt7());$('alt').addEventListener('click',()=>onAlt&&onAlt());
+$('go').addEventListener('click',()=>onGo&&onGo());$('alt2').addEventListener('click',()=>onAlt2&&onAlt2());$('alt3').addEventListener('click',()=>onAlt3&&onAlt3());$('alt4').addEventListener('click',()=>onAlt4&&onAlt4());$('alt5').addEventListener('click',()=>onAlt5&&onAlt5());$('alt6').addEventListener('click',()=>onAlt6&&onAlt6());$('alt7').addEventListener('click',()=>onAlt7&&onAlt7());$('alt8').addEventListener('click',()=>onAlt8&&onAlt8());$('alt').addEventListener('click',()=>onAlt&&onAlt());
 function menu(){if(typeof PARK!=='undefined')PARK.fromPause=false;BLD.testing=false;if(typeof closeMoves==='function'&&movesOpen){movesOpen=false;$('moves').classList.add('hide')}if(typeof closePark==='function')closePark();if(typeof closeMapsPanel==='function')closeMapsPanel();chars.forEach((c,i)=>{if(c.outs&&!unlocked(OFI[i],c.outs)){OFI[i]=0;applyOutfitTo(c.rig.mats,0,c.outs)}});
 
   state='menu';mode='run';ci=2;wave=1.6;setWorld('run');resetRun();hint('');hud();freeUI();
@@ -82,7 +82,7 @@ function resume(){state='play';overlay(false)}
 function retry(){mode==='run'?startRun(runFree):startAdv(curIdx)}
 function pause(){if(state!=='play')return;state='paused';wave=1.6;idleT=0;showPause()}
 // one vertical column: Resume, then this mode's actions, then Moves, Settings and Quit (the character waves on the left)
-function showPause(){const quit=BLD.testing?['Back to builder',()=>backToBuilder()]:['Quit to menu',()=>menu()],tail=[...(mode==='run'&&!BLD.testing?[['Change map',()=>changeMap()]]:[]),['Moves',()=>openMoves()],['Settings',()=>openSet()],quit];
+function showPause(){const quit=BLD.testing?['Back to builder',()=>backToBuilder()]:['Quit to menu',()=>menu()],tail=[...(mode==='run'&&!BLD.testing?[['Change map',()=>changeMap()]]:[]),...(chars[ci].outs?[['Edit character',()=>editCharacter()]]:[]),['Moves',()=>openMoves()],['Settings',()=>openSet()],quit];
   let title,line='',acts;
   if(mode==='run'&&TAG.on){title='Tag';const st=tagRows(),pl=st.findIndex(r=>r.me)+1;line=`${TAG.it==='me'?'You\u2019re It \u00b7 ':''}${(TAG.itT.me||0).toFixed(1)}s as It \u00b7 ${pl}${['st','nd','rd'][pl-1]||'th'} of ${st.length} \u00b7 ${fmtClock(TAG.t)} left`;
     acts=[['Restart tag',()=>{resume();startTag()}],['End tag',()=>{resume();tagStop(true);toast('Tag ended.')}]]}
@@ -94,5 +94,5 @@ function showPause(){const quit=BLD.testing?['Back to builder',()=>backToBuilder
   else if(mode==='run'){title='Collectathon';line=`${orbN} orbs · ${Math.ceil(time)}s left`;acts=[['Restart Collectathon',()=>{resume();quickRetry()}],['Stop Collectathon',()=>{resume();stopOrbRun()}]]}
   else{title=curL.name;line=`${fmt(atime)} \u00b7 ${coreCount}/3 cores`;acts=[['Retry',retry]]}
   const B=[['Resume',resume],...acts,...tail],g=k=>B[k]||['',null];
-  overlay(true,title,line,g(0)[0],g(1)[0],g(0)[1],g(1)[1],g(2)[0],g(2)[1],g(3)[0],g(3)[1],g(4)[0],g(4)[1],g(5)[0],g(5)[1],g(6)[0],g(6)[1],g(7)[0],g(7)[1]);
+  overlay(true,title,line,g(0)[0],g(1)[0],g(0)[1],g(1)[1],g(2)[0],g(2)[1],g(3)[0],g(3)[1],g(4)[0],g(4)[1],g(5)[0],g(5)[1],g(6)[0],g(6)[1],g(7)[0],g(7)[1],g(8)[0],g(8)[1]);
   $('ov').classList.add('menu','pausem')}

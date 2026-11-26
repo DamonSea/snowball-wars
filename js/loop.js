@@ -54,6 +54,7 @@ function tick(){
   }
   updSnow(dt);if(state!=='paused'&&state!=='over')breath(dt);audioFrame(dt);sndG=grounded;{const gl=state==='play'&&onIce&&grounded&&Math.hypot(vel.x,vel.z)>2&&selOf('step')>=0;loopNoise('skate',gl,{ft:'highpass',f:4200,q:.6,vol:.035})}{const ws=selOf('wallSlide');loopNoise('slide',wallSliding&&state==='play'&&ws>=0,SFXV.wallSlide.opts[Math.max(0,ws)][1])}if(state!=='play')wallSliding=false;
   if(state==='menu'){face=Math.sin(tAll*.5)*.35;if(tAll%6<dt)wave=1.6}
+  else if(state==='paused'&&CUST.on){if(CUST.rotTo!=null)CUST.rot+=angD(CUST.rotTo,CUST.rot)*Math.min(1,dt*5);face=CUST.rot}
   else if(state==='select'){if(CUST.on&&CUST.rotTo!=null)CUST.rot+=angD(CUST.rotTo,CUST.rot)*Math.min(1,dt*5);face=CUST.on?CUST.rot:Math.sin(tAll*.7)*.45}
   else if(state==='paused'&&tAll%7<dt&&!setOpen)wave=1.6;
   if(mode==='adv'&&(state==='won'||state==='over'))goal.spin(dt);
@@ -190,8 +191,9 @@ function tick(){
   for(let i=parts.length-1;i>=0;i--){const q=parts[i];q.life-=dt;q.v.y-=12*dt;q.m.position.addScaledVector(q.v,dt);
     q.m.material.opacity=Math.max(0,q.life/.7);if(q.life<=0){freeTree(q.m);parts.splice(i,1)}}
 
-  if(state==='select'&&CUST.on){const wide=innerWidth>=760,fz=CUST.tab==='face',R_=chars[ci].rig,hy=R_&&R_.head?R_.hp.position.y+R_.head.position.y:1.64;   // face zoom: aimed at this character's head
-    camPos.set(0,fz?hy+.11:1.5,fz?(wide?2.3:2.9):(wide?4.3:5.4));look.set(wide?(fz?.42:.85):0,fz?hy-.14:(wide?.85:.15),0);cam.position.lerp(camPos,1-Math.exp(-6*dt))}
+  if((state==='select'||state==='paused')&&CUST.on){const wide=innerWidth>=760,fz=CUST.tab==='face',R_=chars[ci].rig,hy=R_&&R_.head?R_.hp.position.y+R_.head.position.y:1.64;   // face zoom: aimed at this character's head
+    const ox=state==='paused'?P.position.x:0,oy=state==='paused'?py:0,oz=state==='paused'?P.position.z:0;   // from the pause menu: wherever they're standing
+    camPos.set(ox,oy+(fz?hy+.11:1.5),oz+(fz?(wide?2.3:2.9):(wide?4.3:5.4)));look.set(ox+(wide?(fz?.42:.85):0),oy+(fz?hy-.14:(wide?.85:.15)),oz);cam.position.lerp(camPos,1-Math.exp(-6*dt))}
   else if(state==='select'){camPos.set(0,1.9,innerWidth<600?7:5.6);look.set(0,innerWidth<600?.1:.45,0);cam.position.lerp(camPos,1-Math.exp(-6*dt))}
   // paused: swing round in front of the character so they face the camera, standing to the left of the pause card
   else if(state==='paused'){const fx=Math.sin(face),fz=Math.cos(face),wide=innerWidth>=900,d=wide?4.6:5.4,o=wide?1.9:0;

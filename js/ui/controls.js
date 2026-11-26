@@ -58,6 +58,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)pause()});
 const releaseAll=()=>{for(const k in keys)keys[k]=false};
 addEventListener('keydown',e=>{if(e.target&&e.target.id==='myName'){if(e.code==='Enter'||e.code==='NumpadEnter'||e.code==='Escape'){e.preventDefault();$('csGo').focus()}return}if(capKey(e))return;if(movesOpen){if(e.code==='Escape'||e.code==='Backspace'){e.preventDefault();closeMoves();return}if(e.code==='ArrowLeft'||e.code==='ArrowRight'){e.preventDefault();moveCat(e.code==='ArrowLeft'?-1:1);return}}if(e.metaKey){if(e.key!=='Meta')return}else keys[e.code]=true;
   if(setOpen){if(e.code==='Escape')closeSet();return}
+  if(state==='paused'&&CUST.on){if(!e.target.closest||!e.target.closest('input'))custKey(e.code);if(e.code.startsWith('Arrow'))e.preventDefault();return}   // editing from the pause menu
   if(state==='play'&&emoteKey(e.code)){e.preventDefault();return}
   const acts=actsOfKey(e.code==='NumpadEnter'?'Enter':e.code);
   if(!e.repeat)for(const id of acts)if(state==='play'||(id==='pause'&&state==='paused'))press(id);
