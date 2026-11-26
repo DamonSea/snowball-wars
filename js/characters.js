@@ -229,13 +229,15 @@ function buildNova(parent=P){
   // curls on top for when the hat comes off (Customize → Accessories): a swept-back base with a clean hairline, then
   // curls spread evenly over it (golden-angle spiral) in two tones, and a row of small ones along the hairline
   const hairTop=new THREE.Group();head.add(hairTop);hairTop.visible=false;const hair2=sm(0x3a261c,{roughness:.9});
-  {const base=add(new THREE.SphereGeometry(.418,24,14,0,2*PI,0,PI*.5),hair,0,.0,-.02,hairTop);base.rotation.x=-.32;
+  {const TL=-.5,ca=Math.cos(TL),sa=Math.sin(TL);   // the base tilts back so its front edge (the hairline) sits above the brows
+    const base=add(new THREE.SphereGeometry(.418,24,14,0,2*PI,0,PI*.5),hair,0,0,-.02,hairTop);base.rotation.x=TL;
     for(let i=0;i<34;i++){const t=(i+.5)/34,el=Math.acos(1-t*.95),az=i*2.39996;   // even spread over the cap
-      const x=Math.sin(el)*Math.sin(az),y=Math.cos(el),z=Math.sin(el)*Math.cos(az);
-      if(z>.55&&y<.62)continue;   // keep the forehead clear
-      const rr=.43,ca=Math.cos(-.32),sa=Math.sin(-.32),cy=y*ca-z*sa,cz=y*sa+z*ca;   // tilted back with the base
+      const x=Math.sin(el)*Math.sin(az),y=Math.cos(el),z=Math.sin(el)*Math.cos(az),rr=.43,cy=y*ca-z*sa,cz=y*sa+z*ca;
+      if(cz>.55&&cy<.5)continue;   // the fringe below covers the front
       add(S(.075+(i%3)*.012,10,8),i%4?hair:hair2,x*rr,cy*rr,cz*rr-.02,hairTop)}
-    for(let i=0;i<7;i++){const a=(i/6-.5)*1.9;add(S(.06+(i%2)*.012,10,8),i%2?hair2:hair,Math.sin(a)*.33,.27+Math.cos(a*1.3)*.03,Math.cos(a)*.25+.02,hairTop)}}
+    // fringe: a row of curls laid right along the hairline edge, so no edge shows on the forehead
+    for(let i=0;i<9;i++){const a=(i/8-.5)*2.5,r=.432,x=Math.sin(a)*r,z0=Math.cos(a)*r;
+      add(S(.068+(i%2)*.012,10,8),i%2?hair2:hair,x,-z0*sa+.01,z0*ca-.02,hairTop)}}
   // slouchy beanie with rib band; the tip and pom-pom swing (chain in "pony"). It's her winter hat accessory.
   const beanieG=new THREE.Group();head.add(beanieG);
   add(new THREE.SphereGeometry(.43,22,14,0,2*PI,0,PI/2.1),leather,0,.06,-.01,beanieG);

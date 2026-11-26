@@ -3,6 +3,11 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.48.1] - 2026-11-26 — Parker's hairline
+### Fixed
+- With her hat off, the front edge of Parker's hair showed as a thin dark sliver across her forehead. The hairline now
+  sits higher and a row of curls runs right along it, so the fringe is clean above her eyebrows.
+
 ## [2.48.0] - 2026-11-26 — Parker polish and a friendlier customizer
 ### Changed
 - **Parker's hair** without her hat: rebuilt as a swept-back base with a clean hairline and evenly spread curls in two
