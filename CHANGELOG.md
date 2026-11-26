@@ -3,6 +3,15 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.46.0] - 2026-11-26 — Mouse aiming
+### Changed
+- **Aiming with the mouse:** hold the left mouse button and Flip turns toward the cursor, so you spin the arc around
+  just by moving the mouse. It turns his body, not his running direction, so you can run one way and throw another.
+  A quick click throws straight at the cursor. Aiming with F still uses the walking keys until you move the mouse.
+  Controllers are unchanged. Friends see you turned toward your aim.
+### Fixed
+- Clicks over the on-screen controls list (bottom left) didn't throw.
+
 ## [2.45.0] - 2026-11-25 — Eye switches
 ### Added
 - **Eye whites** and **Eye shine** switches in Flip's Face tab (On / Off). With the whites off his pupils grow to fill

@@ -62,7 +62,7 @@ function capKey(e){if(!CAP)return false;e.preventDefault();e.stopPropagation();
 // mouse: catches the next click while rebinding, otherwise mouse buttons act during play
 addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse')return;const c='Mouse'+e.button;
   if(CAP&&CAP.dev==='kb'){e.preventDefault();e.stopPropagation();swallowClick=true;assignBind(c);return}
-  if(state!=='play'||(e.target.closest&&e.target.closest('button,input,a,label,#set,#ov,#ctl,#cs,#touch')))return;
+  if(state!=='play'||(e.target.closest&&e.target.closest('button,input,a,label,#set,#ov,#cs,#touch')))return;
   keys[c]=true;for(const id of actsOfKey(c))press(id)},true);
 addEventListener('pointerup',e=>{if(e.pointerType==='mouse')keys['Mouse'+e.button]=false},true);
 addEventListener('click',e=>{if(swallowClick){swallowClick=false;e.preventDefault();e.stopPropagation()}},true);

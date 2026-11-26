@@ -162,6 +162,8 @@ needs Flip's or Nova's full moveset (and guard rails help).
   the ground) and turns **red with a ring at their feet** when a target is in its path (a player, rival, enemy, penguin
   or snowman). Let go for a **charged snowball**: double damage (2 hearts in Snowball Wars,
   twice the orbs knocked loose in a Collectathon) and a longer stun. A quick tap still throws straight away.
+  With the mouse, Flip turns toward the cursor while you aim (and a click throws right at it), even while running
+  another way.
 - **Snowball Wars mode**: pause in Trick Park and pick *Snowball Wars* for a 3-minute free-for-all. 3 hearts each, most KOs wins (no points), snowball pickups to grab (the high ones hold more). Solo you face three computer players; with friends on the map it's players only.
 
   ![Snowball Wars match](media/snowball-wars-match.png)

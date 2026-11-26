@@ -58,7 +58,7 @@ function tick(){
   else if(state==='paused'&&tAll%7<dt&&!setOpen)wave=1.6;
   if(mode==='adv'&&(state==='won'||state==='over'))goal.spin(dt);
 
-  P.position.y=py;P.rotation.y=face;
+  P.position.y=py;P.rotation.y=aimFace();
   const moving=Math.hypot(vel.x,vel.z)>.5&&state==='play';
   WIND.t.value=tAll;WIND.amp.value=GFX.mode==='low'||(GFX.mode==='auto'&&GFX.pr<=1)?0:1;   // trees sway, except on Low graphics
   if(state!=='play'&&(EM.hold||EM.wheel||EM.id)){closeWheel();stopEmote()}   // menus, pause, level changes
