@@ -8,12 +8,26 @@ const CPAL=[0xffffff,0xd9d9e0,0x8a8f99,0x2b2b33,0x111114,0x5a3a22,0xa8582c,0xe23
 const hexS=n=>'#'+(n>>>0).toString(16).padStart(6,'0');
 const accM=(c,o={})=>new THREE.MeshStandardMaterial({color:c,roughness:.5,...o});
 // ---------- accessory catalog: make(rig, anchor, material) builds it; kind drives its animation ----------
+// who: only these characters can wear it (Flipper and Parker share a build). Parker's winter hat and snowboard and
+// Flipper's scarf are their own models on them ("native" on the rig); anyone else gets a built copy.
+const FP=['Flipper','Parker'],flameMats=()=>[[0xff4a1c,.8],[0xff9a1e,.9],[0xffe25a,.95]].map(([c,o])=>new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:o,depthWrite:false}));
 const ACC={
   top:[
-    {id:'crown',label:'Crown',col:0xffd84a,make(g,a,m){m.metalness=.25;m.roughness=.35;m.emissive=new THREE.Color(m.color);m.emissiveIntensity=.25;const r=a.hr*.5;
-      const band=add(new THREE.CylinderGeometry(r,r*1.05,.14,14,1,true),m,0,.06,0,g);band.material.side=THREE.DoubleSide;
-      for(let i=0;i<6;i++){const t=i/6*2*PI;add(new THREE.ConeGeometry(.04,.13,5),m,Math.sin(t)*r,.19,Math.cos(t)*r,g)}
-      add(new THREE.SphereGeometry(.04,8,6),accM(0xe23b3b,{roughness:.2}),0,.06,r+.01,g)}},
+    {id:'flame',label:'Flaming head',col:0xff8a1e,kind:'flame',make(g,a,m,it){const r=a.hr,flameM=flameMats();g.position.y-=r*.3;it.f=[];
+      // a crown of flickering tongues (red outside, orange, a yellow core) and embers drifting up
+      const tongue=(x,z,h,w,mi,lean)=>{const t=new THREE.Group();t.position.set(x,0,z);g.add(t);const c=new THREE.Group();t.add(c);
+        const b=add(new THREE.SphereGeometry(w,12,10),flameM[mi],0,w*.6,0,c);b.castShadow=false;const tp=add(new THREE.ConeGeometry(w*.97,h-w*.6,12),flameM[mi],0,w*.6+(h-w*.6)/2,0,c);tp.castShadow=false;
+        t.rotation.set(lean[0],0,lean[1]);t.h=h;it.f.push(t);return t};
+      for(let i=0;i<9;i++){const q=i/9*2*PI;tongue(Math.sin(q)*r*.62,Math.cos(q)*r*.58,r*(1.05+(i%3)*.28),r*.36,0,[Math.cos(q)*.42,-Math.sin(q)*.42])}
+      for(let i=0;i<6;i++){const q=i/6*2*PI+.3;tongue(Math.sin(q)*r*.36,Math.cos(q)*r*.34,r*(1.2+(i%2)*.3),r*.32,1,[Math.cos(q)*.25,-Math.sin(q)*.25])}
+      tongue(0,0,r*1.45,r*.3,2,[0,0]);tongue(.08*r,-.1*r,r*1.1,r*.26,2,[.1,.1]);
+      it.e=Array.from({length:6},(_,i)=>{const e=add(new THREE.SphereGeometry(r*.045,5,4),flameM[i%2+1],0,0,0,g);e.castShadow=false;e.p=i/6;e.x=(Math.random()-.5)*r;e.z=(Math.random()-.5)*r;return e})}},
+    {id:'beanie',label:'Winter hat',who:FP,col:0x2f4f8f,kind:'beanie',make(g,a,m,it){const k=a.hr/.4,b=-a.top;
+      add(new THREE.SphereGeometry(.43*k,22,14,0,2*PI,0,PI/2.1),m,0,b+.06*k,-.01,g);
+      const band=add(new THREE.TorusGeometry(.41*k,.065*k,8,24),m,0,b+.08*k,-.01,g);band.rotation.x=PI/2;
+      it.c=[];let pp=g,y0=b+.4*k,z0=-.12*k;
+      [[.17,.2],[.12,.16]].forEach(([r,h])=>{const s=new THREE.Group();s.position.set(0,y0,z0);pp.add(s);add(new THREE.SphereGeometry(r*k,12,10),m,0,-h*.5*k,0,s).scale.set(1,1.2,1);it.c.push(s);pp=s;y0=-h*k;z0=0});
+      const s=new THREE.Group();s.position.set(0,-.18*k,0);pp.add(s);add(new THREE.SphereGeometry(.1*k,10,8),accM(0xf4f1ea,{roughness:.95}),0,-.06*k,0,s);it.c.push(s)}},
     {id:'party',label:'Party hat',col:0xff3fb4,make(g,a,m){add(new THREE.ConeGeometry(.15,.36,16),m,0,.17,0,g);
       add(new THREE.SphereGeometry(.06,10,8),accM(0xffffff),0,.36,0,g);const b=add(new THREE.TorusGeometry(.14,.02,6,18),accM(0xffffff),0,.01,0,g);b.rotation.x=PI/2}},
     {id:'propeller',label:'Propeller cap',col:0x37d7ff,kind:'prop',make(g,a,m,it){add(new THREE.SphereGeometry(.2,16,8,0,2*PI,0,PI/2),m,0,-.04,0,g);
@@ -28,27 +42,30 @@ const ACC={
       add(new THREE.BoxGeometry(.1,.025,.02),m,0,.025,0,g)}},
     {id:'specs',label:'Round specs',col:0xff3fb4,make(g,a,m){[-1,1].forEach(s=>{add(new THREE.TorusGeometry(.085,.018,8,20),m,s*.14,0,0,g);
       add(new THREE.CircleGeometry(.08,20),accM(0xbfefff,{transparent:true,opacity:.35,roughness:.1}),s*.14,0,-.005,g)});add(new THREE.BoxGeometry(.07,.018,.018),m,0,.01,0,g)}},
-    {id:'stache',label:'Mustache',col:0x3a2418,make(g,a,m){const[x,y,z]=a.nose;[-1,1].forEach(s=>{const b=add(new THREE.SphereGeometry(.07,10,8),m,x+s*.07,y-.06-a.eyeY,z-a.face+.01,g);b.scale.set(1.5,.55,.6);b.rotation.z=s*.25;
-      add(new THREE.SphereGeometry(.03,8,6),m,x+s*.16,y-.03-a.eyeY,z-a.face-.01,g)})}},
     {id:'clown',label:'Clown nose',col:0xe23b3b,make(g,a,m){m.roughness=.2;const[x,y,z]=a.nose;add(new THREE.SphereGeometry(.075,14,10),m,x,y-a.eyeY,z-a.face+.04,g)}}],
+  neck:[
+    {id:'scarf',label:'Scarf',who:FP,col:0xe2493b,kind:'scarf',make(g,a,m,it){m.roughness=.8;
+      const ring=add(new THREE.TorusGeometry(a.neckR,.058,8,24),m,0,0,0,g);ring.rotation.x=PI/2;
+      it.c=[];let pp=g,y=-.01,z=-a.neckR-.02;for(let i=0;i<3;i++){const s=new THREE.Group();s.position.set(i?0:.05,y,z);pp.add(s);add(new THREE.BoxGeometry(.16-i*.012,.17,.05),m,0,-.085,0,s);it.c.push(s);pp=s;y=-.17;z=0}}}],
   back:[
-    {id:'pack',label:'Backpack',col:0xff8a3d,make(g,a,m){add(new THREE.BoxGeometry(.42,.46,.22),m,0,0,-.08,g);const d=m.clone();d.color.multiplyScalar(.75);
-      add(new THREE.BoxGeometry(.3,.18,.07),d,0,-.1,-.21,g);[-1,1].forEach(s=>{const st=add(new THREE.BoxGeometry(.05,.04,.66),d,s*.15,.27,.2,g);st.rotation.x=.3})}},
+    {id:'board',label:'Snowboard',who:FP,col:0x1f2a36,make(g,a,m){m.roughness=.35;m.metalness=.3;const b=new THREE.Group();b.position.set(0,.06,-.04);b.rotation.z=.32;g.add(b);
+      add(new THREE.BoxGeometry(.32,1.05,.045),m,0,0,0,b);[-1,1].forEach(e=>add(new THREE.CylinderGeometry(.16,.16,.045,18),m,0,e*.525,0,b).rotation.x=PI/2);
+      add(new THREE.BoxGeometry(.33,.12,.05),accM(0xff5a5f),0,.12,-.002,b);add(new THREE.BoxGeometry(.33,.05,.05),accM(0x7ff0ff,{emissive:0x1d6070}),0,-.05,-.002,b);
+      [-1,1].forEach(e=>add(new THREE.BoxGeometry(.36,.07,.09),accM(0xf2b33d),0,e*.28,.05,b))}},
     {id:'cape',label:'Cape',col:0xe23b3b,kind:'cape',make(g,a,m,it){m.side=THREE.DoubleSide;const c=[];let pp=g,y0=.3,z0=0;
-      for(let i=0;i<4;i++){const s=new THREE.Group();s.position.set(0,y0,z0);pp.add(s);add(new THREE.BoxGeometry(.5+i*.06,.2,.025),m,0,-.1,0,s);c.push(s);pp=s;y0=-.2;z0=0}it.c=c}},
-    {id:'jet',label:'Jetpack',col:0xc8ccd0,kind:'jet',make(g,a,m,it){m.metalness=.6;m.roughness=.3;it.f=[];
-      [-1,1].forEach(s=>{add(new THREE.CylinderGeometry(.1,.1,.4,12),m,s*.12,0,-.1,g);add(new THREE.SphereGeometry(.1,12,8),m,s*.12,.2,-.1,g);
-        add(new THREE.ConeGeometry(.07,.1,10),accM(0x2b2b33),s*.12,-.24,-.1,g).rotation.x=PI;
-        const f=add(new THREE.ConeGeometry(.06,.3,8),new THREE.MeshBasicMaterial({color:0xffa830,transparent:true,opacity:.85}),s*.12,-.44,-.1,g);f.rotation.x=PI;f.castShadow=false;f.visible=false;it.f.push(f)})}},
-    {id:'wings',label:'Wings',col:0xffffff,kind:'wings',make(g,a,m,it){it.w=[-1,1].map(s=>{const w=new THREE.Group();w.position.set(s*.1,.15,-.05);g.add(w);
-      for(let i=0;i<3;i++){const f=add(new THREE.SphereGeometry(.2,12,8),m,s*(.2+i*.05),-.05-i*.08,0,w);f.scale.set(1.2-i*.25,.35,.12);f.rotation.z=s*(.35+i*.2)}w.s=s;return w})}}]};
-const ACC_SLOTS=[['top','Head'],['face','Face'],['back','Back']];
+      for(let i=0;i<4;i++){const s=new THREE.Group();s.position.set(0,y0,z0);pp.add(s);add(new THREE.BoxGeometry(.5+i*.06,.2,.025),m,0,-.1,0,s);c.push(s);pp=s;y0=-.2;z0=0}it.c=c}}]};
+const ACC_SLOTS=[['top','Head'],['face','Face'],['neck','Neck'],['back','Back']];
+// what this character may wear in a slot
+const accFor=(slot,ch)=>ACC[slot].filter(i=>!i.who||i.who.includes(chars[ch].name));
 // ---------- looks ----------
 const LOOKS={};
-const blankLook=()=>({c:{},a:{top:'',face:'',back:''},ac:null,f:{},cap:undefined,soles:undefined,body:undefined});
+// a.<slot>: '' = whatever the outfit comes with, 'off' = nothing, else an accessory id
+const blankLook=()=>({c:{},a:{top:'',face:'',neck:'',back:''},ac:null,f:{},cap:undefined,soles:undefined,body:undefined,gog:undefined,hood:undefined,hc:undefined});
 function cleanLook(L,ch){const o=blankLook();if(!L||typeof L!=='object')return o;const parts=(PARTS[chars[ch].name]||[]).map(p=>p[0]);
   if(L.c&&typeof L.c==='object')for(const k of parts)if(Number.isInteger(L.c[k])&&L.c[k]>=0&&L.c[k]<=0xffffff)o.c[k]=L.c[k];
-  if(L.a&&typeof L.a==='object')for(const[s]of ACC_SLOTS)if(ACC[s].some(i=>i.id===L.a[s]))o.a[s]=L.a[s];
+  if(L.a&&typeof L.a==='object')for(const[s]of ACC_SLOTS)if(L.a[s]==='off'||accFor(s,ch).some(i=>i.id===L.a[s]))o.a[s]=L.a[s];
+  if(L.gog===0||L.gog===1)o.gog=L.gog;
+  if(L.hood==='reg'||L.hood==='big')o.hood=L.hood;if(Number.isInteger(L.hc)&&L.hc>=0&&L.hc<=0xffffff)o.hc=L.hc;
   if(Number.isInteger(L.ac)&&L.ac>=0&&L.ac<=0xffffff)o.ac=L.ac;
   if(L.cap===0||L.cap===1)o.cap=L.cap;
   if(L.soles===0)o.soles=0;
@@ -62,24 +79,71 @@ function applyLook(rig,ch,of,L){const list=chars[ch].outs;if(!list)return;applyO
   for(const k in L.c){const M=rig.mats[k];if(!M)continue;M.color.setHex(L.c[k]);if(k==='lens')M.emissive.setHex(L.c[k]).multiplyScalar(.35)}
   if(L.c.jacket!==undefined)rig.mats.rib.color.setHex(L.c.jacket).multiplyScalar(.78);
   if(L.c.hair!==undefined)setHair(rig.mats,L.c.hair);
-  rig._body=L.body;if(rig.parts)outfitParts(rig,list[of],L.cap,L.soles);
+  rig._body=L.body;if(rig.parts)outfitParts(rig,list[of],L.cap,L.soles,L.gog);
   applyFace(rig,L.f||{});
-  buildAcc(rig,L,list[of])}
-// your accessories, plus any the outfit comes with (Super Flip's cape) in slots you've left empty
-function buildAcc(rig,L,o){(rig.accA||[]).forEach(it=>freeTree(it.g));rig.accA=[];const a=rig.anc;if(!a)return;
-  for(const[slot]of ACC_SLOTS){const own=ACC[slot].find(i=>i.id===L.a[slot]),oa=!own&&o&&o.acc&&o.acc[slot],def=own||(oa&&ACC[slot].find(i=>i.id===oa.id));if(!def)continue;
-    const m=accM(own?(L.ac??def.col):oa.col),it={kind:def.kind,id:def.id,fromOutfit:!own};
+  buildAcc(rig,L,list[of]);buildHoodie(rig,L)}
+// which accessory a slot ends up with: your pick, nothing ('off'), or the outfit's (Super Flipper's cape, and each
+// character's own: Flipper's scarf unless the outfit drops it, Parker's winter hat and board)
+function accPick(rig,L,o,slot){const v=L.a[slot];if(v==='off')return null;
+  const own=ACC[slot].find(i=>i.id===v);if(own)return{def:own,own:true};
+  const oa=o&&o.acc&&o.acc[slot];if(oa){const d=ACC[slot].find(i=>i.id===oa.id);if(d)return{def:d,col:oa.col}}
+  const da=rig.defAcc&&rig.defAcc[slot];if(da&&!((o&&o.hide)||[]).includes(da)){const d=ACC[slot].find(i=>i.id===da);if(d)return{def:d}}
+  return null}
+function buildAcc(rig,L,o){(rig.accA||[]).forEach(it=>{freeTree(it.g);_freeHood(it)});rig.accA=[];const a=rig.anc;if(!a)return;const nat=rig.native||{},on={};
+  for(const[slot]of ACC_SLOTS){const pk=accPick(rig,L,o,slot);if(!pk)continue;const def=pk.def;on[def.id]=1;
+    if(nat[def.id])continue;   // their own model: shown below
+    const m=accM(pk.own?(L.ac??def.col):(pk.col??def.col)),it={kind:def.kind,id:def.id,fromOutfit:!pk.own};
     let g;if(slot==='top'){const pv=new THREE.Group();pv.rotation.z=-(a.tilt||0);rig.head.add(pv);g=new THREE.Group();g.position.y=a.top;pv.add(g);it.g=pv}
     else if(slot==='face'){g=new THREE.Group();g.position.set(0,a.eyeY,a.face);rig.head.add(g);it.g=g}
-    else{g=new THREE.Group();g.position.set(0,a.backY,a.backZ);rig.hp.add(g);it.g=g}
+    else if(slot==='neck'){g=new THREE.Group();g.position.set(0,a.neckY,0);(rig.torso||rig.hp).add(g);it.g=g}
+    else{g=new THREE.Group();g.position.set(0,a.backY,a.backZ-(L.hood?L.hood==='big'?.12:.07:0));rig.hp.add(g);it.g=g}
     def.make(g,a,m,it);rig.accA.push(it)}
-  if(rig.board)rig.board.visible=!L.a.back&&!(o&&o.acc&&o.acc.back)}
-// per frame: propeller spins with speed, halo bobs, jetpack fires in the air, wings flap, cape rides the springs
+  for(const id in nat)nat[id].forEach(n=>{n.visible=!!on[id];if(id==='board')n.position.z=-.42-(L.hood?L.hood==='big'?.12:.07:0)});
+  if(rig.hairTop)rig.hairTop.visible=!on.beanie;
+  // a winter hat on Flipper replaces his cap and covers his hair; the goggles sit on its brim
+  if(on.beanie&&!nat.beanie&&rig.parts){['cap','hair','gogStrap'].forEach(k=>(rig.parts[k]||[]).forEach(n=>{n.visible=false}));if(rig.gogG){rig.gogG.scale.setScalar(1.05);rig.gogG.position.set(0,.02,.01)}}}
+// ---------- hoodie (Accessories tab): regular or oversized, over whatever they're wearing ----------
+// Built from the rig's anc.hood (torso size and center, neck height, arm span, sleeve radius). The jacket pieces in
+// rig.jk hide under it. The hood flops and the drawstrings swing (accFrame, kind 'hood').
+const HOOD_COL=0x8a8f99;
+function buildHoodie(rig,L){const h=rig.anc&&rig.anc.hood;if(!h)return;const big=L.hood==='big';
+  const parts=new Set(rig.parts?Object.values(rig.parts).flat():[]);
+  (rig.jk||[]).forEach(m=>{if(L.hood)m.visible=false;else if(!parts.has(m))m.visible=true});
+  if(!L.hood)return;
+  const col=L.hc??HOOD_COL,m=accM(col,{roughness:.9}),rib=accM(col,{roughness:.95}),lin=accM(col,{roughness:.95});rib.color.multiplyScalar(.82);lin.color.multiplyScalar(.6);
+  const par=rig.torso||rig.hp,g=new THREE.Group();par.add(g);const it={kind:'hood',id:'hoodie',g,big};
+  const k=h.r/.42,f=big?1.14:1.05,R=h.r*f,sy=h.s[1]*(big?1.12:1),cy=h.y-(big?.05:0);
+  add(new THREE.SphereGeometry(R,20,16),m,0,cy,0,g).scale.set(h.s[0]*(big?1.06:1),sy,h.s[2]);
+  // ribbed hem, kangaroo pocket
+  const hy=cy-R*sy*.8,hem=add(new THREE.TorusGeometry(R*h.s[0]*(big?.66:.6),.05*k,8,24),rib,0,hy,0,g);hem.rotation.x=PI/2;hem.scale.set(1,h.s[2]/h.s[0],1);
+  add(new THREE.BoxGeometry(R*.95,R*sy*.42,.07),m,0,cy-R*sy*.38,R*h.s[2]*.88,g).rotation.x=-.28;
+  add(new THREE.BoxGeometry(R*.8,.025,.075),rib,0,cy-R*sy*.17,R*h.s[2]*.93,g).rotation.x=-.28;
+  // neckline, then the hood bunched behind the neck on a pivot
+  const nk=add(new THREE.TorusGeometry(.21*k*(big?1.08:1),.075*k,8,20),m,0,h.neck,-.02,g);nk.rotation.x=PI/2;
+  const hd=new THREE.Group();hd.position.set(0,h.neck+.04,-.2*k);g.add(hd);
+  add(new THREE.SphereGeometry(.26*k*(big?1.15:1),14,10),m,0,.02,-.1*k,hd).scale.set(1.3,.9,.75);
+  add(new THREE.SphereGeometry(.16*k*(big?1.15:1),12,8),lin,0,.05,-.06*k,hd).scale.set(1.1,.5,.55);it.hd=hd;
+  // drawstrings with tips
+  it.st=[-1,1].map(s=>{const d=new THREE.Group();d.position.set(s*.08*k,h.neck-.06,R*h.s[2]*.86);g.add(d);
+    add(new THREE.CylinderGeometry(.012,.012,.22*(big?1.2:1),5),accM(0xf4f1ea),0,-.11*(big?1.2:1),0,d);add(new THREE.SphereGeometry(.022,6,5),accM(0xc8ccd0,{metalness:.4}),0,-.22*(big?1.2:1),0,d);d.s=s;return d});
+  // sleeves over the arms; oversized ones are baggier and run down over the wrists
+  it.sl=[rig.armL,rig.armR].map(arm=>{const sg=new THREE.Group();arm.add(sg);const r=h.sr*(big?1.25:1),y0=h.arm[0],y1=h.arm[1]-(big?.05:0),len=y0-y1;
+    add(new THREE.SphereGeometry(r*1.03,12,10),m,0,y0,0,sg);add(new THREE.CylinderGeometry(r,r*(big?1.08:.94),len,12),m,0,(y0+y1)/2,0,sg);
+    const c=add(new THREE.TorusGeometry(r*.86,.035*k,6,16),rib,0,y1,0,sg);c.rotation.x=PI/2;return sg});
+  it.g2=it.sl;rig.accA.push(it)}
+const _freeHood=it=>{(it.g2||[]).forEach(x=>freeTree(x))};
+// per frame: propeller spins with speed, halo bobs, cape rides the springs
 function accFrame(H,dt,sp,air,dv){for(const it of H.accA){
   if(it.kind==='prop')it.p.rotation.y+=dt*(6+sp*2.5+(air?18:0));
   else if(it.kind==='halo'){it.h.position.y=.25+Math.sin(tAll*2.4)*.03;it.h.rotation.z+=dt*.8}
-  else if(it.kind==='jet')it.f.forEach(f=>{f.visible=air;f.scale.set(1,.7+Math.random()*.6,1)});
-  else if(it.kind==='wings')it.w.forEach(w=>{const t=air?Math.sin(tAll*16)*.7:.15*Math.sin(tAll*2);w.rotation.y=w.s*(-.3+t);w.rotation.z=w.s*(air?.2:0)});
+  else if(it.kind==='flame'){const lean=Math.min(.6,sp*.05)+(air?.2:0);it.f.forEach((t,i)=>{const fl=1+.22*Math.sin(tAll*(17+i*3.1)+i)+.12*Math.random();t.scale.set(1,fl,1);t.children[0].rotation.x=lean});
+    it.e.forEach(e=>{e.p=(e.p+dt*1.1)%1;e.position.set(e.x*(1-e.p*.5)+Math.sin(tAll*3+e.x*9)*.03,.15+e.p*.75,e.z*(1-e.p*.5)-lean*e.p*.4);e.scale.setScalar(1-e.p)})}
+  else if(it.kind==='beanie'){const fl=Math.min(1,sp*.08)+(air?.4:0);it.c.forEach((g,i)=>{g.rotation.x+=((i?.12+fl*.22:.45+fl*.75)+Math.sin(tAll*(5+sp*.6)-i*1.2)*(.05+fl*.08)-g.rotation.x)*Math.min(1,dt*12)})}
+  else if(it.kind==='scarf'){const fl=Math.min(1.25,sp*.11)+(air?.35:0);it.c.forEach((g,i)=>{g.rotation.x+=((i?fl*.12:.25+fl)+Math.sin(tAll*(6+sp)-i*1.1)*(.08+fl*.12)-g.rotation.x)*Math.min(1,dt*14)})}
+  else if(it.kind==='hood'){const fl=Math.min(1,sp*.08)+(air?.3:0);kick(it.hd,'x',-Math.max(-12,Math.min(12,dv.u))*.35);kick(it.hd,'x',Math.max(-12,Math.min(12,dv.f))*.15);
+    spring(it.hd,'x',.05+fl*.25+Math.sin(tAll*(5+sp*.5))*.03*fl,dt,it.big?55:80,6);
+    it.st.forEach(d=>{kick(d,'x',-Math.max(-12,Math.min(12,dv.f))*.4);kick(d,'z',Math.max(-12,Math.min(12,dv.s))*.4*d.s);
+      spring(d,'x',-fl*.5+Math.sin(tAll*(7+sp)+d.s)*.06*fl,dt,45,4);spring(d,'z',Math.sin(tAll*3+d.s)*.04,dt,45,4)})}
   else if(it.kind==='cape'){const fl=Math.min(1,sp*.09)+(air?.4:0);it.c.forEach((g,i)=>{kick(g,'x',Math.max(-12,Math.min(12,dv.f))*.25);
     spring(g,'x',(i?.12+fl*.2:.18+fl*.9)+Math.sin(tAll*(5+sp*.6)-i*1.2)*(.03+fl*.07),dt,70+i*20,6)})}}}
 function loadLooks(){chars.forEach((c,i)=>{if(!c.outs)return;let L=null;try{L=JSON.parse(localStorage.getItem('orbRunLook_'+c.name)||'null')}catch(e){}LOOKS[i]=cleanLook(L,i);applyLook(c.rig,i,OFI[i],LOOKS[i])})}
@@ -104,10 +168,15 @@ function renderCust(){const c=chars[ci],L=LOOKS[ci],list=c.outs;$('custName').te
   else if(CUST.tab==='face'){const f=L.f||{};
     h=[['eyes','Eyes'],['brows','Eyebrows'],['mouth','Mouth']].map(([k,lab])=>`<div class="crow"><span>${lab}</span><div class="copts">${FACE_OPTS[k].map(([v,n],i)=>`<button class="opt${(f[k]||FACE_OPTS[k][0][0])===v?' on':''}" data-fk="${k}" data-fv="${v}">${n}</button>`).join('')}</div></div>`).join('')+
       FACE_TOGGLES.map(([k,n])=>`<div class="crow"><span>${n}</span><div class="copts"><button class="opt${f[k]!==0?' on':''}" data-fs="${k}" data-fo="1">On</button><button class="opt${f[k]===0?' on':''}" data-fs="${k}" data-fo="0">Off</button></div></div>`).join('')}
-  else{const capRow=c.rig.parts&&c.rig.parts.cap?(()=>{const on=L.cap!==undefined?!!L.cap:!(list[OFI[ci]].hide||[]).includes('cap');
-      return`<div class="crow"><span>Aviator cap</span><div class="copts"><button class="opt${on?' on':''}" data-cap="1">On</button><button class="opt${on?'':' on'}" data-cap="0">Off</button></div></div>`+
+  else{const hatOn=(accPick(c.rig,L,list[OFI[ci]],'top')||{def:{}}).def.id==='beanie',capRow=c.rig.parts&&c.rig.parts.cap?(()=>{const on=L.cap!==undefined?!!L.cap:!(list[OFI[ci]].hide||[]).includes('cap');
+      return(hatOn?'':`<div class="crow"><span>Aviator cap</span><div class="copts"><button class="opt${on?' on':''}" data-cap="1">On</button><button class="opt${on?'':' on'}" data-cap="0">Off</button></div></div>`)+
       `<div class="crow"><span>Shoes</span><div class="copts"><button class="opt${L.soles!==0?' on':''}" data-soles="1">With soles</button><button class="opt${L.soles===0?' on':''}" data-soles="0">Plain</button></div></div>`})():'';
-    h=capRow+ACC_SLOTS.map(([s,lab])=>`<div class="crow"><span>${lab}</span><div class="copts"><button class="opt${!L.a[s]?' on':''}" data-s="${s}" data-a="">None</button>${ACC[s].map(i=>`<button class="opt${L.a[s]===i.id?' on':''}" data-s="${s}" data-a="${i.id}">${i.label}</button>`).join('')}</div></div>`).join('')+
+    const o=list[OFI[ci]],gogOn=L.gog!==undefined?!!L.gog:!(o.hide||[]).includes('goggles'),
+      gogRow=c.rig.gogG?`<div class="crow"><span>Goggles</span><div class="copts"><button class="opt${gogOn?' on':''}" data-gog="1">On head</button><button class="opt${gogOn?'':' on'}" data-gog="0">Off</button></div></div>`:'',
+      hoodRow=c.rig.anc&&c.rig.anc.hood?`<div class="crow"><span>Hoodie</span><div class="copts">${[['','None'],['reg','Regular fit'],['big','Oversized']].map(([v,n])=>`<button class="opt${(L.hood||'')===v?' on':''}" data-hood="${v}">${n}</button>`).join('')}</div></div>`+
+        (L.hood?`<div class="crow"><span>Hoodie color</span><div class="cpal">${CPAL.map(v=>sw('data-hc',v,v===(L.hc??HOOD_COL),'Hoodie '+hexS(v))).join('')}</div></div>`:''):'';
+    h=capRow+gogRow+hoodRow+ACC_SLOTS.map(([s,lab])=>{const opts=accFor(s,ci);if(!opts.length)return'';const pk=accPick(c.rig,L,o,s),cur=pk?pk.def.id:'';
+      return`<div class="crow"><span>${lab}</span><div class="copts"><button class="opt${!cur?' on':''}" data-s="${s}" data-a="off">None</button>${opts.map(i=>`<button class="opt${cur===i.id?' on':''}" data-s="${s}" data-a="${i.id}">${i.label}</button>`).join('')}</div></div>`}).join('')+
     `<div class="crow"><span>Accessory color${L.ac!==null?' <button class="cundo" data-u="ac" aria-label="Reset accessory color">↺</button>':''}</span><div class="cpal">${CPAL.map(v=>sw('data-ac',v,v===L.ac,'Accessory '+hexS(v))).join('')}</div></div>`}
   const a=document.activeElement,key=a&&$('cust').contains(a)?[...a.attributes].filter(x=>x.name.startsWith('data-')).map(x=>`[${x.name}="${x.value}"]`).join(''):'';
   $('custBody').innerHTML=h;
@@ -126,7 +195,10 @@ $('cust').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)
   if(d.fk){setLook(L=>{L.f=L.f||{};if(d.fv===FACE_OPTS[d.fk][0][0])delete L.f[d.fk];else L.f[d.fk]=d.fv});SFX.ui(4);return}
   if(d.ft){setLook(L=>{L.f=L.f||{};if(L.f[d.ft]===0)delete L.f[d.ft];else L.f[d.ft]=0});SFX.ui(4);return}
   if(d.fs){setLook(L=>{L.f=L.f||{};if(d.fo==='0')L.f[d.fs]=0;else delete L.f[d.fs]});SFX.ui(4);return}
-  if(d.s){setLook(L=>L.a[d.s]=d.a);wave=d.a?1.6:0;SFX.ui(d.a?5:1);return}
+  if(d.s){setLook(L=>L.a[d.s]=d.a);wave=d.a!=='off'?1.6:0;SFX.ui(d.a!=='off'?5:1);return}
+  if(d.gog!==undefined){setLook(L=>{L.gog=+d.gog});SFX.ui(4);return}
+  if(d.hood!==undefined){setLook(L=>{if(d.hood)L.hood=d.hood;else delete L.hood});wave=d.hood?1.6:0;SFX.ui(d.hood?5:1);return}
+  if(d.hc){setLook(L=>L.hc=+d.hc);SFX.ui(4);return}
   if(d.ac){setLook(L=>L.ac=+d.ac);SFX.ui(4)}});
 // turn the character: drag the view, or arrow keys / D-pad
 renderer.domElement.addEventListener('pointerdown',e=>{if(CUST.on){CUST.drag=e.clientX;renderer.domElement.setPointerCapture(e.pointerId)}});

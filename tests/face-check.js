@@ -15,7 +15,7 @@ click('[data-fs="nose"][data-fo="1"]');ok('...and the nose back on',F.nose[0].vi
 click('[data-fk="mouth"][data-fv="none"]');ok('No mouth at all',shown('mouth').join()==='none');
 click('[data-fk="eyes"][data-fv="round"]');ok('Picking the default isn\'t stored',LOOKS[2].f.eyes===undefined&&shown('eyes').join()==='round');
 // saved and shared
-const saved=JSON.parse(localStorage.getItem('orbRunLook_Flip'));ok('Saved on this device',saved.f.mouth==='none'&&saved.f.freckles===0);
+const saved=JSON.parse(localStorage.getItem('orbRunLook_Flipper'));ok('Saved on this device',saved.f.mouth==='none'&&saved.f.freckles===0);
 const a=makeAv(2);applyLook(a.rig,2,0,cleanLook(LOOKS[2],2));ok('Friends see your face choices',Object.keys(a.rig.face.mouth).filter(s=>a.rig.face.mouth[s].visible).join()==='none'&&!a.rig.face.freckles[0].visible);
 ok('Junk face data from friends is ignored',JSON.stringify(cleanLook({f:{eyes:'laser',mouth:'<b>',nose:5,blush:0}},2).f)==='{"blush":0}');
 ok('Picking an outfit keeps your face',(setOutfit(1),shown('mouth').join()==='none'));setOutfit(0);

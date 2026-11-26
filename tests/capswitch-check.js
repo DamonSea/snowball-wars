@@ -7,7 +7,7 @@ ok('Cap off: cap gone, hair shows',!vis('cap')&&vis('hair'),LOOKS[2].cap);
 ok('...goggles stay, pushed up on his hair (no strap)',R.parts.goggles[1].visible&&!R.parts.gogStrap[0].visible&&R.gogG.scale.x>1);
 ok('...the switch shows Off',!!$('custBody').querySelector('[data-cap="0"].on'));
 setOutfit(1);__step(2);ok('Changing outfit keeps the cap off',!vis('cap')&&vis('hair'));
-setOutfit(5);__step(2);$('custBody').querySelector('[data-cap="1"]')&&renderCust();$('custBody').querySelector('[data-cap="1"]').click();__step(2);
+setOutfit(4);__step(2);$('custBody').querySelector('[data-cap="1"]')&&renderCust();$('custBody').querySelector('[data-cap="1"]').click();__step(2);
 ok('Off Duty with the cap put back on: cap on, hair hidden',vis('cap')&&!vis('hair'));
 setLook(L=>{delete L.cap});ok('Off Duty by default: no cap',!vis('cap')&&vis('hair'));
 setOutfit(0);setLook(L=>{L.cap=0});

@@ -174,7 +174,8 @@ function buildChibi(parent=P){
     const bolt=add(B(.04,.15,.04),gold,0,0,.012,g);bolt.rotation.z=.5;parts.emblem=[g];
     parts.belt=[T(.37,.045,gold,0,-.17,0,torso)];parts.belt[0].scale.set(1,.92,1)}
   const PART_EXTRAS=['hair','shades','calves','forearms','mask','emblem','belt'];PART_EXTRAS.forEach(k=>parts[k].forEach(m=>{m.visible=false}));
-  return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,scarf,face:FACE,blinkOf,parts,partExtras:PART_EXTRAS,pantsLegs,sleeves,gogG,torso,bootGs,hipY:.8,locks:parts.hair[0]._locks,anc:{hr:.45,top:.56,eyeY:0,face:.5,nose:[0,-.09,.52],backY:.1,backZ:-.4},
+  return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,scarf,face:FACE,blinkOf,parts,partExtras:PART_EXTRAS,pantsLegs,sleeves,gogG,torso,bootGs,hipY:.8,locks:parts.hair[0]._locks,native:{scarf:parts.scarf},defAcc:{neck:'scarf'},jk:[...torso.children,...patch],
+    anc:{hr:.45,top:.56,eyeY:0,face:.5,nose:[0,-.09,.52],backY:.1,backZ:-.4,neckY:.46,neckR:.22,hood:{r:.42,y:.08,s:[1,.95,.9],neck:.45,arm:[0,-.27],sr:.15}},
     mats:{jacket,fleece,leather,pants,boot,sole,glove,scarf:scarfM,metal,lens,rib,hair,hairDark:dark}};
 }
 // Nova: backcountry snowboarder. Her own rig with the same interface (root > hp > limbs, head, eyes, mats):
@@ -195,10 +196,11 @@ function buildNova(parent=P){
     add(S(.19),boot,0,-.53,.05,g).scale.set(1,.78,1.38);
     add(B(.34,.08,.5),sole,0,-.62,.05,g);T(.165,.03,sole,0,-.47,.03,g);return g});
   // quilted puffer jacket: body plus stacked puffs, high collar, zipper
+  const jk0=hp.children.length;
   add(S(.4,18,14),jacket,0,.12,0,hp).scale.set(1,1.05,.88);
   [[-.14,.39],[.08,.41],[.28,.36]].forEach(([y,r])=>T(r,.07,rib,0,y,0,hp).scale.set(1,.88,1));
   T(.21,.1,fleece,0,.47,0,hp);
-  add(B(.03,.5,.03),metal,0,.1,.355,hp);
+  add(B(.03,.5,.03),metal,0,.1,.355,hp);const jk=hp.children.slice(jk0);
   // snowboard strapped to her back
   const board=new THREE.Group();board.position.set(0,.18,-.42);board.name='board';board.rotation.z=.32;hp.add(board);
   add(B(.32,1.05,.045),metal,0,0,0,board);[-1,1].forEach(e=>add(new THREE.CylinderGeometry(.16,.16,.045,18),metal,0,e*.525,0,board).rotation.x=PI/2);
@@ -223,10 +225,16 @@ function buildNova(parent=P){
     add(S(.045,8,6),sm(0xd9776a,{roughness:.8,transparent:true,opacity:.45}),s*.24,-.13,.3,head)});
   add(S(.055),sm(0x7a4a30),0,-.08,.4,head);
   const smile=T(.07,.02,sm(0x5e2722),0,-.19,.36,head,0,PI);smile.rotation.z=PI;
-  // slouchy beanie with rib band; the tip and pom-pom swing (chain in "pony")
-  add(new THREE.SphereGeometry(.43,22,14,0,2*PI,0,PI/2.1),leather,0,.06,-.01,head);
-  T(.41,.065,leather,0,.08,-.01,head).scale.set(1,1.02,1);
-  const pony=[];let pp=head,py0=.4,pz0=-.12;
+  // curls on top for when the hat comes off (Customize → Accessories)
+  const hairTop=new THREE.Group();head.add(hairTop);hairTop.visible=false;
+  add(new THREE.SphereGeometry(.415,20,12,0,2*PI,0,PI/2.3),hair,0,.03,-.01,hairTop);
+  for(let i=0;i<9;i++){const a=i/9*2*PI;add(S(.1+(i%3)*.02,10,8),hair,Math.sin(a)*.27,.26+(i%2)*.04,Math.cos(a)*.25-.02,hairTop)}
+  add(S(.13,10,8),hair,0,.38,-.02,hairTop);[-1,0,1].forEach(x=>add(S(.075,8,6),hair,x*.12,.2,.33,hairTop));
+  // slouchy beanie with rib band; the tip and pom-pom swing (chain in "pony"). It's her winter hat accessory.
+  const beanieG=new THREE.Group();head.add(beanieG);
+  add(new THREE.SphereGeometry(.43,22,14,0,2*PI,0,PI/2.1),leather,0,.06,-.01,beanieG);
+  T(.41,.065,leather,0,.08,-.01,beanieG).scale.set(1,1.02,1);
+  const pony=[];let pp=beanieG,py0=.4,pz0=-.12;
   [[.17,.2],[.12,.16]].forEach(([r,h],i)=>{const g=new THREE.Group();g.position.set(0,py0,pz0);pp.add(g);
     add(S(r,12,10),leather,0,-h*.5,0,g).scale.set(1,1.2,1);pony.push(g);pp=g;py0=-h;pz0=0});
   {const g=new THREE.Group();g.position.set(0,-.18,0);pp.add(g);add(S(.1,10,8),scarf,0,-.06,0,g);pony.push(g)}
@@ -234,7 +242,8 @@ function buildNova(parent=P){
   T(.47,.03,scarf,0,.04,0,head,0,PI);
   [-1,1].forEach(s=>{const c=add(new THREE.CylinderGeometry(.12,.12,.09,16),scarf,s*.44,-.03,0,head);c.rotation.z=PI/2;
     const l=add(new THREE.CylinderGeometry(.065,.065,.02,14),lens,s*.495,-.03,0,head);l.rotation.z=PI/2});
-  return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,pony,hsYo:.21,board,anc:{hr:.4,top:.5,eyeY:0,face:.45,nose:[0,-.08,.45],backY:.12,backZ:-.38},
+  return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,pony,hsYo:.21,board,hairTop,native:{beanie:[beanieG],board:[board]},defAcc:{top:'beanie',back:'board'},jk,
+    anc:{hr:.4,top:.5,eyeY:0,face:.45,nose:[0,-.08,.45],backY:.12,backZ:-.38,neckY:.52,neckR:.27,hood:{r:.4,y:.12,s:[1,1.05,.88],neck:.5,arm:[-.02,-.33],sr:.155}},
     mats:{jacket,fleece,leather,pants,boot,sole,glove,scarf,metal,lens,rib}};
 }
 // Vex: a mouthy skate punk with attitude. Same rig interface as Flip and Nova. His dangly bits run on real springs
@@ -259,13 +268,14 @@ function buildVex(parent=P){
     add(S(.17),boot,0,-.54,.08,g).scale.set(1,.62,1.4);add(S(.1),sole,0,-.56,.23,g).scale.set(1.4,.6,.8);
     add(B(.32,.08,.5),sole,0,-.6,.07,g);return g});
   // oversized hoodie: kangaroo pocket, hood bunched behind the neck, drawstrings, lightning bolts front and back
+  const jk0=hp.children.length;
   add(S(.41,18,14),jacket,0,.1,0,hp).scale.set(1.1,1,.92);
   T(.37,.07,rib,0,-.2,0,hp).scale.set(1.05,.92,1);
   add(B(.42,.16,.06),rib,0,-.07,.335,hp).rotation.x=-.18;
   add(S(.22),jacket,0,.42,-.26,hp).scale.set(1.3,.85,.7);add(S(.16),fleece,0,.47,-.22,hp).scale.set(1.1,.55,.5);
   T(.21,.08,jacket,0,.44,-.03,hp);
   [-1,1].forEach(s=>{add(new THREE.CylinderGeometry(.012,.012,.22,5),fleece,s*.08,.34,.37,hp);add(S(.022,6,5),metal,s*.08,.22,.375,hp)});
-  bolt(-.17,.16,.355,.7,hp,-.35);bolt(0,.14,-.39,1.5,hp,PI);
+  bolt(-.17,.16,.355,.7,hp,-.35);bolt(0,.14,-.39,1.5,hp,PI);const jk=hp.children.slice(jk0);
   // arms: sleeves shoved up, studded wristbands, fists
   const arms=[-1,1].map(s=>{const g=new THREE.Group();g.position.set(s*.46,.3,0);hp.add(g);
     add(S(.145),jacket,0,-.07,0,g).scale.set(1,1.1,1);add(new THREE.CylinderGeometry(.075,.07,.2,10),skin,0,-.22,0,g);
@@ -303,7 +313,7 @@ function buildVex(parent=P){
   add(new THREE.ConeGeometry(.018,.045,4),white,.085,-.205,.405,head).rotation.x=PI;
   {const b=new THREE.Group();b.position.set(-.23,-.1,.34);b.rotation.set(0,-.55,.35);head.add(b);add(B(.13,.045,.02),tape,0,0,0,b);add(B(.045,.11,.02),tape,0,0,.004,b)}
   const gum=add(S(.15,16,12),sm(0xff4fa3,{roughness:.2,transparent:true,opacity:.92,emissive:0x5a0f30,emissiveIntensity:.4}),.05,-.22,.5,head);gum.scale.setScalar(.001);gum.visible=false;gum.castShadow=false;
-  return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,tails,hawk,chain,gum,gT:0,attitude:true,hsYo:.24,anc:{hr:.43,top:.42,tilt:.5,eyeY:.02,face:.47,nose:[0,-.07,.47],backY:.1,backZ:-.4},
+  return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,tails,hawk,chain,gum,gT:0,attitude:true,hsYo:.24,jk,anc:{hr:.43,top:.42,tilt:.5,eyeY:.02,face:.47,nose:[0,-.07,.47],backY:.1,backZ:-.4,hood:{r:.41,y:.1,s:[1.1,1,.92],neck:.47,arm:[-.02,-.3],sr:.165}},
     mats:{jacket,fleece,leather,pants,boot,sole,glove,scarf,metal,lens,rib}};
 }
 // Tuk: a yeti cub in a hand-knit sweater. Same rig interface as the others. Springy bits (tukPhysics, below): floppy
@@ -327,10 +337,11 @@ function buildTuk(parent=P){
   // body: round fur belly, sweater over the top with a zigzag band, ribbed hem, wooden toggles
   const belly=add(S(.5,20,16),leather,0,.02,0,hp);belly.scale.set(1.05,.95,.95);
   add(S(.36),pants,0,-.12,.27,hp).scale.set(.95,.8,.45);
+  const jk0=hp.children.length;
   add(new THREE.SphereGeometry(.53,20,14,0,2*PI,0,PI*.6),jacket,0,.04,0,hp).scale.set(1.04,.95,.95);
   T(.47,.06,rib,0,-.08,0,hp).scale.set(1.05,1,.93);
   for(let i=0;i<20;i++){const a=i/20*2*PI;const b=add(new THREE.BoxGeometry(.2,.04,.03),fleece,Math.sin(a)*.5,.2,Math.cos(a)*.47,hp);b.rotation.y=a;b.rotation.z=i%2?.55:-.55}
-  [.08,-.02].forEach(y=>add(new THREE.CylinderGeometry(.025,.025,.09,6),metal,0,y,.5,hp).rotation.z=PI/2);
+  [.08,-.02].forEach(y=>add(new THREE.CylinderGeometry(.025,.025,.09,6),metal,0,y,.5,hp).rotation.z=PI/2);const jk=hp.children.slice(jk0);
   // arms: long furry arms with big round paws and little claws
   const arms=[-1,1].map(s=>{const g=new THREE.Group();g.position.set(s*.5,.26,0);hp.add(g);
     add(S(.15),jacket,0,-.04,0,g);add(new THREE.CylinderGeometry(.11,.13,.3,10),leather,0,-.2,0,g);
@@ -363,7 +374,7 @@ function buildTuk(parent=P){
   const tail=new THREE.Group();tail.position.set(.14,.4,.24);tail.rotation.set(.3,0,-.15);hp.add(tail);tail._b=.3;
   add(new THREE.BoxGeometry(.12,.3,.05),scarf,0,-.15,0,tail);[-.04,0,.04].forEach(x=>add(new THREE.BoxGeometry(.018,.07,.04),scarf,x,-.32,0,tail));
   return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,ears,tuft,tail,belly,tongue,yeti:true,hsYo:.26,
-    anc:{hr:.46,top:.5,eyeY:.06,face:.47,nose:[0,-.07,.47],backY:.1,backZ:-.48},mats:{jacket,fleece,leather,pants,boot,sole,glove,scarf,metal,lens,rib}};
+    jk,anc:{hr:.46,top:.5,eyeY:.06,face:.47,nose:[0,-.07,.47],backY:.1,backZ:-.48,hood:{r:.53,y:.04,s:[1.04,.95,.95],neck:.5,arm:[-.02,-.28],sr:.175}},mats:{jacket,fleece,leather,pants,boot,sole,glove,scarf,metal,lens,rib}};
 }
 // Tuk's springs. dv = change in velocity this frame in his own frame (f forward, s right, u up), like Vex's.
 function tukPhysics(H,dt,dv,sp,air,idle){const cl=x=>Math.max(-12,Math.min(12,x)),fl=Math.min(1,sp*.08)+(air?.3:0);
@@ -411,36 +422,32 @@ const OUTFITS=[
   {name:'Night Flyer',jacket:0x2a3048,fleece:0x8a93a8,leather:0x1b1e28,pants:0x1e2230,boot:0x15171d,sole:0x2bb3a8,glove:0x3a4058,scarf:0x2bb3a8,lens:0xffd84a,lensE:0x6b4a00,metal:0x2f333a},
   {name:'Racer',jacket:0xd83a2e,fleece:0xffffff,leather:0xf4f4f4,pants:0x1f1f24,boot:0xf4f4f4,sole:0xd83a2e,glove:0x1f1f24,scarf:0xffd84a,lens:0x3a3f45,lensE:0x000000,metal:0xc8ccd0},
   {name:'Arctic',jacket:0xe9eff2,fleece:0xffffff,leather:0x7fb3d9,pants:0x5d7a91,boot:0x8a9aa6,sole:0x3d4a55,glove:0x7fb3d9,scarf:0xff8a3d,lens:0xb8f0ff,lensE:0x2a6a80,metal:0xa0a8b0},
-  {name:'Golden Ace',jacket:0xd9a630,fleece:0xfff4d6,leather:0x3a2a1a,pants:0x2a2a30,boot:0x3a2a1a,sole:0xd9a630,glove:0xffffff,scarf:0xffffff,lens:0xffd84a,lensE:0x8a5a00,metal:0xd9a630,shiny:true,lock:'Beat Sky Gauntlet to unlock'},
   // Off Duty: the stunt pilot on a summer day. Short-sleeve linen pilot shirt (collar, chest pockets, wooden buttons,
   // rolled cuffs), olive shorts, canvas sneakers with gum soles, his own hair with the goggles pushed up on it
   {name:'Off Duty',jacket:0xe3d3ad,fleece:0xf1e6cc,leather:0x6b3f22,pants:0x6f7a4a,boot:0xece4d2,sole:0x9a6a3e,glove:0xe8b087,scarf:0xe2493b,lens:0x9fe3f0,lensE:0x1d5a66,metal:0x8a5a35,
     hide:['cap','scarf','gogStrap'],show:['hair','calves','forearms'],shorts:true},
   // Super Flip: blue suit, red cape, boots and gloves, gold emblem and belt, domino mask
-  {name:'Super Flip',jacket:0x2a5bd7,fleece:0xffd84a,leather:0xe23b3b,pants:0x2a5bd7,boot:0xe23b3b,sole:0xffd84a,glove:0xe23b3b,scarf:0xe23b3b,lens:0xffd84a,lensE:0x7a5a00,metal:0xffd84a,
+  {name:'Super Flipper',jacket:0x2a5bd7,fleece:0xffd84a,leather:0xe23b3b,pants:0x2a5bd7,boot:0xe23b3b,sole:0xffd84a,glove:0xe23b3b,scarf:0xe23b3b,lens:0xffd84a,lensE:0x7a5a00,metal:0xffd84a,
     hide:['cap','goggles','gogStrap','scarf','collar','zip','patch'],show:['hair','mask','emblem','belt'],acc:{back:{id:'cape',col:0xe23b3b}}}];
 // Nova's wardrobe (jacket / beanie+mittens = leather+glove / headphones+pom = scarf / board = metal)
 const OUTFITS_NOVA=[
   {name:'Backcountry',jacket:0xf2b33d,fleece:0xfff4dc,leather:0x2f4f8f,pants:0x3d4a5c,boot:0x2a2a30,sole:0xf2b33d,glove:0x2f4f8f,scarf:0xff5a5f,lens:0x7ff0ff,lensE:0x1d6070,metal:0x1f2a36},
   {name:'Neon Night',jacket:0x1f1f2e,fleece:0x8a5cff,leather:0x8a5cff,pants:0x2a2a3a,boot:0x15151d,sole:0x39ff88,glove:0x39ff88,scarf:0xff3fb4,lens:0xff3fb4,lensE:0x80104f,metal:0x39ff88},
   {name:'Glacier',jacket:0xbfe6ff,fleece:0xffffff,leather:0xffffff,pants:0x5d7a91,boot:0x8a9aa6,sole:0xffffff,glove:0x7fb3d9,scarf:0x2f6fd0,lens:0xb8f0ff,lensE:0x2a6a80,metal:0xe9f6ff},
-  {name:'Ember',jacket:0xd8452e,fleece:0x2a2a2a,leather:0x2a2a2a,pants:0x3a3330,boot:0x2a2220,sole:0xffb347,glove:0x2a2a2a,scarf:0xffb347,lens:0xffb347,lensE:0x804000,metal:0x2a2a2a},
-  {...OUTFITS[4],name:'Gold Rush'}];
+  {name:'Ember',jacket:0xd8452e,fleece:0x2a2a2a,leather:0x2a2a2a,pants:0x3a3330,boot:0x2a2220,sole:0xffb347,glove:0x2a2a2a,scarf:0xffb347,lens:0xffb347,lensE:0x804000,metal:0x2a2a2a}];
 // Vex's wardrobe (hoodie / hair = leather / bandana = scarf / laces, drawstrings, sneaker stripe = fleece / wristbands = glove / bolts = lens / studs, chain = metal)
 const OUTFITS_VEX=[
   {name:'Street Punk',jacket:0x2b2733,fleece:0xb6ff3b,leather:0xff3d8b,pants:0x26262e,boot:0x1d1d22,sole:0xf2f2f2,glove:0x1d1d22,scarf:0xe23b3b,lens:0xb6ff3b,lensE:0x4a7a00,metal:0xc8ccd0},
   {name:'Toxic',jacket:0x8fe02e,fleece:0x6b2cff,leather:0x6b2cff,pants:0x1d1d22,boot:0x6b2cff,sole:0x1d1d22,glove:0x6b2cff,scarf:0x1d1d22,lens:0x1d1d22,lensE:0x000000,metal:0x9aa0a8},
   {name:'Bubblegum',jacket:0xff8ac2,fleece:0xffffff,leather:0x37d7ff,pants:0x3a3f6b,boot:0x37d7ff,sole:0xffffff,glove:0xffffff,scarf:0x37d7ff,lens:0xffffff,lensE:0x5a5a7a,metal:0xe8e8f0},
-  {name:'Blackout',jacket:0x18181c,fleece:0xff2a2a,leather:0xf4f4f4,pants:0x18181c,boot:0x18181c,sole:0xff2a2a,glove:0xff2a2a,scarf:0xff2a2a,lens:0xff2a2a,lensE:0x7a0000,metal:0x55585e},
-  {...OUTFITS[4],name:'Gold Tooth',leather:0x1d1d22}];
+  {name:'Blackout',jacket:0x18181c,fleece:0xff2a2a,leather:0xf4f4f4,pants:0x18181c,boot:0x18181c,sole:0xff2a2a,glove:0xff2a2a,scarf:0xff2a2a,lens:0xff2a2a,lensE:0x7a0000,metal:0x55585e}];
 // Tuk's wardrobe (sweater = jacket / zigzag & hem trim = fleece / fur = leather / face & belly = pants / scarf / paw pads
 // & nose = boot / horns & claws = sole / cheeks & inner ears = glove / toggles = metal / eyes = lens)
 const OUTFITS_TUK=[
   {name:'Cozy',jacket:0xf08a3c,fleece:0xfff1d6,leather:0xf4f7fb,pants:0xc6daec,boot:0x5a6472,sole:0xc9b48f,glove:0xff9aa8,scarf:0x2f6fd0,metal:0x8a5a35,lens:0x37a6e8,lensE:0x0b3a5a},
   {name:'Glacier',jacket:0x2bb3a8,fleece:0xe8fbff,leather:0xcfe6f5,pants:0xf2f9ff,boot:0x3a4f66,sole:0xe8f2fb,glove:0x9fd8ff,scarf:0xf2f2f2,metal:0xd9e6f2,lens:0x2bb3a8,lensE:0x0b4a44},
   {name:'Berry',jacket:0x8e3bb8,fleece:0xffd84a,leather:0xf7e6f0,pants:0xffffff,boot:0x5a3a5e,sole:0xf3c9a8,glove:0xff7db0,scarf:0xffd84a,metal:0xffd84a,lens:0xb070ff,lensE:0x3a1260},
-  {name:'Midnight',jacket:0x1f2b4a,fleece:0x8fd0ff,leather:0x9aa3b5,pants:0xd5dbe6,boot:0x1b1f2a,sole:0xe8e8f0,glove:0x8fa8d8,scarf:0xe23b3b,metal:0xc8ccd0,lens:0xffd84a,lensE:0x5a4700},
-  {...OUTFITS[4],name:'Golden Fleece',leather:0xffe08a,pants:0xfff4cc,sole:0xffffff,lens:0xffd84a,lensE:0x7a5a00}];
+  {name:'Midnight',jacket:0x1f2b4a,fleece:0x8fd0ff,leather:0x9aa3b5,pants:0xd5dbe6,boot:0x1b1f2a,sole:0xe8e8f0,glove:0x8fa8d8,scarf:0xe23b3b,metal:0xc8ccd0,lens:0xffd84a,lensE:0x5a4700}];
 const unlocked=(o,list=OUTFITS)=>!list[o].lock||!!bestA.orbRunAdv2;
 const OFI={}; // each wardrobe character's current outfit, by character index
 function applyOutfit(i){const c=chars[ci];if(!c.outs)return;if(typeof LOOKS!=='undefined'&&LOOKS[ci]){LOOKS[ci].c={};saveLook(ci);applyLook(c.rig,ci,i,LOOKS[ci])}else applyOutfitTo(c.rig.mats,i,c.outs,c.rig)}
@@ -456,9 +463,11 @@ function applyBody(rig){if(!rig||!rig.torso)return;const sl=rig._body==='slender
   (rig.parts.calves||[]).forEach(m=>{m.scale.y=(.14+D)/.14;m.position.y=-.19-D/2});
   (rig.bootGs||[]).forEach(g=>{g.position.y=-D})}
 // soles: 0 = plain boots (no flat soles under them)
-function outfitParts(rig,o,cap,soles){if(!rig||!rig.parts)return;const ex=rig.partExtras||[],hide=new Set(o.hide||[]),show=new Set(o.show||[]);
+function outfitParts(rig,o,cap,soles,gog){if(!rig||!rig.parts)return;const ex=rig.partExtras||[],hide=new Set(o.hide||[]),show=new Set(o.show||[]);
   if(soles===0)hide.add('soles');
   if(rig.parts.cap&&cap!==undefined){if(cap){hide.delete('cap');show.delete('hair');if(!hide.has('goggles'))hide.delete('gogStrap')}else{hide.add('cap');show.add('hair');hide.add('gogStrap')}}
+  // goggles: undefined = the outfit decides; 1 = on (resting on his cap or hair); 0 = off
+  if(rig.parts.goggles&&gog!==undefined){if(gog){hide.delete('goggles');if(!hide.has('cap'))hide.delete('gogStrap')}else{hide.add('goggles');hide.add('gogStrap')}}
   for(const k in rig.parts){const on=ex.includes(k)?show.has(k):!hide.has(k);rig.parts[k].forEach(m=>{m.visible=on})}
   rig._shorts=!!o.shorts;applyBody(rig);
   // goggles pushed up over hair sit a touch bigger and higher
@@ -484,18 +493,22 @@ function applyOutfitTo(M,i,list=OUTFITS,rig){const o=list[i];outfitParts(rig,o);
   M.lens.emissive.setHex(o.lensE);M.rib.color.setHex(o.jacket).multiplyScalar(.78);
   M.jacket.metalness=o.shiny?.55:0;M.jacket.roughness=o.shiny?.35:.75;M.rib.metalness=o.shiny?.4:0;}
 // paintable parts per wardrobe character, in Colors-tab order: [material key, label]
-const PARTS={Flip:[['jacket','Jacket'],['fleece','Collar & trim'],['leather','Cap'],['hair','Hair'],['scarf','Scarf'],['pants','Pants'],['boot','Boots'],['sole','Soles'],['glove','Gloves'],['lens','Goggle lenses'],['metal','Goggle frames']],
-  Nova:[['jacket','Puffer'],['fleece','Collar & patches'],['leather','Beanie'],['glove','Mittens'],['scarf','Headphones & pom'],['pants','Snow pants'],['boot','Boots'],['sole','Soles & straps'],['metal','Snowboard'],['lens','Board stripe']],
+const PARTS={Flipper:[['jacket','Jacket'],['fleece','Collar & trim'],['leather','Cap'],['hair','Hair'],['scarf','Scarf'],['pants','Pants'],['boot','Boots'],['sole','Soles'],['glove','Gloves'],['lens','Goggle lenses'],['metal','Goggle frames']],
+  Parker:[['jacket','Puffer'],['fleece','Collar & patches'],['leather','Beanie'],['glove','Mittens'],['scarf','Headphones & pom'],['pants','Snow pants'],['boot','Boots'],['sole','Soles & straps'],['metal','Snowboard'],['lens','Board stripe']],
   Tuk:[['jacket','Sweater'],['fleece','Zigzag & trim'],['leather','Fur'],['pants','Face & belly'],['scarf','Scarf'],['glove','Cheeks & ears'],['boot','Nose & paw pads'],['sole','Horns & claws'],['metal','Toggles'],['lens','Eyes']],
   Vex:[['jacket','Hoodie'],['leather','Mohawk'],['scarf','Bandana'],['fleece','Laces & strings'],['lens','Bolts'],['pants','Jeans'],['boot','Sneakers'],['sole','Soles & toe caps'],['glove','Wristbands'],['metal','Studs & chain']]};
 const chars=[
   {name:'Sunny',desc:'A bouncy little robot. Springy legs give the highest jump.',speed:1,jump:9,sp:3,jp:5,ag:2,g:body},
   {name:'Rook',desc:'A quick-footed island explorer. Fastest runner, shorter hop.',speed:1.15,jump:7.8,sp:5,jp:3,ag:3,g:R.root,rig:R},
-  {name:'Flip',desc:'A pint-sized stunt pilot who plays by momentum. Harder to steer, full of tricks.',speed:1.1,jump:9.5,sp:5,jp:4,ag:5,g:F.root,rig:F,outs:OUTFITS,ofKey:'orbRunOutfit',acro:true,
+  {name:'Flipper',desc:'A pint-sized stunt pilot who plays by momentum. Harder to steer, full of tricks.',speed:1.1,jump:9.5,sp:5,jp:4,ag:5,g:F.root,rig:F,outs:OUTFITS,ofKey:'orbRunOutfit',acro:true,
    moves:'Shift: crouch · Crouch + Jump: long jump (running) or backflip (standing) · Shift in the air: dive · Jump off a wall mid-air: wall jump · Jump as you land: double and triple jump · Reverse at speed to skid, Jump mid-skid to side flip'}];
-chars.push({name:'Nova',desc:'A fearless backcountry snowboarder with a board on her back and beats in her ears. Same trick moveset as Flip.',speed:1.1,jump:9.5,sp:5,jp:4,ag:5,g:NV.root,rig:NV,outs:OUTFITS_NOVA,ofKey:'orbRunOutfitNova',acro:true,moves:chars[2].moves});
-chars.push({name:'Vex',desc:'A mouthy skate punk who never asked for your help and won\u2019t say thanks. Same trick moveset as Flip.',speed:1.1,jump:9.5,sp:5,jp:4,ag:5,g:VX.root,rig:VX,outs:OUTFITS_VEX,ofKey:'orbRunOutfitVex',acro:true,moves:chars[2].moves});
-chars.push({name:'Tuk',desc:'A yeti cub in a hand-knit sweater. Cuddly, curious, and much bouncier than he looks. Same trick moveset as Flip.',speed:1.05,jump:9.6,sp:4,jp:5,ag:4,g:TK.root,rig:TK,outs:OUTFITS_TUK,ofKey:'orbRunOutfitTuk',acro:true,moves:chars[2].moves});
+chars.push({name:'Parker',desc:'A fearless backcountry snowboarder with a board on her back and beats in her ears. Same trick moveset as Flipper.',speed:1.1,jump:9.5,sp:5,jp:4,ag:5,g:NV.root,rig:NV,outs:OUTFITS_NOVA,ofKey:'orbRunOutfitNova',acro:true,moves:chars[2].moves});
+chars.push({name:'Vex',desc:'A mouthy skate punk who never asked for your help and won\u2019t say thanks. Same trick moveset as Flipper.',speed:1.1,jump:9.5,sp:5,jp:4,ag:5,g:VX.root,rig:VX,outs:OUTFITS_VEX,ofKey:'orbRunOutfitVex',acro:true,moves:chars[2].moves});
+chars.push({name:'Tuk',desc:'A yeti cub in a hand-knit sweater. Cuddly, curious, and much bouncier than he looks. Same trick moveset as Flipper.',speed:1.05,jump:9.6,sp:4,jp:5,ag:4,g:TK.root,rig:TK,outs:OUTFITS_TUK,ofKey:'orbRunOutfitTuk',acro:true,moves:chars[2].moves});
+// 2.47 renamed Flip and Nova and dropped the gold outfits: move old saves over once
+try{if(!localStorage.getItem('orbRunWardrobe2')){localStorage.setItem('orbRunWardrobe2','1');
+  const v=+localStorage.getItem('orbRunOutfit')||0;if(v>=4)localStorage.setItem('orbRunOutfit',v===4?0:v-1);
+  [['Flip','Flipper'],['Nova','Parker']].forEach(([a,b])=>{const L=localStorage.getItem('orbRunLook_'+a);if(L&&!localStorage.getItem('orbRunLook_'+b))localStorage.setItem('orbRunLook_'+b,L)})}}catch(e){}
 chars.forEach((c,i)=>{if(!c.outs)return;let v=0;try{v=+localStorage.getItem(c.ofKey)||0}catch(e){}if(!c.outs[v])v=0;OFI[i]=v;applyOutfitTo(c.rig.mats,v,c.outs,c.rig)});
 const A={wallT:0,lock:0,wnx:0,wnz:0,spd:0,mode:'normal',t:0,air:false,landT:0,jumpN:0,canCut:false,canDive:true,prevC:false,flipT:99,flipAxis:'x',flipDir:1,knock:0,skidTo:0,twirlT:99};
 const resetAcro=()=>Object.assign(A,{wallT:0,lock:0,spd:0,mode:'normal',t:0,air:false,landT:0,jumpN:0,canCut:false,canDive:true,flipT:99,knock:0,twirlT:99});

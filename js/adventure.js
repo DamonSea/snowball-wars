@@ -14,8 +14,7 @@ function fall(){rumble(320,.6,.7);falls++;SFX.splash();shake=.25;respawn()}
 function winAdv(){
   won=true;state='won';SFX.win();
   goal.on(true);hint(curL.winHint);
-  const wasLocked=!unlocked(4),k=curL.key,nb=!bestA[k]||atime<bestA[k];if(nb){bestA[k]=atime;try{localStorage.setItem(k,atime)}catch(e){}}
-  if(wasLocked&&unlocked(4))setTimeout(()=>{toast('New outfit unlocked: Golden Ace');SFX.unlock()},900);
+  const k=curL.key,nb=!bestA[k]||atime<bestA[k];if(nb){bestA[k]=atime;try{localStorage.setItem(k,atime)}catch(e){}}
   setTimeout(()=>{state='over';overlay(true,curL.winT,`Finished in ${fmt(atime)} with ${falls} fall${falls===1?'':'s'}.${nb?' New best time!':''}`,'Play again','Menu',()=>startAdv(),()=>menu())},2600);
 }
 function updateAdv(dt){

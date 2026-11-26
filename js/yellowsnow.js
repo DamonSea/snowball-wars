@@ -9,7 +9,7 @@ try{YS.on=localStorage.getItem('orbRunYellow')!=='0'}catch(e){}
 const ysDropGeo=new THREE.SphereGeometry(.045,6,4),ysDropM=new THREE.MeshBasicMaterial({color:0xf5dc52}),ysMarkGeo=new THREE.CircleGeometry(.1,10);
 YS.tank=T.yellow.tank;
 // on the ground: Crouch + Ground pound makes a snow angel; Ground pound alone opens the emote wheel (emotes.js)
-const isNova=()=>chars[ci].name==='Nova';
+const isNova=()=>chars[ci].name==='Parker';
 function poundOrSnow(){if(grounded&&state==='play'){if(held('crouch')||joy.crouch)startAngel();else openWheel()}else groundPound()}
 function startYellow(){
   if(isNova()||SA.t>0||!YS.on||YS.spray||YS.t>0||CL.on||SB.stun>0||ATK.t>0||GP.st||!grounded)return;

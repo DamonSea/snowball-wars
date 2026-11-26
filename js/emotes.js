@@ -21,7 +21,7 @@ const emoteOf=id=>EMOTES.find(e=>e.id===id)||EMOTES[0];
 // why an emote can't be done right now ('' = it can)
 function emoteWhy(e){
   if(e.id==='angel')return WIN?'':'Needs snow (winter)';
-  if(e.id==='yellow')return!YS.on?'Off in Settings':isNova()?'Not Nova’s thing':!WIN?'Needs snow (winter)':YS.tank<.4?'Empty. Give it a minute':'';
+  if(e.id==='yellow')return!YS.on?'Off in Settings':isNova()?'Not Parker’s thing':!WIN?'Needs snow (winter)':YS.tank<.4?'Empty. Give it a minute':'';
   return''}
 function canEmote(){return state==='play'&&grounded&&!CL.on&&!LH.on&&!GP.st&&SB.stun<=0&&ATK.t<=0&&A.knock<=0&&!YS.spray&&YS.t<=0&&SA.t<=0&&!BS.on}
 // ---------- the wheel ----------

@@ -52,7 +52,7 @@ zones.push(
 goal={x:0,z:-100,y:19.6,pad,padM,look:V(0,21,-103.5),
   on(v){flame.visible=v;fLight.intensity=v?3:0;padM.opacity=v?.8:.35},
   spin(dt){flame.children.forEach((f,i)=>{f.scale.y=1+Math.sin(tAll*12+i*2)*.15;f.rotation.y+=dt*2})}};
-endLevel({name:'Sky Gauntlet',key:'orbRunAdv2',flipOnly:true,intro:'Climb to the summit with Flip. Grab 3 cores on the way',
+endLevel({name:'Sky Gauntlet',key:'orbRunAdv2',flipOnly:true,intro:'Climb to the summit with Flipper. Grab 3 cores on the way',
   allMsg:'All cores found! Light the beacon at the summit',need:n=>`The beacon needs all 3 cores. You have ${n}.`,
   winT:'Summit reached!',winHint:'The beacon is lit!'});
 }

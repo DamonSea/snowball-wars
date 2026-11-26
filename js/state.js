@@ -40,7 +40,7 @@ function menu(){if(typeof PARK!=='undefined')PARK.fromPause=false;BLD.testing=fa
   overlay(true,'Snowball Wars','','Trick Park','Adventure',()=>parkMenu(),()=>levelMenu(),'Map Builder',()=>openMapsPanel());
   $('ov').classList.add('menu');
 }
-function levelMenu(){overlay(true,'Adventure','Lighthouse Isles: hop across islands and light the lighthouse. Sky Gauntlet: a climb through sky ruins that needs every one of Flip’s tricks, wall jumps included.','Lighthouse Isles','Sky Gauntlet',()=>select('adv',0),()=>select('adv',1),'Back',()=>menu())}
+function levelMenu(){overlay(true,'Adventure','Lighthouse Isles: hop across islands and light the lighthouse. Sky Gauntlet: a climb through sky ruins that needs every one of Flipper’s tricks, wall jumps included.','Lighthouse Isles','Sky Gauntlet',()=>select('adv',0),()=>select('adv',1),'Back',()=>menu())}
 let pickMode='run',pickLevel=0,lockChar=false;
 // where the cursor starts on character select: the name box the first time in Trick Park (keyboard), else Play
 function csFocus(m){(m==='run'&&!savedName()&&!document.body.classList.contains('haspad')?$('myName'):$('csGo')).focus()}

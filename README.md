@@ -2,21 +2,21 @@
 
 ### [▶ Play Snowball Wars](https://damonsea.github.io/snowball-wars/)
 
-A 3D winter trick-platformer for the browser, starring Flip the stunt pilot and Nova the snowboarder. Chain flips, dives and wall jumps
+A 3D winter trick-platformer for the browser, starring Flipper the stunt pilot and Parker the snowboarder. Chain flips, dives and wall jumps
 into combos in Trick Park (Plaza, Frozen Rink, Rooftops, Jungle Gym), discover named gaps, have snowball fights, or play
 the Adventure levels. Built with three.js; open `index.html` in a browser to play (multiplayer works only in the
 claude.ai version).
 
-![The cast: Flip, Nova and Tuk](docs/media/characters.png)
+![The cast: Flipper, Parker and Tuk](docs/media/characters.png)
 
 **What's new:** see the [changelog](CHANGELOG.md).
 
 ## Features
 
 ### A cast with a real moveset
-Pick **Flip** the stunt pilot, **Nova** the snowboarder or **Tuk** the yeti cub. All three have the full acrobat
-moveset and five outfits each; the gold one unlocks by beating Sky Gauntlet. Flip also has **Off Duty** (his summer
-look: linen pilot shirt, shorts, goggles pushed up on his hair) and **Super Flip** (mask, emblem and cape).
+Pick **Flipper** the stunt pilot, **Parker** the snowboarder or **Tuk** the yeti cub. All three have the full acrobat
+moveset and four outfits each. Flipper also has **Off Duty** (his summer
+look: linen pilot shirt, shorts, goggles pushed up on his hair) and **Super Flipper** (mask, emblem and cape).
 
 Double and triple jumps, a skid into a side somersault, backflips, long jumps, dives, wall jumps, a ground pound and
 **Pound Jump** (Jump right after a ground pound to rocket straight up), plus **ledge hang**: grab edges as you fall past,
@@ -35,15 +35,18 @@ wobble back, punches that reach, and ground pounds that ball up, stretch down an
 ![Exaggerated squash and stretch: jump, punch combo, ground pound](docs/media/squash-stretch.gif)
 
 ### Make them yours
-On character select, **Customize** (Flip, Nova and Tuk) opens a dressing room: start from an outfit, repaint every part
-(jacket, hat or hair, scarf or bandana, pants, boots, gloves and more; Flip's hair has its own palette of natural
-shades) and add accessories. Flip also has a **Face** tab: eyes, eyebrows and mouth styles, and switches for his
-eye whites, eye shine, nose, freckles and blush (each On / Off), and a **Body type** choice: Stout (his own build) or Slender (Nova's proportions). Head: crown, party hat,
-propeller cap, cat ears, halo. Face: shades, round specs, mustache, clown nose. Back: backpack, cape, jetpack, wings.
-They move, too: the propeller spins faster as you run, the jetpack fires in the air, wings flap and the cape streams.
+On character select, **Customize** (Flipper, Parker and Tuk) opens a dressing room: start from an outfit, repaint every part
+(jacket, hat or hair, scarf or bandana, pants, boots, gloves and more; Flipper's hair has its own palette of natural
+shades) and add accessories. Flipper also has a **Face** tab: eyes, eyebrows and mouth styles, and switches for his
+eye whites, eye shine, nose, freckles and blush (each On / Off), and a **Body type** choice: Stout (his own build) or Slender (Parker's proportions). Head: flaming head, party hat,
+propeller cap, cat ears, halo. Face: shades, round specs, clown nose. Back: cape. Flipper and Parker share a few more:
+Parker's winter hat and snowboard and Flipper's scarf (Neck), and "None" takes off even the ones they start with.
+Flipper's goggles can come off, and everyone can wear a **hoodie** (regular or oversized, any color) over their outfit.
+They move, too: the propeller spins faster as you run, flames flicker, hats and scarves swing, the hood bounces and the
+cape streams.
 Your look shows up for friends in multiplayer.
 
-![Customizing Vex with a crown and wings](docs/media/customize.png)
+![Customizing Vex](docs/media/customize.png)
 
 ### Trick Park
 Type **your name** on the character select screen: it's what friends see in multiplayer.
@@ -75,7 +78,7 @@ dizzy stars; orbs refill your snowballs. Turn on the **computer player** in Sett
 **Emotes:** standing on the ground, **tap** Ground pound (L1 / Q / right-click) for a quick taunt (your last emote,
 Wave to start), or **hold** it: a ring fills, then the emote wheel opens. Point at one and let go (or click one, or 1-8): **Wave, Cheer, Robot, Shuffle, Disco,
 Chicken Dance, Snow Angel, Yellow Snow**. Dances loop until you move, and friends see them. Yellow snow (optional
-silliness, off in Settings; Nova doesn't) keeps spraying until you press Ground pound again, and leaves you a yellow snowball.
+silliness, off in Settings; Parker doesn't) keeps spraying until you press Ground pound again, and leaves you a yellow snowball.
 
 ![A snowball duel with the computer player](docs/media/snowball-fight.gif)
 
@@ -84,7 +87,7 @@ silliness, off in Settings; Nova doesn't) keeps spraying until you press Ground 
 - **Rolling snowballs:** walk into one of the small snowballs around each Trick Park map to push it. It grows as it rolls,
   bowls over enemies and snowmen, and a big one is something to stand on. Smash it to start over.
 
-![Nova makes a snow angel, then rolls a snowball bigger](docs/media/winter-fun.gif)
+![Parker makes a snow angel, then rolls a snowball bigger](docs/media/winter-fun.gif)
 
 - **Butt slide:** hold Crouch on a slope, like the Big Slide in the Plaza, to sit down and slide. Steer with the stick,
   Jump to hop off with your speed.
@@ -133,7 +136,7 @@ To ship a map with the game instead, Export it from the builder, then add the `.
 
 ### Adventure
 Hand-built levels with cores to collect, checkpoints and a goal: **Lighthouse Isles**, and **Sky Gauntlet**, which
-needs Flip's or Nova's full moveset (and guard rails help).
+needs Flipper's or Parker's full moveset (and guard rails help).
 
 ### Play your way
 - **Multiplayer** (in the claude.ai version): play Trick Park with friends, with shared orbs and enemies, name tags and trick callouts.
@@ -162,7 +165,7 @@ needs Flip's or Nova's full moveset (and guard rails help).
   the ground) and turns **red with a ring at their feet** when a target is in its path (a player, rival, enemy, penguin
   or snowman). Let go for a **charged snowball**: double damage (2 hearts in Snowball Wars,
   twice the orbs knocked loose in a Collectathon) and a longer stun. A quick tap still throws straight away.
-  With the mouse, Flip turns toward the cursor while you aim (and a click throws right at it), even while running
+  With the mouse, Flipper turns toward the cursor while you aim (and a click throws right at it), even while running
   another way.
 - **Snowball Wars mode**: pause in Trick Park and pick *Snowball Wars* for a 3-minute free-for-all. 3 hearts each, most KOs wins (no points), snowball pickups to grab (the high ones hold more). Solo you face three computer players; with friends on the map it's players only.
 
@@ -193,7 +196,7 @@ The GitHub Pages copy has multiplayer too, with no server: browsers find each ot
 
 (Formerly "Orb Run", then briefly "Frosty Falls". Saved data keeps its `orbRun…` storage keys so scores, gaps and unlocks carry over.)
 
-A 3D browser game built on three.js r128. Flip, a pint-sized stunt pilot, tricks his way
+A 3D browser game built on three.js r128. Flipper, a pint-sized stunt pilot, tricks his way
 through Trick Park (three maps, free roam and timed runs, multiplayer) and Adventure (two levels).
 
 ## How the files fit together
@@ -206,7 +209,7 @@ by files above it. Nothing is bundled.
 | 0 | `js/input/pads.js` | Switch 2 Pro Controller support, loaded before everything else: remaps it to the standard layout, wakes it over USB, rumble, player light, B / A / Y / X prompts |
 | 1 | `js/tuning.js` | **Every gameplay number**: gravity, jumps, speeds, ice, climbing, attacks, combo, scoring, camera |
 | 2 | `js/core.js` | Renderer, scene, lights, material helpers, season registry, trees/rocks/flowers |
-| 3 | `js/characters.js` | Rigs and wardrobes for Flip, Nova and Tuk (plus benched Sunny, Rook and Vex), spring physics for dangly bits, character table and roster |
+| 3 | `js/characters.js` | Rigs and wardrobes for Flipper, Parker and Tuk (plus benched Sunny, Rook and Vex), spring physics for dangly bits, character table and roster |
 | 4 | `js/fx.js` | Spikeball model, particle bursts, collision push-out |
 | 5 | `js/audio/sfx.js` | Sound engine and the configurable sound-effect library |
 | 6 | `js/audio/music.js` | Music tracks, ambience, spikeball rolling sound |
@@ -221,7 +224,7 @@ by files above it. Nothing is bundled.
 | 15 | `js/physics.js` | Platform physics, ice, walls, tree and pole climbing, ledge hang, trampolines, raised decks |
 | 16 | `js/adventure.js` | Adventure: cores, checkpoints, tutorial zones, goal |
 | 17 | `js/combat.js` | Three-hit combo, sweep, air kick |
-| 18 | `js/movement.js` | Sunny/Rook controls and Flip's whole moveset |
+| 18 | `js/movement.js` | Sunny/Rook controls and Flipper's whole moveset |
 | 19 | `js/pound.js` | Ground pound for every character: spin, drop, shockwave |
 | 20 | `js/input/bindings.js` | Custom controls: key, mouse and controller bindings, rebinding in Settings |
 | 21 | `js/ui/settings.js` | Settings panel (season, mix, sound styles) |
@@ -257,7 +260,7 @@ The stand-in library is swapped in for the CDN copy of three.js automatically.
 
 Note: the downloaded single page no longer runs on its own. Play from the artifact page.
 
-`lines.py` checks map design with the real physics: it places Flip at a spot, feeds frame-exact
+`lines.py` checks map design with the real physics: it places Flipper at a spot, feeds frame-exact
 inputs (held jumps, crouch timing, late dives, a wall-jump bot) and reports where he lands and which
 named gaps fired. Use it whenever a map changes: each line should land, and each shortcut should not.
 

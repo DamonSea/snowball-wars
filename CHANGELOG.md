@@ -3,6 +3,23 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.47.0] - 2026-11-26 — Character customization patch
+### Changed
+- **Flip is now Flipper, and Nova is now Parker.** Saved looks and outfits carry over.
+- **Shared gear:** Flipper's scarf (new **Neck** slot), Parker's winter hat and snowboard, and the cape can be worn by
+  either of them. On their owner they're the original models; on the other one they're built to fit. Picking
+  **None** now really takes an item off, even one the character or outfit starts with (Flipper's scarf, Parker's hat
+  and board, Super Flipper's cape). Parker's curls show with her hat off; a winter hat on Flipper replaces his cap.
+- Super Flip is now Super Flipper.
+### Added
+- **Flaming head** (Head): your head is on fire. Flickering flames and rising embers, for everyone.
+- **Goggles** switch for Flipper: On head / Off.
+- **Hoodie** for every character: Regular fit or Oversized, in any color, over their outfit. The hood bounces and the
+  drawstrings swing as you move; friends see it too.
+### Removed
+- Crown, Wings, Backpack, Jetpack and Mustache accessories, and the gold outfits (Golden Ace, Gold Rush, Gold Tooth,
+  Golden Fleece). Saves that used them fall back to the nearest thing that still exists.
+
 ## [2.46.0] - 2026-11-26 — Mouse aiming
 ### Changed
 - **Aiming with the mouse:** hold the left mouse button and Flip turns toward the cursor, so you spin the arc around

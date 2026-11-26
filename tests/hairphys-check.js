@@ -1,6 +1,6 @@
 (()=>{closePark();const out=[];const ok=(n,c,x='')=>out.push((c?'OK   ':'FAIL ')+n+(x!==''?' -> '+x:''));
 const calm=()=>runHz.forEach(h=>{h.g.position.set(0,.75,60);h.vx=h.vz=0});const _st=__step;__step=n=>{for(let i=0;i<n;i++){calm();_st(1)}};
-const R=chars[2].rig,iS=OUTFITS.findIndex(o=>o.name==='Super Flip');OFI[2]=iS;applyOutfit(iS);
+const R=chars[2].rig,iS=OUTFITS.findIndex(o=>o.name==='Super Flipper');OFI[2]=iS;applyOutfit(iS);
 ok('Flip\'s hair has swinging locks',R.locks&&R.locks.length>=25,R.locks&&R.locks.length);
 // tip of a lock in the hair's own space (z = toward his face)
 const tipZ=p=>{const t=p._t,e=p.rotation,cx=Math.cos(e.x),sx=Math.sin(e.x),cy=Math.cos(e.y),sy=Math.sin(e.y);let x=t[0],y=t[1],z=t[2];
