@@ -73,8 +73,8 @@ function buildFace(head,{skin,hair,freck,noseC=0xd99a70,blushC=0xef9a85,k=1,oy=0
     [[.0,0],[.05,.04],[.05,-.03]].forEach(([dx,dy])=>FACE.freckles.push(add(S(.015,5,4),freck,s*(.25+dx),-.12+dy,.37-dx*.4,fg)));
     FACE.blush.push(add(S(.05,8,6),sm(blushC,{roughness:.8,transparent:true,opacity:.55}),s*.27,-.14,.33,fg))});
   FACE.nose.push(add(S(.075),sm(noseC),0,-.09,.45,fg));
-  for(const k of ['eyes','brows','mouth'])for(const st in FACE[k])FACE[k][st].visible=st===({eyes:'beady',brows:'none',mouth:'smile'})[k];
-  FACE.shine.forEach(m=>{m.visible=false});
+  for(const k of ['eyes','brows','mouth'])for(const st in FACE[k])FACE[k][st].visible=st===({eyes:'beady',brows:'none',mouth:'calm'})[k];
+  [...FACE.shine,...FACE.freckles,...FACE.blush].forEach(m=>{m.visible=false});
   return{FACE,blinkOf}}
 // Flip: pint-sized stunt pilot. Same rig interface (root > hp > limbs), chunky mascot proportions
 function buildChibi(parent=P){
@@ -494,8 +494,8 @@ const FACE_OPTS={eyes:[['round','Round'],['relaxed','Relaxed'],['focused','Focus
   mouth:[['smile','Smile'],['calm','Calm'],['grin','Grin'],['smirk','Smirk'],['flat','Flat'],['o','Oh'],['none','None']]};
 const FACE_TOGGLES=[['whites','Eye whites'],['shine','Eye shine'],['nose','Nose'],['freckles','Freckles'],['blush','Blush']];
 // a face setting: yours, else the character's own default (rig.faceDef), else the first option / on
-// everyone's default face: beady eyes, no eye shine (a character's own faceDef can add to this)
-const FACE_DEF={eyes:'beady',shine:0};
+// everyone's default face: beady eyes, no eye shine, calm mouth, no freckles or blush (a character's own faceDef can add to this)
+const FACE_DEF={eyes:'beady',shine:0,mouth:'calm',freckles:0,blush:0};
 const faceVal=(rig,f,k)=>f[k]??(rig.faceDef||{})[k]??FACE_DEF[k]??(FACE_OPTS[k]?FACE_OPTS[k][0][0]:1);
 function applyFace(rig,f={}){const F=rig.face;if(!F)return;
   for(const k in FACE_OPTS){const pick=faceVal(rig,f,k);for(const st in F[k])F[k][st].visible=st===pick}

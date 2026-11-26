@@ -3,6 +3,11 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.49.1] - 2026-11-26 — Default face
+### Changed
+- Default face for Flipper and Parker: beady eyes, no eye shine, **calm mouth**, and **freckles and cheek blush off**.
+  All of it can still be switched on in the Face tab; saved choices are kept.
+
 ## [2.49.0] - 2026-11-26 — Edit character from the pause menu
 ### Added
 - **Edit character** in the pause menu (for Flipper, Parker and Tuk): the full customizer opens over the paused game,
