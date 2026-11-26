@@ -20,7 +20,7 @@ const a=makeAv(2);applyLook(a.rig,2,0,cleanLook(LOOKS[2],2));ok('Friends see you
 ok('Junk face data from friends is ignored',JSON.stringify(cleanLook({f:{eyes:'laser',mouth:'<b>',nose:5,blush:0}},2).f)==='{"blush":0}');
 ok('Picking an outfit keeps your face',(setOutfit(1),shown('mouth').join()==='none'));setOutfit(0);
 // tabs cycle through Face with Q/E; other characters have no Face tab
-CUST.tab='color';renderCust();custKey('KeyE');ok('E goes Colors -> Face',CUST.tab==='face');custKey('KeyE');ok('...then Accessories',CUST.tab==='acc');
+CUST.tab='color';renderCust();custKey('KeyE');ok('E goes Colors -> Face',CUST.tab==='face');custKey('KeyE');ok('...then Wear',CUST.tab==='wear');
 $('custReset').click();$('custReset').click();__step(2);ok('Reset look clears the face too',JSON.stringify(LOOKS[2].f)==='{}'&&shown('mouth').join()==='smile'&&F.freckles[0].visible);
-closeCust();ci=3;showChar();openCust();ok('Nova has no Face tab (yet)',$('cust').querySelector('.ctab[data-t="face"]').classList.contains('hide'));CUST.tab='outfit';custKey('KeyE');custKey('KeyE');ok('...and Q/E skip it',CUST.tab==='acc');closeCust();
+closeCust();ci=3;showChar();openCust();ok('Parker has a Face tab too',!$('cust').querySelector('.ctab[data-t="face"]').classList.contains('hide'));CUST.tab='outfit';custKey('KeyE');custKey('KeyE');ok('...and Q/E reach it',CUST.tab==='face');closeCust();
 return out.join('\n')})()

@@ -3,6 +3,22 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.48.0] - 2026-11-26 — Parker polish and a friendlier customizer
+### Changed
+- **Parker's hair** without her hat: rebuilt as a swept-back base with a clean hairline and evenly spread curls in two
+  tones, with a curly fringe.
+- **Parker gets the full Face kit** Flipper has (eyes, eyebrows, mouth, and switches for eye whites, eye shine, nose,
+  freckles and blush). Her defaults keep her look: soft brows, no freckles. Built once and shared, so both stay in sync.
+- **Headphones are an accessory** (new **Ears** slot). Parker starts with hers; anyone can wear a pair.
+- **Customizer:**
+  - a new **Wear** tab (cap, goggles, shoes, hoodie) keeps the Accessories tab to accessories;
+  - **each accessory has its own color**, including Parker's hat, headphones and board and Flipper's scarf (pick which
+    one under Color);
+  - **Undo** (button or Z) steps back through your changes, outfit picks included;
+  - **Surprise me** rolls a random face, accessories, colors and maybe a hoodie (undo if you don't like it);
+  - the character **turns round to show** back items and hoodies as you pick them, and the Face tab turns them to face
+    you and zooms onto their own head (it was aimed at Flipper's height).
+
 ## [2.47.0] - 2026-11-26 — Character customization patch
 ### Changed
 - **Flip is now Flipper, and Nova is now Parker.** Saved looks and outfits carry over.

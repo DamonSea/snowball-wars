@@ -43,6 +43,11 @@ const ACC={
     {id:'specs',label:'Round specs',col:0xff3fb4,make(g,a,m){[-1,1].forEach(s=>{add(new THREE.TorusGeometry(.085,.018,8,20),m,s*.14,0,0,g);
       add(new THREE.CircleGeometry(.08,20),accM(0xbfefff,{transparent:true,opacity:.35,roughness:.1}),s*.14,0,-.005,g)});add(new THREE.BoxGeometry(.07,.018,.018),m,0,.01,0,g)}},
     {id:'clown',label:'Clown nose',col:0xe23b3b,make(g,a,m){m.roughness=.2;const[x,y,z]=a.nose;add(new THREE.SphereGeometry(.075,14,10),m,x,y-a.eyeY,z-a.face+.04,g)}}],
+  ears:[
+    {id:'phones',label:'Headphones',col:0xff5a5f,make(g,a,m){const r=a.hr*1.18;m.roughness=.4;
+      const band=add(new THREE.TorusGeometry(r,.03,8,24,PI),m,0,.04,0,g);band.rotation.z=0;
+      [-1,1].forEach(s=>{const c=add(new THREE.CylinderGeometry(a.hr*.3,a.hr*.3,.09,16),m,s*(r-.03),-.03,0,g);c.rotation.z=PI/2;
+        const l=add(new THREE.CylinderGeometry(a.hr*.16,a.hr*.16,.02,14),accM(0x7ff0ff,{emissive:0x1d6070,roughness:.2}),s*(r+.025),-.03,0,g);l.rotation.z=PI/2})}}],
   neck:[
     {id:'scarf',label:'Scarf',who:FP,col:0xe2493b,kind:'scarf',make(g,a,m,it){m.roughness=.8;
       const ring=add(new THREE.TorusGeometry(a.neckR,.058,8,24),m,0,0,0,g);ring.rotation.x=PI/2;
@@ -54,25 +59,29 @@ const ACC={
       [-1,1].forEach(e=>add(new THREE.BoxGeometry(.36,.07,.09),accM(0xf2b33d),0,e*.28,.05,b))}},
     {id:'cape',label:'Cape',col:0xe23b3b,kind:'cape',make(g,a,m,it){m.side=THREE.DoubleSide;const c=[];let pp=g,y0=.3,z0=0;
       for(let i=0;i<4;i++){const s=new THREE.Group();s.position.set(0,y0,z0);pp.add(s);add(new THREE.BoxGeometry(.5+i*.06,.2,.025),m,0,-.1,0,s);c.push(s);pp=s;y0=-.2;z0=0}it.c=c}}]};
-const ACC_SLOTS=[['top','Head'],['face','Face'],['neck','Neck'],['back','Back']];
+const ACC_SLOTS=[['top','Head'],['face','Face'],['ears','Ears'],['neck','Neck'],['back','Back']];
 // what this character may wear in a slot
 const accFor=(slot,ch)=>ACC[slot].filter(i=>!i.who||i.who.includes(chars[ch].name));
 // ---------- looks ----------
 const LOOKS={};
 // a.<slot>: '' = whatever the outfit comes with, 'off' = nothing, else an accessory id
-const blankLook=()=>({c:{},a:{top:'',face:'',neck:'',back:''},ac:null,f:{},cap:undefined,soles:undefined,body:undefined,gog:undefined,hood:undefined,hc:undefined});
+const blankLook=()=>({c:{},a:{top:'',face:'',ears:'',neck:'',back:''},ac:null,f:{},cap:undefined,soles:undefined,body:undefined,gog:undefined,hood:undefined,hc:undefined,acs:undefined});
 function cleanLook(L,ch){const o=blankLook();if(!L||typeof L!=='object')return o;const parts=(PARTS[chars[ch].name]||[]).map(p=>p[0]);
   if(L.c&&typeof L.c==='object')for(const k of parts)if(Number.isInteger(L.c[k])&&L.c[k]>=0&&L.c[k]<=0xffffff)o.c[k]=L.c[k];
   if(L.a&&typeof L.a==='object')for(const[s]of ACC_SLOTS)if(L.a[s]==='off'||accFor(s,ch).some(i=>i.id===L.a[s]))o.a[s]=L.a[s];
   if(L.gog===0||L.gog===1)o.gog=L.gog;
   if(L.hood==='reg'||L.hood==='big')o.hood=L.hood;if(Number.isInteger(L.hc)&&L.hc>=0&&L.hc<=0xffffff)o.hc=L.hc;
-  if(Number.isInteger(L.ac)&&L.ac>=0&&L.ac<=0xffffff)o.ac=L.ac;
+  const okC=v=>Number.isInteger(v)&&v>=0&&v<=0xffffff;
+  if(okC(L.ac))o.ac=L.ac;
+  if(L.acs&&typeof L.acs==='object'){const a={};for(const[sl]of ACC_SLOTS)if(okC(L.acs[sl]))a[sl]=L.acs[sl];if(Object.keys(a).length)o.acs=a}
   if(L.cap===0||L.cap===1)o.cap=L.cap;
   if(L.soles===0)o.soles=0;
   if(L.body==='slender')o.body='slender';
   // face: only known styles, and toggles as 0 (off)
-  if(L.f&&typeof L.f==='object'){for(const k in FACE_OPTS)if(FACE_OPTS[k].some(([v])=>v===L.f[k])&&L.f[k]!==FACE_OPTS[k][0][0])o.f[k]=L.f[k];
-    for(const[k]of FACE_TOGGLES)if(L.f[k]===0)o.f[k]=0}
+  // face: known styles, switches as 0 / 1; anything equal to the character's own default isn't stored
+  if(L.f&&typeof L.f==='object'){const rig=chars[ch].rig,dv=k=>faceVal(rig,{},k);
+    for(const k in FACE_OPTS)if(FACE_OPTS[k].some(([v])=>v===L.f[k])&&L.f[k]!==dv(k))o.f[k]=L.f[k];
+    for(const[k]of FACE_TOGGLES)if((L.f[k]===0||L.f[k]===1)&&L.f[k]!==(dv(k)===0?0:1))o.f[k]=L.f[k]}
   return o}
 function saveLook(ch){try{localStorage.setItem('orbRunLook_'+chars[ch].name,JSON.stringify(LOOKS[ch]))}catch(e){}}
 function applyLook(rig,ch,of,L){const list=chars[ch].outs;if(!list)return;applyOutfitTo(rig.mats,of,list,rig);
@@ -92,12 +101,18 @@ function accPick(rig,L,o,slot){const v=L.a[slot];if(v==='off')return null;
 function buildAcc(rig,L,o){(rig.accA||[]).forEach(it=>{freeTree(it.g);_freeHood(it)});rig.accA=[];const a=rig.anc;if(!a)return;const nat=rig.native||{},on={};
   for(const[slot]of ACC_SLOTS){const pk=accPick(rig,L,o,slot);if(!pk)continue;const def=pk.def;on[def.id]=1;
     if(nat[def.id])continue;   // their own model: shown below
-    const m=accM(pk.own?(L.ac??def.col):(pk.col??def.col)),it={kind:def.kind,id:def.id,fromOutfit:!pk.own};
+    const sc=(L.acs||{})[slot],m=accM(sc??(pk.own?(L.ac??def.col):(pk.col??def.col))),it={kind:def.kind,id:def.id,fromOutfit:!pk.own,slot};
     let g;if(slot==='top'){const pv=new THREE.Group();pv.rotation.z=-(a.tilt||0);rig.head.add(pv);g=new THREE.Group();g.position.y=a.top;pv.add(g);it.g=pv}
     else if(slot==='face'){g=new THREE.Group();g.position.set(0,a.eyeY,a.face);rig.head.add(g);it.g=g}
+    else if(slot==='ears'){const pv=new THREE.Group();pv.rotation.z=-(a.tilt||0);rig.head.add(pv);g=new THREE.Group();pv.add(g);it.g=pv}
     else if(slot==='neck'){g=new THREE.Group();g.position.set(0,a.neckY,0);(rig.torso||rig.hp).add(g);it.g=g}
     else{g=new THREE.Group();g.position.set(0,a.backY,a.backZ-(L.hood?L.hood==='big'?.12:.07:0));rig.hp.add(g);it.g=g}
     def.make(g,a,m,it);rig.accA.push(it)}
+  // their own gear takes a slot color too: its main material is swapped for a recolored copy (and back)
+  const slotOf={};for(const[slot]of ACC_SLOTS){const pk=accPick(rig,L,o,slot);if(pk)slotOf[pk.def.id]=slot}
+  for(const id in nat){const key=(rig.natMain||{})[id],main=key&&rig.mats[key],c=on[id]&&(L.acs||{})[slotOf[id]];
+    nat[id].forEach(n=>n.traverse(m=>{if(!m.material)return;if(m._om===undefined)m._om=m.material;
+      if(c!==undefined&&c!==null&&m._om===main){if(!m._rc){m._rc=main.clone();}m._rc.color.setHex(c);m.material=m._rc}else m.material=m._om}))}
   for(const id in nat)nat[id].forEach(n=>{n.visible=!!on[id];if(id==='board')n.position.z=-.42-(L.hood?L.hood==='big'?.12:.07:0)});
   if(rig.hairTop)rig.hairTop.visible=!on.beanie;
   // a winter hat on Flipper replaces his cap and covers his hair; the goggles sit on its brim
@@ -149,14 +164,29 @@ function accFrame(H,dt,sp,air,dv){for(const it of H.accA){
 function loadLooks(){chars.forEach((c,i)=>{if(!c.outs)return;let L=null;try{L=JSON.parse(localStorage.getItem('orbRunLook_'+c.name)||'null')}catch(e){}LOOKS[i]=cleanLook(L,i);applyLook(c.rig,i,OFI[i],LOOKS[i])})}
 loadLooks();
 // ---------- the Customize panel ----------
-const CUST={on:false,tab:'outfit',rot:0,drag:null};
+const CUST={on:false,tab:'outfit',rot:0,drag:null,rotTo:null,acT:'top'};
 // tabs for the current character (Face only where the model has face options)
-const custTabs=()=>['outfit','color',...(chars[ci].rig&&chars[ci].rig.face?['face']:[]),'acc'];
-function openCust(){if(!chars[ci].outs)return;CUST.on=true;CUST.rot=0;$('cs').classList.add('hide');$('cust').classList.remove('hide');renderCust();wave=0;SFX.ui(3);
+const custTabs=()=>['outfit','color',...(chars[ci].rig&&chars[ci].rig.face?['face']:[]),'wear','acc'];
+function openCust(){if(!chars[ci].outs)return;CUST.on=true;CUST.rot=0;CUST.rotTo=null;$('cs').classList.add('hide');$('cust').classList.remove('hide');renderCust();wave=0;SFX.ui(3);
   setTimeout(()=>{const b=$('cust').querySelector('.ctab.on');b&&b.focus()},50)}
 function closeCust(){CUST.on=false;$('cust').classList.add('hide');$('cs').classList.remove('hide');showChar();setTimeout(()=>$('csGo').focus(),50)}
-function setLook(fn){const L=LOOKS[ci];fn(L);saveLook(ci);applyLook(chars[ci].rig,ci,OFI[ci],L);renderCust()}
-function renderCust(){const c=chars[ci],L=LOOKS[ci],list=c.outs;$('custName').textContent=c.name;
+// every change can be undone (Undo button / Z): a snapshot of the look and outfit goes on a stack first
+const CHIST=[];
+function snapLook(){CHIST.push({ci,of:OFI[ci],L:JSON.stringify(LOOKS[ci])});if(CHIST.length>40)CHIST.shift();updUndo()}
+function undoLook(){let h;while((h=CHIST.pop())&&h.ci!==ci);if(!h){updUndo();SFX.deny();return}
+  OFI[ci]=h.of;try{localStorage.setItem(chars[ci].ofKey,h.of)}catch(e){}LOOKS[ci]=cleanLook(JSON.parse(h.L),ci);saveLook(ci);applyLook(chars[ci].rig,ci,OFI[ci],LOOKS[ci]);renderCust();SFX.ui(1);updUndo()}
+function updUndo(){const b=$('custUndo');if(b)b.disabled=!CHIST.some(h=>h.ci===ci)}
+function setLook(fn,hist=true){const L=LOOKS[ci];if(hist)snapLook();fn(L);saveLook(ci);applyLook(chars[ci].rig,ci,OFI[ci],L);renderCust()}
+// turn the character to show what you're changing: their back for back items and hoodies, their front otherwise
+function turnTo(slot){CUST.rotTo=slot==='back'?PI*.85:slot===null?null:.25}
+// Surprise me: a random face, accessories (each slot about half the time), colors and maybe a hoodie. Undo puts it back.
+function surpriseLook(){const r=a=>a[Math.floor(Math.random()*a.length)],rig=chars[ci].rig;
+  setLook(L=>{if(rig.face){L.f={};for(const k in FACE_OPTS){const v=r(FACE_OPTS[k])[0];if(v!==faceVal(rig,{},k))L.f[k]=v}}
+    L.acs={};for(const[sl]of ACC_SLOTS){const o=accFor(sl,ci);L.a[sl]=o.length&&Math.random()<.55?r(o).id:'off';if(L.a[sl]!=='off')L.acs[sl]=r(CPAL)}
+    if(rig.anc&&rig.anc.hood&&Math.random()<.35){L.hood=r(['reg','big']);L.hc=r(CPAL)}else delete L.hood});
+  wave=1.6;SFX.ui(5)}
+function renderCust(){const c=chars[ci],L=LOOKS[ci],list=c.outs;$('custName').textContent=c.name;updUndo();
+  if(CUST.tab==='face'&&CUST.lastTab!=='face')CUST.rotTo=0;CUST.lastTab=CUST.tab;   // the Face tab always turns them to face you
   if(!custTabs().includes(CUST.tab))CUST.tab='outfit';
   document.querySelectorAll('#cust .ctab').forEach(b=>{b.classList.toggle('on',b.dataset.t===CUST.tab);b.setAttribute('aria-selected',b.dataset.t===CUST.tab);b.classList.toggle('hide',!custTabs().includes(b.dataset.t))});
   const sw=(attr,v,cur,label)=>`<button class="sw${cur?' cur':''}" ${attr}="${v}" style="background:${hexS(v)}" aria-label="${label}" title="${label}"></button>`;
@@ -166,18 +196,26 @@ function renderCust(){const c=chars[ci],L=LOOKS[ci],list=c.outs;$('custName').te
   else if(CUST.tab==='color'){const base=list[OFI[ci]];
     h=(PARTS[c.name]||[]).map(([k,lab])=>{const cur=L.c[k]??base[k]??(k==='hair'?HAIR:undefined);return`<div class="crow"><span>${lab}${L.c[k]!==undefined?` <button class="cundo" data-u="${k}" title="Back to the outfit's color" aria-label="Reset ${lab}">↺</button>`:''}</span><div class="cpal">${(k==='hair'?HPAL:CPAL).map(v=>sw('data-c',v,v===cur,lab+' '+hexS(v))).join('').replace(/data-c=/g,`data-p="${k}" data-c=`)}</div></div>`}).join('')}
   else if(CUST.tab==='face'){const f=L.f||{};
-    h=[['eyes','Eyes'],['brows','Eyebrows'],['mouth','Mouth']].map(([k,lab])=>`<div class="crow"><span>${lab}</span><div class="copts">${FACE_OPTS[k].map(([v,n],i)=>`<button class="opt${(f[k]||FACE_OPTS[k][0][0])===v?' on':''}" data-fk="${k}" data-fv="${v}">${n}</button>`).join('')}</div></div>`).join('')+
-      FACE_TOGGLES.map(([k,n])=>`<div class="crow"><span>${n}</span><div class="copts"><button class="opt${f[k]!==0?' on':''}" data-fs="${k}" data-fo="1">On</button><button class="opt${f[k]===0?' on':''}" data-fs="${k}" data-fo="0">Off</button></div></div>`).join('')}
-  else{const hatOn=(accPick(c.rig,L,list[OFI[ci]],'top')||{def:{}}).def.id==='beanie',capRow=c.rig.parts&&c.rig.parts.cap?(()=>{const on=L.cap!==undefined?!!L.cap:!(list[OFI[ci]].hide||[]).includes('cap');
-      return(hatOn?'':`<div class="crow"><span>Aviator cap</span><div class="copts"><button class="opt${on?' on':''}" data-cap="1">On</button><button class="opt${on?'':' on'}" data-cap="0">Off</button></div></div>`)+
-      `<div class="crow"><span>Shoes</span><div class="copts"><button class="opt${L.soles!==0?' on':''}" data-soles="1">With soles</button><button class="opt${L.soles===0?' on':''}" data-soles="0">Plain</button></div></div>`})():'';
-    const o=list[OFI[ci]],gogOn=L.gog!==undefined?!!L.gog:!(o.hide||[]).includes('goggles'),
-      gogRow=c.rig.gogG?`<div class="crow"><span>Goggles</span><div class="copts"><button class="opt${gogOn?' on':''}" data-gog="1">On head</button><button class="opt${gogOn?'':' on'}" data-gog="0">Off</button></div></div>`:'',
-      hoodRow=c.rig.anc&&c.rig.anc.hood?`<div class="crow"><span>Hoodie</span><div class="copts">${[['','None'],['reg','Regular fit'],['big','Oversized']].map(([v,n])=>`<button class="opt${(L.hood||'')===v?' on':''}" data-hood="${v}">${n}</button>`).join('')}</div></div>`+
-        (L.hood?`<div class="crow"><span>Hoodie color</span><div class="cpal">${CPAL.map(v=>sw('data-hc',v,v===(L.hc??HOOD_COL),'Hoodie '+hexS(v))).join('')}</div></div>`:''):'';
-    h=capRow+gogRow+hoodRow+ACC_SLOTS.map(([s,lab])=>{const opts=accFor(s,ci);if(!opts.length)return'';const pk=accPick(c.rig,L,o,s),cur=pk?pk.def.id:'';
-      return`<div class="crow"><span>${lab}</span><div class="copts"><button class="opt${!cur?' on':''}" data-s="${s}" data-a="off">None</button>${opts.map(i=>`<button class="opt${cur===i.id?' on':''}" data-s="${s}" data-a="${i.id}">${i.label}</button>`).join('')}</div></div>`}).join('')+
-    `<div class="crow"><span>Accessory color${L.ac!==null?' <button class="cundo" data-u="ac" aria-label="Reset accessory color">↺</button>':''}</span><div class="cpal">${CPAL.map(v=>sw('data-ac',v,v===L.ac,'Accessory '+hexS(v))).join('')}</div></div>`}
+    h=[['eyes','Eyes'],['brows','Eyebrows'],['mouth','Mouth']].map(([k,lab])=>`<div class="crow"><span>${lab}</span><div class="copts">${FACE_OPTS[k].map(([v,n],i)=>`<button class="opt${faceVal(c.rig,f,k)===v?' on':''}" data-fk="${k}" data-fv="${v}">${n}</button>`).join('')}</div></div>`).join('')+
+      FACE_TOGGLES.map(([k,n])=>`<div class="crow"><span>${n}</span><div class="copts"><button class="opt${faceVal(c.rig,f,k)!==0?' on':''}" data-fs="${k}" data-fo="1">On</button><button class="opt${faceVal(c.rig,f,k)===0?' on':''}" data-fs="${k}" data-fo="0">Off</button></div></div>`).join('')}
+  else if(CUST.tab==='wear'){const o=list[OFI[ci]],P_=c.rig.parts||{},hatOn=(accPick(c.rig,L,o,'top')||{def:{}}).def.id==='beanie',
+      row=(lab,btns)=>`<div class="crow"><span>${lab}</span><div class="copts">${btns.map(([attr,v,n,on])=>`<button class="opt${on?' on':''}" ${attr}="${v}">${n}</button>`).join('')}</div></div>`;
+    const capOn=L.cap!==undefined?!!L.cap:!(o.hide||[]).includes('cap'),gogOn=L.gog!==undefined?!!L.gog:!(o.hide||[]).includes('goggles');
+    h=(P_.cap&&!hatOn?row('Aviator cap',[['data-cap',1,'On',capOn],['data-cap',0,'Off',!capOn]]):'')+
+      (c.rig.gogG?row('Goggles',[['data-gog',1,'On head',gogOn],['data-gog',0,'Off',!gogOn]]):'')+
+      (P_.soles?row('Shoes',[['data-soles',1,'With soles',L.soles!==0],['data-soles',0,'Plain',L.soles===0]]):'')+
+      (c.rig.anc&&c.rig.anc.hood?row('Hoodie',[['','None'],['reg','Regular fit'],['big','Oversized']].map(([v,n])=>['data-hood',v,n,(L.hood||'')===v]))+
+        (L.hood?`<div class="crow"><span>Hoodie color</span><div class="cpal">${CPAL.map(v=>sw('data-hc',v,v===(L.hc??HOOD_COL),'Hoodie '+hexS(v))).join('')}</div></div>`:''):'')}
+  else{const o=list[OFI[ci]],worn=[];
+    h=ACC_SLOTS.map(([s,lab])=>{const opts=accFor(s,ci);if(!opts.length)return'';const pk=accPick(c.rig,L,o,s),cur=pk?pk.def.id:'';if(pk)worn.push([s,lab,pk.def]);
+      return`<div class="crow"><span>${lab}</span><div class="copts"><button class="opt${!cur?' on':''}" data-s="${s}" data-a="off">None</button>${opts.map(i=>`<button class="opt${cur===i.id?' on':''}" data-s="${s}" data-a="${i.id}">${i.label}</button>`).join('')}</div></div>`}).join('');
+    // one palette for whichever worn accessory you pick above it
+    if(worn.length){if(!worn.some(w=>w[0]===CUST.acT))CUST.acT=worn[0][0];const t=worn.find(w=>w[0]===CUST.acT),sc=(L.acs||{})[CUST.acT],
+        nk=(c.rig.natMain||{})[t[2].id],cur=sc??(c.rig.native&&c.rig.native[t[2].id]&&nk?c.rig.mats[nk].color.getHex():L.ac??(accPick(c.rig,L,o,CUST.acT).col??t[2].col));
+      h+=`<div class="crow"><span>Color${sc!==undefined?` <button class="cundo" data-u="acs" aria-label="Reset ${t[2].label} color">↺</button>`:''}</span>
+        <div class="copts acts">${worn.map(([s,lab,d])=>`<button class="opt${s===CUST.acT?' on':''}" data-act="${s}" title="${lab}">${d.label}</button>`).join('')}</div>
+        <div class="cpal">${CPAL.map(v=>sw('data-ac',v,v===cur,t[2].label+' '+hexS(v))).join('')}</div></div>`}
+    else h+='<p class="bHelp">Nothing on yet. Pick something above.</p>'}
   const a=document.activeElement,key=a&&$('cust').contains(a)?[...a.attributes].filter(x=>x.name.startsWith('data-')).map(x=>`[${x.name}="${x.value}"]`).join(''):'';
   $('custBody').innerHTML=h;
   if(key&&document.body.classList.contains('padnav')){const n=$('cust').querySelector('button'+key);n&&padFocus(n)}}
@@ -186,28 +224,32 @@ $('cust').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)
   if(b.id==='custDone'){closeCust();SFX.ui(3);return}
   if(b.id==='custReset'){if(!b.dataset.sure){b.dataset.sure='1';b.textContent='Sure?';setTimeout(()=>{delete b.dataset.sure;b.textContent='Reset look'},2500);return}
     setLook(L=>Object.assign(L,blankLook()));SFX.ui(1);return}
-  if(d.o!==undefined){setOutfit(+d.o);renderCust();return}
+  if(b.id==='custUndo'){undoLook();return}
+  if(b.id==='custRand'){surpriseLook();return}
+  if(d.o!==undefined){snapLook();setOutfit(+d.o);renderCust();return}
   if(d.p){setLook(L=>L.c[d.p]=+d.c);SFX.ui(4);return}
-  if(d.u){setLook(L=>{if(d.u==='ac')L.ac=null;else delete L.c[d.u]});SFX.ui(1);return}
+  if(d.u){setLook(L=>{if(d.u==='ac')L.ac=null;else if(d.u==='acs'){if(L.acs)delete L.acs[CUST.acT]}else delete L.c[d.u]});SFX.ui(1);return}
+  if(d.act){CUST.acT=d.act;turnTo(d.act);renderCust();SFX.ui(2);return}
   if(d.body){setLook(L=>{if(d.body==='slender')L.body='slender';else delete L.body});SFX.ui(4);return}
   if(d.soles!==undefined){setLook(L=>{if(d.soles==='0')L.soles=0;else delete L.soles});SFX.ui(4);return}
   if(d.cap!==undefined){setLook(L=>{L.cap=+d.cap});SFX.ui(4);return}
-  if(d.fk){setLook(L=>{L.f=L.f||{};if(d.fv===FACE_OPTS[d.fk][0][0])delete L.f[d.fk];else L.f[d.fk]=d.fv});SFX.ui(4);return}
+  if(d.fk){setLook(L=>{L.f=L.f||{};if(d.fv===faceVal(chars[ci].rig,{},d.fk))delete L.f[d.fk];else L.f[d.fk]=d.fv});SFX.ui(4);return}
   if(d.ft){setLook(L=>{L.f=L.f||{};if(L.f[d.ft]===0)delete L.f[d.ft];else L.f[d.ft]=0});SFX.ui(4);return}
-  if(d.fs){setLook(L=>{L.f=L.f||{};if(d.fo==='0')L.f[d.fs]=0;else delete L.f[d.fs]});SFX.ui(4);return}
-  if(d.s){setLook(L=>L.a[d.s]=d.a);wave=d.a!=='off'?1.6:0;SFX.ui(d.a!=='off'?5:1);return}
+  if(d.fs){setLook(L=>{L.f=L.f||{};const v=+d.fo,def=faceVal(chars[ci].rig,{},d.fs)===0?0:1;if(v===def)delete L.f[d.fs];else L.f[d.fs]=v});SFX.ui(4);return}
+  if(d.s){CUST.acT=d.s;turnTo(d.s);setLook(L=>L.a[d.s]=d.a);wave=d.a!=='off'?1.6:0;SFX.ui(d.a!=='off'?5:1);return}
   if(d.gog!==undefined){setLook(L=>{L.gog=+d.gog});SFX.ui(4);return}
-  if(d.hood!==undefined){setLook(L=>{if(d.hood)L.hood=d.hood;else delete L.hood});wave=d.hood?1.6:0;SFX.ui(d.hood?5:1);return}
+  if(d.hood!==undefined){turnTo(d.hood?'back':null);setLook(L=>{if(d.hood)L.hood=d.hood;else delete L.hood});wave=d.hood?1.6:0;SFX.ui(d.hood?5:1);return}
   if(d.hc){setLook(L=>L.hc=+d.hc);SFX.ui(4);return}
-  if(d.ac){setLook(L=>L.ac=+d.ac);SFX.ui(4)}});
+  if(d.ac){setLook(L=>{L.acs=L.acs||{};L.acs[CUST.acT]=+d.ac});SFX.ui(4)}});
 // turn the character: drag the view, or arrow keys / D-pad
-renderer.domElement.addEventListener('pointerdown',e=>{if(CUST.on){CUST.drag=e.clientX;renderer.domElement.setPointerCapture(e.pointerId)}});
+renderer.domElement.addEventListener('pointerdown',e=>{if(CUST.on){CUST.rotTo=null;CUST.drag=e.clientX;renderer.domElement.setPointerCapture(e.pointerId)}});
 renderer.domElement.addEventListener('pointermove',e=>{if(CUST.on&&CUST.drag!==null){CUST.rot+=(e.clientX-CUST.drag)*.012;CUST.drag=e.clientX}});
 renderer.domElement.addEventListener('pointerup',()=>{CUST.drag=null});
-function custKey(code){if(code==='ArrowLeft'||code==='KeyA')CUST.rot-=.5;else if(code==='ArrowRight'||code==='KeyD')CUST.rot+=.5;
+function custKey(code){if(code==='ArrowLeft'||code==='KeyA'){CUST.rotTo=null;CUST.rot-=.5}else if(code==='ArrowRight'||code==='KeyD'){CUST.rotTo=null;CUST.rot+=.5}
+  else if(code==='KeyZ')undoLook();
   else if(code==='Escape'){closeCust();return true}else if(code==='KeyQ'||code==='KeyE'){const T=custTabs();CUST.tab=T[(T.indexOf(CUST.tab)+(code==='KeyE'?1:T.length-1))%T.length];renderCust()}return true}
 // controller: D-pad / left stick move between controls, ✕ picks, ○ done, L1 / R1 tabs, right stick turns the character
-function custPad(L,R,U,D,ok,back,lb,rb,gp){const rx=gp&&gp.axes[2]||0;if(Math.abs(rx)>.2)CUST.rot+=rx*.07;
+function custPad(L,R,U,D,ok,back,lb,rb,gp){const rx=gp&&gp.axes[2]||0;if(Math.abs(rx)>.2){CUST.rotTo=null;CUST.rot+=rx*.07}
   if(back){closeCust();return}
   if(lb||rb){const T=custTabs();CUST.tab=T[(T.indexOf(CUST.tab)+(rb?1:T.length-1))%T.length];renderCust();const t=$('cust').querySelector('.ctab.on');t&&padFocus(t);$('custBody').scrollTop=0;SFX.ui(2);return}
   panelNav($('cust'),L,R,U,D,ok)}

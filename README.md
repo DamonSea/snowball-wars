@@ -37,11 +37,12 @@ wobble back, punches that reach, and ground pounds that ball up, stretch down an
 ### Make them yours
 On character select, **Customize** (Flipper, Parker and Tuk) opens a dressing room: start from an outfit, repaint every part
 (jacket, hat or hair, scarf or bandana, pants, boots, gloves and more; Flipper's hair has its own palette of natural
-shades) and add accessories. Flipper also has a **Face** tab: eyes, eyebrows and mouth styles, and switches for his
+shades) and add accessories. Flipper and Parker also have a **Face** tab: eyes, eyebrows and mouth styles, and switches for his
 eye whites, eye shine, nose, freckles and blush (each On / Off), and a **Body type** choice: Stout (his own build) or Slender (Parker's proportions). Head: flaming head, party hat,
 propeller cap, cat ears, halo. Face: shades, round specs, clown nose. Back: cape. Flipper and Parker share a few more:
 Parker's winter hat and snowboard and Flipper's scarf (Neck), and "None" takes off even the ones they start with.
-Flipper's goggles can come off, and everyone can wear a **hoodie** (regular or oversized, any color) over their outfit.
+Headphones (Ears) for anyone; each accessory takes its own color. The **Wear** tab has the cap, goggles, shoes and
+**hoodie**; **Undo** (or Z) and **Surprise me** sit under every tab. Flipper's goggles can come off, and everyone can wear a **hoodie** (regular or oversized, any color) over their outfit.
 They move, too: the propeller spins faster as you run, flames flicker, hats and scarves swing, the hood bounces and the
 cape streams.
 Your look shows up for friends in multiplayer.

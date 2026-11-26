@@ -14,7 +14,7 @@ let allVis=true,moved=0,prev=null;const body=$('custBody');for(let i=0;i<14;i++)
 ok('scrolling the Colors list keeps the focused swatch in view ('+moved+' moves, scrolled '+body.scrollTop+'px)',allVis&&body.scrollTop>0&&moved>8);
 tap(RT);const sw=document.activeElement;tap(X);ok('cross picks the focused swatch',sw.dataset.p&&LOOKS[2].c[sw.dataset.p]===+sw.dataset.c);
 ok('focus stays on that swatch after the redraw',document.activeElement&&document.activeElement.dataset.c===sw.dataset.c&&document.activeElement.dataset.p===sw.dataset.p);
-tap(R1);tap(R1);tap(DN);tap(DN);const ab=document.activeElement;tap(X);ok('accessory picked with cross ('+(ab.textContent)+')',ab.dataset.s&&LOOKS[2].a[ab.dataset.s]===ab.dataset.a);
+tap(R1);tap(R1);tap(R1);tap(DN);tap(DN);const ab=document.activeElement;tap(X);ok('accessory picked with cross ('+(ab.textContent)+')',ab.dataset.s&&LOOKS[2].a[ab.dataset.s]===ab.dataset.a);
 gp.axes[2]=1;const r0=CUST.rot;__step(10);gp.axes[2]=0;ok('right stick turns the character',CUST.rot>r0+.3);
 tap(O);ok('circle closes back to select',!CUST.on&&state==='select');
 // settings

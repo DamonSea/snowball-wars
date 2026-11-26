@@ -8,7 +8,7 @@ ok('saved',JSON.parse(localStorage.getItem('orbRunLook_Flipper')).c.jacket===0x2
 document.querySelector('#cust .ctab[data-t="acc"]').click();document.querySelector('#custBody [data-s="top"][data-a="propeller"]').click();document.querySelector('#custBody [data-s="back"][data-a="cape"]').click();document.querySelector('#custBody [data-s="face"][data-a="shades"]').click();
 ok('3 accessories built',F.accA.length===3);
 const pr=F.accA.find(a=>a.kind==='prop').p,r0=pr.rotation.y;__step(10);ok('propeller spins',pr.rotation.y!==r0);
-document.querySelector('#custBody [data-ac="'+0xe23b3b+'"]').click();ok('accessory color',LOOKS[2].ac===0xe23b3b);
+document.querySelector('#custBody [data-act="face"]').click();document.querySelector('#custBody [data-ac="'+0xe23b3b+'"]').click();ok('accessory color, per slot',LOOKS[2].acs.face===0xe23b3b&&!LOOKS[2].acs.top);
 document.querySelector('#cust .ctab[data-t="outfit"]').click();document.querySelector('#custBody [data-o="1"]').click();ok('preset clears colors, keeps accessories',!LOOKS[2].c.jacket&&OFI[2]===1&&F.accA.length===3);
 CUST.rot=0;custKey('ArrowRight');__step(3);ok('turntable',CUST.rot===.5&&Math.abs(face-.5)<.01);
 custKey('Escape');ok('Esc closes back to select',!CUST.on&&!$('cs').classList.contains('hide'));

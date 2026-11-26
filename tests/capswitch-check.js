@@ -1,7 +1,7 @@
 (()=>{closePark();const out=[];const ok=(n,c,x='')=>out.push((c?'OK   ':'FAIL ')+n+(x!==''?' -> '+x:''));
-menu();pickMode='run';pickLevel=0;ci=2;showChar();__step(3);setOutfit(0);setLook(L=>{delete L.cap});openCust();CUST.tab='acc';renderCust();__step(2);
+menu();pickMode='run';pickLevel=0;ci=2;showChar();__step(3);setOutfit(0);setLook(L=>{delete L.cap});openCust();CUST.tab='wear';renderCust();__step(2);
 const R=chars[2].rig,vis=k=>R.parts[k].every(m=>m.visible);
-ok('Accessories tab has an Aviator cap switch (On)',!!$('custBody').querySelector('[data-cap="1"].on'));
+ok('Wear tab has an Aviator cap switch (On)',!!$('custBody').querySelector('[data-cap="1"].on'));
 $('custBody').querySelector('[data-cap="0"]').click();__step(2);
 ok('Cap off: cap gone, hair shows',!vis('cap')&&vis('hair'),LOOKS[2].cap);
 ok('...goggles stay, pushed up on his hair (no strap)',R.parts.goggles[1].visible&&!R.parts.gogStrap[0].visible&&R.gogG.scale.x>1);
@@ -19,5 +19,5 @@ $('custBody').querySelector('[data-soles="0"]').click();__step(2);ok('Plain shoe
 setOutfit(2);__step(2);ok('...kept across outfits',!vis('soles'));
 const a2=makeAv(2);applyLook(a2.rig,2,2,cleanLook(LOOKS[2],2));ok('Friends see plain shoes',!a2.rig.parts.soles[0].visible);
 $('custBody').querySelector('[data-soles="1"]').click();__step(2);ok('Back to soles',vis('soles')&&LOOKS[2].soles===undefined);setOutfit(0);
-closeCust();ci=3;showChar();openCust();CUST.tab='acc';renderCust();ok('Nova has no cap switch',!$('custBody').querySelector('[data-cap]'));closeCust();
+closeCust();ci=3;showChar();openCust();CUST.tab='wear';renderCust();ok('Parker has no cap switch',!$('custBody').querySelector('[data-cap]'));closeCust();
 return out.join('\n')})()
