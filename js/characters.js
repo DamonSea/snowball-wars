@@ -220,15 +220,19 @@ function buildNova(parent=P){
   // head
   const head=new THREE.Group();head.position.set(0,.88,0);hp.add(head);
   add(S(.4,20,16),skin,0,0,0,head);
-  // curly hair cloud around the back and sides, under the beanie
-  for(let i=0;i<11;i++){const a=PI*.62+i*(PI*.76/10),y=-.06+Math.sin(i*1.7)*.05;add(S(.14+(i%3)*.025,10,8),hair,Math.sin(a)*.36,y,Math.cos(a)*.36,head)}
-  [-1,1].forEach(s=>add(S(.12,10,8),hair,s*.36,-.17,-.12,head));
+  // curls around the back and sides (under the beanie too): a smooth base, then staggered rows of small curls in two
+  // tones down to the nape, the same style as the curls on top
+  const hair2=sm(0x3a261c,{roughness:.9});
+  {const bs=add(new THREE.SphereGeometry(.402,20,12,PI*.95,PI*1.1,PI*.38,PI*.42),hair,0,0,-.01,head);
+    [[.08,13,.082],[-.02,14,.09],[-.12,13,.088],[-.21,11,.08],[-.28,7,.068]].forEach(([y,n,r],row)=>{const R=Math.sqrt(.41*.41-y*y)+.015;
+      for(let i=0;i<n;i++){const a=PI*.56+(i+(row%2)*.5)/(n-.5)*PI*.88;   // from one cheek round the back to the other
+        add(S(r+(i%3)*.01,10,8),(i+row)%4?hair:hair2,Math.sin(a)*R,y+((i%2)?.012:-.012),Math.cos(a)*R-.01,head)}})}
   // the same face kit as Flipper, sized to her head; her defaults: soft brows, no freckles
   const{FACE,blinkOf}=buildFace(head,{skin,hair,freck:sm(0x5e3a26,{roughness:.8}),noseC:0x7a4a30,blushC:0xd9776a,k:.4/.45,oy:-.025});
   const eyes=blinkOf.round;
   // curls on top for when the hat comes off (Customize → Accessories): a swept-back base with a clean hairline, then
   // curls spread evenly over it (golden-angle spiral) in two tones, and a row of small ones along the hairline
-  const hairTop=new THREE.Group();head.add(hairTop);hairTop.visible=false;const hair2=sm(0x3a261c,{roughness:.9});
+  const hairTop=new THREE.Group();head.add(hairTop);hairTop.visible=false;
   {const TL=-.5,ca=Math.cos(TL),sa=Math.sin(TL);   // the base tilts back so its front edge (the hairline) sits above the brows
     const base=add(new THREE.SphereGeometry(.418,24,14,0,2*PI,0,PI*.5),hair,0,0,-.02,hairTop);base.rotation.x=TL;
     for(let i=0;i<34;i++){const t=(i+.5)/34,el=Math.acos(1-t*.95),az=i*2.39996;   // even spread over the cap
