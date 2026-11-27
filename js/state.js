@@ -12,6 +12,7 @@ const level=()=>Math.floor(score/5);
 
 function noLives(){return mode==='run'&&((typeof TAG!=='undefined'&&TAG.on)||(runFree&&!(typeof WAR!=='undefined'&&WAR.on)&&!(typeof FR!=='undefined'&&FR.on&&!FR.done)))}
 function hud(){
+  {const sc=$('k1').parentElement;if(sc)sc.style.display=mode==='run'&&runFree&&!ptsOn()&&!(typeof WAR!=='undefined'&&WAR.on)&&!(typeof TAG!=='undefined'&&TAG.on)?'none':''}   // free roam with trick points off: no score
   if(mode==='run'&&typeof TAG!=='undefined'&&TAG.on){$('k1').textContent=TAG.it==='me'?'You\u2019re It':'It time';$('v1').textContent=(TAG.itT.me||0).toFixed(0)+'s';$('v2').textContent=TAG.cd>0?'Ready':fmtClock(TAG.t);$('v2').classList.toggle('low',!TAG.cd&&TAG.t<15)}
   else if(mode==='run'&&typeof WAR!=='undefined'&&WAR.on){$('k1').textContent='KOs';$('v1').textContent=WAR.kos;$('v2').textContent=WAR.cd>0?'Ready':fmtClock(WAR.t);$('v2').classList.toggle('low',!WAR.cd&&WAR.t<15);lives=WAR.out>0?0:WAR.hp}
   else if(mode==='run'){$('k1').textContent=runFree?'Tricks':'Orbs';$('v1').textContent=runFree?score:orbN;$('v2').textContent=runFree?(typeof FR!=='undefined'&&FR.on?fmtRace(FR.t):'Free'):runCD>0?'Ready':Math.ceil(time);$('v2').classList.toggle('low',!runFree&&!runCD&&time<10)}

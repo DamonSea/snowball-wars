@@ -3,6 +3,16 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.61.0] - 2026-11-27 — Trick points toggle
+### Added
+- **Settings → Trick points** (off by default). With it off, free roam has no combo meter, multiplier, score or
+  "+points" pop-ups, and the score box leaves the HUD. Tricks and named gaps still happen and gaps are still
+  discovered. Turn it on for the old scoring. Collectathon, Snowball Wars and Tag keep their own scoring either way.
+### Changed
+- **PLAY pads are hidden on the built-in maps for now.** Start Collectathon, Snowball Wars or Tag with Enter / △ or
+  pause → Play. The pad code is kept (`BUILTIN_PADS` in trickpark.js brings them back), and maps made in the Map
+  Builder still have theirs.
+
 ## [2.60.0] - 2026-11-27 — Frosty Falls
 ### Added
 - **Frosty Falls**, the first Trick Park map now. It combines the Plaza and the Frozen Rink around a new centrepiece:

@@ -2,7 +2,7 @@
 const btns=()=>[...document.querySelectorAll('#ov .btns button')].filter(b=>b.textContent&&getComputedStyle(b).display!=='none').map(b=>b.textContent);
 const click=t=>[...document.querySelectorAll('#ov button')].find(b=>b.textContent===t).click();
 menu();pickMode='run';pickLevel=0;ci=2;showChar();confirmChar();__step(10);
-const sp=runL.spad;__place(sp.x,sp.z,0,0);__step(60);ok('PLAY pad menu: '+btns().join(', '),btns().join('|')==='Collectathon|Snowball Wars|Tag|Cancel');
+press('start');__step(2);ok('mode menu: '+btns().join(', '),btns().join('|')==='Collectathon|Snowball Wars|Tag|Cancel');
 click('Tag');__step(3);ok('Tag starts: 3 computer players, board up, someone is It',TAG.on&&TAG.bots.length===3&&$('warsBoard').classList.contains('on')&&!!TAG.it);
 ok('orbs and enemies cleared',orbs.length===0&&runHz.length===0);
 __step(200);ok('countdown over, clock running',TAG.cd===0&&TAG.t<120);

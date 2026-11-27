@@ -52,8 +52,9 @@ Your look shows up for friends in multiplayer.
 
 ### Trick Park
 Type **your name** on the character select screen: it's what friends see in multiplayer.
-Maps to skate, flip and wall-jump around. **Free roam** has no lives: tricks, combos and **named gaps** earn trick
-points (higher orbs are worth more there). Step on the PLAY pad to start a game: **Collectathon** (how many orbs can you
+Maps to skate, flip and wall-jump around. **Free roam** has no lives. Trick points are off by default; turn on
+Settings → **Trick points** and tricks, combos and **named gaps** earn points with a multiplier (higher orbs are worth
+more there). Press Enter / △ (or pause → Play) to start a game: **Collectathon** (how many orbs can you
 collect before time runs out?) is a straight count of orbs, **Snowball Wars** is hearts and KOs, and **Tag** is time spent It.
 - **Frosty Falls:** a frozen waterfall pours off a rocky cliff onto a skating rink. Butt-slide down the falls onto the
   ice, climb the cliff tiers to the Crown, hop Over the Falls, wall-jump the icy chimney to the Sky Deck, long-jump +
@@ -154,7 +155,7 @@ dawns). Night brings out a moon and twinkling stars, and the lamps glow.
 - **Graphics: Auto** adjusts render resolution to hold a smooth frame rate (or pick High, Balanced or Low). Press **`** (backtick) for a performance overlay: fps, frame time, draw calls and GPU memory.
 - **Pause** swings the camera round to face your character, who waves and idles beside the pause menu. **Edit character** there opens
   the customizer right where you're standing.
-- **Tag**: pick Tag on the PLAY pad. Whoever's It wears an IT! sign; touch someone to pass it on. Least time as It after 2 minutes wins. Snowballs stun the It.
+- **Tag**: pick Tag from the mode menu (Enter / △, or pause → Play). Whoever's It wears an IT! sign; touch someone to pass it on. Least time as It after 2 minutes wins. Snowballs stun the It.
 - **Friendly penguins**: they leave you alone until you hit one. Then it and its friends get angry.
 
   ![Tag](media/tag.png)

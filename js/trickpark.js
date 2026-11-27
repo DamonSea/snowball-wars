@@ -1,10 +1,20 @@
 // Trick Park mode: PLAY pad, trick combos and scoring, orbs, spikeballs, free roam and timed runs.
+// Trick points in free roam (Settings → Trick points, off by default): with them off, tricks and named gaps still
+// happen (and gaps are still discovered) but there's no combo meter, multiplier, score or "+points" pop-ups. Timed
+// games keep their own scoring.
+let TRICK_PTS=false;try{TRICK_PTS=localStorage.getItem('orbRunTrickPts')==='1'}catch(e){}
+const ptsOn=()=>TRICK_PTS||!runFree;
+function setTrickPts(on){TRICK_PTS=!!on;try{localStorage.setItem('orbRunTrickPts',on?'1':'0')}catch(e){}if(!on){Object.assign(TR,{pts:0,mult:0,names:[],t:0});score=0}showCombo();hud()}
+// Built-in maps hide their PLAY pads for now (2.61): modes start from the pause menu > Play, or Enter / △. The pad
+// code stays, and Map Builder maps still get theirs. Flip this to bring the pads back.
+const BUILTIN_PADS=false;
+const padOn=()=>!!(runL&&runL.spad)&&(BUILTIN_PADS||!!runL.custom);
 // ---------- RUN mode ----------
 let orbs=[],runHz=[],runQ=[],runT=0,bestCombo=0,hintTimer=null,runFree=true,runCD=0,padHold=0;
 // PLAY pad in the plaza: stand on it in free roam to begin a timed run
 const spadG=new THREE.Group();
 const rmObj=o=>freeTree(o);
-function useRunMap(i){runIdx=i;runL=RUNMAPS[i];try{localStorage.setItem('orbRunMap',i)}catch(e){}if(runL.spad){runL.grp.add(spadG);spadG.position.set(runL.spad.x,0,runL.spad.z)}else if(spadG.parent)spadG.parent.remove(spadG)}
+function useRunMap(i){runIdx=i;runL=RUNMAPS[i];try{localStorage.setItem('orbRunMap',i)}catch(e){}if(padOn()){runL.grp.add(spadG);spadG.position.set(runL.spad.x,0,runL.spad.z)}else if(spadG.parent)spadG.parent.remove(spadG)}
 useRunMap(runIdx);
 const spadM=new THREE.MeshBasicMaterial({color:0xffcc33,transparent:true,opacity:.55,side:THREE.DoubleSide,depthWrite:false});
 const spadRing=new THREE.Mesh(new THREE.RingGeometry(1.25,1.7,40),spadM);spadRing.rotation.x=-PI/2;spadRing.position.y=.05;spadG.add(spadRing);
@@ -18,13 +28,13 @@ function drawSpadSign(){const x=spadCv.getContext('2d');x.clearRect(0,0,512,160)
   x.fillStyle='#ffd84a';x.font='800 64px "Baloo 2", system-ui, sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText('PLAY',256,72);
   x.fillStyle='#fff8e8';x.font='600 28px "Baloo 2", system-ui, sans-serif';x.fillText('stand here',256,118);spadTex.needsUpdate=true}
 drawSpadSign();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(drawSpadSign);
-function freeUI(){const f=mode==='run'&&runFree&&state==='play'&&!!(runL&&runL.spad)&&!WAR.on&&!(typeof TAG!=='undefined'&&TAG.on);document.body.classList.toggle('free',f);spadG.visible=!!(runL&&runL.spad)&&mode==='run'&&runFree&&runCD<=0&&!WAR.on&&!(typeof TAG!=='undefined'&&TAG.on)&&state!=='menu'&&state!=='select'}
-const FREE_HINT='Free roam: practice as long as you like. Stand on the PLAY pad (or press Enter / △) to choose Collectathon, Snowball Wars or Tag.';
+function freeUI(){const f=mode==='run'&&runFree&&state==='play'&&!!(runL&&runL.spad)&&!WAR.on&&!(typeof TAG!=='undefined'&&TAG.on);document.body.classList.toggle('free',f);spadG.visible=padOn()&&mode==='run'&&runFree&&runCD<=0&&!WAR.on&&!(typeof TAG!=='undefined'&&TAG.on)&&state!=='menu'&&state!=='select'}
+const FREE_HINT='Free roam: practice as long as you like. Press Enter / △ (or pause → Play) to choose Collectathon, Snowball Wars or Tag.';
 const orbGeo=new THREE.IcosahedronGeometry(.42,0),ringGeo=new THREE.RingGeometry(.55,.75,24);
 // ----- trick combos: tricks chain while you stay airborne or land and go again quickly -----
 const TR={pts:0,mult:0,names:[],t:0};
 function addTrick(n,pts){const p=pts??T.tricks[n]??0;if(mode!=='run'||state!=='play')return;MP.tr={n:MP.tr.n+1,s:n};TR.pts+=p;TR.mult++;TR.names.push(n);if(TR.names.length>4)TR.names.shift();TR.t=T.combo.window;showCombo()}
-function showCombo(){const e=$('combo');e.classList.toggle('on',TR.mult>0);if(!TR.mult)return;
+function showCombo(){const e=$('combo');e.classList.toggle('on',TR.mult>0&&ptsOn());if(!TR.mult||!ptsOn())return;
   $('cMult').textContent='×'+TR.mult;$('cPts').textContent=TR.pts;$('cNames').textContent=TR.names.join(' + ');
   e.classList.remove('bump');void e.offsetWidth;e.classList.add('bump')}
 // ----- named gaps: take off from one region, land in another, no ground in between -----
@@ -49,9 +59,9 @@ function awardGap(g){addTrick(g.name,g.pts);const F=gapFound();
   if(!F.has(g.name)){F.add(g.name);try{localStorage.setItem('orbRunGaps_'+runL.key,JSON.stringify([...F]))}catch(e){}
     toast(`New gap! ${g.name} · ${F.size}/${gapTotal()} found`);SFX.unlock()}}
 function popScore(t,bad){const e=$('cPop');e.textContent=t;e.classList.toggle('bad',!!bad);e.classList.remove('go');void e.offsetWidth;e.classList.add('go')}
-function bankCombo(){if(!TR.mult)return;const total=TR.pts*TR.mult;score+=total;bestCombo=Math.max(bestCombo,total);
+function bankCombo(){if(!TR.mult)return;if(!ptsOn()){Object.assign(TR,{pts:0,mult:0,names:[],t:0});showCombo();return}const total=TR.pts*TR.mult;score+=total;bestCombo=Math.max(bestCombo,total);
   popScore(TR.mult>1?`+${total}  (${TR.pts} × ${TR.mult})`:`+${total}`);if(TR.mult>=3)SFX.ready();Object.assign(TR,{pts:0,mult:0,names:[],t:0});showCombo();hud()}
-function dropCombo(){if(!TR.mult)return;popScore('Combo dropped',true);Object.assign(TR,{pts:0,mult:0,names:[],t:0});showCombo()}
+function dropCombo(){if(!TR.mult)return;if(ptsOn())popScore('Combo dropped',true);Object.assign(TR,{pts:0,mult:0,names:[],t:0});showCombo()}
 const inPlat=(x,z,m)=>runL.plats.some(p=>p.top>.5&&(p.bot===undefined||p.bot<1.8)&&!p.roller&&inside(p,x,z,m));
 function freeSpot(minP=4){for(let t=0;t<80;t++){const a=Math.random()*PI*2,r=Math.sqrt(Math.random())*24,x=Math.cos(a)*r,z=Math.sin(a)*r;
   if(!inPlat(x,z,1.3)&&runL.advCol.every(c=>Math.hypot(c.x-x,c.z-z)>c.r+1.4)&&Math.hypot(P.position.x-x,P.position.z-z)>minP)return{x,z}}return{x:0,z:5}}
@@ -113,7 +123,7 @@ function updateRun(dt){
     if(b!==a&&b>=1&&b<=2){popScore(String(b));SFX.ui(b)}
     if(runCD<=0){runCD=0;popScore('GO!');SFX.start();hint('');lives=3;if(!MP.client&&foesOn())for(let i=0;i<T.run.hazardsStart;i++)spawnRunHz();freeUI();hud()}}
   else if(!runFree){const shown=Math.ceil(time);time-=dt;runT+=dt;if(time<=0){time=0;hud();endRun();return}if(Math.ceil(time)!==shown)hud()}
-  else if(runL.spad&&!WAR.on&&!TAG.on){ // free roam: PLAY pad
+  else if(padOn()&&!WAR.on&&!TAG.on){ // free roam: PLAY pad
     const on=grounded&&py<.3&&Math.hypot(P.position.x-runL.spad.x,P.position.z-runL.spad.z)<1.6;if(!on)padLock=false;   // step off to use it again
     padHold=on?padHold+dt:Math.max(0,padHold-dt*2);spadFill.scale.setScalar(Math.max(.001,Math.min(1,padHold/.8)));
     spadM.opacity=.45+Math.sin(advT*4)*.15+(on?.3:0);if(padHold>=.8&&!padLock){padHold=0;padLock=true;modeMenu()}}
@@ -128,7 +138,7 @@ function updateRun(dt){
     if(Math.hypot(o.g.position.x-P.position.x,o.g.position.z-P.position.z)<1.15&&Math.abs(py-o.y)<1.7){
       burst(o.m.getWorldPosition(V(0,0,0)),o.col||(o.gold?0xffcc33:0x5ff3ff));if(o.gold)time+=T.run.goldBonusTime;gainSnow(o.gold);
       // orb race: a straight count. Free roam: orbs feed your trick points as before
-      if(!runFree){orbN++;popScore('+1')}else if(TR.mult){TR.pts+=o.v;TR.t=Math.max(TR.t,T.combo.orbExtend);showCombo()}else{score+=o.v;popScore('+'+o.v)}
+      if(!runFree){orbN++;popScore('+1')}else if(!ptsOn()){}else if(TR.mult){TR.pts+=o.v;TR.t=Math.max(TR.t,T.combo.orbExtend);showCombo()}else{score+=o.v;popScore('+'+o.v)}
       SFX.orb(o.gold);rmObj(o.g);orbs.splice(orbs.indexOf(o),1);if(MP.client){MP.gone.add(o.id);claim('o',o.id)}else if(!o.spill)spawnOrb();hud()}
   }
   if(MP.client){const k=1-Math.exp(-12*dt);

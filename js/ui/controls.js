@@ -17,7 +17,7 @@ function renderControls(){
     ['Crouch in the air','Dive'],['Jump as you land \u00d73','Triple jump'],['Reverse at speed, Jump','Side flip'],['Jump off a wall mid-air','Wall jump']);
   else rows.splice(2,0,['Run into a tree or pole','Climb it']);
   if(mode==='run')rows.splice(3,0,[L('throw'),'Throw a snowball']);
-  if(mode==='run'&&runFree)rows.unshift([L('start')+' or PLAY pad','Choose a mode: Collectathon, Snowball Wars or Tag']);
+  if(mode==='run'&&runFree)rows.unshift([L('start')+(padOn()?' or PLAY pad':''),'Choose a mode: Collectathon, Snowball Wars or Tag']);
   if(!T_)rows.push(['Hold '+L('respawn'),'Respawn (spawn point / checkpoint)'],['Hold '+L('start'),'Restart the Collectathon, match, race or level'],['Settings (gear)','Change any button']);
   $('ctlList').innerHTML=rows.map(([x,y])=>`<dt>${x}</dt><dd>${y}</dd>`).join('');
 }
@@ -44,7 +44,7 @@ function moveGroups(){
       ...(run?[['Giant snowball','Walk into a small snowball','It grows as you roll it; bowl people over.']]:[])]},
     {name:'Emotes',items:[['Quick taunt','Standing: tap '+L('pound'),'Does your last emote from the wheel (Wave to start).'],['Emote wheel','Standing: hold '+L('pound'),'A ring fills, then the wheel opens. Point at an emote and let go.'],
       ['Dances','Robot, Shuffle, Disco, Chicken Dance','They loop until you move. Friends see them too.'],['Wave & Cheer','On the wheel','Say hi, or celebrate.']]},
-    {name:'Game',items:[...(run&&runFree?[['Choose a mode',L('start')+' or the PLAY pad','Collectathon, Snowball Wars or Tag.']]:[]),
+    {name:'Game',items:[...(run&&runFree?[['Choose a mode',L('start')+(padOn()?' or the PLAY pad':' (or pause → Play)'),'Collectathon, Snowball Wars or Tag.']]:[]),
       ...(T_?[]:[['Respawn','Hold '+L('respawn'),'Back to the spawn point or your checkpoint.'],['Restart','Hold '+L('start'),'Restart the run, match, race or level.']]),
       ...(camTurns()&&!T_?[['Turn the camera',P?b('R-stick'):L('camL')+' '+L('camR'),'Up and down tilt it. '+L('camC')+' snaps it behind you.']]:[]),
       ['Pause',L('pause'),'Games, Moves and Settings live here.'],...(T_?[]:[['Sound',P?b('Create'):k('M'),'Turns the sound on or off.']]),['Change buttons','Settings \u2192 Controls','Rebind anything.']]}];

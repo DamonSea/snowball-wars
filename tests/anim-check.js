@@ -11,7 +11,7 @@ ok('At full run: long strides, a body bob, a forward lean',maxL>.9&&maxY-minY>.0
 ok('Feet roll heel to toe',H.bootGs.some(b=>Math.abs(b.rotation.x)>.1));
 __k({});__step(60);ok('Stopping settles back to standing (feet flat)',Math.abs(H.legL.rotation.x)<.15&&H.bootGs.every(b=>Math.abs(b.rotation.x)<.05));
 // 2. edge teeter: stand on the edge of a raised deck
-const deck=runL.plats.filter(p=>p.k==='b'&&p.top>1.2&&p.top<4&&p.w>2&&p.d>2&&!p.ramp)[0];
+const deck=runL.plats.filter(p=>p.k==='b'&&p.top>1.2&&p.top<4&&p.w>2&&p.d>2&&!p.ramp&&!runL.plats.some(o=>o!==p&&o.top>.3&&!(o.k==='c'&&o.r>20)&&inside(o,p.x+p.w/2+.6,p.z,.3)))[0];
 __place(deck.x+deck.w/2-.25,deck.z,deck.top,Math.PI/2);__step(2);__step(40);
 ok('Standing over an edge: teeter (arms windmill, lean)',EDGE.k>.8&&Math.abs(H.armL.rotation.x-H.armR.rotation.x)>.4,EDGE.k.toFixed(2)+' rel='+EDGE.rel.toFixed(2));
 const p1=H.hp.rotation.x;__step(20);ok('...wobbling back and forth',Math.abs(H.hp.rotation.x-p1)>.02);
