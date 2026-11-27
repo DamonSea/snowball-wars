@@ -1,6 +1,6 @@
 (()=>{const out=[];const _st=__step;__step=n=>{for(let i=0;i<n;i++){runHz.forEach(h=>{h.g.position.set(0,.75,40);h.vx=h.vz=0});SB.stun=0;_st(1)}};const ok=(n,c)=>out.push((c?'OK   ':'FAIL ')+n);
 ok('Vex still built (benched from the roster for now)',chars[4].name==='Vex'&&chars[4].acro&&!ORDER.includes(4));
-ok('5 Vex outfits, gold locked',OUTFITS_VEX.length===5&&!!OUTFITS_VEX[4].lock);
+ok('4 Vex outfits, none locked (gold ones removed)',OUTFITS_VEX.length===4&&OUTFITS_VEX.every(o=>!o.lock));
 ci=4;resume&&0;__place(0,10,0,Math.PI);const H=VX;ok('Vex rig visible',H.root.visible!==false&&chars[4].g.visible);
 // run forward, then stop hard: tails get flung, mohawk springs
 __k({KeyW:true});__step(40);const t0=H.tails[0][0].rotation.x;__k({});let maxT=0;for(let i=0;i<30;i++){__step(1);maxT=Math.max(maxT,Math.abs(H.tails[0][0]._sv.x))}

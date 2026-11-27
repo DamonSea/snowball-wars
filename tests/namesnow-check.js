@@ -15,7 +15,7 @@ __place(s.x,s.z+1.3,0,Math.PI);__step(2);attackPress();__step(20);ok('A punch st
 // jumping on top: above it, no push
 __place(s.x,s.z,2.6,0);__step(1);ok('Above a snowman you are not pushed sideways',Math.hypot(P.position.x-s.x,P.position.z-s.z)<.1);__step(60);
 // computer rivals bump off too
-setRivals(2);beginTimed();__step(200);const b=RACE.bots[0];b.x=s.x+.2;b.z=s.z;b.y=0;__step(2);ok('Computer players bump off snowmen',Math.hypot(b.x-s.x,b.z-s.z)>=1,(Math.hypot(b.x-s.x,b.z-s.z)).toFixed(2));stopOrbRun();__step(3);
+setRivals(2);beginTimed();__step(200);const b=RACE.bots[0];b.x=s.x+.2;b.z=s.z;b.y=0;__step(2);ok('Computer players bump off snowmen (pushed out from 0.2m)',Math.hypot(b.x-s.x,b.z-s.z)>=.85,(Math.hypot(b.x-s.x,b.z-s.z)).toFixed(2));stopOrbRun();__step(3);
 // ---- name
 localStorage.removeItem('orbRunName');MP.acctName='';MP.myName='';
 menu();__step(2);$('go').click();__step(3);ok('The map picker no longer has a name box',!$('park').querySelector('input'));

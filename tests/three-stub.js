@@ -12,7 +12,8 @@ class Euler{constructor(){this.x=0;this.y=0;this.z=0;this.order='XYZ'}set(x,y,z)
 class Quaternion{setFromUnitVectors(){return this}}
 class Color{constructor(c=0xffffff){this.setHex(typeof c==='number'?c:0xffffff)}
   setHex(h){this.h=h;return this}getHex(){return this.h}multiplyScalar(s){const r=Math.min(255,((this.h>>16)&255)*s)|0,g=Math.min(255,((this.h>>8)&255)*s)|0,b=Math.min(255,(this.h&255)*s)|0;this.h=(r<<16)|(g<<8)|b;return this}
-  clone(){return new Color(this.h)}copy(c){this.h=c.h;return this}}
+  clone(){return new Color(this.h)}copy(c){this.h=c.h;return this}
+  lerp(c,t){const m=(sh)=>{const a=(this.h>>sh)&255,b=(c.h>>sh)&255;return Math.round(a+(b-a)*t)&255};this.h=(m(16)<<16)|(m(8)<<8)|m(0);return this}}
 let objCount=0;
 class Object3D{constructor(){objCount++;this.position=new Vector3();this.rotation=new Euler();this.scale=new Vector3(1,1,1);this.quaternion=new Quaternion();
   this.children=[];this.parent=null;this.visible=true;this.castShadow=false;this.receiveShadow=false;this.frustumCulled=true;this.renderOrder=0}

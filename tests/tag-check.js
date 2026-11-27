@@ -25,7 +25,7 @@ const b2=TAG.bots[2];b2.stun=0;launchSnowball([b2.x,b2.y+1.1,b2.z,.01,0,0],true,
 ok('name tags show each personality',TAG.bots.map(q=>q.pers.label).join(',')==='Hunter,Trickster,Sneak');
 // hops: the It hops up after you onto a low ledge
 TAG.it='bot0';const h=TAG.bots[0];h.count=0;h.safeT=0;h.stun=0;h.hopT=0;
-pause();ok('pause during Tag: '+btns().join(', '),btns().join('|')==='Resume|Restart tag|End tag|Change map|Moves|Settings|Quit to menu');resume();
+pause();ok('pause during Tag: '+btns().join(', '),btns().join('|')==='Resume|Restart tag|End tag|Change map|Edit character|Moves|Settings|Quit to menu');resume();
 // end: results, least time first
 TAG.itT.me=3;TAG.itT.bot0=20;TAG.itT.bot1=30;TAG.itT.bot2=40;TAG.it='bot2';TAG.t=.02;__step(3);
 ok('time up: results screen, least time as It wins',state==='over'&&$('ovT').textContent==='You win!'&&$('ovP').querySelectorAll('.warsres li').length===4);

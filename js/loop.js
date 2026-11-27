@@ -43,7 +43,7 @@ function tick(){
   if(state==='build'){builderFrame(dt);renderer.render(scene,cam);perfFrame();requestAnimationFrame(tick);return}   // Map Builder: its own camera, no game updates
   if(state==='play')updateAttack(dt);
   water.position.y=-.8+Math.sin(tAll*.8)*.05;
-  if(state==='play')mode==='run'?updateRun(dt):updateAdv(dt);
+  if(state==='play')updateRun(dt);
   if(state==='play'&&mode==='run')updateSnow(dt);
   unstick(dt);holdFrame(dt);updateCpu(dt);warsUpdate(dt);raceUpdate(dt);tagUpdate(dt);poundFx(dt);updateYellow(dt);updateAngels(dt);updateEmotes(dt);updateRollers(dt);updateFlipArrow();
   if(state==='play'){
@@ -57,7 +57,6 @@ function tick(){
   else if(state==='paused'&&CUST.on){if(CUST.rotTo!=null)CUST.rot+=angD(CUST.rotTo,CUST.rot)*Math.min(1,dt*5);face=CUST.rot}
   else if(state==='select'){if(CUST.on&&CUST.rotTo!=null)CUST.rot+=angD(CUST.rotTo,CUST.rot)*Math.min(1,dt*5);face=CUST.on?CUST.rot:Math.sin(tAll*.7)*.45}
   else if(state==='paused'&&tAll%7<dt&&!setOpen)wave=1.6;
-  if(mode==='adv'&&(state==='won'||state==='over'))goal.spin(dt);
 
   P.position.y=py;P.rotation.y=aimFace();
   const moving=Math.hypot(vel.x,vel.z)>.5&&state==='play';
@@ -184,10 +183,8 @@ function tick(){
   P.visible=!(invuln>0&&state==='play'&&Math.floor(invuln*12)%2)&&!(typeof WAR!=='undefined'&&WAR.on&&WAR.out>0&&WAR.out<=.3);
 
   orbs.forEach(o=>{o.t+=dt;o.m.position.y=1+Math.sin(o.t*2.4)*.2;o.m.rotation.y+=dt*1.8;if(!ORB_FLAT[orbSkin()])o.m.rotation.x+=dt*.9;const s=1+Math.sin(o.t*3)*.12;o.ring.scale.set(s,s,s)});
-  cores.forEach(c=>{c.t+=dt;c.m.position.y=1.1+Math.sin(c.t*2)*.2;c.m.rotation.y+=dt*2});
   if(fxT>0){fxT-=dt;const q=1-fxT/.3;fxRing.scale.setScalar(1+q*3.5);fxM.opacity=Math.max(0,1-q)*.9;if(fxT<=0)fxRing.visible=false}
   RUNMAPS.forEach(M=>{if(M.blink)M.blink.emissiveIntensity=tAll%1.4<.35?2.4:.15});
-  goal.pad.scale.setScalar(1+Math.sin(tAll*3)*.06);
   for(let i=parts.length-1;i>=0;i--){const q=parts[i];q.life-=dt;q.v.y-=12*dt;q.m.position.addScaledVector(q.v,dt);
     q.m.material.opacity=Math.max(0,q.life/.7);if(q.life<=0){freeTree(q.m);parts.splice(i,1)}}
 
@@ -200,11 +197,10 @@ function tick(){
     camPos.set(P.position.x+fx*d,py+1.5,P.position.z+fz*d);look.set(P.position.x+fz*o,py+(wide?.95:.2),P.position.z-fx*o);cam.position.lerp(camPos,1-Math.exp(-4*dt))}
   else if(state==='menu'){if(innerWidth>=900){camPos.set(-.6+Math.sin(tAll*.2)*.4,2.3,7.2);look.set(2.4,1.2,0);cam.position.lerp(camPos,1-Math.exp(-3*dt))}
     else{camPos.set(Math.cos(tAll*.12)*24,13,Math.sin(tAll*.12)*24);look.set(0,0,0);cam.position.copy(camPos)}}
-  else if(state==='won'){camPos.set(P.position.x+4,py+7,P.position.z+11);look.copy(goal.look);cam.position.lerp(camPos,1-Math.exp(-2*dt))}
   else camFollow(dt);
   if(shake>0){shake-=dt;cam.position.x+=(Math.random()-.5)*shake;cam.position.y+=(Math.random()-.5)*shake}
   cam.lookAt(look);
-  sun.position.set(P.position.x+18,30,P.position.z+12);sun.target.position.copy(P.position);
+  dnFrame(dt);if(DN.light)sun.position.set(P.position.x+DN.light.x*36,Math.max(14,DN.light.y*40),P.position.z+DN.light.z*36);else sun.position.set(P.position.x+18,30,P.position.z+12);sun.target.position.copy(P.position);
 
   mpFrame(dt);
   renderer.render(scene,cam);perfFrame();

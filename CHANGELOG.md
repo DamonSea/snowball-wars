@@ -3,6 +3,25 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.50.0] - 2026-11-26 — Elves, trees, day and night
+### Added
+- **Day and night** (Settings → Time of day: Always day, Always night, or Day & night). Night darkens the sky and fog,
+  turns the sun into cool moonlight (it casts the shadows), and brings out a moon with a soft halo and twinkling stars;
+  the lamps glow. The cycle takes eight minutes, a little more day than night, with warm dusks and dawns. It pauses
+  when you pause. Switching fades rather than snapping.
+### Changed
+- **Frost imps are now mischievous holiday elves**: floppy belled hat, pointy ears, sly grin, zigzag collar, striped
+  stockings and curly shoes, and a red sack for the snowballs they swipe. Same hop-and-steal behaviour.
+### Fixed
+- **Latching onto trees.** Running into a trunk even slightly off-centre slid you round it before the grab delay ran
+  out, so it rarely caught: about 1 in 9 tries. Touching a trunk while pushing roughly at it now grabs at once, at any
+  speed, and the grab timer no longer resets on one off-angle frame. Short trees can be caught mid-jump too. Off-centre
+  run-ins now grab about 93% of the time (the rest are glancing blows).
+- A Plaza rock sat right against a tree trunk and shoved you sideways as you ran in; it's moved.
+### Removed
+- **Adventure mode** (Lighthouse Isles and Sky Gauntlet), its menu entry and its code. The main menu is Trick Park and
+  the Map Builder. The level builders it shared with Trick Park stay.
+
 ## [2.49.1] - 2026-11-26 — Default face
 ### Changed
 - Default face for Flipper and Parker: beady eyes, no eye shine, **calm mouth**, and **freckles and cheek blush off**.

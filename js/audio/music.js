@@ -75,16 +75,16 @@ function startRoll(){const c=AU.ctx;if(!c||ROLL.src)return;
 function audioFrame(dt){
   const c=AU.ctx;if(!c||c.state!=='running')return;
   // music choice
-  MUS.want=state==='menu'||state==='select'?'menu':(state==='won'||state==='over')?null:mode==='run'?'run':curIdx===1?'sky':'isles';
+  MUS.want=state==='menu'||state==='select'?'menu':(state==='won'||state==='over')?null:'run';
   MUS.duck=state==='paused'||setOpen?.35:1;
   // ambience
-  startAmb();const live=state!=='over',h=Math.max(0,py),sky=mode==='adv'&&curIdx===1&&state!=='menu'&&state!=='select';
+  startAmb();const live=state!=='over',h=Math.max(0,py),sky=false;
   AMB.ocean.g.gain.setTargetAtTime(live?(WIN?.035:.06)*Math.max(.15,1-h/22):0,c.currentTime,.5);
   AMB.wind.g.gain.setTargetAtTime(live?(sky?.025+Math.min(1,h/20)*.075:WIN?.035:.012):0,c.currentTime,.6);
   if(live&&!sky&&!WIN&&state!=='paused'&&(AMB.birdT-=dt)<=0){AMB.birdT=4+Math.random()*7;bird()}
   // rolling spikeballs
   startRoll();if(ROLL.prev.size>120)ROLL.prev.clear();const sel=selOf('roll');let best=null,bd=14,bs=0;
-  const list=state==='play'||state==='paused'?(mode==='run'?runHz:advHz):[];
+  const list=state==='play'||state==='paused'?runHz:[];
   for(const h of list){if(h.dead||(mode==='run'?h.kind!=='spike':FOE_STYLE!=='spike'))continue;const p=h.g.position,d=Math.hypot(p.x-P.position.x,p.z-P.position.z,(p.y-.75-py)*.6);
     const pr=ROLL.prev.get(h),sp=pr?Math.hypot(p.x-pr.x,p.z-pr.z)/Math.max(dt,1e-3):0;ROLL.prev.set(h,{x:p.x,z:p.z});if(d<bd){bd=d;best=h;bs=sp}}
   const prox=best&&state==='play'&&sel>=0?Math.pow(1-bd/14,2):0;

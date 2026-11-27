@@ -80,7 +80,7 @@ add(B(3.1,.08,.08),woodM,-19.5,10.55,15.6,runW);add(B(.08,.08,3.1),woodM,-18.1,1
 
 // rim trees and rocks (solid)
 for(let a=0;a<PI*2;a+=PI/9){const x=Math.cos(a)*25.5,z=Math.sin(a)*25.5;if(!plats.some(p=>p.top>.5&&inside(p,x,z,2.5)))tree(x,z,.9+((a*7)%.4),runW,advCol,0,Math.round(a*3))}
-[[21,-6],[-6,21],[5,-24]].forEach(([x,z],i)=>rock(x,z,.6+i*.1,runW,advCol));
+[[21,-6],[-6,21],[9,-27]].forEach(([x,z],i)=>rock(x,z,.6+i*.1,runW,advCol));   // (the third used to sit against a tree trunk)
 
 // Named gaps: take off from one region, land in another without touching the ground in between.
 // Regions are boxes at a surface height y. Points go into the combo.

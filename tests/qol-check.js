@@ -33,7 +33,6 @@ openBuilder(blankMap());BLD.map.opt={enemies:0,orbs:0,flags:1};BLD.map.items.pus
 __place(6,0,0,0);__step(4);__place(15,10,0,0);__step(3);keys.KeyR=true;__step(70);keys.KeyR=false;__step(2);ok('flag race: hold R goes back to the last checkpoint',Math.hypot(P.position.x-6,P.position.z)<.5);
 const t1=FR.t;keys.Enter=true;__step(60);keys.Enter=false;__step(2);ok('hold Enter restarts the race',FR.t<t1&&Math.hypot(P.position.x-BLD.map.items.find(i=>i.t==='spawn').x,P.position.z-BLD.map.items.find(i=>i.t==='spawn').z)<1);
 pause();backToBuilder();__step(2);exitBuilder();
-// adventure: hold Enter restarts the level
-menu();pickMode='adv';pickLevel=0;ci=2;showChar();confirmChar();__step(10);const at=atime;__step(60);keys.Enter=true;__step(60);keys.Enter=false;__step(2);ok('Adventure: hold Enter restarts the level',atime<1);
-pause();ok('Adventure pause: '+btns().join(', '),btns().join('|')==='Resume|Retry|Edit character|Moves|Settings|Quit to menu');resume();
+// Adventure is gone: the main menu offers Trick Park and the Map Builder
+menu();ok('No Adventure anywhere on the main menu',![...document.querySelectorAll('#ov .btns button')].some(b=>/Adventure/.test(b.textContent))&&typeof startAdv==='undefined');
 menu();__step=_st;return out.join('\n')})()

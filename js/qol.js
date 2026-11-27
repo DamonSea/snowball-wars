@@ -1,13 +1,13 @@
 // Quality of life: hold to respawn, hold to retry, stop an orb run, orb runs that end in place, and the Moves list.
-//   Hold Respawn (L3 / R) ~1s: back to the spawn point (Trick Park), your last checkpoint (flag race) or the last
-//     flag (Adventure). A safety valve for any odd spot.
-//   Hold Start (△ / Enter) ~0.8s: restart what you're doing: the timed orb run, the flag race, or the Adventure level.
+//   Hold Respawn (L3 / R) ~1s: back to the spawn point, or your last checkpoint in a flag race. A safety valve for
+//     any odd spot.
+//   Hold Start (△ / Enter) ~0.8s: restart what you're doing: the Collectathon, a match, tag or the flag race.
 const HOLD={id:null,t:0,done:false};
 const HOLD_T={respawn:1,start:.8};
-function holdLabel(id){if(id==='respawn')return mode==='adv'?'Back to the last flag':FR.on&&!FR.done?'Back to your checkpoint':'Back to the spawn point';
-  return mode==='adv'?'Restart level':WAR.on?'Restart match':TAG.on?'Restart tag':!runFree||runCD>0?'Restart Collectathon':'Restart race'}
+function holdLabel(id){if(id==='respawn')return FR.on&&!FR.done?'Back to your checkpoint':'Back to the spawn point';
+  return WAR.on?'Restart match':TAG.on?'Restart tag':!runFree||runCD>0?'Restart Collectathon':'Restart race'}
 // what holding Start would restart right now (nothing in plain free roam, where a tap starts the orb run)
-const retryable=()=>mode==='adv'||(mode==='run'&&(WAR.on||TAG.on))||(mode==='run'&&(!runFree||runCD>0))||(mode==='run'&&FR.on&&!runL.spad);
+const retryable=()=>(mode==='run'&&(WAR.on||TAG.on))||(mode==='run'&&(!runFree||runCD>0))||(mode==='run'&&FR.on&&!runL.spad);
 function holdFrame(dt){const m=$('holdMeter');
   const want=state!=='play'?null:held('respawn')?'respawn':held('start')&&retryable()?'start':null;
   if(want!==HOLD.id){HOLD.id=want;HOLD.t=0;HOLD.done=false}
@@ -16,11 +16,10 @@ function holdFrame(dt){const m=$('holdMeter');
   if(HOLD.t>.15){m.classList.add('on');$('holdLab').textContent=holdLabel(want);$('holdBar').style.transform=`scaleX(${k})`}
   if(k>=1){HOLD.done=true;m.classList.remove('on');want==='respawn'?respawnHere():quickRetry()}}
 function respawnHere(){SFX.ui(3);
-  if(mode==='adv'){respawn(false);return}
   if(FR.on&&!FR.done){frRespawn();return}
   const s=runL.custom?runL.spawn:{x:0,y:0,z:0};P.position.set(s.x,0,s.z);py=s.y||0;vy=0;vel.set(0,0,0);grounded=true;stand=null;resetPound();
   if(chars[ci].acro)resetAcro();CL.on=false;CL.top=false;LH.on=false;invuln=1;dropCombo();burst(V(P.position.x,py+1,P.position.z),0x5ff3ff,10)}
-function quickRetry(){if(mode==='adv'){retry();return}
+function quickRetry(){
   if(WAR.on){startWars();return}
   if(TAG.on){startTag();return}
   if(!runFree||runCD>0){runFree=true;runCD=0;beginTimed();return}   // fresh countdown right where you are

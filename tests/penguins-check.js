@@ -16,7 +16,8 @@ ok('its friend nearby gets angry too',p2.angry>0);ok('a far-away penguin stays c
 // angry ones charge
 let charged=false;for(let i=0;i<600;i++){S(1);if(p1.st==='windup'||p2.st==='windup'||p2.st==='slide'){charged=true;break}}ok('angry penguins charge you',charged);
 // second hit takes it out
-p1.st='walk';p1.hurtT=0;p1.g.position.set(P.position.x,0,P.position.z-1.1);face=Math.PI;S(1);ATK.cool=0;ATK.t=0;dispatchEvent(new KeyboardEvent('keydown',{code:'KeyJ',bubbles:true}));S(3);dispatchEvent(new KeyboardEvent('keyup',{code:'KeyJ',bubbles:true}));S(5);
+p1.st='walk';p1.hurtT=0;p1.g.position.set(P.position.x,0,P.position.z-1.1);face=Math.PI;S(1);ATK.cool=0;ATK.t=0;SB.stun=0;A.knock=0;   // (a goon's snowball may have just stunned you)
+dispatchEvent(new KeyboardEvent('keydown',{code:'KeyJ',bubbles:true}));S(3);dispatchEvent(new KeyboardEvent('keyup',{code:'KeyJ',bubbles:true}));S(5);
 ok('second hit takes an angry penguin out',p1.dead||!runHz.includes(p1));
 // snowball on a calm one: angers, doesn't kill
 const p3=mk(-10,-8);const S2=keep();far.angry=0;launchSnowball([p3.g.position.x,1,p3.g.position.z,.01,0,0],true,null,++SB.seq);S2(3);ok('a snowball angers a calm penguin instead of taking it out',p3.angry>0&&runHz.includes(p3));

@@ -143,7 +143,7 @@ function updateRun(dt){
   for(const h of runHz){if(h.dead)continue;
     const p=h.g.position,ox=p.x,oz=p.z;
     if(h.kind!=='spike')foeThink(h,dt);
-    if(h.escape){foeFx(h);if(h.mine>0)toast('The imp got away with your snowballs!');h.dead=true;rmObj(h.g);runQ.push(T.run.smashRespawn);continue}
+    if(h.escape){foeFx(h);if(h.mine>0)toast('The elf got away with your snowballs!');h.dead=true;rmObj(h.g);runQ.push(T.run.smashRespawn);continue}
     p.x+=h.vx*dt;if(inPlat(p.x,p.z,.7)){p.x=ox;h.vx*=-1;if(h.kind==='goon')h.t=Math.min(h.t,.2)}
     p.z+=h.vz*dt;if(inPlat(p.x,p.z,.7)){p.z=oz;h.vz*=-1;if(h.kind==='goon')h.t=Math.min(h.t,.2)}
     const r=Math.hypot(p.x,p.z);

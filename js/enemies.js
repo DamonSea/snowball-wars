@@ -1,8 +1,8 @@
-// Enemies: the winter crew (snow goons, penguin sliders, frost imps), with the original spikeballs behind a
-// toggle (Settings → Enemies). Loaded before the levels, because Adventure builds its enemies at load time.
+// Enemies: the winter crew (snow goons, penguin sliders, holiday elves), with the original spikeballs behind a
+// toggle (Settings → Enemies).
 //  - Snow goon: waddles into range and lobs snowballs (they stun like a friend's); touching it costs a life.
 //  - Penguin slider: waddles, flaps a "!" warning, then belly-slides fast and bounces off walls; dizzy (harmless) after.
-//  - Frost imp: hops after you and steals snowballs instead of hurting; smack it before it escapes to get them back.
+//  - Holiday elf: hops after you and steals snowballs instead of hurting; smack it before it escapes to get them back.
 // All of them can be punched, kicked, snowballed, dived into, pounded, or stomped (land on them from above).
 // Trick Park: the host runs the AI (foeThink) and shares kind / state / facing and goon throws through presence.
 let FOE_STYLE='crew';try{if(localStorage.getItem('orbRunFoes')==='spike')FOE_STYLE='spike'}catch(e){}
@@ -43,17 +43,39 @@ function buildPenguin(parent){const g=new THREE.Group();parent.add(g);const body
   const excl=new THREE.Group();excl.position.y=1.65;excl.visible=false;g.add(excl);
   const exM=new THREE.MeshBasicMaterial({color:0xff4d3a});add(B(.1,.32,.1),exM,0,.12,0,excl);add(Sph(.065,8,6),exM,0,-.13,0,excl);
   return{g,body,head,flips,feet,excl,brows,cheeks}}
+// Holiday elf (kind 'imp' under the hood, so friends on older versions still match up): green tunic with a zigzag
+// collar and a belt, red-and-white striped stockings, curly-toed shoes with bells, a floppy hat with a fur band and a
+// jingle bell, pointy ears and a sly grin. Same {g, body, bag} as before: it hops, and carries your snowballs in its sack.
 function buildImp(parent){const g=new THREE.Group();parent.add(g);const body=new THREE.Group();body.position.y=.42;g.add(body);
-  const ice=new THREE.MeshStandardMaterial({color:0x8fdcff,roughness:.25,metalness:.1,emissive:0x1a5f80,emissiveIntensity:.4}),
-        dk=mat(0x2a5a78),eyeM=new THREE.MeshStandardMaterial({color:0xfff27a,emissive:0xffd400,emissiveIntensity:1.4});
-  add(Sph(.36,14,10),ice,0,0,0,body).scale.set(1,.95,.9);
-  [-1,1].forEach(s=>{const h=add(new THREE.ConeGeometry(.08,.36,6),ice,s*.19,.36,-.02,body);h.rotation.z=-s*.45;
-    const e=add(new THREE.ConeGeometry(.07,.3,5),ice,s*.4,.06,0,body);e.rotation.z=-s*1.35;
-    add(Sph(.085,8,6),eyeM,s*.13,.08,.28,body).scale.set(1,1.25,.5);add(B(.025,.09,.02),mat(0x111111),s*.13,.08,.33,body);
-    add(Sph(.075,8,6),dk,s*.14,-.36,.05,body);add(Sph(.07,8,6),ice,s*.36,-.1,.06,body)});
-  add(B(.27,.07,.03),mat(0xffffff),0,-.11,.31,body);add(B(.31,.11,.02),dk,0,-.11,.3,body);       // grin
-  const bag=new THREE.Group();bag.position.set(0,.08,-.34);bag.visible=false;body.add(bag);
-  add(Sph(.2,10,8),mat(0xefe6d4,{roughness:.95}),0,0,0,bag);add(Sph(.06,6,5),mat(0xb89a6a),0,.19,0,bag);
+  const sm=(c,o={})=>new THREE.MeshStandardMaterial({color:c,roughness:.7,...o}),
+        skin=sm(0xf2c6a0),green=sm(0x2f9e4f),dkG=sm(0x1f6e37),red=sm(0xd8332f),white=sm(0xf7f3ea,{roughness:.95}),
+        gold=sm(0xf2c230,{roughness:.3,metalness:.5}),dark=mat(0x1a1214),pink=sm(0xf08a8a,{transparent:true,opacity:.6});
+  // stockings (striped) and curly shoes
+  [-1,1].forEach(s=>{for(let k=0;k<4;k++)add(new THREE.CylinderGeometry(.055,.055,.05,10),k%2?white:red,s*.09,-.25-k*.05,0,body);
+    const sh=new THREE.Group();sh.position.set(s*.09,-.45,.03);body.add(sh);add(Sph(.08,10,8),dkG,0,0,0,sh).scale.set(1,.7,1.5);
+    const toe=add(new THREE.ConeGeometry(.045,.16,8),dkG,0,.03,.15,sh);toe.rotation.x=-1.1;add(Sph(.028,6,5),gold,0,.1,.2,sh)});
+  // tunic: body, zigzag collar points, belt and buckle
+  add(new THREE.CylinderGeometry(.15,.23,.32,14),green,0,-.08,0,body);
+  for(let k=0;k<10;k++){const a=k/10*2*PI,c=add(new THREE.ConeGeometry(.045,.1,4),k%2?red:green,Math.sin(a)*.21,-.24,Math.cos(a)*.21,body);c.rotation.x=PI}
+  add(new THREE.TorusGeometry(.19,.03,6,18),dark,0,-.13,0,body).rotation.x=PI/2;add(B(.07,.06,.03),gold,0,-.13,.2,body);
+  for(let k=0;k<8;k++){const a=k/8*2*PI,c=add(new THREE.ConeGeometry(.04,.08,4),k%2?white:red,Math.sin(a)*.14,.07,Math.cos(a)*.14,body);c.rotation.x=-.2}
+  // arms
+  [-1,1].forEach(s=>{const a=add(new THREE.CylinderGeometry(.045,.05,.2,8),green,s*.2,-.05,0,body);a.rotation.z=s*.6;add(Sph(.05,8,6),skin,s*.27,-.13,0,body)});
+  // head: pointy ears, rosy cheeks, sly eyes with one raised brow, a big grin
+  const hd=new THREE.Group();hd.position.y=.27;body.add(hd);add(Sph(.2,14,12),skin,0,0,0,hd);
+  [-1,1].forEach(s=>{const e=add(new THREE.ConeGeometry(.05,.2,6),skin,s*.22,.02,-.02,hd);e.rotation.z=-s*1.25;
+    add(Sph(.035,8,6),dark,s*.075,.03,.18,hd).scale.set(1,1.3,.5);add(Sph(.04,8,6),pink,s*.12,-.05,.15,hd);
+    const br=add(B(.07,.016,.02),dark,s*.075,s>0?.1:.085,.18,hd);br.rotation.z=s>0?-.35:.15});
+  add(Sph(.035,8,6),sm(0xe8a07a),0,-.01,.2,hd);
+  const gr=add(new THREE.TorusGeometry(.06,.014,6,12,PI),dark,.01,-.07,.18,hd);gr.rotation.z=PI*1.08;
+  // floppy hat: fur band, two bending cone segments, a bell on the tip
+  add(new THREE.TorusGeometry(.18,.045,8,18),white,0,.1,0,hd).rotation.x=PI/2;
+  const h1=new THREE.Group();h1.position.set(0,.12,0);h1.rotation.set(-.35,0,.15);hd.add(h1);add(new THREE.ConeGeometry(.18,.3,14),green,0,.15,0,h1);
+  const h2=new THREE.Group();h2.position.set(0,.28,0);h2.rotation.set(-.9,0,.2);h1.add(h2);add(new THREE.ConeGeometry(.07,.2,10),green,0,.08,0,h2);
+  add(Sph(.045,8,6),gold,0,.19,0,h2);
+  // the sack your snowballs go in
+  const bag=new THREE.Group();bag.position.set(0,.02,-.26);bag.visible=false;body.add(bag);
+  add(Sph(.17,10,8),sm(0xc0392b,{roughness:.9}),0,0,0,bag);add(new THREE.TorusGeometry(.05,.015,6,10),gold,0,.16,0,bag).rotation.x=PI/2;
   return{g,body,bag}}
 function makeFoe(kind,parent){if(kind==='spike')return{g:spikeball(parent),kind,m:null};
   const m=kind==='goon'?buildGoon(parent):kind==='penguin'?buildPenguin(parent):buildImp(parent);return{g:m.g,kind,m}}
@@ -118,7 +140,7 @@ function foeTouch(h){const p=h.g.position,k=FOE[h.kind],b=foeBase(h),d=Math.hypo
 function impSteal(h){const n=Math.min(T.foes.impSteals,mode==='run'?SB.ammo:0);if(mode==='run'){SB.ammo-=n;snowHud()}
   h.mine=(h.mine||0)+n;h.robbed=4;h.st='flee';h.t=T.foes.impFleeTime;
   const p=h.g.position,dx=P.position.x-p.x,dz=P.position.z-p.z,d=Math.hypot(dx,dz)||1;vel.x+=dx/d*6;vel.z+=dz/d*6;
-  SFX.impGiggle();rumble(90,.3,.6);toast(n?`A frost imp swiped ${n} snowball${n>1?'s':''}! Smack it to get ${n>1?'them':'it'} back.`:'A frost imp shoved you!')}
+  SFX.impGiggle();rumble(90,.3,.6);toast(n?`A holiday elf swiped ${n} snowball${n>1?'s':''}! Smack it to get ${n>1?'them':'it'} back.`:'A holiday elf shoved you!')}
 // effects when one goes down (no red, except the original spikeballs)
 function foeFx(h){const p=h.g.position.clone();
   if(h.kind==='spike'){burst(p,0xff5a4e,18);burst(p,0xffffff,6);return}
@@ -144,15 +166,7 @@ function angerPenguin(h,how){if(h.kind!=='penguin'||h.angry)return false;const F
 // snowballs vs enemies
 function hitsFoe(h,p){const g=h.g.position;if(h.kind==='spike')return Math.hypot(g.x-p.x,g.z-p.z)<1.05&&p.y<g.y+1.5&&p.y>g.y-1;
   const k=FOE[h.kind];return Math.hypot(g.x-p.x,g.z-p.z)<k.r*.8+.25&&p.y<g.y+k.top+.15&&p.y>g.y-.2}
-// switching styles: Trick Park swaps the current enemies now (host); Adventure swaps its looks live
+// switching styles: Trick Park swaps the current enemies now (host)
 function setFoeStyle(s){FOE_STYLE=s;try{localStorage.setItem('orbRunFoes',s)}catch(e){}
   if(mode==='run'&&!MP.client&&state!=='menu'){const n=runHz.filter(h=>!h.dead).length;runHz.forEach(h=>rmObj(h.g));runHz=[];for(let i=0;i<n;i++)spawnRunHz()}
   else if(MP.client)toast('The host picks the enemies in multiplayer.')}
-// ----- Adventure: path enemies (patrol = penguin, circler = imp), spikeball kept inside for the toggle -----
-function advFoe(kind){const g=new THREE.Group();advW.add(g);const spk=spikeball(g),m=kind==='penguin'?buildPenguin(g):buildImp(g);m.g.position.y=-.75;
-  return{g,spk,m,kind,st:kind==='penguin'?'slide':'walk',face:0}}
-function advFoeFrame(h,dt,dx,dz){const crew=FOE_STYLE!=='spike';h.spk.visible=!crew;h.m.g.visible=crew;
-  if(!crew){roll(h.spk,dx/dt,dz/dt,dt);return}
-  if(Math.hypot(dx,dz)>1e-4)h.face=Math.atan2(dx,dz);h.m.g.rotation.y+=angD(h.face,h.m.g.rotation.y)*Math.min(1,dt*10);
-  const m=h.m;if(h.kind==='penguin'){m.body.rotation.x=1.45;m.body.position.y=.36;m.flips.forEach((f,i)=>f.rotation.z=(i?1:-1)*1.1)}
-  else{h.hopT=(h.hopT||0)+dt;const ph=(h.hopT%.4)/.4;m.body.position.y=.42+Math.sin(ph*PI)*.35;m.body.rotation.z=Math.sin(tAll*5)*.1}}

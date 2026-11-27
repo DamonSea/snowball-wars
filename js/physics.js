@@ -1,5 +1,5 @@
-// Shared platform physics (Adventure and Trick Park): tree climbing, ice skating, walls, wall contact, landing.
-// ---------- shared platform physics (Adventure levels and Trick Park) ----------
+// Shared platform physics (Trick Park): tree climbing, ice skating, walls, wall contact, landing.
+// ---------- shared platform physics (Trick Park maps) ----------
 // ---------- tree climbing ----------
 // Run or jump into a trunk while pushing toward it to grab on. Up/down climbs, left/right circles,
 // Jump leaps off, crouch lets go. At the tip you balance in a handstand; Jump from there to flip.
@@ -16,11 +16,15 @@ function tryGrab(dt){
   for(const c of advCol){if(!c.tree)continue;const dx=c.x-P.position.x,dz=c.z-P.position.z,d=Math.hypot(dx,dz);
     // reach a bit past where the trunk stops your body (T.bodyRadius), so jumping into a tree grabs it every time;
     // in the air, aiming roughly at it is enough
-    if(d<c.r+T.bodyRadius+.4&&py>=c.y-.1&&py<c.top-1.3&&(ix*dx+iz*dz)/(d*im)>(grounded?.6:.4)){CL.touch+=dt;
-      if(diving||CL.touch>(grounded?T.climb.grabDelay:0)){if(diving)addTrick('Dive Grab');Object.assign(CL,{on:true,tree:c,ang:Math.atan2(-dx,-dz),h:Math.max(py,c.y)+.15,top:false,touch:0,stepT:0});
+    // touching the trunk (where it stops your body) while pushing roughly at it grabs at once, at any speed: running in
+    // fast used to slide you round the trunk before the grab delay ran out
+    const dot=(ix*dx+iz*dz)/(d*im),contact=d<c.r+T.bodyRadius+.12;
+    // grab anywhere up the trunk (short trees used to be too low to catch mid-jump); you start no higher than the climb's top
+    if(d<c.r+T.bodyRadius+.4&&py>=c.y-.1&&py<c.top-.5&&(dot>(grounded?.6:.4)||(contact&&dot>.3))){CL.touch+=dt;
+      if(diving||contact||CL.touch>(grounded?T.climb.grabDelay:0)){if(diving)addTrick('Dive Grab');Object.assign(CL,{on:true,tree:c,ang:Math.atan2(-dx,-dz),h:Math.min(c.top-1.2,Math.max(py,c.y)+.15),top:false,touch:0,stepT:0});
         vel.set(0,0,0);vy=0;A.spd=0;A.mode='normal';A.flipT=99;grounded=false;stand=null;SFX.grab();burst(V(P.position.x,py+1.2,P.position.z),leafCol(),8)}
       return}}
-  CL.touch=0;
+  CL.touch=Math.max(0,CL.touch-dt*2);   // a frame or two off-angle doesn't throw the grab away
 }
 function letGo(){CL.on=false;CL.top=false;CL.cool=T.climb.regrabCooldown}
 function climbStep(dt){

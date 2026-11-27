@@ -8,8 +8,8 @@ STUB=open(os.path.join(HERE,'three-stub.js')).read()
 INIT="""(()=>{window.AudioContext=undefined;window.webkitAudioContext=undefined;let s=12345;Math.random=()=>{s=(s*16807)%2147483647;return (s-1)/2147483646};
 window.__raf=[];window.requestAnimationFrame=cb=>{window.__raf.push(cb);return window.__raf.length};
 window.__step=n=>{for(let i=0;i<n;i++){const q=window.__raf.splice(0);for(const f of q)f(0)}};})();"""
-HOOK="""window.__G=()=>({state,mode,ci,runIdx,curIdx,py:+py.toFixed(3),x:+P.position.x.toFixed(3),z:+P.position.z.toFixed(3),face:+face.toFixed(3),
-score,am:A.mode,jn:A.jumpN,orbs:orbs.length,hz:runHz.length,lives,runFree,cores:coreCount,time:+time.toFixed(2),win:WIN,climb:CL.on,top:CL.top,ice:onIce,
+HOOK="""window.__G=()=>({state,mode,ci,runIdx,py:+py.toFixed(3),x:+P.position.x.toFixed(3),z:+P.position.z.toFixed(3),face:+face.toFixed(3),
+score,am:A.mode,jn:A.jumpN,orbs:orbs.length,hz:runHz.length,lives,runFree,time:+time.toFixed(2),win:WIN,climb:CL.on,top:CL.top,ice:onIce,
 hint:document.getElementById('hint').textContent,ov:!document.getElementById('ov').classList.contains('hide'),ovT:document.getElementById('ovT').textContent,
 set:!document.getElementById('set').classList.contains('hide'),outfit:OFI[2],tAll:+tAll.toFixed(3)});"""
 # The scripted session: (action, arg)
@@ -37,14 +37,6 @@ def S():
   # Rooftops
   click('#go');f(2);click('#alt2');f(5);click('#csGo');f(10);down('KeyW');f(100);up('KeyW');snap('rooftops street');down('KeyA');f(80);up('KeyA');tap('Space');f(40);snap('rooftops move')
   tap('Escape');f(3);click('#alt2');f(10)
-  # Adventure: Lighthouse Isles
-  click('#alt');f(2);snap('level menu');click('#go');f(5);click('#csGo');f(10);snap('isles start')
-  down('KeyW');f(150);tap('Space');f(40);tap('Space');f(80);up('KeyW');snap('isles fwd')
-  tap('KeyP');f(3);click('#alt2');f(10)
-  # Adventure: Sky Gauntlet
-  click('#alt');f(2);click('#alt');f(5);click('#csGo');f(10);snap('sky start');down('KeyW');f(30);down('ShiftLeft');f(3);tap('Space');up('ShiftLeft');f(70);up('KeyW');snap('sky long jump')
-  down('KeyW');f(240);up('KeyW');snap('sky later')
-  tap('KeyP');f(3);click('#alt2');f(10)
   # Run mode with Sunny, then Rook
   click('#go');f(2);click('#go');f(5);tap('ArrowRight');f(2);click('#csGo');f(10);down('KeyW');f(60);tap('Space');f(40);up('KeyW');snap('sunny')
   tap('Escape');f(3);click('#alt2');f(10)

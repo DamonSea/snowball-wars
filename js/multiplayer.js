@@ -24,7 +24,7 @@ function nameOf(peer){
   if(peer.by&&MP.user){if(!(peer.by in MP.prof)){MP.prof[peer.by]='';MP.user.profiles([peer.by]).then(ps=>{const q=ps&&ps[peer.by];MP.prof[peer.by]=(q&&q.name)||''}).catch(()=>{})}
     if(MP.prof[peer.by])return MP.prof[peer.by]}
   const n=peer.presence&&peer.presence.nm;return typeof n==='string'&&n.trim()?n.trim().slice(0,24):'Player'}
-const whereName=w=>w==='menu'?'in the menu':w==='adv'?'in Adventure':/^p\d$/.test(w||'')&&RUNMAPS[+w[1]]?'in '+RUNMAPS[+w[1]].name:'';
+const whereName=w=>w==='menu'?'in the menu':/^p\d$/.test(w||'')&&RUNMAPS[+w[1]]?'in '+RUNMAPS[+w[1]].name:'';
 function lobbyUI(){const e=$('online');if(!e)return;
   if(MP.err&&(!MP.on||!MP.lobby)){e.textContent='Multiplayer couldn\u2019t connect ('+MP.err+').';return}
   if(MP.p2p&&!MP.lobby){e.textContent='Multiplayer: connecting\u2026';return}
@@ -114,7 +114,7 @@ function electHost(){
 function mpFrame(dt){
   if(!MP.on)return;const now=performance.now();
   // lobby presence: where you are
-  const w=state==='menu'||state==='select'||state==='build'?'menu':mode==='run'?'p'+runL.key:'adv';
+  const w=state==='menu'||state==='select'||state==='build'?'menu':'p'+runL.key;
   if(w!==MP.lastWhere){MP.lastWhere=w;MP.lobby.presence({w,nm:MP.myName||'Player',nmSet:savedName()?1:0}).catch(()=>{});lobbyUI()}
   const want=wantRoom();if(want!==MP.roomName&&!MP.joining&&now>MP.retryAt)switchRoom(want);
   electHost();updAvatars(dt);

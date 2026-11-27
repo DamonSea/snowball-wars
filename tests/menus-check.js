@@ -2,7 +2,7 @@
 const gp={id:'DualSense Wireless Controller',mapping:'standard',connected:true,timestamp:1,buttons:Array.from({length:18},()=>({pressed:false,value:0})),axes:[0,0,0,0]};
 const tap=i=>{gp.buttons[i].pressed=true;gp.timestamp++;__step(1);gp.buttons[i].pressed=false;gp.timestamp++;__step(1)};
 menu();__step(3);const vis=id=>{const e=$(id);return e&&e.textContent&&getComputedStyle(e).display!=='none'};
-ok('main menu: title and three buttons',$('ovT').textContent==='Snowball Wars'&&['Trick Park','Adventure','Map Builder'].every(t=>[...document.querySelectorAll('#ov .btns button')].some(b=>b.textContent===t&&getComputedStyle(b).display!=='none')));
+ok('main menu: title and two buttons (no Adventure)',$('ovT').textContent==='Snowball Wars'&&![...document.querySelectorAll('#ov .btns button')].some(b=>b.textContent==='Adventure'&&getComputedStyle(b).display!=='none')&&['Trick Park','Map Builder'].every(t=>[...document.querySelectorAll('#ov .btns button')].some(b=>b.textContent===t&&getComputedStyle(b).display!=='none')));
 ok('no intro paragraph or score list on the main menu',!vis('ovP')&&getComputedStyle($('best')).display==='none');
 $('go').click();__step(2);ok('Trick Park opens the map picker',PARK.on&&!$('park').classList.contains('hide')&&$('ov').classList.contains('hide'));
 ok('shows one map with its name and best orb race',$('parkName').textContent==='Plaza'&&/Collectathon/.test($('parkBest').textContent));

@@ -3,8 +3,8 @@
 ### [▶ Play Snowball Wars](https://damonsea.github.io/snowball-wars/)
 
 A 3D winter trick-platformer for the browser, starring Flipper the stunt pilot and Parker the snowboarder. Chain flips, dives and wall jumps
-into combos in Trick Park (Plaza, Frozen Rink, Rooftops, Jungle Gym), discover named gaps, have snowball fights, or play
-the Adventure levels. Built with three.js; open `index.html` in a browser to play (multiplayer works only in the
+into combos in Trick Park (Plaza, Frozen Rink, Rooftops, Jungle Gym), discover named gaps, have snowball fights, or build
+your own maps. Built with three.js; open `index.html` in a browser to play (multiplayer works only in the
 claude.ai version).
 
 ![The cast: Flipper, Parker and Tuk](docs/media/characters.png)
@@ -96,11 +96,11 @@ silliness, off in Settings; Parker doesn't) keeps spraying until you press Groun
 ![Vex butt-slides down the Big Slide](docs/media/big-slide.gif)
 
 ### The winter crew
-![Snow goon, penguin slider and frost imp](docs/media/winter-crew.png)
+![Snow goon, penguin slider and holiday elf](docs/media/winter-crew.png)
 
 - **Snow goons** keep their distance and lob snowballs.
 - **Penguin sliders** flap a red "!" and belly-slide at you, then sit dizzy.
-- **Frost imps** steal your snowballs; smack them before they escape.
+- **Holiday elves** steal your snowballs into their sacks; smack them before they escape.
 
 Punch, kick, snowball, dive, ground-pound or **stomp** them. Prefer the classics? Settings → Enemies → Spikeballs.
 
@@ -135,9 +135,9 @@ The Trick Park picker has two tabs (click them, or Q/E, or L1/R1 on a controller
 To ship a map with the game instead, Export it from the builder, then add the `.snowmap.json` contents to
 `USER_MAPS` in `js/maps/user-maps.js` (set `name` and `author`).
 
-### Adventure
-Hand-built levels with cores to collect, checkpoints and a goal: **Lighthouse Isles**, and **Sky Gauntlet**, which
-needs Flipper's or Parker's full moveset (and guard rails help).
+### Day and night
+Settings → **Time of day**: Always day, Always night, or Day & night (an eight-minute cycle with warm dusks and
+dawns). Night brings out a moon and twinkling stars, and the lamps glow.
 
 ### Play your way
 - **Multiplayer** (in the claude.ai version): play Trick Park with friends, with shared orbs and enemies, name tags and trick callouts.
@@ -199,7 +199,7 @@ The GitHub Pages copy has multiplayer too, with no server: browsers find each ot
 (Formerly "Orb Run", then briefly "Frosty Falls". Saved data keeps its `orbRun…` storage keys so scores, gaps and unlocks carry over.)
 
 A 3D browser game built on three.js r128. Flipper, a pint-sized stunt pilot, tricks his way
-through Trick Park (three maps, free roam and timed runs, multiplayer) and Adventure (two levels).
+through Trick Park (its maps, free roam, game modes and multiplayer) and maps you build yourself.
 
 ## How the files fit together
 
@@ -215,26 +215,25 @@ by files above it. Nothing is bundled.
 | 4 | `js/fx.js` | Spikeball model, particle bursts, collision push-out |
 | 5 | `js/audio/sfx.js` | Sound engine and the configurable sound-effect library |
 | 6 | `js/audio/music.js` | Music tracks, ambience, spikeball rolling sound |
-| 7 | `js/enemies.js` | Enemies: snow goons, penguin sliders, frost imps (AI, stomps, theft) and the Spikeballs toggle |
-| 8 | `js/levels/engine.js` | Level/map builders and collision queries (how to add maps is documented at the top) |
-| 9 | `js/levels/*.js` | Adventure levels: Lighthouse Isles, Sky Gauntlet |
+| 7 | `js/enemies.js` | Enemies: snow goons, penguin sliders, holiday elves (AI, stomps, theft) and the Spikeballs toggle |
+| 8 | `js/levels/engine.js` | Map builders and collision queries (how to add maps is documented at the top) |
 | 10 | `js/maps/*.js` | Trick Park maps: Plaza, Frozen Rink, Rooftops, Jungle Gym |
-| 11 | `js/content-ready.js` | Picks the current level and map once all are registered |
+| 11 | `js/content-ready.js` | Picks the current map once all are registered |
 | 12 | `js/state.js` | Game state, HUD, menus, character select, pause |
 | 13 | `js/trickpark.js` | Trick Park: START pad, combos, orbs, spikeballs, timed runs |
 | 14 | `js/orbskins.js` | Orb styles: crystal, donuts, stars, snowflakes, presents, coins |
 | 15 | `js/physics.js` | Platform physics, ice, walls, tree and pole climbing, ledge hang, trampolines, raised decks |
-| 16 | `js/adventure.js` | Adventure: cores, checkpoints, tutorial zones, goal |
 | 17 | `js/combat.js` | Three-hit combo, sweep, air kick |
 | 18 | `js/movement.js` | Sunny/Rook controls and Flipper's whole moveset |
 | 19 | `js/pound.js` | Ground pound for every character: spin, drop, shockwave |
 | 20 | `js/input/bindings.js` | Custom controls: key, mouse and controller bindings, rebinding in Settings |
-| 21 | `js/ui/settings.js` | Settings panel (season, mix, sound styles) |
+| 21 | `js/ui/settings.js` | Settings panel (season, time of day, mix, sound styles) |
 | 22 | `js/ui/customize.js` | Customize screen: outfit presets, part colors, accessories (and their animations), saved looks |
 | 23 | `js/ui/controls.js` | Controls card, keyboard, touch |
 | 24 | `js/input/gamepad.js` | PS5 / standard controller support |
 | 25 | `js/loop.js` | The frame loop: update, animate, camera, render |
 | 26 | `js/seasons.js` | Snowfall, breath, Winter/Summer switching |
+| 26b | `js/daynight.js` | Day and night: sky, moonlight, moon and stars, the cycle (Settings → Time of day) |
 | 27 | `js/net/p2p.js` | Multiplayer outside claude.ai: peer-to-peer stand-in for the room (Trystero) |
 | 28 | `js/multiplayer.js` | Trick Park multiplayer over the page's room capability (or the P2P stand-in) |
 | 29 | `js/snowballs.js` | Snowball fights: throwing, ammo (refilled by orbs), snowmen, hits on players (Trick Park only) |

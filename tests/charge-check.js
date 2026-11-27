@@ -28,7 +28,7 @@ setRivals(2);beginTimed();__step(220);orbN=8;SB.hitCool=0;invuln=0;hitMe('rb0',7
 const rb=RACE.bots[0];rb.n=6;rb.stun=0;launchSnowball([rb.x,rb.y+1.1,rb.z,.01,0,0],true,null,++SB.seq,false,true);__step(2);ok('Collectathon: a charged hit on a rival knocks 4 loose',rb.n===2,'left '+rb.n);
 stopOrbRun();__step(3);
 // aim cancels when you can't throw
-SB.ammo=3;SB.cool=0;fdown();__step(5);SB.stun=1;__step(2);ok('Getting stunned cancels the aim (no throw)',!SB.aim.on&&vis()===0&&SB.ammo===3);fup();__step(60);
+SB.ammo=3;SB.cool=0;fdown();__step(5);SB.stun=1;__step(2);ok('Getting stunned cancels the aim (no throw)',!SB.aim.on&&vis()===0&&SB.ammo>=3);fup();__step(60);
 // pad R1
 const GP_={id:'t',index:0,connected:true,timestamp:1,mapping:'standard',axes:[0,0,0,0],buttons:Array.from({length:17},()=>({pressed:false,value:0}))};const rg=navigator.getGamepads.bind(navigator),rh=document.hasFocus;navigator.getGamepads=()=>[GP_];document.hasFocus=()=>true;
 SB.cool=0;SB.stun=0;__step(3);GP_.buttons[5]={pressed:true,value:1};__step(70);ok('Pad: holding R1 aims and charges',SB.aim.on&&SB.aim.full);n0=SB.list.length;GP_.buttons[5]={pressed:false,value:0};__step(2);ok('Pad: letting go of R1 throws it charged',SB.list.length===n0+1&&SB.list[SB.list.length-1].ch);

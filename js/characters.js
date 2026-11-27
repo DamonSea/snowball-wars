@@ -462,7 +462,7 @@ const OUTFITS_TUK=[
   {name:'Glacier',jacket:0x2bb3a8,fleece:0xe8fbff,leather:0xcfe6f5,pants:0xf2f9ff,boot:0x3a4f66,sole:0xe8f2fb,glove:0x9fd8ff,scarf:0xf2f2f2,metal:0xd9e6f2,lens:0x2bb3a8,lensE:0x0b4a44},
   {name:'Berry',jacket:0x8e3bb8,fleece:0xffd84a,leather:0xf7e6f0,pants:0xffffff,boot:0x5a3a5e,sole:0xf3c9a8,glove:0xff7db0,scarf:0xffd84a,metal:0xffd84a,lens:0xb070ff,lensE:0x3a1260},
   {name:'Midnight',jacket:0x1f2b4a,fleece:0x8fd0ff,leather:0x9aa3b5,pants:0xd5dbe6,boot:0x1b1f2a,sole:0xe8e8f0,glove:0x8fa8d8,scarf:0xe23b3b,metal:0xc8ccd0,lens:0xffd84a,lensE:0x5a4700}];
-const unlocked=(o,list=OUTFITS)=>!list[o].lock||!!bestA.orbRunAdv2;
+const unlocked=(o,list=OUTFITS)=>!list[o].lock;
 const OFI={}; // each wardrobe character's current outfit, by character index
 function applyOutfit(i){const c=chars[ci];if(!c.outs)return;if(typeof LOOKS!=='undefined'&&LOOKS[ci]){LOOKS[ci].c={};saveLook(ci);applyLook(c.rig,ci,i,LOOKS[ci])}else applyOutfitTo(c.rig.mats,i,c.outs,c.rig)}
 // which of the rig's pieces an outfit shows: everything normal, extras hidden, then the outfit's own hide/show/shorts

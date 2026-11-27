@@ -36,5 +36,5 @@ ok('cleanMap: garbage input',cleanMap(null).items.length>=1&&cleanMap('x').items
 exitBuilder();__step(1);ok('exit returns to panel with draft listed',$('mapsList').textContent.includes('Damon Park'));
 const pb=[...document.querySelectorAll('#mapsList [data-a="play"]')][0];pb.click();__step(3);ok('Play from panel opens character select / play',state==='select'||state==='play');
 ok('best list excludes customs',!$('best').textContent.includes('Damon'));
-menu();__step(2);ok('menu has Map Builder button',$('alt2').textContent==='Map Builder');
+menu();__step(2);ok('menu has Map Builder button',$('alt').textContent==='Map Builder');
 return out.join('\n')})()
