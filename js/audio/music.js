@@ -1,4 +1,4 @@
-// Music sequencer (four looping tracks), ambience (ocean, wind, birds) and the
+// Music sequencer (looping tracks, picked in Settings → Menu music / Trick Park music), ambience (ocean, wind, birds) and the
 // proximity-based spikeball rolling sound. audioFrame() runs once per frame.
 // ---------- music, ambience and spikeball rolling ----------
 const mtof=n=>440*Math.pow(2,(n-69)/12);
@@ -17,8 +17,29 @@ const TRACKS={
     lead:[[0,0],[3,2],[6,1],[8,3],[11,2],[14,1]],leadType:'pluck'},
   sky:{bpm:124,swing:0,bars:[[52,'m'],[48,'M'],[55,'M'],[50,'M']],vol:.8,pad:.02,
     bass:'r.r.o.r.r.r.o.rf',kick:'x..x..x.x..x..x.',snare:'....x.......x..x',hat:'..x...x...x...x.',
-    lead:[[0,0],[4,2],[6,1],[8,3],[12,2],[14,4]],leadType:'square'}
+    lead:[[0,0],[4,2],[6,1],[8,3],[12,2],[14,4]],leadType:'square'},
+  // more to pick from: a lazy cocoa-break groove, a dreamy northern-lights arpeggio, a jingly sprint, a minor-key driver
+  cocoa:{bpm:84,swing:.18,bars:[[57,'m7'],[50,'7'],[55,'M7'],[52,'m7']],vol:.85,pad:.02,
+    bass:'r.....f...r...t.',kick:'x......x..x.....',snare:'....x.......x...',hat:'..x...x...x...x.',rim:true,
+    lead:[[0,2],[3,3],[7,1],[10,2],[12,4]],leadType:'pluck'},
+  aurora:{bpm:100,swing:0,bars:[[60,'M7'],[64,'m7'],[57,'m7'],[65,'M7']],vol:.85,pad:.024,
+    bass:'r.......o.......',kick:'x.......x.......',snare:'................',hat:'....x.......x...',
+    arp:true,lead:[[0,4],[6,3],[12,2]],leadType:'pluck'},
+  jingle:{bpm:144,swing:0,bars:[[55,'M'],[60,'M'],[62,'7'],[55,'M']],vol:.78,pad:.012,
+    bass:'r...f...r...f...',kick:'x...x...x...x...',snare:'....x.......x...',hat:'x.x.x.x.x.x.x.x.',
+    lead:[[0,2],[2,2],[4,2],[8,2],[10,2],[12,2],[14,4]],leadType:'square'},
+  frost:{bpm:128,swing:0,bars:[[50,'m'],[46,'M'],[53,'M'],[48,'M']],vol:.8,pad:.016,
+    bass:'r.ro.r.rr.ro.r.f',kick:'x..x..x...x..x..',snare:'....x.......x...',hat:'xxxxxxxxxxxxxxxx',rim:true,
+    lead:[[0,0],[3,1],[6,2],[8,4],[11,3],[14,2]],leadType:'square'}
 };
+// what plays where (Settings). The originals stay the defaults; Shuffle moves on to another track every two loops.
+const MUSIC_MENU=[['menu','Classic'],['cocoa','Cocoa Break'],['aurora','Aurora'],['off','Off']];
+const MUSIC_PARK=[['run','Classic'],['shuffle','Shuffle'],['isles','Island Hop'],['sky','Sky Climb'],['jingle','Jingle Rush'],['frost','Frostbite'],['cocoa','Cocoa Break'],['aurora','Aurora'],['off','Off']];
+const MUSC={menu:'menu',park:'run'};try{const a=localStorage.getItem('orbRunMusMenu'),b=localStorage.getItem('orbRunMusPark');
+  if(MUSIC_MENU.some(o=>o[0]===a))MUSC.menu=a;if(MUSIC_PARK.some(o=>o[0]===b))MUSC.park=b}catch(e){}
+function setMusicPick(where,v){MUSC[where]=v;try{localStorage.setItem(where==='menu'?'orbRunMusMenu':'orbRunMusPark',v)}catch(e){}}
+const SHUF={pool:['run','isles','sky','jingle','frost','cocoa','aurora'],i:0,loops:0};
+function parkTrack(){const p=MUSC.park;if(p==='off')return null;if(p!=='shuffle')return p;return SHUF.pool[SHUF.i%SHUF.pool.length]}
 const MUS={name:null,want:null,track:null,g:null,next:0,step:0,duck:1};
 function mOsc(t,f,dur,type,vol,cut,a=.005,bus){const c=AU.ctx,o=c.createOscillator(),g=c.createGain(),fl=c.createBiquadFilter();
   o.type=type;o.frequency.setValueAtTime(f,t);fl.type='lowpass';fl.frequency.value=cut;
@@ -53,7 +74,8 @@ function musTick(){
   const T=MUS.track,spb=60/T.bpm/4,len=T.bars.length*32;
   if(MUS.next<c.currentTime-.3)MUS.next=c.currentTime+.05; // tab was in the background: resync
   while(MUS.next<c.currentTime+.15){scheduleStep(MUS.step,MUS.next);
-    MUS.next+=spb*(T.swing?(MUS.step%2?1-T.swing:1+T.swing):1);MUS.step=(MUS.step+1)%len}
+    MUS.next+=spb*(T.swing?(MUS.step%2?1-T.swing:1+T.swing):1);MUS.step=(MUS.step+1)%len;
+    if(MUS.step===0&&MUSC.park==='shuffle'&&MUS.name===parkTrack()&&++SHUF.loops>=2){SHUF.loops=0;SHUF.i++}}
 }
 setInterval(musTick,25);
 // ambience: ocean swell, wind with altitude, birds
@@ -75,7 +97,7 @@ function startRoll(){const c=AU.ctx;if(!c||ROLL.src)return;
 function audioFrame(dt){
   const c=AU.ctx;if(!c||c.state!=='running')return;
   // music choice
-  MUS.want=state==='menu'||state==='select'?'menu':(state==='won'||state==='over')?null:'run';
+  MUS.want=state==='menu'||state==='select'?(MUSC.menu==='off'?null:MUSC.menu):(state==='won'||state==='over')?null:parkTrack();
   MUS.duck=state==='paused'||setOpen?.35:1;
   // ambience
   startAmb();const live=state!=='over',h=Math.max(0,py),sky=false;

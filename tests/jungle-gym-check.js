@@ -37,7 +37,7 @@ __place(-16.2,-3.6,8,E);__k({KeyD:true});__until(()=>P.position.x>-8.8,90);jumpB
 // 14 North Express: North Deck south edge -> roof by long jump
 __place(0,-17.2,5.8,S);__k({KeyS:true});__until(()=>P.position.z>-11.9,90);keys.ShiftLeft=true;__step(2);jumpBuf=.15;keys.Space=true;__step(2);keys.ShiftLeft=false;let r2=land();out.push((r2.y===5.4||r2.y===2.4?'OK  ':'FAIL')+' North Express -> y='+r2.y+' z='+r2.z+' | '+r2.t);
 // 15 Swing set: climb pole, handstand, flip east onto the crossbar
-__place(6,9.5,0,E);__k({KeyD:true});__until(()=>CL.on,120);__k({KeyW:true});__until(()=>CL.top,300);__k({});face=E;__step(3);jumpBuf=.15;keys.Space=true;res('Swing Set: pole -> crossbar',4.5,land());
+__place(6,9.5,0,E);__k({KeyD:true});__until(()=>CL.on,120);__k({});CL.ang=E;CL.h=3.1;__step(2);jumpBuf=.15;keys.Space=true;res('Swing Set: Pole Leap from the west pole -> crossbar',4.5,land());   // (a pole-top flip now sails over: the far pole no longer has an invisible wall above it)
 // 16 walk under the deck, bonk head
 __place(7,1.5,0,W);__k({KeyA:true});__step(50);__k({});out.push((P.position.x<2?'OK  ':'FAIL')+' walk under Deck 1: x='+P.position.x.toFixed(1)+' y='+py.toFixed(2));
 jumpBuf=.15;keys.Space=true;let top=0;for(let i=0;i<40;i++){__step(1);top=Math.max(top,py)}keys.Space=false;out.push((top<=1.95-T.bodyH+.3&&top<.3?'OK  ':'OK? ')+' jump under Deck 1 bonks head: peak '+top.toFixed(2)+' (underside 1.95)');

@@ -3,6 +3,22 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.52.0] - 2026-11-26 — Leap over things, more music, clearer name box
+### Fixed
+- **Invisible walls above poles, trees and props.** Their collision went all the way up to the sky, so you couldn't
+  leap over a candy cane (or a lamp post, rock or bauble) even well above it. Collision now stops at the top: a high
+  leap clears a candy cane 14 times in 16 (0 before; the rest meet a stall beyond). Right after you let go of a pole
+  or tree it still nudges you clear, so tree-top flips and leaps behave as before.
+- The Jungle Gym's Swing Set route relied on that wall to stop you over the crossbar; it's now a Pole Leap from the
+  west pole.
+### Added
+- **More music.** Settings → **Menu music** (Classic, Cocoa Break, Aurora, Off) and **Trick Park music** (Classic,
+  **Shuffle**, Island Hop, Sky Climb, Jingle Rush, Frostbite, Cocoa Break, Aurora, Off). The originals stay the
+  defaults; Shuffle moves to another track every two loops. Island Hop and Sky Climb are the old Adventure songs.
+### Changed
+- **Character select:** your name has its own highlighted box (it glows while empty, and says friends see it), and the
+  long list of controls is gone so the panel isn't crowded.
+
 ## [2.51.0] - 2026-11-26 — Noses, caps for everyone, landing marker
 ### Added
 - **Nose shapes** (Face tab, Flipper and Parker): Default, **Big** (a bulbous plumber-style nose), Small and Pointy. The

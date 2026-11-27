@@ -12,7 +12,7 @@
 //     for a super bounce.
 //   The Canyon (west): a wall-jump chimney whose tops (8.0) hop over from the North Deck and leap back
 //     to the Roof.
-//   Swing Set (south-east): climb a pole, handstand, flip onto the crossbar.
+//   Swing Set (south-east): climb a pole, circle to its east side, Pole Leap onto the crossbar.
 {const gymW=new THREE.Group();gymW.visible=false;scene.add(gymW);advW=gymW;plats=[];advCol=[];
 add(new THREE.CylinderGeometry(30.5,26,3,48),sandM,0,-1.6,0,gymW);
 add(new THREE.CylinderGeometry(28.5,28.5,.2,48),grassM,0,-.1,0,gymW).castShadow=false;

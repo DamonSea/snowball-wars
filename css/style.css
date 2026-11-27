@@ -329,9 +329,16 @@ body.setopen #moves{visibility:hidden}
 .ehold small{position:absolute;top:100%;margin-top:6px;white-space:nowrap;font:700 12px "Inter",sans-serif;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6)}
 
 /* Trick Park: your name */
-.parkme{display:flex;align-items:center;justify-content:center;gap:8px;margin:10px 0 4px;font:700 13px "Inter",sans-serif;color:#cfe3ec}
-.parkme input{width:170px;padding:6px 12px;border-radius:999px;border:2px solid rgba(255,255,255,.25);background:#13303f;color:#fff;font:700 15px "Inter",sans-serif;text-align:center}
-.parkme input:focus{outline:none;border-color:#ffd84a}
+.parkme{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;align-items:center;gap:2px 12px;margin:4px 0 12px;padding:10px 14px;
+  border-radius:16px;background:rgba(255,216,74,.10);border:2px solid rgba(255,216,74,.45);font:700 15px "Inter",sans-serif;color:#fff3c4}
+.parkme .pmt{grid-row:1/3;font:800 17px "Baloo 2",system-ui,sans-serif;color:var(--sun);white-space:nowrap}
+.parkme input{width:100%;box-sizing:border-box;padding:9px 14px;border-radius:12px;border:2px solid rgba(255,255,255,.35);background:#10293a;color:#fff;font:800 19px "Inter",sans-serif;text-align:center}
+.parkme input:focus{outline:none;border-color:#ffd84a;box-shadow:0 0 0 3px rgba(255,216,74,.3)}
+.parkme .pms{font:600 12px "Inter",sans-serif;color:#cfe3ec;opacity:.85;text-align:center}
+.parkme input:placeholder-shown{animation:namePulse 1.8s ease-in-out infinite}
+@keyframes namePulse{0%,100%{border-color:rgba(255,216,74,.45);box-shadow:0 0 0 0 rgba(255,216,74,0)}50%{border-color:#ffd84a;box-shadow:0 0 0 4px rgba(255,216,74,.28)}}
+.cs .moves.hide{display:none}
+@media (prefers-reduced-motion:reduce){.parkme input:placeholder-shown{animation:none;border-color:#ffd84a}}
 .ctab.hide{display:none}
 
 .parkme.hide{display:none}

@@ -4,6 +4,8 @@ let setOpen=false,setRow=0;const SKEYS=Object.keys(SFXV);
 let sideStyle='somersault';try{if(localStorage.getItem('orbRunSideFlip')==='classic')sideStyle='classic'}catch(e){}
 const LOOK={season:{label:'Season',opts:['Winter','Summer'],get:()=>WIN?0:1,set:i=>setSeason(i===0)},snowfall:{label:'Snowfall',opts:['On','Off'],get:()=>SNOW?0:1,set:i=>setSnow(i===0)},
   time:{label:'Time of day',opts:['Always day','Always night','Day & night'],get:()=>['day','night','cycle'].indexOf(DN.mode),set:i=>setTimeOfDay(['day','night','cycle'][i])},
+  menuMusic:{label:'Menu music',opts:MUSIC_MENU.map(o=>o[1]),get:()=>Math.max(0,MUSIC_MENU.findIndex(o=>o[0]===MUSC.menu)),set:i=>setMusicPick('menu',MUSIC_MENU[i][0])},
+  parkMusic:{label:'Trick Park music',opts:MUSIC_PARK.map(o=>o[1]),get:()=>Math.max(0,MUSIC_PARK.findIndex(o=>o[0]===MUSC.park)),set:i=>setMusicPick('park',MUSIC_PARK[i][0])},
   camera:{label:'Camera',opts:CAM_NAMES,get:()=>CAMS.indexOf(CAM.mode),set:i=>setCam(CAMS[i])},
   graphics:{label:'Graphics',opts:['Auto','High','Balanced','Low'],get:()=>['auto','high','balanced','low'].indexOf(GFX.mode),set:i=>setQual(['auto','high','balanced','low'][i])},
   perf:{label:'Performance stats',opts:['Off','On'],get:()=>PERF.on?1:0,set:i=>setPerf(i===1)},

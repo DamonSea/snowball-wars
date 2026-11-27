@@ -118,7 +118,7 @@ function stepBody(dt,speed){
   const bZ=blockedMove(P.position.x,oz,P.position.x,nz,py);if(!bZ)P.position.z=nz;else{if(ac&&Math.abs(nz-oz)>1e-4){A.wnz=-Math.sign(nz-oz);A.wnx=0;A.wallT=T.flip.wallJump.contact}vel.z=0}
   if(onIce){if(bX){if(Math.abs(iceV.x)>T.ice.bounceSound)SFX.board(Math.abs(iceV.x));iceV.x*=-T.ice.bounce}if(bZ){if(Math.abs(iceV.z)>T.ice.bounceSound)SFX.board(Math.abs(iceV.z));iceV.z*=-T.ice.bounce}}
   if(chars[ci].acro&&!A.knock&&A.mode!=='flip')A.spd=vel.x*Math.sin(face)+vel.z*Math.cos(face);
-  pushOut(P.position,T.bodyRadius,advCol);tryGrab(dt);if(CL.on)return true;
+  pushOut(P.position,T.bodyRadius,advCol,CL.cool>0?undefined:py);tryGrab(dt);   // (just off a pole or tree: it still nudges you clear, as tree-top flips expect)if(CL.on)return true;
   // vertical
   const prev=py;vy-=T.gravity*dt;
   wallSliding=false;

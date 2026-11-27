@@ -8,5 +8,6 @@ function roll(g,vx,vz,dt){const s=Math.hypot(vx,vz);if(s>.01)g.rotateOnWorldAxis
 const parts=[],partGeo=new THREE.SphereGeometry(.09,5,4);
 function burst(pos,col,n=14){for(let i=0;i<n;i++){const m=new THREE.Mesh(partGeo,new THREE.MeshBasicMaterial({color:col,transparent:true}));
   m.position.copy(pos);scene.add(m);parts.push({m,v:V((Math.random()-.5)*6,2+Math.random()*4,(Math.random()-.5)*6),life:.7})}}
-function pushOut(p,rad,list){for(const c of list){const dx=p.x-c.x,dz=p.z-c.z,d=Math.hypot(dx,dz),mn=c.r+rad;
+// y (optional): your height. Anything with a top you're above doesn't push (you can leap over poles and rocks).
+function pushOut(p,rad,list,y){for(const c of list){if(y!==undefined&&c.top!==undefined&&y>=c.top-.05)continue;const dx=p.x-c.x,dz=p.z-c.z,d=Math.hypot(dx,dz),mn=c.r+rad;
   if(d<mn&&d>0){p.x=c.x+dx/d*mn;p.z=c.z+dz/d*mn;return{x:dx/d,z:dz/d}}}return null}

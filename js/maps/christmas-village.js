@@ -82,7 +82,7 @@ function lights(x0,y0,z0,x1,y1,z1,n=10){for(let i=0;i<=n;i++){const t=i/n,sag=Ma
 // ================= Town Square =================
 xmasTree(0,-10,2.22);                                   // top 9.0
 // big baubles around the tree's base (solid, like rocks)
-[[-2.6,-8.4,0],[2.7,-8.6,2],[-2.2,-12.4,3],[2.4,-12,1]].forEach(([x,z,c])=>{add(new THREE.SphereGeometry(.55,14,10),bulbs[c],x,.55,z,G);add(B(.2,.18,.2),gold,x,1.12,z,G);advCol.push({x,z,r:.6})});
+[[-2.6,-8.4,0],[2.7,-8.6,2],[-2.2,-12.4,3],[2.4,-12,1]].forEach(([x,z,c])=>{add(new THREE.SphereGeometry(.55,14,10),bulbs[c],x,.55,z,G);add(B(.2,.18,.2),gold,x,1.12,z,G);advCol.push({x,z,r:.6,top:1.2})});
 // market stalls: a ring of awnings at 2.0, 5-6 apart, hop round the square
 const STALLS=[[-8.5,-1.5,0],[-6.5,4.0,1],[6.5,5.2,2],[8.5,-1.5,3],[6,-6.8,4]];
 STALLS.forEach(([x,z,c])=>stall(x,z,3,2.2,2.0,[red,grn,mat(0x2f6fd0),mat(0xffb020),mat(0x9a5fc4)][c],white));
@@ -156,7 +156,7 @@ cottage(19,4,5,6,2.0,3.4,mat(0x8c3b2e),grnRoof,white,{chim:false});   // x 16.5.
 for(const[x,z,r]of[[15,8.6,.3],[16.6,9.6,-.2]]){const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=r;G.add(g);const fur=mat(0x9a6a44);
   add(B(1.1,.55,.45),fur,0,1.0,0,g);add(B(.3,.45,.3),fur,.55,1.4,0,g);add(new THREE.SphereGeometry(.1,8,6),red,.75,1.45,0,g);
   for(const[a,b]of[[-.4,-.15],[-.4,.15],[.4,-.15],[.4,.15]])add(B(.1,.75,.1),fur,a,.38,b,g);
-  [-1,1].forEach(k=>add(B(.05,.35,.05),timber,.5,1.75,k*.12,g));advCol.push({x,z,r:.55})}
+  [-1,1].forEach(k=>add(B(.05,.35,.05),timber,.5,1.75,k*.12,g));advCol.push({x,z,r:.55,top:1.9})}
 for(let i=0;i<6;i++){add(B(.1,.9,.1),wood,14.2+i*1.3,.45,10.6,G)}add(B(6.6,.1,.08),wood,17.45,.75,10.6,G);
 
 // ================= Frozen Pond (south-east) =================
