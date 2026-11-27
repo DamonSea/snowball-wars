@@ -3,6 +3,19 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.54.0] - 2026-11-26 — New tracks that actually sound new
+### Changed
+- The tracks added in 2.52 shared Classic's instruments (and all got the same winter sparkles), so they sounded like
+  variations of it. The sequencer now has more voices (bell, flute, steel drum, icy echo lead; sub bass; sweeping
+  and glassy pads; offbeat chord stabs, electric piano, sleigh bells, vinyl crackle; brush and 808 kits with clap and
+  hi-hat rolls) and written melodies, and each track is its own style:
+  - **Jingle Rush**: an oom-pah polka with sleigh bells, offbeat stabs and a bell melody.
+  - **Frostbite**: half-time trap: sub bass, 808 kick, clap, hi-hat rolls, an icy echoing lead.
+  - **Cocoa Break**: lo-fi: electric-piano chords, brushed drums, vinyl crackle, a lazy flute.
+  - **Aurora**: ambient, no drums: a slowly sweeping pad, a sub drone and bell sparkles.
+  - **Island Hop**: steel drums and an offbeat strum.
+- Levels are balanced against Classic. Classic, the menu theme and Sky Climb are note-for-note unchanged.
+
 ## [2.53.1] - 2026-11-26 — Classic run is back
 ### Changed
 - The original walk/run is the default again. The new one from 2.53.0 is a choice: Settings → **Run style**:
