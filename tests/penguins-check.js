@@ -1,5 +1,5 @@
 (()=>{const out=[];const ok=(n,c)=>out.push((c?'OK   ':'FAIL ')+n);const _st=__step;
-setFoeStyle('crew');menu();pickMode='run';pickLevel=0;ci=2;showChar();confirmChar();__step(10);
+setFoeStyle('off');menu();pickMode='run';pickLevel=0;ci=2;showChar();confirmChar();__step(10);
 runHz.forEach(h=>rmObj(h.g));runHz=[];runQ=[];
 const mk=(x,z)=>{const f=makeFoe('penguin',runL.grp);f.g.position.set(x,0,z);const h=Object.assign(f,{vx:0,vz:0,id:'p'+x,st:'walk',t:1,face:0,wa:0,cool:9,robbed:0,mine:0});runHz.push(h);return h};
 const keep=()=>{const want=runHz.length;return n=>{for(let i=0;i<n;i++){_st(1);runQ=[];while(runHz.length>want)rmObj(runHz.pop().g)}}};

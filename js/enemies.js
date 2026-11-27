@@ -5,7 +5,7 @@
 //  - Holiday elf: hops after you and steals snowballs instead of hurting; smack it before it escapes to get them back.
 // All of them can be punched, kicked, snowballed, dived into, pounded, or stomped (land on them from above).
 // Trick Park: the host runs the AI (foeThink) and shares kind / state / facing and goon throws through presence.
-let FOE_STYLE='crew';try{if(localStorage.getItem('orbRunFoes')==='spike')FOE_STYLE='spike'}catch(e){}
+let FOE_STYLE='crew';try{const v=localStorage.getItem('orbRunFoes');if(v==='spike'||v==='off')FOE_STYLE=v}catch(e){}   // crew, spike, or off (no enemies)
 const KINDS=['spike','goon','penguin','imp'],FSTATES=['walk','windup','slide','dizzy','flee'];
 // body height (top) and contact radius per kind
 const FOE={spike:{top:1.5,r:1.2},goon:{top:2.1,r:.95},penguin:{top:1.2,r:.85},imp:{top:.95,r:.8}};
@@ -171,5 +171,5 @@ function hitsFoe(h,p){const g=h.g.position;if(h.kind==='spike')return Math.hypot
   const k=FOE[h.kind];return Math.hypot(g.x-p.x,g.z-p.z)<k.r*.8+.25&&p.y<g.y+k.top+.15&&p.y>g.y-.2}
 // switching styles: Trick Park swaps the current enemies now (host)
 function setFoeStyle(s){FOE_STYLE=s;try{localStorage.setItem('orbRunFoes',s)}catch(e){}
-  if(mode==='run'&&!MP.client&&state!=='menu'){const n=runHz.filter(h=>!h.dead).length;runHz.forEach(h=>rmObj(h.g));runHz=[];for(let i=0;i<n;i++)spawnRunHz()}
+  if(mode==='run'&&!MP.client&&state!=='menu'){const n=s==='off'?0:runHz.filter(h=>!h.dead).length;runHz.forEach(h=>rmObj(h.g));runHz=[];runQ=[];for(let i=0;i<n;i++)spawnRunHz()}
   else if(MP.client)toast('The host picks the enemies in multiplayer.')}

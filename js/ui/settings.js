@@ -16,7 +16,7 @@ const LOOK={season:{label:'Season',opts:['Winter','Summer'],get:()=>WIN?0:1,set:
   yellow:{label:'Yellow snow',opts:['On','Off'],get:()=>YS.on?0:1,set:i=>setYellow(i===0)},
   orbs:{label:'Orb style',opts:ORB_SKINS.map(s=>s.name),get:()=>Math.max(0,ORB_SKINS.findIndex(s=>s.id===ORB_SKIN)),set:i=>setOrbSkin(ORB_SKINS[i].id)},
   rivals:{label:'Collectathon rivals',opts:['2 computer','1 computer','Off'],get:()=>[2,1,0].indexOf(RACE.rivals),set:i=>setRivals([2,1,0][i])},
-  foes:{label:'Enemies',opts:['Winter crew','Spikeballs'],get:()=>FOE_STYLE==='spike'?1:0,set:i=>setFoeStyle(i?'spike':'crew')},
+  foes:{label:'Enemies',opts:['Winter crew','Spikeballs','Off'],get:()=>FOE_STYLE==='spike'?1:FOE_STYLE==='off'?2:0,set:i=>setFoeStyle(['crew','spike','off'][i])},
   cpu:{label:'Computer player',opts:['Off','On'],get:()=>CPU.on?1:0,set:i=>setCpu(i===1)}};
 const ROWS=[...Object.keys(LOOK),...SKEYS,...BIND_ROWS];let setSlot=0;
 // tabs: Game (look and gameplay), Sound (mix and a style per sound), Controls (bindings). Each tab owns a run of ROWS.

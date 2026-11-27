@@ -3,6 +3,15 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.59.1] - 2026-11-27 — Enemies off
+### Added
+- **Settings → Enemies → Off**: no enemies anywhere in Trick Park, timed runs included. It takes effect right away
+  (the current ones vanish) and is remembered. Winter Crew and Spikeballs work as before. In multiplayer the host's
+  choice applies.
+### Tests
+- The penguin test uses Enemies: Off and places its own penguins, so stray goons can no longer knock you onto the
+  PLAY pad mid-test. The menu test expects Woodsy Cabin as the map after Frozen Rink.
+
 ## [2.59.0] - 2026-11-27 — Woodsy Cabin
 ### Added
 - **Woodsy Cabin**, a new Trick Park map that replaces Rooftops (same slot, map 3). It's an old log cabin in a clearing

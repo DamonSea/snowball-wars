@@ -73,7 +73,7 @@ function resetRun(){if(WAR.on)warsStop(false);raceStop();tagStop(false);[...orbs
   if(runL.custom){const s=runL.spawn;P.position.set(s.x,0,s.z);py=s.y||0;if(s.x||s.z)face=Math.atan2(-s.x,-s.z)}   // custom maps: start on the spawn point, facing the middle
   frReset();
   for(let i=0;i<T.run.orbsOnField;i++)spawnOrb();if(foesOn())for(let i=0;i<T.run.hazardsStart;i++)spawnRunHz();spawnRollers()}
-const foesOn=()=>!(runL&&runL.opt&&!runL.opt.enemies);
+const foesOn=()=>FOE_STYLE!=='off'&&!(runL&&runL.opt&&!runL.opt.enemies);   // Settings → Enemies → Off, or a builder map with enemies off
 function startRun(free=true){mode='run';setWorld('run');resetRun();runFree=free;runCD=0;padHold=0;state='play';overlay(false);hud();SFX.start();freeUI();renderControls();
   hint('')}
 // from free roam: keep Flip where he is, reset the board, count down 3-2-1, then the clock starts
