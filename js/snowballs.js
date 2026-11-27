@@ -155,19 +155,19 @@ const AIM_N=28,aimDotGeo=new THREE.SphereGeometry(.1,8,6),aimM=new THREE.MeshBas
   aimRing=new THREE.Mesh(new THREE.RingGeometry(.3,.48,24),new THREE.MeshBasicMaterial({color:0x2fb8ff,transparent:true,opacity:.8,side:THREE.DoubleSide,depthWrite:false}));
 const aimDots=Array.from({length:AIM_N},()=>{const m=new THREE.Mesh(aimDotGeo,aimM);m.visible=false;scene.add(m);return m});
 aimRing.rotation.x=-PI/2;aimRing.visible=false;scene.add(aimRing);keep(aimDotGeo,aimM,aimGold,aimRed,aimRing.geometry,aimRing.material);aimDots.forEach(m=>keep(m));
-// Mouse aiming: click (or hold) Throw with the mouse and Flip turns toward the cursor, so you can spin the arc
+// Mouse aiming: click (or hold) Throw with the mouse and Flipper turns toward the cursor, so you can spin the arc
 // around just by moving it. It also kicks in if you move the mouse while aiming with F. A controller never uses it.
 const MAIM={x:0,y:0,t:-9};
 addEventListener('pointermove',e=>{if(e.pointerType!=='mouse')return;const r=renderer.domElement.getBoundingClientRect();
   MAIM.x=(e.clientX-r.left)/r.width*2-1;MAIM.y=-(e.clientY-r.top)/r.height*2+1;MAIM.t=tAll},true);
 addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'){const r=renderer.domElement.getBoundingClientRect();
   MAIM.x=(e.clientX-r.left)/r.width*2-1;MAIM.y=-(e.clientY-r.top)/r.height*2+1}},true);
-// the way from Flip to the point on the ground under the cursor (or, above the horizon, the way the cursor points)
+// the way from Flipper to the point on the ground under the cursor (or, above the horizon, the way the cursor points)
 let _mr=null;
 function cursorFace(){if(!THREE.Raycaster)return null;_mr=_mr||new THREE.Raycaster();_mr.setFromCamera(new THREE.Vector2(MAIM.x,MAIM.y),cam);const o=_mr.ray.origin,d=_mr.ray.direction;
   let x,z;if(d.y<-.02){const k=(py+.5-o.y)/d.y;x=o.x+d.x*k;z=o.z+d.z*k}else{x=P.position.x+d.x*50;z=P.position.z+d.z*50}
   const dx=x-P.position.x,dz=z-P.position.z;return Math.hypot(dx,dz)>.4?Math.atan2(dx,dz):null}
-// which way Flip is drawn facing: toward the cursor while mouse-aiming and for the throw that follows, else `face`
+// which way Flipper is drawn facing: toward the cursor while mouse-aiming and for the throw that follows, else `face`
 function aimFace(){return SB.aim.dir!=null&&(SB.aim.on||SB.anim>0)?SB.aim.dir:face}
 function aimStart(){if(!canThrow())return;
   if(SB.ammo<1){SFX.deny();if(!SB.told){SB.told=true;toast('Out of snowballs: grab orbs to refill')}snowFlash('empty');return}
@@ -179,7 +179,7 @@ function updateAim(dt){const A_=SB.aim;if(!A_.on)return;
   A_.t+=dt;if(!A_.full&&A_.t>=T.snow.chargeTime){A_.full=true;SFX.ui(6);rumble(80,.2,.5);burst(V(P.position.x,py+1.45,P.position.z),0xffd84a,8)}
   // turn to aim while holding, like the throw does
   if(!A_.mouse&&MAIM.t>A_.mt&&!joy.snow)A_.mouse=true;   // moved the mouse while aiming with a key
-  // the mouse turns Flip's upper body (A_.dir) and leaves his running direction alone; keys turn him as before
+  // the mouse turns Flipper's upper body (A_.dir) and leaves his running direction alone; keys turn him as before
   if(A_.mouse){const c=cursorFace();if(A_.dir===null)A_.dir=face;if(c!==null)A_.dir+=angD(c,A_.dir)*Math.min(1,dt*18)}
   else{const d=inputDir();if(d!==null&&ATK.t<=0)face+=angD(d,face)*Math.min(1,dt*14)}
   // trace the arc with the throw's own numbers until it hits something: the ground, a wall or tree, or a target.

@@ -1,6 +1,6 @@
 // Multiplayer (Trick Park only) over the page's room capability: presence, remote avatars,
 // host election and the shared orb/spikeball field.
-// ---------- multiplayer: Trick Park only (Adventure stays single-player) ----------
+// ---------- multiplayer: Trick Park ----------
 // Uses the page's `room` capability. Everyone on the same Trick Park map shares a named room.
 // Presence carries each player's position, pose, character, outfit, score and last trick.
 // One player's game (the lowest peer id) referees the shared orbs and spikeballs and publishes

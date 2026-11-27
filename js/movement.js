@@ -1,4 +1,4 @@
-// Movement: standard controls (Sunny, Rook) and Flip's momentum moveset (skid, crouch, long jump,
+// Movement: standard controls (Sunny, Rook) and Flipper's momentum moveset (skid, crouch, long jump,
 // backflip, side flip, dive, triple jump, wall jump), plus hurt and jump.
 const angD=(a,b)=>{const d=a-b;return((d+PI)%(2*PI)+2*PI)%(2*PI)-PI};
 const clamp=(v,a)=>Math.max(-a,Math.min(a,v));

@@ -1,5 +1,5 @@
 // Characters: the player root P and the three rigs (Sunny the robot, Rook the explorer,
-// Flip the stunt pilot), Flip's wardrobe, the character table and Flip's move state A.
+// Flipper the stunt pilot), Flipper's wardrobe, the character table and Flipper's move state A.
 // Builders take a parent so multiplayer can make copies for other players.
 // ---------- player ----------
 const P=new THREE.Group();scene.add(P);
@@ -82,7 +82,7 @@ function buildFace(head,{skin,hair,freck,noseC=0xd99a70,blushC=0xef9a85,k=1,oy=0
   for(const k of ['eyes','brows','mouth','nshape'])for(const st in FACE[k])FACE[k][st].visible=st===({eyes:'beady',brows:'none',mouth:'calm',nshape:'default'})[k];
   [...FACE.shine,...FACE.freckles,...FACE.blush].forEach(m=>{m.visible=false});
   return{FACE,blinkOf}}
-// Flip: pint-sized stunt pilot. Same rig interface (root > hp > limbs), chunky mascot proportions
+// Flipper: pint-sized stunt pilot. Same rig interface (root > hp > limbs), chunky mascot proportions
 function buildChibi(parent=P){
   const root=new THREE.Group(),hp=new THREE.Group();hp.position.y=.8;root.add(hp);parent.add(root);
   const S=(r,w=14,h=10)=>new THREE.SphereGeometry(r,w,h),Cy=(r,l)=>new THREE.CylinderGeometry(r,r*.9,l,10);
@@ -192,7 +192,7 @@ function buildChibi(parent=P){
     anc:{hr:.45,top:.56,eyeY:0,face:.5,nose:[0,-.09,.52],backY:.1,backZ:-.4,neckY:.46,neckR:.22,hood:{r:.42,y:.08,s:[1,.95,.9],neck:.45,arm:[0,-.27],sr:.15}},
     mats:{jacket,fleece,leather,pants,boot,sole,glove,scarf:scarfM,metal,lens,rib,hair,hairDark:dark}};
 }
-// Nova: backcountry snowboarder. Her own rig with the same interface (root > hp > limbs, head, eyes, mats):
+// Parker: backcountry snowboarder. Her own rig with the same interface (root > hp > limbs, head, eyes, mats):
 // slouchy beanie with a swinging tip and pom-pom, headphones, curly hair, quilted puffer, baggy snow pants,
 // mittens, chunky boots and a snowboard strapped to her back. "pony" is the beanie tip chain (it swings).
 function buildNova(parent=P){
@@ -261,7 +261,7 @@ function buildNova(parent=P){
     anc:{hr:.4,top:.5,eyeY:0,face:.45,nose:[0,-.08,.45],backY:.12,backZ:-.38,neckY:.52,neckR:.27,hood:{r:.4,y:.12,s:[1,1.05,.88],neck:.5,arm:[-.02,-.33],sr:.155}},
     mats:{jacket,fleece,leather,pants,boot,sole,glove,scarf,metal,lens,rib}};
 }
-// Vex: a mouthy skate punk with attitude. Same rig interface as Flip and Nova. His dangly bits run on real springs
+// Vex: a mouthy skate punk with attitude. Same rig interface as Flipper and Parker. His dangly bits run on real springs
 // (vexPhysics, below): "tails" (two bandana-knot tails), "hawk" (mohawk spikes that flop and wobble when he lands),
 // "chain" (wallet chain at his hip) and "gum" (the bubble he blows when he's left standing around).
 function buildVex(parent=P){
@@ -426,7 +426,7 @@ function tukPhysics(H,dt,dv,sp,air,idle){const cl=x=>Math.max(-12,Math.min(12,x)
   const B=H.belly,v=B._jv||(B._jv={y:0});v.y-=Math.max(0,cl(dv.u))*.26;v.y+=((.95-B.scale.y)*240-v.y*9)*dt;B.scale.y+=v.y*dt;B.scale.x=1.05+(.95-B.scale.y)*.6;
   // standing around: tips his head back and catches snowflakes on his tongue
   H.tongue.visible=idle&&Math.sin(tAll*1.3)>-.2;if(H.tongue.visible)H.tongue.scale.z=Math.min(.7,(H.tongue.scale.z||0)+dt*2);else H.tongue.scale.z=.001}
-// Flip's hair (when it shows): every lock lags behind changes in his speed, overshoots and wobbles back; running
+// Flipper's hair (when it shows): every lock lags behind changes in his speed, overshoots and wobbles back; running
 // streams it back, falling lifts it, and it sways a little at rest. dv as in vexPhysics (f forward, s right, u up).
 // A lock's tip moves along a direction D when it turns about the axis tip x D (small angles).
 function hairPhysics(H,dt,dv,sp,air,falling){if(!H.locks||!H.parts.hair[0].visible)return;const cl=x=>Math.max(-12,Math.min(12,x));
@@ -456,7 +456,7 @@ function popGum(H){const G=H.gum;G.visible=false;G.scale.setScalar(.001);if(stat
   for(let i=0;i<7;i++){const m=new THREE.Mesh(partGeo,new THREE.MeshBasicMaterial({color:0xff8ac2,transparent:true}));m.position.copy(w);m.scale.setScalar(.6);scene.add(m);
     parts.push({m,v:new THREE.Vector3((Math.random()-.5)*3,1+Math.random()*1.5,(Math.random()-.5)*3),life:.35})}}
 const F=buildChibi(),NV=buildNova(),VX=buildVex(),TK=buildTuk();
-// ---------- Flip's wardrobe ----------
+// ---------- Flipper's wardrobe ----------
 const OUTFITS=[
   {name:'Stunt Pilot',jacket:0xa8582c,fleece:0xf1e4c6,leather:0x6b3f22,pants:0x34405e,boot:0x4a2c18,sole:0xe9dcc0,glove:0xf3e6c8,scarf:0xe2493b,lens:0x9fe3f0,lensE:0x1d5a66,metal:0x7d858c},
   {name:'Night Flyer',jacket:0x2a3048,fleece:0x8a93a8,leather:0x1b1e28,pants:0x1e2230,boot:0x15171d,sole:0x2bb3a8,glove:0x3a4058,scarf:0x2bb3a8,lens:0xffd84a,lensE:0x6b4a00,metal:0x2f333a},
@@ -466,10 +466,10 @@ const OUTFITS=[
   // rolled cuffs), olive shorts, canvas sneakers with gum soles, his own hair with the goggles pushed up on it
   {name:'Off Duty',jacket:0xe3d3ad,fleece:0xf1e6cc,leather:0x6b3f22,pants:0x6f7a4a,boot:0xece4d2,sole:0x9a6a3e,glove:0xe8b087,scarf:0xe2493b,lens:0x9fe3f0,lensE:0x1d5a66,metal:0x8a5a35,
     hide:['cap','scarf','gogStrap'],show:['hair','calves','forearms'],shorts:true},
-  // Super Flip: blue suit, red cape, boots and gloves, gold emblem and belt, domino mask
+  // Super Flipper: blue suit, red cape, boots and gloves, gold emblem and belt, domino mask
   {name:'Super Flipper',jacket:0x2a5bd7,fleece:0xffd84a,leather:0xe23b3b,pants:0x2a5bd7,boot:0xe23b3b,sole:0xffd84a,glove:0xe23b3b,scarf:0xe23b3b,lens:0xffd84a,lensE:0x7a5a00,metal:0xffd84a,
     hide:['cap','goggles','gogStrap','scarf','collar','zip','patch'],show:['hair','mask','emblem','belt'],acc:{back:{id:'cape',col:0xe23b3b}}}];
-// Nova's wardrobe (jacket / beanie+mittens = leather+glove / headphones+pom = scarf / board = metal)
+// Parker's wardrobe (jacket / beanie+mittens = leather+glove / headphones+pom = scarf / board = metal)
 const OUTFITS_NOVA=[
   {name:'Backcountry',jacket:0xf2b33d,fleece:0xfff4dc,leather:0x2f4f8f,pants:0x3d4a5c,boot:0x2a2a30,sole:0xf2b33d,glove:0x2f4f8f,scarf:0xff5a5f,lens:0x7ff0ff,lensE:0x1d6070,metal:0x1f2a36},
   {name:'Neon Night',jacket:0x1f1f2e,fleece:0x8a5cff,leather:0x8a5cff,pants:0x2a2a3a,boot:0x15151d,sole:0x39ff88,glove:0x39ff88,scarf:0xff3fb4,lens:0xff3fb4,lensE:0x80104f,metal:0x39ff88},
@@ -493,7 +493,7 @@ const OFI={}; // each wardrobe character's current outfit, by character index
 function applyOutfit(i){const c=chars[ci];if(!c.outs)return;if(typeof LOOKS!=='undefined'&&LOOKS[ci]){LOOKS[ci].c={};saveLook(ci);applyLook(c.rig,ci,i,LOOKS[ci])}else applyOutfitTo(c.rig.mats,i,c.outs,c.rig)}
 // which of the rig's pieces an outfit shows: everything normal, extras hidden, then the outfit's own hide/show/shorts
 // cap: undefined = the outfit decides; 1 = wear it; 0 = take it off (his hair shows, goggles pushed up on it)
-// Body types (Customize → Outfits): Stout is Flip's own build; Slender is Nova's: hips higher, legs longer (boots move
+// Body types (Customize → Outfits): Stout is Flipper's own build; Slender is Parker's: hips higher, legs longer (boots move
 // down so his feet stay on the ground), torso narrower and a little taller, shoulders in. The head doesn't change.
 const BODY_TYPES=[['stout','Stout'],['slender','Slender']];
 function applyBody(rig){if(!rig||!rig.torso)return;const sl=rig._body==='slender',D=sl?.15:0,sh=rig._shorts;
@@ -550,7 +550,7 @@ const chars=[
 chars.push({name:'Parker',desc:'A fearless backcountry snowboarder with a board on her back and beats in her ears. Same trick moveset as Flipper.',speed:1.1,jump:9.5,sp:5,jp:4,ag:5,g:NV.root,rig:NV,outs:OUTFITS_NOVA,ofKey:'orbRunOutfitNova',acro:true,moves:chars[2].moves});
 chars.push({name:'Vex',desc:'A mouthy skate punk who never asked for your help and won\u2019t say thanks. Same trick moveset as Flipper.',speed:1.1,jump:9.5,sp:5,jp:4,ag:5,g:VX.root,rig:VX,outs:OUTFITS_VEX,ofKey:'orbRunOutfitVex',acro:true,moves:chars[2].moves});
 chars.push({name:'Tucker',desc:'A yeti cub in a hand-knit sweater. Cuddly, curious, and much bouncier than he looks. Same trick moveset as Flipper.',speed:1.1,jump:9.5,sp:5,jp:4,ag:5,g:TK.root,rig:TK,outs:OUTFITS_TUK,ofKey:'orbRunOutfitTuk',acro:true,moves:chars[2].moves});
-// 2.47 renamed Flip and Nova and dropped the gold outfits, 2.58 renamed Tuk: move old saves over once
+// 2.47 renamed Flipper and Parker and dropped the gold outfits, 2.58 renamed Tuk: move old saves over once
 try{if(!localStorage.getItem('orbRunWardrobe3')){const L=localStorage.getItem('orbRunLook_Tuk');if(L&&!localStorage.getItem('orbRunLook_Tucker'))localStorage.setItem('orbRunLook_Tucker',L);localStorage.setItem('orbRunWardrobe3','1')}}catch(e){}
 try{if(!localStorage.getItem('orbRunWardrobe2')){localStorage.setItem('orbRunWardrobe2','1');
   const v=+localStorage.getItem('orbRunOutfit')||0;if(v>=4)localStorage.setItem('orbRunOutfit',v===4?0:v-1);

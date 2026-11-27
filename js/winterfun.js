@@ -1,5 +1,5 @@
 // Winter activities.
-//  - Snow angels: Crouch + Ground pound while standing in snow (Nova: Ground pound alone). Fall back, sweep
+//  - Snow angels: Crouch + Ground pound while standing in snow (Parker: Ground pound alone). Fall back, sweep
 //    arms and legs, and leave an angel in the snow. Jump to get up early.
 //  - Rolling snowballs (Trick Park): small snowballs sit around each map. Walk into one to push it; it grows
 //    as it rolls through snow, bowls over enemies and snowmen, and you can stand on a big one. Smash it

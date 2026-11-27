@@ -48,7 +48,7 @@ function climbStep(dt){
   if(jumpBuf>0){jumpBuf=0;letGo();face=CL.ang;vy=T.climb.leap.vy;vel.x=Math.sin(face)*T.climb.leap.speed;vel.z=Math.cos(face)*T.climb.leap.speed;
     if(chars[ci].acro){A.spd=T.climb.leap.speed;A.mode='jump';A.jumpN=0;A.canDive=true}addTrick(climbName('Tree Leap'));SFX.jump(1)}
 }
-// Flip-direction arrow: while you balance on a tree or pole top, a glowing arrow shows where your flip
+// Flipper-direction arrow: while you balance on a tree or pole top, a glowing arrow shows where your flip
 // (or leap) will go: the way you face. Left/right rotate it; the flip goes exactly where it points.
 const flipArrow=new THREE.Group();flipArrow.visible=false;scene.add(flipArrow);
 const flipArrowM=new THREE.MeshBasicMaterial({color:0xffd84a,transparent:true,opacity:.9,depthWrite:false});

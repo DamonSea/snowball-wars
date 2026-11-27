@@ -7,13 +7,13 @@ const T={
   footMargin:.15,         // how far past a platform edge you can still stand
   wallMargin:.35,         // how close to a wall your centre can get
   bodyH:1.7,bodyRadius:.55,         // push-out radius against trees, rocks, posts
-  fallDeath:-2.5,         // below this height you've fallen in the water (Adventure)
+  fallDeath:-2.5,         // below this height you've fallen off the world
 
-  speed:{adventure:8,trickPark:9},
+  speed:{trickPark:9},
   turnRate:14,            // Sunny/Rook facing turn speed
   walkAccel:12,           // Sunny/Rook velocity smoothing
 
-  flip:{                  // Flip's momentum moveset
+  flip:{                  // Flipper's momentum moveset
     topSpeedBoost:1.1, accel:16, decel:20, stopDecel:26,
     turnSlow:7, turnFast:14, fastAbove:8, sharpTurn:1.2,
     pivotBelow:4, pivotTurn:45,     // below this speed you turn on the spot (fast) and move straight where the stick points

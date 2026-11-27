@@ -86,7 +86,7 @@ function resetRun(){if(WAR.on)warsStop(false);raceStop();tagStop(false);[...orbs
 const foesOn=()=>FOE_STYLE!=='off'&&!(runL&&runL.opt&&!runL.opt.enemies);   // Settings → Enemies → Off, or a builder map with enemies off
 function startRun(free=true){mode='run';setWorld('run');resetRun();runFree=free;runCD=0;padHold=0;state='play';overlay(false);hud();SFX.start();freeUI();renderControls();
   hint('')}
-// from free roam: keep Flip where he is, reset the board, count down 3-2-1, then the clock starts
+// from free roam: keep Flipper where he is, reset the board, count down 3-2-1, then the clock starts
 function beginTimed(o={}){if(mode!=='run'||!runFree||runCD>0||state!=='play'||WAR.on||TAG.on)return;if(!runL.spad){toast('This map has no Collectathon.');return}
   runFree=false;runCD=3;popScore('3');SFX.ui(3);padHold=0;score=0;orbN=0;time=T.run.time;runT=0;bestCombo=0;lives=3;Object.assign(TR,{pts:0,mult:0,names:[],t:0});showCombo();
   if(!MP.client){orbs.forEach(o=>rmObj(o.g));orbs=[];spawnCount=0;for(let i=0;i<T.run.orbsOnField;i++)spawnOrb();

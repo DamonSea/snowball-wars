@@ -1,4 +1,4 @@
-// Snowfall, Flip's cold breath, and applying the Winter/Summer season to materials, sky and lights.
+// Snowfall, Flipper's cold breath, and applying the Winter/Summer season to materials, sky and lights.
 // ---------- snowfall ----------
 const SN=1600,snowPos=new Float32Array(SN*3),snowV=new Float32Array(SN);
 for(let i=0;i<SN;i++){snowPos[i*3]=(Math.random()-.5)*70;snowPos[i*3+1]=Math.random()*30-6;snowPos[i*3+2]=(Math.random()-.5)*70;snowV[i]=.7+Math.random()*1.1}

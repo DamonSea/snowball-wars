@@ -210,7 +210,7 @@ function tick(){
     if(H.scarf){const fl=Math.min(1.25,sp*.11)+(air?.35:0)+(state==='select'?.15:0);
       H.scarf.forEach((g,i)=>{L(g.rotation,'x',(i?fl*.12:.25+fl)+Math.sin(tAll*(6+sp)-i*1.1)*(.08+fl*.12),.25);
         L(g.rotation,'z',Math.sin(tAll*(4+sp*.5)-i*.9)*(.06+fl*.08)-bank*.3,.25)})}
-    // Nova's beanie tip and pom-pom stream back with speed, bounce with steps, flip up when falling
+    // Parker's beanie tip and pom-pom stream back with speed, bounce with steps, flip up when falling
     if(H.pony){const fl=Math.min(1,sp*.08)+(air?(vy<0?.7:.3):0)+(state==='select'?.1:0),bob=run?Math.sin(ph*2)*.12:0;
       H.pony.forEach((g,i)=>{L(g.rotation,'x',(i?.2+fl*.22:.95+fl*.45)+bob+Math.sin(tAll*(5+sp*.6)-i*1.2)*(.05+fl*.08),.22);
         L(g.rotation,'z',Math.sin(tAll*(3.5+sp*.4)-i*.8)*(.05+fl*.06)-bank*.5,.22)})}

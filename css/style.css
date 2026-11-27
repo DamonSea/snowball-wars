@@ -98,10 +98,6 @@ button:focus-visible,.padnav button:focus{outline:3px solid #fff;outline-offset:
 .csinfo{text-align:center}
 .csinfo h2{margin:0;font-size:34px;line-height:1.05;color:var(--sun)}
 .csinfo p{margin:2px 0 8px;font-size:15px}
-.bars{display:grid;gap:4px;max-width:280px;margin:0 auto}
-.bars div{display:grid;grid-template-columns:4.5em minmax(0,1fr);align-items:center;gap:8px;font-size:14px;text-align:left}
-.bars i{display:block;height:10px;border-radius:6px;background:#263c48;overflow:hidden}
-.bars b{display:block;height:100%;border-radius:6px;background:var(--orb);transition:width .3s}
 .moves{margin:8px 0 0!important;font-size:13px!important;opacity:.85;line-height:1.4}.moves:empty{display:none}
 .outfits{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;margin-top:12px}.outfits:empty{display:none}
 .outfits .on{font-size:14px;width:100%;text-align:center;margin-bottom:-2px}

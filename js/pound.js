@@ -24,7 +24,7 @@ function poundLand(){
   if(mode==='run'){for(const s of snowmen())if(s.up&&Math.hypot(s.x-x,s.z-z)<T.pound.radius)knockSnowman(s);
     if(CPU.on&&Math.hypot(CPU.x-x,CPU.z-z)<T.pound.radius&&Math.abs(CPU.y-py)<1.5)cpuKnock(CPU.x-x,CPU.z-z,false)}
 }
-// spikeballs and Adventure enemies count as hit (see attackHits in combat.js) while you drop onto them and
+// spikeballs and enemies count as hit (see attackHits in combat.js) while you drop onto them and
 // for a moment after landing, inside the shockwave
 function poundHits(pos,yb){const d=Math.hypot(pos.x-P.position.x,pos.z-P.position.z);
   if(GP.st===2)return d<1.3&&yb<=py+.3&&yb>py-2.6;

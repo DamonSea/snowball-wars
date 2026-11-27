@@ -3,6 +3,17 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.61.1] - 2026-11-27 — Cleanup
+### Changed
+- **README rewritten** for the game as it is now: the cast, customizing, the three Trick Park maps, game modes,
+  snowballs and the Winter Crew, the Map Builder, settings and controls. The file guide lists every script.
+### Removed
+- Leftovers from removed features: Adventure-mode comments and its unused speed setting, the character-select stat
+  bar styles. Comments use the current names (Flipper, Parker, Tucker).
+### Notes
+- `js/input/pads.js` (Switch 2 Pro Controller support) is in the repo but isn't loaded by `index.html`, so the README
+  no longer claims Switch 2 support. Loading it again is a one-line change if you want it back.
+
 ## [2.61.0] - 2026-11-27 — Trick points toggle
 ### Added
 - **Settings → Trick points** (off by default). With it off, free roam has no combo meter, multiplier, score or

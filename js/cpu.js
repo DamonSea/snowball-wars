@@ -1,4 +1,4 @@
-// Computer player for Trick Park (Settings → Computer player). A Flip in the Night Flyer outfit that
+// Computer player for Trick Park (Settings → Computer player). A Flipper in the Night Flyer outfit that
 // wanders the ground, lobs snowballs at you, and gets knocked back and stunned when your snowballs
 // hit it, so you can see the hit from the outside. It only exists on your screen.
 const CPU={on:false,a:null,x:0,y:0,z:0,vx:0,vy:0,vz:0,face:0,stun:0,cool:2,tx:0,tz:0,retarget:0,throwT:0,walk:0,hits:0,seq:1e6};
