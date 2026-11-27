@@ -5,13 +5,13 @@ menu();__step(3);const vis=id=>{const e=$(id);return e&&e.textContent&&getComput
 ok('main menu: title and two buttons (no Adventure)',$('ovT').textContent==='Snowball Wars'&&![...document.querySelectorAll('#ov .btns button')].some(b=>b.textContent==='Adventure'&&getComputedStyle(b).display!=='none')&&['Trick Park','Map Builder'].every(t=>[...document.querySelectorAll('#ov .btns button')].some(b=>b.textContent===t&&getComputedStyle(b).display!=='none')));
 ok('no intro paragraph or score list on the main menu',!vis('ovP')&&getComputedStyle($('best')).display==='none');
 $('go').click();__step(2);ok('Trick Park opens the map picker',PARK.on&&!$('park').classList.contains('hide')&&$('ov').classList.contains('hide'));
-ok('shows one map with its name and best orb race',$('parkName').textContent==='Plaza'&&/Collectathon/.test($('parkBest').textContent));
+ok('shows one map with its name and best orb race',$('parkName').textContent==='Frosty Falls'&&/Collectathon/.test($('parkBest').textContent));
 ok('map picture rendered',$('parkImg').src.startsWith('data:image')||$('parkFrame').classList.contains('noimg'));
-$('parkNext').click();ok('▶ goes to the next map',$('parkName').textContent==='Frozen Rink');$('parkPrev').click();$('parkPrev').click();ok('◀ wraps around',$('parkName').textContent===parkMaps()[parkMaps().length-1].name);
+$('parkNext').click();ok('▶ goes to the next map',$('parkName').textContent==='Woodsy Cabin');$('parkPrev').click();$('parkPrev').click();ok('◀ wraps around',$('parkName').textContent===parkMaps()[parkMaps().length-1].name);
 localStorage.setItem('orbsBest_'+parkMaps()[0].key,12);$('parkNext').click();ok('best orb count shows',$('parkBest').textContent.includes('12 orbs'));
-dispatchEvent(new KeyboardEvent('keydown',{code:'ArrowRight',bubbles:true}));ok('arrow keys flip maps',$('parkName').textContent==='Frozen Rink');
-navigator.getGamepads=()=>[gp];__step(2);gp.axes[0]=1;gp.timestamp++;__step(2);gp.axes[0]=0;gp.timestamp++;__step(2);ok('D-pad / stick flips maps on the controller',$('parkName').textContent==='Woodsy Cabin');
+dispatchEvent(new KeyboardEvent('keydown',{code:'ArrowRight',bubbles:true}));ok('arrow keys flip maps',$('parkName').textContent==='Woodsy Cabin');
+navigator.getGamepads=()=>[gp];__step(2);gp.axes[0]=1;gp.timestamp++;__step(2);gp.axes[0]=0;gp.timestamp++;__step(2);ok('D-pad / stick flips maps on the controller',$('parkName').textContent==='Christmas Village');
 tap(1);ok('○ goes back to the main menu',!PARK.on&&!$('ov').classList.contains('hide'));
 parkMenu();__step(2);tap(3);ok('△ opens More maps',!PARK.on&&mapsOpen);tap(1);__step(2);ok('and ○ from there returns to the Trick Park picker',PARK.on);
-PARK.i=3;renderPark();tap(0);__step(3);ok('✕ plays the shown map (Jungle Gym)',state==='select'&&runL.name==='Jungle Gym'&&!PARK.on);
+PARK.i=2;renderPark();tap(0);__step(3);ok('✕ plays the shown map (Christmas Village)',state==='select'&&runL.name==='Christmas Village'&&!PARK.on);
 navigator.getGamepads=()=>[];delete bestR[parkMaps()[0].key];menu();return out.join('\n')})()

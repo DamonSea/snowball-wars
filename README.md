@@ -3,7 +3,7 @@
 ### [▶ Play Snowball Wars](https://damonsea.github.io/snowball-wars/)
 
 A 3D winter trick-platformer for the browser, starring Flipper the stunt pilot and Parker the snowboarder. Chain flips, dives and wall jumps
-into combos in Trick Park (Plaza, Frozen Rink, Woodsy Cabin, Jungle Gym, Christmas Village), discover named gaps, have snowball fights, or build
+into combos in Trick Park (Frosty Falls, Woodsy Cabin, Christmas Village), discover named gaps, have snowball fights, or build
 your own maps. Built with three.js; open `index.html` in a browser to play (multiplayer works only in the
 claude.ai version).
 
@@ -55,20 +55,17 @@ Type **your name** on the character select screen: it's what friends see in mult
 Maps to skate, flip and wall-jump around. **Free roam** has no lives: tricks, combos and **named gaps** earn trick
 points (higher orbs are worth more there). Step on the PLAY pad to start a game: **Collectathon** (how many orbs can you
 collect before time runs out?) is a straight count of orbs, **Snowball Wars** is hearts and KOs, and **Tag** is time spent It.
-- **Plaza:** a skatepark built around trick lines: tower and crown, runway, chimney, pillars, treehouse, fountain, and the Big Slide.
-- **Frozen Rink:** real ice physics: build speed, glide, drift and bounce off the boards.
+- **Frosty Falls:** a frozen waterfall pours off a rocky cliff onto a skating rink. Butt-slide down the falls onto the
+  ice, climb the cliff tiers to the Crown, hop Over the Falls, wall-jump the icy chimney to the Sky Deck, long-jump +
+  dive off the Runway to the Perch, and find the treehouse, frozen fountain, candy canes, pillars, Big Slide and the
+  giant decorated pine. Real ice physics on the rink: build speed, glide, drift and bounce off the boards.
 - **Woodsy Cabin:** an old log cabin in a clearing ringed by thick pine forest. Start by a crackling campfire, climb
   the woodpile and porch onto the cabin roof and hop up the smoking chimney, leap from the treehouse onto the roof,
   take the stump stairs up to the hunter's lookout, bounce on the tents, and skate the frozen pond.
-- **Jungle Gym:** one connected playground built to use every move: a two-level fort, tire run, fireman pole,
-  monkey bars, Pound Peak, trampolines and a wall-jump canyon, with 12 named gaps.
 
-![The Jungle Gym](docs/media/jungle-gym.png)
-![Monkey bars: hang, shimmy hand over hand, pull up](docs/media/monkey-bars.gif)
-![Ground pound, Pound Jump onto Pound Peak, then the Peak Plunge to the fort roof](docs/media/pound-peak.gif)
-
+![Frosty Falls: the frozen waterfall over the rink](docs/media/frosty-falls.png)
 ![Long jump plus a late dive across the runway gap](docs/media/runway.gif)
-![Skating on Frozen Rink](docs/media/frozen-rink.gif)
+![Skating on the rink](docs/media/frozen-rink.gif)
 
 ### Climb trees and poles
 Run into a tree, lamp post or antenna to grab on, climb to a handstand, aim with the glowing arrow and flip off.
@@ -93,7 +90,7 @@ silliness, off in Settings; Parker doesn't) keeps spraying until you press Groun
 
 ![Parker makes a snow angel, then rolls a snowball bigger](docs/media/winter-fun.gif)
 
-- **Butt slide:** hold Crouch on a slope, like the Big Slide in the Plaza, to sit down and slide. Steer with the stick,
+- **Butt slide:** hold Crouch on a slope, like the Big Slide or the frozen waterfall in Frosty Falls, to sit down and slide. Steer with the stick,
   Jump to hop off with your speed.
 
 ![Vex butt-slides down the Big Slide](docs/media/big-slide.gif)
@@ -227,7 +224,7 @@ by files above it. Nothing is bundled.
 | 6 | `js/audio/music.js` | Music tracks, ambience, spikeball rolling sound |
 | 7 | `js/enemies.js` | Enemies: snow goons, penguin sliders, holiday elves (AI, stomps, theft) and the Spikeballs toggle |
 | 8 | `js/levels/engine.js` | Map builders and collision queries (how to add maps is documented at the top) |
-| 10 | `js/maps/*.js` | Trick Park maps: Plaza, Frozen Rink, Woodsy Cabin, Jungle Gym, Christmas Village |
+| 10 | `js/maps/*.js` | Trick Park maps: Frosty Falls, Woodsy Cabin, Christmas Village |
 | 11 | `js/content-ready.js` | Picks the current map once all are registered |
 | 12 | `js/state.js` | Game state, HUD, menus, character select, pause |
 | 13 | `js/trickpark.js` | Trick Park: START pad, combos, orbs, spikeballs, timed runs |
@@ -282,7 +279,7 @@ named gaps fired. Use it whenever a map changes: each line should land, and each
 A Trick Park map can list `gaps` in its `RUNMAPS` entry: `{name, pts, from:[regions], to:[regions]}`,
 where a region is a box `{x,z,w,d,y}` at a surface height. Taking off from a `from` region and landing
 in a `to` region without touching anything in between awards the gap into the combo. First discoveries
-are saved per map and counted in the pause menu. Plaza has 13; Frozen Rink has none yet.
+are saved per map and counted in the pause menu. Frosty Falls has 19, Woodsy Cabin 8 and Christmas Village 12.
 
 `procon-check.js` checks the Switch 2 Pro Controller layout, prompts and switching back to a DualSense. `snowballs-check.js`, `ammo-check.js`, `cpu-check.js`, `moves-check.js` and `nova-check.js` are quick checks of snowball hits, orb refills,
 the computer player, and ground pound / rebinding / pole climbing: pass a file's contents as the second argument,

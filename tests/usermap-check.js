@@ -1,7 +1,7 @@
 (()=>{const out=[];const ok=(n,c,x='')=>out.push((c?'OK   ':'FAIL ')+n+(x?' -> '+x:''));
 parkMenu();__step(2);
 ok('Picker opens on Dev Maps',PARK.tab==='dev'&&$('parkTabDev').classList.contains('on'));
-const D=parkMaps();ok('Dev Maps are only the built-in maps',D.length>=5&&D.every(m=>!m.custom&&!m.user),D.map(m=>m.name).join(', '));
+const D=parkMaps();ok('Dev Maps are only the built-in maps',D.length>=3&&D.every(m=>!m.custom&&!m.user),D.map(m=>m.name).join(', '));
 ok('Dev Maps have no author line or hint',!/by /.test($('parkMeta').textContent)&&$('parkHint').classList.contains('hide'),$('parkMeta').textContent);
 parkStep(1);parkStep(1);const devI=PARK.i;
 parkKey('KeyE');ok('E switches to User Maps',PARK.tab==='user'&&$('parkTabUser').classList.contains('on'));

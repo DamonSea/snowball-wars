@@ -9,7 +9,7 @@ runN(30);out.push('recovered: st='+GP.st+' mode='+A.mode);
 __place(2,8,0,0);runN(3);vy=6;grounded=false;py=.4;groundPound();out.push('too low to pound refused: st='+GP.st);
 runN(40);
 // snowman via pound
-const sm=snowmen().find(q=>q.x===6);sm.up=true;sm.g.visible=true;__place(6,8.2,0,0);runN(3);py=4;vy=0;grounded=false;groundPound();runN(40);out.push('snowman knocked by pound: '+!sm.up);
+const sm=snowmen().find(q=>q.x===9);sm.up=true;sm.g.visible=true;__place(9,6.2,0,0);runN(3);py=4;vy=0;grounded=false;groundPound();runN(40);out.push('snowman knocked by pound: '+!sm.up);
 // ---- bindings ----
 openSet();const btn=document.querySelector('[data-bind="jump"][data-dev="kb"][data-slot="0"]');btn.click();out.push('capture started: '+!!CAP+' label='+document.querySelector('[data-bind="jump"][data-dev="kb"][data-slot="0"]').textContent);
 kd('KeyL');ku('KeyL');out.push('jump now bound to: '+BIND.kb.jump.join(','));closeSet();if(state==="paused")resume();
@@ -27,8 +27,8 @@ __place(2,8,0,0);runN(3);py=5;vy=0;grounded=false;dispatchEvent(new PointerEvent
 // controller held state through bindings
 padNow=[];padNow[4]=true;out.push('pad L1 maps to pound held='+held('pound'));padNow=[];
 out.push('controls card mentions pound: '+document.getElementById('ctlList').textContent.includes('Ground pound'));
-// ---- pole climb (Plaza lamp at -5.5,-8) ----
-__place(-5.5,-6.9,0,Math.PI);keys.KeyW=true;let mx=0;for(let i=0;i<200;i++){__step(1);mx=Math.max(mx,py)}keys.KeyW=false;
+// ---- pole climb (Frosty Falls lamp at -6,2.5) ----
+__place(-6,3.6,0,Math.PI);keys.KeyW=true;let mx=0;for(let i=0;i<200;i++){__step(1);mx=Math.max(mx,py)}keys.KeyW=false;
 out.push('lamp: climbing='+CL.on+' top='+CL.top+' pole='+(CL.tree&&CL.tree.pole)+' maxY='+mx.toFixed(2));
 TR.names=[];jumpBuf=.15;runN(2);out.push('pole-top flip: '+TR.names.join(','));runN(80);
 return out.join('\n')})()

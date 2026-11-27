@@ -3,6 +3,29 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.60.0] - 2026-11-27 — Frosty Falls
+### Added
+- **Frosty Falls**, the first Trick Park map now. It combines the Plaza and the Frozen Rink around a new centrepiece:
+  a frozen waterfall that pours out of a rocky cliff onto the rink. It's built the way the Christmas Village was,
+  with every gap sized from the measured moveset, each tier asking for a particular move, and orbs worth more the
+  harder they are to reach.
+  - **The Falls:** drop in from the Crown and butt-slide down the frozen waterfall onto the rink. The cliff climbs
+    in tiers: Lower Ledges 2.2 (hop up from the rink boards), Upper Ledges 5.4 (double jump + ledge grab, triple
+    jump or a flip), the Crown 7.4. Over the Falls is a running jump between the Upper Ledges.
+  - **The Rink:** real ice physics, boards with gaps, and two ice blocks for the Ice Leap.
+  - **The Chimney and Sky Deck:** an icy wall-jump shaft, the Sky Step (triple jump from the east Upper Ledge), and
+    the Crown Transfer (long jump from the Crown).
+  - **The Runway:** long jump + late dive across 14.5 to the Perch. A plain long jump falls short.
+  - The treehouse and Crow's Nest, a frozen fountain, Candy Cane Hop, Pillar Run, the Big Slide, and the giant
+    decorated pine with the star orb.
+  - 19 named gaps and 34 orb spots. Its best score is saved separately (`orbRunFalls`).
+### Removed
+- **Plaza, Frozen Rink and Jungle Gym.** Trick Park is now Frosty Falls, Woodsy Cabin and Christmas Village (plus
+  your own maps).
+### Tests
+- New `falls-check.js` runs every Frosty Falls route with the real moves. Tests that stood the player on Plaza spots
+  now use Frosty Falls ones.
+
 ## [2.59.1] - 2026-11-27 — Enemies off
 ### Added
 - **Settings → Enemies → Off**: no enemies anywhere in Trick Park, timed runs included. It takes effect right away

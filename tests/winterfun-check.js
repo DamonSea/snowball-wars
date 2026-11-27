@@ -1,7 +1,7 @@
 (()=>{const out=[];const runN=n=>{for(let i=0;i<n;i++)__step(1)};
 const kd=c=>{keys[c]=true;dispatchEvent(new KeyboardEvent('keydown',{code:c}))},ku=c=>{keys[c]=false;dispatchEvent(new KeyboardEvent('keyup',{code:c}))};
-useRunMap(3);startRun(true);__step(5);
-out.push('rollers on Jungle Gym: '+RS.list.length+' sizes '+RS.list.map(b=>b.r.toFixed(2)).join(','));
+useRunMap(RUNMAPS.findIndex(M=>M.name==='Woodsy Cabin'));startRun(true);__step(5);
+out.push('rollers on Woodsy Cabin: '+RS.list.length+' sizes '+RS.list.map(b=>b.r.toFixed(2)).join(','));
 // snow angel: crouch + Q on snow
 __place(-4,16,0,0);runN(2);keys.ShiftLeft=true;kd('KeyQ');ku('KeyQ');keys.ShiftLeft=false;out.push('crouch+Q: angel='+(SA.t>0)+' yellow='+(YS.spray||YS.t>0)+' imprint pieces='+(SA.dec?SA.dec.g.children.length:0));
 const x0=P.position.x;keys.KeyD=true;runN(60);keys.KeyD=false;const mid=F.hp.rotation.x;runN(110);out.push('during angel: stayed put='+(Math.abs(P.position.x-x0)<.01)+' lying pitch='+mid.toFixed(2)+' | done, combo='+TR.names.join(','));

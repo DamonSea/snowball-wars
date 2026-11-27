@@ -1,5 +1,5 @@
 (()=>{closePark();const calm=()=>runHz.forEach(h=>{h.g.position.set(0,.75,60);h.vx=h.vz=0});const _st=__step;__step=n=>{for(let i=0;i<n;i++){calm();_st(1)}};
-const out=[];advCol.filter(c=>c.tree&&!c.pole).forEach((c,i)=>{
+const out=[];advCol.filter(c=>c.tree&&!c.pole&&!c.y).forEach((c,i)=>{
  for(const dist of [3]){
   // approach from the park centre side
   const ax=-c.x,az=-c.z,al=Math.hypot(ax,az)||1,ux=ax/al,uz=az/al;

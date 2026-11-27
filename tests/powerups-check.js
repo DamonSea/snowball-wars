@@ -5,8 +5,7 @@ PWR.next=.01;__step(2);ok('A power-up appears in Snowball Wars',!!PWR.box&&['fre
 // frenzy
 const grab=k=>{PWR.box.kind=k;__place(PWR.box.x,PWR.box.z,PWR.box.y,0);__step(2)};
 grab('frenzy');ok('Walking into it picks it up',!PWR.box&&PWR.frenzy>0);
-const am=SB.ammo,n0=SB.seq;const dirs=new Set();const before=SB.list.length;__step(60);
-const mine=SB.list.filter(b=>b.own);mine.forEach(b=>dirs.add(Math.round(Math.atan2(b.vx,b.vz)/(PI/4))));
+const am=SB.ammo,n0=SB.seq;const dirs=new Set();const L0=launchSnowball;launchSnowball=(o,...r)=>{if(r[0])dirs.add(((Math.round(Math.atan2(o[3],o[5])/(PI/4))%8)+8)%8);return L0(o,...r)};__step(60);launchSnowball=L0;
 ok('Frenzy sprays snowballs',SB.seq-n0>=8,SB.seq-n0);ok('...in all directions',dirs.size>=6,dirs.size);ok('...without using your snowballs',SB.ammo>=am);
 __step(Math.ceil(T.power.frenzy*60));ok('Frenzy wears off',PWR.frenzy===0);const n1=SB.seq;__step(30);ok('...and the spraying stops',SB.seq===n1);
 // blitz

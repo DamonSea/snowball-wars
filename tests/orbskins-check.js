@@ -1,7 +1,7 @@
 (()=>{const out=[];const ok=(n,c)=>out.push((c?'OK   ':'FAIL ')+n);const _st=__step;
 const calm=()=>{runHz.forEach(h=>{h.g.position.set(0,.75,60);h.vx=h.vz=0});SB.stun=0};__step=n=>{for(let i=0;i<n;i++){calm();_st(1)}};
 setOrbSkin('auto');menu();pickMode='run';pickLevel=0;ci=2;showChar();confirmChar();__step(10);
-ok('Auto on the Plaza: the original crystal',orbSkin()==='crystal'&&orbs.length>0&&orbs.every(o=>o.m.geometry===orbGeo));
+ok('Auto on Frosty Falls: the original crystal',orbSkin()==='crystal'&&orbs.length>0&&orbs.every(o=>o.m.geometry===orbGeo));
 openSet();setTabTo('game');const row=[...document.querySelectorAll('#setList *')].find(e=>/^Orb style/.test(e.textContent||''));ok('Settings > Game has an Orb style row',!!row);
 ok('with Auto + 6 styles',LOOK.orbs.opts.join(',')==='Auto,Crystal,Donuts,Stars,Snowflakes,Presents,Coins');
 LOOK.orbs.set(2);closeSet();if(state==='paused')resume();__step(3);

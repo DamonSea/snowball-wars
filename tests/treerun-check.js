@@ -1,6 +1,6 @@
 (()=>{closePark();const calm=()=>runHz.forEach(h=>{h.g.position.set(0,.75,90);h.vx=h.vz=0});const st=n=>{for(let i=0;i<n;i++){calm();__step(1)}};
 const dirs=[[0,-1,'KeyW'],[0,1,'KeyS'],[-1,0,'KeyA'],[1,0,'KeyD']];let tot=[0,0],totJ=[0,0];
-for(const[mi,M]of RUNMAPS.map((M,i)=>[i,M]).filter(([i,M])=>!M.custom&&(M.name==='Plaza'||M.name==='Christmas Village'))){select('run',mi);ci=2;showChar();confirmChar();st(3);if(state==='paused')resume();setCam('classic');
+for(const[mi,M]of RUNMAPS.map((M,i)=>[i,M]).filter(([i,M])=>!M.custom&&(M.name==='Frosty Falls'||M.name==='Christmas Village'))){select('run',mi);ci=2;showChar();confirmChar();st(3);if(state==='paused')resume();setCam('classic');
   advCol.filter(c=>c.tree&&!c.pole).forEach(c=>{for(const[dx,dz,kk]of dirs)for(const off of [-.9,-.5,.5,.9])for(const how of ['run','jump']){
     const px=-dz,pz=dx,sx=c.x-dx*7+px*off,sz=c.z-dz*7+pz*off;__place(sx,sz,c.y,Math.atan2(dx,dz));CL.on=false;CL.cool=0;st(2);
     if(Math.abs(py-c.y)>.3||Math.hypot(P.position.x-sx,P.position.z-sz)>.25)continue;

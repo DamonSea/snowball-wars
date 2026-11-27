@@ -19,7 +19,7 @@ def S():
   click=lambda sel:s.append(('click',sel)); down=lambda k:s.append(('down',k)); up=lambda k:s.append(('up',k))
   def tap(k,hold=2): down(k);f(hold);up(k)
   f(30);snap('title')
-  # Trick Park / Plaza with Flip
+  # Trick Park / Frosty Falls with Flip
   click('#go');f(2);snap('park menu');click('#go');f(5);snap('select');tap('ArrowRight');tap('ArrowLeft');tap('ArrowDown');tap('ArrowUp');click('#csGo');f(20);snap('plaza start')
   down('KeyW');f(90);snap('run fwd');tap('Space');f(25);tap('Space');f(25);tap('Space');f(40);snap('jumps');up('KeyW');f(30);snap('stop')
   down('ShiftLeft');f(10);tap('Space');f(5);up('ShiftLeft');f(60);snap('backflip')
@@ -30,7 +30,7 @@ def S():
   tap('Enter');f(260);snap('timed run');f(300);snap('timed later')
   tap('KeyP');f(3);snap('paused');click('#alt');f(10);snap('retry')
   tap('Escape');f(3);click('#alt2');f(10);snap('menu again')
-  # Frozen Rink skating
+  # Woodsy Cabin
   click('#go');f(2);click('#alt');f(5);click('#csGo');f(10);down('KeyW');f(80);snap('skate push');up('KeyW');f(60);snap('skate glide');down('KeyD');f(60);up('KeyD');snap('skate turn')
   down('KeyS');f(240);up('KeyS');f(30);snap('to the pine')
   tap('Escape');f(3);click('#alt2');f(10)

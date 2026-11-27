@@ -9,7 +9,7 @@ const fresh=()=>{__k({});keys.ShiftLeft=false;keys.Space=false;TR.names=[];__ste
 let r;
 const dbl=()=>{jumpBuf=.15;keys.Space=true;__until(()=>!grounded,20);__until(()=>grounded,200);keys.Space=false;__step(1);jumpBuf=.15;keys.Space=true;return pull(land())};
 const okk=(n,c,x='')=>out.push((c?'OK   ':'FAIL ')+n+(x!==''?' -> '+x:''));
-okk('Woodsy Cabin replaced Rooftops (3rd map)',RUNMAPS[2].name==='Woodsy Cabin'&&!RUNMAPS.some(M=>M.name==='Rooftops'));
+okk('Woodsy Cabin replaced Rooftops',RUNMAPS[1].name==='Woodsy Cabin'&&!RUNMAPS.some(M=>M.name==='Rooftops'));
 okk('You start by the campfire',Math.hypot(P.position.x,P.position.z+4)<5);
 // woodpile -> porch roof (2.6): one running jump west
 fresh();__place(8,-10.8,1.3,W);__k({KeyA:true});__step(8);jumpBuf=.15;keys.Space=true;r=pull(land());__k({});rep('Woodpile -> porch roof (running jump)',Math.abs(r.y-2.6)<.1&&r.x<4.9,r);

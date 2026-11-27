@@ -1,5 +1,5 @@
 (()=>{const out=[];const ok=(n,c)=>out.push((c?'OK   ':'FAIL ')+n);const _st=__step;__step=n=>{for(let i=0;i<n;i++){runHz.forEach(h=>{h.g.position.set(0,.75,40);h.vx=h.vz=0});SB.stun=0;_st(1)}};
-const chute=plats.find(p=>p.ramp&&p.w>10&&p.d>2);ok('the slide exists in Plaza',!!chute&&chute.ramp.hi===6);
+const chute=plats.find(p=>p.ramp&&p.w>10&&p.d>2);ok('the Big Slide exists in Frosty Falls',!!chute&&chute.ramp.hi===6);
 ok('surface height along it',Math.abs(topOf(chute,1,19)-.3)<1e-6&&Math.abs(topOf(chute,15.5,19)-6)<1e-6&&Math.abs(topOf(chute,8.25,19)-3.15)<1e-6);
 // climb the steps onto the tower (Flip)
 ci=2;__place(17,10.5,0,0);let maxY=0;for(let k=0;k<7;k++){__k({KeyS:true});jumpBuf=.15;keys.Space=true;__step(4);keys.Space=false;for(let i=0;i<40;i++){__step(1);maxY=Math.max(maxY,py)}}

@@ -31,5 +31,5 @@ pause();ok('pause offers Restart race instead of Start orb run',[...document.que
 backToBuilder();__step(2);BLD.map.opt.flags=0;BLD.map.opt.enemies=1;changed();testBuilder();__step(30);ok('flag race off: no race clock',!FR.on&&$('v2').textContent==='Free');ok('enemies back on',runHz.length>0);
 pause();backToBuilder();__step(2);exitBuilder();
 // built-in maps unchanged
-menu();pickMode='run';pickLevel=0;ci=2;showChar();confirmChar();__step(5);ok('Plaza: no race, START pad as before',!FR.on&&!!runL.spad&&spadG.visible);
+menu();pickMode='run';pickLevel=0;ci=2;showChar();confirmChar();__step(5);ok('Frosty Falls: no race, START pad as before',!FR.on&&!!runL.spad&&spadG.visible);
 __step=_st;return out.join('\n')})()

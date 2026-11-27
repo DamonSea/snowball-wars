@@ -3,7 +3,7 @@ const vil=RUNMAPS.findIndex(M=>M.name==='Christmas Village');
 ok('Orb style list starts with Auto',LOOK.orbs.opts[0]==='Auto');
 setOrbSkin('auto');ok('Auto is selected',LOOK.orbs.get()===0);
 useRunMap(vil);startRun(true);__step(5);ok('Auto: Christmas Village uses stars',orbSkin()==='star'&&orbs.every(o=>!(o.m.geometry===orbGeo)));
-useRunMap(0);startRun(true);__step(5);ok('Auto: Plaza keeps crystals',orbSkin()==='crystal'&&orbs.every(o=>o.m.geometry===orbGeo));
+useRunMap(0);startRun(true);__step(5);ok('Auto: Frosty Falls keeps crystals',orbSkin()==='crystal'&&orbs.every(o=>o.m.geometry===orbGeo));
 setOrbSkin('donut');useRunMap(vil);startRun(true);__step(5);ok('picking Donuts: donuts in the village too',orbSkin()==='donut');
 setOrbSkin('crystal');ok('picking Crystal sticks (saved under the new key)',localStorage.getItem('orbRunOrbStyle')==='crystal'&&orbSkin()==='crystal');
 setOrbSkin('auto');

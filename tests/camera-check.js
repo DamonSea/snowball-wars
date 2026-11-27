@@ -10,7 +10,7 @@ __k({KeyW:true});__step(30);__k({});ok('Classic: Up moves north',P.position.z<-1
 // behind: run forward and the camera settles behind you; and input is camera-relative
 setCam('behind');__place(10,0,0,Math.PI/2);CAM.yaw=0;__step(3);__k({KeyW:true});__step(150);__k({});
 ok('Behind you: camera settles behind you (off by '+angTo(CAM.yaw,face+Math.PI).toFixed(2)+' rad)',Math.abs(angTo(CAM.yaw,face+Math.PI))<.25);
-setCam('free');CAM.yaw=-Math.PI/2;__place(10,-2,0,0);__step(3);const x0=P.position.x,z0=P.position.z;__k({KeyW:true});__step(30);__k({});const mx=P.position.x-x0,mz=P.position.z-z0;
+setCam('free');CAM.yaw=-Math.PI/2;__place(10,.5,0,0);__step(3);const x0=P.position.x,z0=P.position.z;__k({KeyW:true});__step(30);__k({});const mx=P.position.x-x0,mz=P.position.z-z0;
 ok('camera to the west: Up runs east, away from it ('+mx.toFixed(1)+','+mz.toFixed(1)+')',mx>2&&Math.abs(mz)<.5);
 // free: the right stick turns it and it stays put
 setCam('free');navigator.getGamepads=()=>[gp];__step(3);const y0=CAM.yaw;gp.axes[2]=1;gp.timestamp++;__step(30);gp.axes[2]=0;gp.timestamp++;const y1=CAM.yaw;

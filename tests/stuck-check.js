@@ -16,6 +16,6 @@ __place(15,19,topOf(ch,15,19),Math.PI/2);__step(3);keys.ShiftLeft=true;__step(20
 // crawl up the slide: no butt slide while pushing uphill
 __place(3,19,topOf(ch,3,19),Math.PI/2);__step(3);__k({KeyD:true,ShiftLeft:true});let anyBS=false;for(let i=0;i<40;i++){__step(1);if(BS.on)anyBS=true}__k({});ok('crawling uphill stays a crouch',!anyBS&&A.mode==='crouch'||!anyBS);__step(30);
 // safety net: dropped inside a solid block gets pushed out
-__place(0,-15.75,0,0);__step(2);const was1=!!bodyInSolid(P.position.x,P.position.z,py);__step(25);ok('stuck inside the tower: nudged out ('+(was1?'was inside':'?')+' → at '+P.position.x.toFixed(2)+','+P.position.z.toFixed(2)+')',was1&&!bodyInSolid(P.position.x,P.position.z,py));
+__place(-6,-17,0,0);__step(2);const was1=!!bodyInSolid(P.position.x,P.position.z,py);__step(25);ok('stuck inside the cliff: nudged out ('+(was1?'was inside':'?')+' → at '+P.position.x.toFixed(2)+','+P.position.z.toFixed(2)+')',was1&&!bodyInSolid(P.position.x,P.position.z,py));
 __place(2.2,-10.4,0,0);__step(25);ok('clipped into a wall edge: nudged out',!bodyInSolid(P.position.x,P.position.z,py));
 __step=_st;return out.join('\n')})()

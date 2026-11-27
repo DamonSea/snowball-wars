@@ -1,4 +1,4 @@
-// Butt slide: crouch on a slope (any ramp, like the big slide in the Plaza) and you drop onto your butt and slide.
+// Butt slide: crouch on a slope (any ramp, like the big slide or the frozen waterfall in Frosty Falls) and you drop onto your butt and slide.
 // The slope pulls you downhill and speeds you up; steer with the stick, Jump to hop off with your speed, let go of
 // crouch to stand up. On flat ground the slide slows and you get up. Works for every character.
 const BS={on:false,dist:0,t:0};
