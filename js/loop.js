@@ -184,7 +184,7 @@ function tick(){
     if(LH.on&&state!=='menu'){snap=false;snapY=false;rate=16;yaw=0;roll=0;hy=0;hz=0;lrz=0;llz=0;hx=-.25;const sw=Math.sin(walk*2.2);
       if(LH.up>0){const k=1-LH.up/LH.upT;rate=22;ax=ar=-3+Math.min(1,k*1.4)*2.6;zl=-.25;zr=.25;lx=-1.3*Math.sin(PI*Math.min(1,k*1.15));lr=-.9*Math.sin(PI*Math.min(1,k*1.25));pitch=.45*Math.sin(PI*k);yo=0}
       else{ax=-3+sw*.18;ar=-3-sw*.18;zl=-.18;zr=.18;lx=.08+sw*.12;lr=.08-sw*.12;pitch=.04;yo=0}}
-    // Tuk, standing around: head back, catching snowflakes
+    // Tucker, standing around: head back, catching snowflakes
     if(H.yeti&&idleT>1.5&&!CL.on&&!LH.on){const k=Math.min(1,(idleT-1.5)*2);hx=-.5*k+Math.sin(tAll*1.3)*.08;hy=Math.sin(tAll*.7)*.25*k;ax=ar=-.25*k;zl=-.35*k;zr=.35*k;pitch=-.08*k}
     if(H.attitude&&idleT>.4&&!CL.on&&!LH.on){const k=Math.min(1,(idleT-.4)*3);rate=8;ax=-1.5*k;ar=-1.38*k;zl=.74*k;zr=-.7*k;lx=-.06;lr=.1;roll=.07*k;yo=0;pitch=-.04*k;hx=-.14*k;hy=.3*k+Math.sin(tAll*.6)*.05;hz=.13*k}
     if(H.bootGs&&!(run&&GAIT==='fluid'))H.bootGs.forEach(b=>{b.rotation.x*=1-Math.min(1,dt*12)});   // feet flat again
@@ -212,7 +212,7 @@ function tick(){
         L(g.rotation,'z',Math.sin(tAll*(4+sp*.5)-i*.9)*(.06+fl*.08)-bank*.3,.25)})}
     // Nova's beanie tip and pom-pom stream back with speed, bounce with steps, flip up when falling
     if(H.pony){const fl=Math.min(1,sp*.08)+(air?(vy<0?.7:.3):0)+(state==='select'?.1:0),bob=run?Math.sin(ph*2)*.12:0;
-      H.pony.forEach((g,i)=>{L(g.rotation,'x',(i?.12+fl*.22:.45+fl*.75)+bob+Math.sin(tAll*(5+sp*.6)-i*1.2)*(.05+fl*.08),.22);
+      H.pony.forEach((g,i)=>{L(g.rotation,'x',(i?.2+fl*.22:.95+fl*.45)+bob+Math.sin(tAll*(5+sp*.6)-i*1.2)*(.05+fl*.08),.22);
         L(g.rotation,'z',Math.sin(tAll*(3.5+sp*.4)-i*.8)*(.05+fl*.06)-bank*.5,.22)})}
     if(H.eyes){const b=tAll%3.7<.13?.12:1;H.eyes.forEach((e,i)=>L(e.scale,'y',(e._by??(i%2?1:1.25))*b,.6))}
   }

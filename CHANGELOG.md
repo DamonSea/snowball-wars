@@ -3,6 +3,18 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.58.0] - 2026-11-26 — Tucker
+### Changed
+- **Tuk is now Tucker**, with a polish pass. He has curled three-segment horns instead of spikes, a soft curl of fur
+  on top instead of the spiky tuft, fur clumps round the back of his head, and fuzzy brows. His sweater gets sleeves
+  with ribbed cuffs and a knitted **T** on the front (in place of the toggles), and he has a fluffy little tail.
+  Saved looks carry over.
+- **Every character has the same speed and jump** as Flipper and Parker (Tucker was slightly slower with a higher
+  hop), so the **stat bars are gone** from character select.
+- **Parker's winter hat** (and the Winter hat accessory) is now a proper knit beanie: a ribbed fold-up cuff, two
+  contrast stripes round the crown, and a slouch that falls back to a fluffy pom-pom you can actually see. It
+  swings further back when she runs.
+
 ## [2.57.0] - 2026-11-26 — Map Maker pass
 ### Added
 - **Camera views** in the Map Builder: Top, Angled (the old view) and Low, which sits close to the ground so you can

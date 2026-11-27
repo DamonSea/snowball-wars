@@ -251,12 +251,7 @@ function buildNova(parent=P){
       add(S(.068+(i%2)*.012,10,8),i%2?hair2:hair,x,-z0*sa+.01,z0*ca-.02,hairTop)}}
   // slouchy beanie with rib band; the tip and pom-pom swing (chain in "pony"). It's her winter hat accessory.
   const beanieG=new THREE.Group();head.add(beanieG);
-  add(new THREE.SphereGeometry(.43,22,14,0,2*PI,0,PI/2.1),leather,0,.06,-.01,beanieG);
-  T(.41,.065,leather,0,.08,-.01,beanieG).scale.set(1,1.02,1);
-  const pony=[];let pp=beanieG,py0=.4,pz0=-.12;
-  [[.17,.2],[.12,.16]].forEach(([r,h],i)=>{const g=new THREE.Group();g.position.set(0,py0,pz0);pp.add(g);
-    add(S(r,12,10),leather,0,-h*.5,0,g).scale.set(1,1.2,1);pony.push(g);pp=g;py0=-h;pz0=0});
-  {const g=new THREE.Group();g.position.set(0,-.18,0);pp.add(g);add(S(.1,10,8),scarf,0,-.06,0,g);pony.push(g)}
+  const pony=beanieShape(beanieG,1,0,leather,fleece,scarf);
   // headphones over the beanie (her Ears accessory)
   const phones=new THREE.Group();head.add(phones);
   T(.47,.03,scarf,0,.04,0,phones,0,PI);
@@ -336,7 +331,21 @@ function buildVex(parent=P){
   return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,tails,hawk,chain,gum,gT:0,attitude:true,hsYo:.24,jk,anc:{hr:.43,top:.42,tilt:.5,eyeY:.02,face:.47,nose:[0,-.07,.47],backY:.1,backZ:-.4,hood:{r:.41,y:.1,s:[1.1,1,.92],neck:.47,arm:[-.02,-.3],sr:.165}},
     mats:{jacket,fleece,leather,pants,boot,sole,glove,scarf,metal,lens,rib}};
 }
-// Tuk: a yeti cub in a hand-knit sweater. Same rig interface as the others. Springy bits (tukPhysics, below): floppy
+// Parker's winter hat (also the Winter hat accessory): a slouchy knit beanie. Ribbed fold-up cuff, a band of
+// contrast stitches round the crown, and a slouch that falls back to a fluffy pom-pom. Returns the slouch chain
+// (groups that swing). k scales it to the head, b is the head-top offset; M main knit, acc stitches, pomM pom-pom.
+function beanieShape(g,k,b,M,acc,pomM){const S=(r,w=12,h=10)=>new THREE.SphereGeometry(r*k,w,h);
+  add(new THREE.SphereGeometry(.43*k,26,16,0,2*PI,0,PI/2.05),M,0,b+.06*k,-.015*k,g).scale.set(1,1.1,1.04);
+  const cuff=add(new THREE.CylinderGeometry(.452*k,.445*k,.15*k,36,1,true),M,0,b+.075*k,-.012*k,g);cuff.scale.z=1.04;
+  [.15,0].forEach(dy=>{const l=add(new THREE.TorusGeometry(.449*k,.016*k,6,36),M,0,b+(.075+dy-.075)*k,-.012*k,g);l.rotation.x=PI/2;l.scale.set(1,1.04,1)});
+  for(let i=0;i<40;i++){const a=i/40*2*PI,r=add(new THREE.CylinderGeometry(.013*k,.013*k,.14*k,5),M,Math.sin(a)*.455*k,b+.075*k,Math.cos(a)*.455*k*1.04-.012*k,g)}
+  [[.2,.02],[.27,.012]].forEach(([y,t])=>{const yy=y-.06,rr=Math.sqrt(.43*.43-Math.pow(yy/1.1,2))*k+.004*k,s=add(new THREE.TorusGeometry(rr,t*k,6,40),acc,0,b+y*k,-.015*k,g);s.rotation.x=PI/2;s.scale.set(1,1.04,1)});
+  const chain=[];let pp=g,y0=b+.5*k,z0=-.1*k;
+  [[.18,.15],[.13,.12]].forEach(([r,h])=>{const s=new THREE.Group();s.position.set(0,y0,z0);pp.add(s);add(S(r),M,0,-h*.45*k,0,s).scale.set(1,1.3,.95);chain.push(s);pp=s;y0=-h*k;z0=0});
+  const pom=new THREE.Group();pom.position.set(0,-.1*k,0);pp.add(pom);add(S(.1,12,10),pomM,0,-.08*k,0,pom);
+  for(let i=0;i<9;i++){const a=i*2.4,e=Math.acos(1-2*(i+.5)/9);add(S(.058,8,6),pomM,Math.sin(e)*Math.cos(a)*.09*k,-.08*k+Math.cos(e)*.09*k,Math.sin(e)*Math.sin(a)*.09*k,pom)}
+  chain.push(pom);return chain}
+// Tucker (was Tuk): a yeti cub in a hand-knit sweater. Same rig interface as the others. Springy bits (tukPhysics, below): floppy
 // "ears", a "tuft" of fur on his head, his scarf "tail", and a round "belly" that jiggles when he lands. Left
 // alone, he tips his head back and catches snowflakes on his "tongue".
 function buildTuk(parent=P){
@@ -361,10 +370,14 @@ function buildTuk(parent=P){
   add(new THREE.SphereGeometry(.53,20,14,0,2*PI,0,PI*.6),jacket,0,.04,0,hp).scale.set(1.04,.95,.95);
   T(.47,.06,rib,0,-.08,0,hp).scale.set(1.05,1,.93);
   for(let i=0;i<20;i++){const a=i/20*2*PI;const b=add(new THREE.BoxGeometry(.2,.04,.03),fleece,Math.sin(a)*.5,.2,Math.cos(a)*.47,hp);b.rotation.y=a;b.rotation.z=i%2?.55:-.55}
-  [.08,-.02].forEach(y=>add(new THREE.CylinderGeometry(.025,.025,.09,6),metal,0,y,.5,hp).rotation.z=PI/2);const jk=hp.children.slice(jk0);
+  // his initial knitted on the front, and a fluffy tail poking out under the hem
+  add(new THREE.BoxGeometry(.17,.045,.03),metal,0,.085,.492,hp).rotation.x=-.12;add(new THREE.BoxGeometry(.05,.15,.03),metal,0,.01,.497,hp).rotation.x=-.05;
+  const jk=hp.children.slice(jk0);
+  {const tl=new THREE.Group();tl.position.set(0,-.2,-.46);hp.add(tl);add(S(.1,10,8),leather,0,0,0,tl);fluff(tl,0,.07,6,.05)}
   // arms: long furry arms with big round paws and little claws
   const arms=[-1,1].map(s=>{const g=new THREE.Group();g.position.set(s*.5,.26,0);hp.add(g);
     add(S(.15),jacket,0,-.04,0,g);add(new THREE.CylinderGeometry(.11,.13,.3,10),leather,0,-.2,0,g);
+    add(new THREE.CylinderGeometry(.14,.145,.17,12),jacket,0,-.11,0,g);const cf=add(new THREE.TorusGeometry(.14,.035,6,16),rib,0,-.2,0,g);cf.rotation.x=PI/2;
     add(S(.17),leather,0,-.4,.02,g).scale.set(1,.95,1.05);[-.06,0,.06].forEach(x=>{const c=add(new THREE.ConeGeometry(.022,.06,5),sole,x,-.52,.08,g);c.rotation.x=PI})
     return g});
   // head
@@ -372,14 +385,21 @@ function buildTuk(parent=P){
   add(S(.46,22,18),leather,0,0,0,head);
   [-1,1].forEach(s=>{add(S(.14,10,8),leather,s*.36,-.16,.12,head);add(S(.1,8,6),leather,s*.42,-.06,.04,head)});   // fluffy cheeks
   add(S(.36),pants,0,-.05,.16,head).scale.set(1.02,.9,.78);
-  // little curved horns
-  [-1,1].forEach(s=>{const h=new THREE.Group();h.position.set(s*.2,.34,0);h.rotation.z=-s*.45;head.add(h);
-    add(new THREE.ConeGeometry(.07,.16,8),sole,0,.08,0,h);const t=add(new THREE.ConeGeometry(.045,.1,8),sole,s*.03,.19,0,h);t.rotation.z=-s*.5});
+  // little curved horns: three tapering segments that curl out and back
+  [-1,1].forEach(s=>{let h=new THREE.Group();h.position.set(s*.22,.33,-.02);h.rotation.set(-.25,0,-s*.55);head.add(h);
+    [[.068,.055,.1],[.055,.04,.09],[.04,.012,.09]].forEach(([r0,r1,l],i)=>{add(new THREE.CylinderGeometry(r1,r0,l,10),sole,0,l/2,0,h);add(S(r1+.001,8,6),sole,0,l,0,h);
+      const n=new THREE.Group();n.position.y=l;n.rotation.set(-.35,0,-s*.42);h.add(n);h=n})});
+  // fur: tufts round the back and sides of his head, and fuzzy brows
+  {const rn=i=>{const x=Math.sin(i*127.1+31.7)*43758.5;return x-Math.floor(x)};
+  for(let i=0;i<26;i++){const a=PI*.55+rn(i)*PI*.9,y=-.22+rn(i+50)*.5,r=Math.sqrt(Math.max(.01,.46*.46-y*y))-.025,sz=.06+rn(i+90)*.035,t=add(S(sz,10,8),leather,Math.sin(a)*r,y,Math.cos(a)*r,head);
+    t.rotation.set(-.6+rn(i+7)*.5,a,(rn(i+13)-.5)*.8);t.scale.set(1.15,.85,.4)}}
+  [-1,1].forEach(s=>{const b=add(S(.05,8,6),pants,s*.16,.21,.39,head);b.scale.set(1.5,.6,.6);b.rotation.z=s*.25});
   // floppy ears and a tuft of fur on top, on springs
   const ears=[-1,1].map(s=>{const g=new THREE.Group();g.position.set(s*.42,.1,0);g.rotation.z=s*1.1;g._b=g.rotation.z;g._s=s;head.add(g);
     add(S(.15),leather,0,-.16,0,g).scale.set(.6,1.15,.32);add(S(.1),glove,0,-.17,.04,g).scale.set(.5,1,.2);return g});
+  // a soft curl of fur on top that swoops forward (on a spring)
   const tuft=new THREE.Group();tuft.position.set(0,.42,.04);head.add(tuft);tuft._b=0;
-  [[-.08,-.35],[0,0],[.08,.35],[0,.15]].forEach(([x,r],i)=>{const c=add(new THREE.ConeGeometry(.075,i===3?.22:.32,6),leather,x,.13,i===3?-.06:0,tuft);c.rotation.z=r;if(i===3)c.rotation.x=-.4});
+  [[0,.02,-.04,.11],[-.07,.05,.02,.08],[.07,.05,.02,.08],[0,.12,.02,.085],[0,.17,.1,.065],[0,.15,.17,.05]].forEach(([x,y,z,r])=>add(S(r,10,8),leather,x,y,z,tuft));
   // face: big round eyes, rosy cheeks, button nose, smile with two buck teeth
   const eyes=[];
   [-1,1].forEach(s=>{const e=add(S(.11),white,s*.15,.06,.37,head);e.scale.set(.92,1.1,.5);eyes.push(e);
@@ -396,7 +416,7 @@ function buildTuk(parent=P){
   return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,ears,tuft,tail,belly,tongue,yeti:true,hsYo:.26,
     jk,anc:{hr:.46,top:.5,eyeY:.06,face:.47,nose:[0,-.07,.47],backY:.1,backZ:-.48,hood:{r:.53,y:.04,s:[1.04,.95,.95],neck:.5,arm:[-.02,-.28],sr:.175}},mats:{jacket,fleece,leather,pants,boot,sole,glove,scarf,metal,lens,rib}};
 }
-// Tuk's springs. dv = change in velocity this frame in his own frame (f forward, s right, u up), like Vex's.
+// Tucker's springs. dv = change in velocity this frame in his own frame (f forward, s right, u up), like Vex's.
 function tukPhysics(H,dt,dv,sp,air,idle){const cl=x=>Math.max(-12,Math.min(12,x)),fl=Math.min(1,sp*.08)+(air?.3:0);
   H.ears.forEach(g=>{kick(g,'z',g._s*cl(dv.u)*.75-cl(dv.s)*.15);kick(g,'x',-cl(dv.f)*.15);
     spring(g,'z',g._b+g._s*(fl*.35+Math.sin(tAll*(4+sp*.5)+g._s)*.05),dt,55,3.5);spring(g,'x',-fl*.4,dt,60,5)});
@@ -461,7 +481,7 @@ const OUTFITS_VEX=[
   {name:'Toxic',jacket:0x8fe02e,fleece:0x6b2cff,leather:0x6b2cff,pants:0x1d1d22,boot:0x6b2cff,sole:0x1d1d22,glove:0x6b2cff,scarf:0x1d1d22,lens:0x1d1d22,lensE:0x000000,metal:0x9aa0a8},
   {name:'Bubblegum',jacket:0xff8ac2,fleece:0xffffff,leather:0x37d7ff,pants:0x3a3f6b,boot:0x37d7ff,sole:0xffffff,glove:0xffffff,scarf:0x37d7ff,lens:0xffffff,lensE:0x5a5a7a,metal:0xe8e8f0},
   {name:'Blackout',jacket:0x18181c,fleece:0xff2a2a,leather:0xf4f4f4,pants:0x18181c,boot:0x18181c,sole:0xff2a2a,glove:0xff2a2a,scarf:0xff2a2a,lens:0xff2a2a,lensE:0x7a0000,metal:0x55585e}];
-// Tuk's wardrobe (sweater = jacket / zigzag & hem trim = fleece / fur = leather / face & belly = pants / scarf / paw pads
+// Tucker's wardrobe (sweater = jacket / zigzag & hem trim = fleece / fur = leather / face & belly = pants / scarf / paw pads
 // & nose = boot / horns & claws = sole / cheeks & inner ears = glove / toggles = metal / eyes = lens)
 const OUTFITS_TUK=[
   {name:'Cozy',jacket:0xf08a3c,fleece:0xfff1d6,leather:0xf4f7fb,pants:0xc6daec,boot:0x5a6472,sole:0xc9b48f,glove:0xff9aa8,scarf:0x2f6fd0,metal:0x8a5a35,lens:0x37a6e8,lensE:0x0b3a5a},
@@ -520,17 +540,18 @@ function applyOutfitTo(M,i,list=OUTFITS,rig){const o=list[i];outfitParts(rig,o);
 // paintable parts per wardrobe character, in Colors-tab order: [material key, label]
 const PARTS={Flipper:[['jacket','Jacket'],['fleece','Collar & trim'],['leather','Cap'],['hair','Hair'],['scarf','Scarf'],['pants','Pants'],['boot','Boots'],['sole','Soles'],['glove','Gloves'],['lens','Goggle lenses'],['metal','Goggle frames']],
   Parker:[['jacket','Puffer'],['fleece','Collar & patches'],['leather','Beanie'],['glove','Mittens'],['scarf','Headphones & pom'],['pants','Snow pants'],['boot','Boots'],['sole','Soles & straps'],['metal','Snowboard'],['lens','Board stripe']],
-  Tuk:[['jacket','Sweater'],['fleece','Zigzag & trim'],['leather','Fur'],['pants','Face & belly'],['scarf','Scarf'],['glove','Cheeks & ears'],['boot','Nose & paw pads'],['sole','Horns & claws'],['metal','Toggles'],['lens','Eyes']],
+  Tucker:[['jacket','Sweater'],['fleece','Zigzag & trim'],['leather','Fur'],['pants','Face & belly'],['scarf','Scarf'],['glove','Cheeks & ears'],['boot','Nose & paw pads'],['sole','Horns & claws'],['metal','Toggles'],['lens','Eyes']],
   Vex:[['jacket','Hoodie'],['leather','Mohawk'],['scarf','Bandana'],['fleece','Laces & strings'],['lens','Bolts'],['pants','Jeans'],['boot','Sneakers'],['sole','Soles & toe caps'],['glove','Wristbands'],['metal','Studs & chain']]};
 const chars=[
-  {name:'Sunny',desc:'A bouncy little robot. Springy legs give the highest jump.',speed:1,jump:9,sp:3,jp:5,ag:2,g:body},
-  {name:'Rook',desc:'A quick-footed island explorer. Fastest runner, shorter hop.',speed:1.15,jump:7.8,sp:5,jp:3,ag:3,g:R.root,rig:R},
+  {name:'Sunny',desc:'A bouncy little robot.',speed:1.1,jump:9.5,sp:5,jp:4,ag:5,g:body},
+  {name:'Rook',desc:'A quick-footed island explorer.',speed:1.1,jump:9.5,sp:5,jp:4,ag:5,g:R.root,rig:R},
   {name:'Flipper',desc:'A pint-sized stunt pilot who plays by momentum. Harder to steer, full of tricks.',speed:1.1,jump:9.5,sp:5,jp:4,ag:5,g:F.root,rig:F,outs:OUTFITS,ofKey:'orbRunOutfit',acro:true,
    moves:'Shift: crouch · Crouch + Jump: long jump (running) or backflip (standing) · Shift in the air: dive · Jump off a wall mid-air: wall jump · Jump as you land: double and triple jump · Reverse at speed to skid, Jump mid-skid to side flip'}];
 chars.push({name:'Parker',desc:'A fearless backcountry snowboarder with a board on her back and beats in her ears. Same trick moveset as Flipper.',speed:1.1,jump:9.5,sp:5,jp:4,ag:5,g:NV.root,rig:NV,outs:OUTFITS_NOVA,ofKey:'orbRunOutfitNova',acro:true,moves:chars[2].moves});
 chars.push({name:'Vex',desc:'A mouthy skate punk who never asked for your help and won\u2019t say thanks. Same trick moveset as Flipper.',speed:1.1,jump:9.5,sp:5,jp:4,ag:5,g:VX.root,rig:VX,outs:OUTFITS_VEX,ofKey:'orbRunOutfitVex',acro:true,moves:chars[2].moves});
-chars.push({name:'Tuk',desc:'A yeti cub in a hand-knit sweater. Cuddly, curious, and much bouncier than he looks. Same trick moveset as Flipper.',speed:1.05,jump:9.6,sp:4,jp:5,ag:4,g:TK.root,rig:TK,outs:OUTFITS_TUK,ofKey:'orbRunOutfitTuk',acro:true,moves:chars[2].moves});
-// 2.47 renamed Flip and Nova and dropped the gold outfits: move old saves over once
+chars.push({name:'Tucker',desc:'A yeti cub in a hand-knit sweater. Cuddly, curious, and much bouncier than he looks. Same trick moveset as Flipper.',speed:1.1,jump:9.5,sp:5,jp:4,ag:5,g:TK.root,rig:TK,outs:OUTFITS_TUK,ofKey:'orbRunOutfitTuk',acro:true,moves:chars[2].moves});
+// 2.47 renamed Flip and Nova and dropped the gold outfits, 2.58 renamed Tuk: move old saves over once
+try{if(!localStorage.getItem('orbRunWardrobe3')){const L=localStorage.getItem('orbRunLook_Tuk');if(L&&!localStorage.getItem('orbRunLook_Tucker'))localStorage.setItem('orbRunLook_Tucker',L);localStorage.setItem('orbRunWardrobe3','1')}}catch(e){}
 try{if(!localStorage.getItem('orbRunWardrobe2')){localStorage.setItem('orbRunWardrobe2','1');
   const v=+localStorage.getItem('orbRunOutfit')||0;if(v>=4)localStorage.setItem('orbRunOutfit',v===4?0:v-1);
   [['Flip','Flipper'],['Nova','Parker']].forEach(([a,b])=>{const L=localStorage.getItem('orbRunLook_'+a);if(L&&!localStorage.getItem('orbRunLook_'+b))localStorage.setItem('orbRunLook_'+b,L)})}}catch(e){}
@@ -544,8 +565,8 @@ function readyRing(){fxRing.position.set(P.position.x,py+.06,P.position.z);fxT=.
 function trail(col,n=1){for(let i=0;i<n;i++){const m=new THREE.Mesh(partGeo,new THREE.MeshBasicMaterial({color:col,transparent:true}));
   m.position.set(P.position.x+(Math.random()-.5)*.4,py+.5+Math.random()*.9,P.position.z+(Math.random()-.5)*.4);scene.add(m);
   parts.push({m,v:V(-vel.x*.15,.2,-vel.z*.15),life:.35})}}
-// Flip is the lead: default pick, first in the select order, then Nova, Vex and Tuk. Sunny and Rook remain as alternates.
-// The playable cast: Flip, Nova and Tuk. Sunny (0), Rook (1) and Vex (4) are benched for now: still built and working,
+// Flipper is the lead: default pick, first in the select order, then Parker, Vex and Tucker. Sunny and Rook remain as alternates.
+// The playable cast: Flipper, Parker and Tucker. Sunny (0), Rook (1) and Vex (4) are benched for now: still built and working,
 // just not offered. Put their numbers back in ORDER to bring them back.
 const ORDER=[2,3,5];let ci=2;try{const v=localStorage.getItem('orbRunPick');if(v!==null&&ORDER.includes(+v))ci=+v}catch(e){}let pickCi=ci;
 let wave=0,bank=0,squash=0,airVy=0,wasG=true,lastFace=0;

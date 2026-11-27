@@ -1,4 +1,4 @@
-// Character customization for the wardrobe characters (Flip, Nova, Tuk; Vex too while benched): outfit presets, a color for every part, and
+// Character customization for the wardrobe characters (Flipper, Parker, Tucker; Vex too while benched): outfit presets, a color for every part, and
 // accessories in three slots (head, face, back). Opened from character select with Customize. Looks save per
 // character in this browser and travel in multiplayer presence ("lk"), so friends see them too.
 // A look is {c:{part:hex}, a:{top,face,back}, ac:hex|null}: c overrides the preset's colors, ac recolors accessories.
@@ -33,12 +33,8 @@ const ACC={
         const r=add(new THREE.TorusGeometry(.085*k,.03*k,8,16),met,...o(s*.125,.33,.37),g);r.rotation.x=-.55;r.rotation.y=s*.28;
         const l=add(new THREE.CylinderGeometry(.075*k,.075*k,.03*k,14),lens,...o(s*.125,.33,.37),g);l.rotation.order='YXZ';l.rotation.set(PI/2-.55,s*.28,0)});
       add(new THREE.BoxGeometry(.06*k,.028*k,.03*k),met,...o(0,.335,.395),g)}},
-    {id:'beanie',label:'Winter hat',who:FP,col:0x2f4f8f,kind:'beanie',make(g,a,m,it){const k=a.hr/.4,b=-a.top;
-      add(new THREE.SphereGeometry(.43*k,22,14,0,2*PI,0,PI/2.1),m,0,b+.06*k,-.01,g);
-      const band=add(new THREE.TorusGeometry(.41*k,.065*k,8,24),m,0,b+.08*k,-.01,g);band.rotation.x=PI/2;
-      it.c=[];let pp=g,y0=b+.4*k,z0=-.12*k;
-      [[.17,.2],[.12,.16]].forEach(([r,h])=>{const s=new THREE.Group();s.position.set(0,y0,z0);pp.add(s);add(new THREE.SphereGeometry(r*k,12,10),m,0,-h*.5*k,0,s).scale.set(1,1.2,1);it.c.push(s);pp=s;y0=-h*k;z0=0});
-      const s=new THREE.Group();s.position.set(0,-.18*k,0);pp.add(s);add(new THREE.SphereGeometry(.1*k,10,8),accM(0xf4f1ea,{roughness:.95}),0,-.06*k,0,s);it.c.push(s)}},
+    {id:'beanie',label:'Winter hat',who:FP,col:0x2f4f8f,kind:'beanie',make(g,a,m,it){const k=a.hr/.4,b=-a.top,cr=accM(0xf4f1ea,{roughness:.95});
+      it.c=beanieShape(g,k,b,m,cr,cr)}},
     {id:'party',label:'Party hat',col:0xff3fb4,make(g,a,m){add(new THREE.ConeGeometry(.15,.36,16),m,0,.17,0,g);
       add(new THREE.SphereGeometry(.06,10,8),accM(0xffffff),0,.36,0,g);const b=add(new THREE.TorusGeometry(.14,.02,6,18),accM(0xffffff),0,.01,0,g);b.rotation.x=PI/2}},
     {id:'propeller',label:'Propeller cap',col:0x37d7ff,kind:'prop',make(g,a,m,it){add(new THREE.SphereGeometry(.2,16,8,0,2*PI,0,PI/2),m,0,-.04,0,g);
@@ -167,7 +163,7 @@ function accFrame(H,dt,sp,air,dv){for(const it of H.accA){
   else if(it.kind==='halo'){it.h.position.y=.25+Math.sin(tAll*2.4)*.03;it.h.rotation.z+=dt*.8}
   else if(it.kind==='flame'){const lean=Math.min(.6,sp*.05)+(air?.2:0);it.f.forEach((t,i)=>{const fl=1+.22*Math.sin(tAll*(17+i*3.1)+i)+.12*Math.random();t.scale.set(1,fl,1);t.children[0].rotation.x=lean});
     it.e.forEach(e=>{e.p=(e.p+dt*1.1)%1;e.position.set(e.x*(1-e.p*.5)+Math.sin(tAll*3+e.x*9)*.03,.15+e.p*.75,e.z*(1-e.p*.5)-lean*e.p*.4);e.scale.setScalar(1-e.p)})}
-  else if(it.kind==='beanie'){const fl=Math.min(1,sp*.08)+(air?.4:0);it.c.forEach((g,i)=>{g.rotation.x+=((i?.12+fl*.22:.45+fl*.75)+Math.sin(tAll*(5+sp*.6)-i*1.2)*(.05+fl*.08)-g.rotation.x)*Math.min(1,dt*12)})}
+  else if(it.kind==='beanie'){const fl=Math.min(1,sp*.08)+(air?.4:0);it.c.forEach((g,i)=>{g.rotation.x+=((i?.2+fl*.22:.95+fl*.45)+Math.sin(tAll*(5+sp*.6)-i*1.2)*(.05+fl*.08)-g.rotation.x)*Math.min(1,dt*12)})}
   else if(it.kind==='scarf'){const fl=Math.min(1.25,sp*.11)+(air?.35:0);it.c.forEach((g,i)=>{g.rotation.x+=((i?fl*.12:.25+fl)+Math.sin(tAll*(6+sp)-i*1.1)*(.08+fl*.12)-g.rotation.x)*Math.min(1,dt*14)})}
   else if(it.kind==='hood'){const fl=Math.min(1,sp*.08)+(air?.3:0);kick(it.hd,'x',-Math.max(-12,Math.min(12,dv.u))*.35);kick(it.hd,'x',Math.max(-12,Math.min(12,dv.f))*.15);
     spring(it.hd,'x',.05+fl*.25+Math.sin(tAll*(5+sp*.5))*.03*fl,dt,it.big?55:80,6);

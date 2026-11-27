@@ -7,15 +7,15 @@ into combos in Trick Park (Plaza, Frozen Rink, Rooftops, Jungle Gym), discover n
 your own maps. Built with three.js; open `index.html` in a browser to play (multiplayer works only in the
 claude.ai version).
 
-![The cast: Flipper, Parker and Tuk](docs/media/characters.png)
+![The cast: Flipper, Parker and Tucker](docs/media/characters.png)
 
 **What's new:** see the [changelog](CHANGELOG.md).
 
 ## Features
 
 ### A cast with a real moveset
-Pick **Flipper** the stunt pilot, **Parker** the snowboarder or **Tuk** the yeti cub. All three have the full acrobat
-moveset and four outfits each. Flipper also has **Off Duty** (his summer
+Pick **Flipper** the stunt pilot, **Parker** the snowboarder or **Tucker** the yeti cub. All three have the full acrobat
+moveset, the same speed and jump, and four outfits each. Flipper also has **Off Duty** (his summer
 look: linen pilot shirt, shorts, goggles pushed up on his hair) and **Super Flipper** (mask, emblem and cape).
 
 Double and triple jumps, a skid into a side somersault, backflips, long jumps, dives, wall jumps, a ground pound and
@@ -24,10 +24,11 @@ shimmy along them and pull up. Everything chains into combos.
 
 ![Triple jump, side somersault and backflip](docs/media/tricks.gif)
 
-**Tuk** is a yeti cub in a hand-knit sweater: floppy ears, a tuft of fur and a scarf on springs, and a round belly
+**Tucker** is a yeti cub in a hand-knit sweater with his initial on the front: curled horns, fuzzy brows, a little
+fluffy tail, floppy ears, a curl of fur and a scarf on springs, and a round belly
 that jiggles when he lands. Leave him alone and he tips his head back to catch snowflakes on his tongue.
 
-![Tuk hops, lands with a jiggle, then catches snowflakes](docs/media/tuk.gif)
+![Tucker hops, lands with a jiggle, then catches snowflakes](docs/media/tuk.gif)
 
 **Settings → Game → Squash & stretch** is a slider from Default to Max; turned up, it makes every move a cartoon: tall stretchy jumps, splat landings that
 wobble back, punches that reach, and ground pounds that ball up, stretch down and squash flat.
@@ -35,7 +36,7 @@ wobble back, punches that reach, and ground pounds that ball up, stretch down an
 ![Exaggerated squash and stretch: jump, punch combo, ground pound](docs/media/squash-stretch.gif)
 
 ### Make them yours
-On character select, **Customize** (Flipper, Parker and Tuk) opens a dressing room: start from an outfit, repaint every part
+On character select, **Customize** (Flipper, Parker and Tucker) opens a dressing room: start from an outfit, repaint every part
 (jacket, hat or hair, scarf or bandana, pants, boots, gloves and more; Flipper's hair has its own palette of natural
 shades) and add accessories. Flipper and Parker also have a **Face** tab: eyes, eyebrows and mouth styles, and switches for his
 eye whites, eye shine, nose, freckles and blush (each On / Off), and a **Body type** choice: Stout (his own build) or Slender (Parker's proportions). Head: flaming head, party hat,
@@ -218,7 +219,7 @@ by files above it. Nothing is bundled.
 | 0 | `js/input/pads.js` | Switch 2 Pro Controller support, loaded before everything else: remaps it to the standard layout, wakes it over USB, rumble, player light, B / A / Y / X prompts |
 | 1 | `js/tuning.js` | **Every gameplay number**: gravity, jumps, speeds, ice, climbing, attacks, combo, scoring, camera |
 | 2 | `js/core.js` | Renderer, scene, lights, material helpers, season registry, trees/rocks/flowers |
-| 3 | `js/characters.js` | Rigs and wardrobes for Flipper, Parker and Tuk (plus benched Sunny, Rook and Vex), spring physics for dangly bits, character table and roster |
+| 3 | `js/characters.js` | Rigs and wardrobes for Flipper, Parker and Tucker (plus benched Sunny, Rook and Vex), spring physics for dangly bits, character table and roster |
 | 4 | `js/fx.js` | Spikeball model, particle bursts, collision push-out |
 | 5 | `js/audio/sfx.js` | Sound engine and the configurable sound-effect library |
 | 6 | `js/audio/music.js` | Music tracks, ambience, spikeball rolling sound |

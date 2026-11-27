@@ -52,7 +52,6 @@ function select(m,lv=0){if(typeof closePark==='function')closePark();
 }
 function showChar(){
   const c=chars[ci];$('csName').textContent=c.name;$('csDesc').textContent=c.desc;
-  $('bSp').style.width=c.sp*20+'%';$('bJp').style.width=c.jp*20+'%';$('bAg').style.width=c.ag*20+'%';
   renderOutfits();
   $('csMoves').textContent=c.moves||'';$('csCust').innerHTML=c.outs?'Customize<span class="pk" aria-hidden="true">\u25b3</span>':'';$('cb').classList.toggle('na',!c.acro);
   $('dots').innerHTML=pickOrder().map(i=>`<i class="${i===ci?'on':''}"></i>`).join('');
