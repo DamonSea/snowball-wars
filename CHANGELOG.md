@@ -3,6 +3,11 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.55.0] - 2026-11-26 — Dive Bomb
+### Added
+- Diving or belly-sliding into a **snow goon** (the Winter Crew snowmen) knocks it out instead of hurting you, scoring a
+  **Dive Bomb** trick (200). Walking into one still just bumps you back.
+
 ## [2.54.1] - 2026-11-26 — Ground spot
 ### Changed
 - The landing marker no longer predicts where you'll land: it's a spot on the ground **directly under you** while

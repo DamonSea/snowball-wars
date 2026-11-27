@@ -131,6 +131,9 @@ function foeAnim(h,dt){if(!h.m)return;const m=h.m,t=tAll+(h.ph||(h.ph=Math.rando
 function foeHit(h){if((h.hurtT||0)>0){h.sbHit=false;return false}return attackHits(h.g.position,foeBase(h))||!!h.sbHit}
 function foeStomp(h){if(h.kind==='spike'||grounded||vy>-1)return false;const p=h.g.position,k=FOE[h.kind],b=foeBase(h);
   return Math.hypot(p.x-P.position.x,p.z-P.position.z)<k.r+.15&&py>=b+k.top-.5&&py<=b+k.top+.8}
+// diving or belly-sliding into a snow goon knocks it out (instead of hurting you)
+function foeDive(h){if(h.kind!=='goon'||!chars[ci].acro||(A.mode!=='dive'&&A.mode!=='slide')||Math.abs(A.spd)<2)return false;
+  const p=h.g.position,k=FOE[h.kind],b=foeBase(h);return Math.hypot(p.x-P.position.x,p.z-P.position.z)<k.r+.4&&py>b-1.1&&py<b+k.top}
 // 'hurt', 'steal' or null
 function foeTouch(h){const p=h.g.position,k=FOE[h.kind],b=foeBase(h),d=Math.hypot(p.x-P.position.x,p.z-P.position.z);
   if(h.kind==='spike')return d<1.2&&Math.abs(py-b)<1?'hurt':null;
@@ -152,7 +155,7 @@ function foeFx(h){const p=h.g.position.clone();
 function killFoe(h,how){foeFx(h);
   if(how==='stomp'){vy=T.foes.stompBounce;grounded=false;stand=null;if(chars[ci].acro){A.mode='jump';A.jumpN=0;A.canCut=true;A.canDive=true}SFX.stomp();rumble(100,.5,.7)}
   else{ATK.hits++;hitStop=.07;shake=Math.max(shake,.18);rumble(120,.7,.9);if(h.kind!=='spike')SFX.hit();else smashSnd()}
-  if(mode==='run')addTrick(how==='stomp'?'Stomp':'Smash');
+  if(mode==='run')addTrick(how==='stomp'?'Stomp':how==='dive'?'Dive Bomb':'Smash');
   if(mode==='run'&&h.kind==='goon'){const q=h.g.position,gh=groundAt(q.x,q.z,q.y+1).h;snowmanSnow(q.x,isFinite(gh)?gh:0,q.z)}   // the Winter Crew's snowman drops snowballs to grab
   if((h.mine||0)>0){SB.ammo=Math.min(T.snow.ammo,SB.ammo+h.mine);snowHud();snowFlash('gain');toast(`Got your snowball${h.mine>1?'s':''} back!`);h.mine=0}}
 function smashSnd(){SFX.hit()}

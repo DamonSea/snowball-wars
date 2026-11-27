@@ -102,7 +102,7 @@ silliness, off in Settings; Parker doesn't) keeps spraying until you press Groun
 - **Penguin sliders** flap a red "!" and belly-slide at you, then sit dizzy.
 - **Holiday elves** steal your snowballs into their sacks; smack them before they escape.
 
-Punch, kick, snowball, dive, ground-pound or **stomp** them. Prefer the classics? Settings → Enemies → Spikeballs.
+Punch, kick, snowball, dive, ground-pound or **stomp** them, and dive or belly-slide straight into a snow goon for a **Dive Bomb**. Prefer the classics? Settings → Enemies → Spikeballs.
 
 ![Penguin slide, imp theft and a goon going down](docs/media/winter-crew.gif)
 

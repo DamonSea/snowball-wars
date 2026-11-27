@@ -36,7 +36,7 @@ const T={
 
   combo:{window:1.4,orbExtend:.8},
   tricks:{'Butt Slide':150,'Slide Hop':100,'Double Jump':50,'Dive':75,'Long Jump':100,'Wall Jump':100,'Tree Leap':75,'Handstand':100,
-          'Triple Jump':150,'Backflip':150,'Side Flip':150,'Side Somersault':150,'Smash':150,'Tree-top Flip':250,'Dive Grab':100,
+          'Triple Jump':150,'Backflip':150,'Side Flip':150,'Side Somersault':150,'Smash':150,'Dive Bomb':200,'Tree-top Flip':250,'Dive Grab':100,
           'Snowman Down':150,'Direct Hit':200,'Ground Pound':100,'Pound Jump':150,'Ledge Climb':50,'Ledge Hop':75,'Hand Over Hand':200,'Bounce':50,'Super Bounce':200,'Snow Angel':100,'Bowled Over':200,'Giant Snowball':250,'Yellow Snow':25,'Stomp':150,'Yellow Snowball':300,'Pole Leap':75,'Pole-top Flip':250},
   run:{time:60,goldEvery:6,goldValue:300,goldBonusTime:5,groundOrb:100,orbsOnField:7,
        hazardSpeed:3.4,hazardSpeedUp:.035,hazardsFree:2,hazardsStart:3,hazardsMax:7,hazardEvery:15,smashRespawn:3.5},

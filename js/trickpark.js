@@ -133,7 +133,7 @@ function updateRun(dt){
   }
   if(MP.client){const k=1-Math.exp(-12*dt);
     for(const h of runHz){if(h.dead)continue;const p=h.g.position,ox=p.x,oz=p.z;p.x+=(h.tx-p.x)*k;p.z+=(h.tz-p.z)*k;if(h.kind==='spike')roll(h.g,(p.x-ox)/dt,(p.z-oz)/dt,dt);else foeAnim(h,dt);
-      h.robbed=Math.max(0,(h.robbed||0)-dt);const how=foeHit(h)?'hit':foeStomp(h)?'stomp':null;
+      h.robbed=Math.max(0,(h.robbed||0)-dt);const how=foeHit(h)?'hit':foeStomp(h)?'stomp':foeDive(h)?'dive':null;
       if(how){killFoe(h,how);h.dead=true;rmObj(h.g);MP.gone.add(h.id);claim('k',h.id);continue}
       const c=foeTouch(h);if(c==='steal')impSteal(h);
       else if(c==='hurt'&&!invuln){dropCombo();hurt(p.x,p.z,14);if(lives<=0){if(FR.on&&runFree&&!FR.done){frRespawn('Out of lives: back to your checkpoint.')}else if(runFree||runCD>0){lives=3;hud()}else{endRun();return}}}}
@@ -150,7 +150,7 @@ function updateRun(dt){
     if(r>ARENA-.5){const nx=p.x/r,nz=p.z/r,d=h.vx*nx+h.vz*nz;if(d>0){h.vx-=2*d*nx;h.vz-=2*d*nz}p.x=nx*(ARENA-.5);p.z=nz*(ARENA-.5)}
     const n=pushOut(p,.7,runL.advCol);if(n){const d=h.vx*n.x+h.vz*n.z;if(d<0){h.vx-=2*d*n.x;h.vz-=2*d*n.z}}
     if(h.kind==='spike')roll(h.g,h.vx,h.vz,dt);else{if(h.st==='slide')h.face=Math.atan2(h.vx,h.vz);foeAnim(h,dt)}
-    h.robbed=Math.max(0,(h.robbed||0)-dt);h.hurtT=Math.max(0,(h.hurtT||0)-dt);const how=foeHit(h)?'hit':foeStomp(h)?'stomp':null;
+    h.robbed=Math.max(0,(h.robbed||0)-dt);h.hurtT=Math.max(0,(h.hurtT||0)-dt);const how=foeHit(h)?'hit':foeStomp(h)?'stomp':foeDive(h)?'dive':null;
     if(how&&angerPenguin(h,how))continue;
     if(how){killFoe(h,how);h.dead=true;rmObj(h.g);runQ.push(T.run.smashRespawn);continue}
     const c=foeTouch(h);if(c==='steal')impSteal(h);
