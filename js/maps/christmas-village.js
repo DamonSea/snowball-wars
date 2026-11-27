@@ -18,7 +18,7 @@
 {const vilW=new THREE.Group();vilW.visible=false;scene.add(vilW);advW=vilW;plats=[];advCol=[];
 const G=vilW;
 add(new THREE.CylinderGeometry(30.5,26,3,48),sandM,0,-1.6,0,G);
-add(new THREE.CylinderGeometry(28.5,28.5,.2,48),seas(mat(0xf3f7fb),0xf3f7fb),0,-.1,0,G).castShadow=false;   // snow all year: it's Christmas
+add(new THREE.CylinderGeometry(28.5,28.5,.2,48),seas(mat(0x6fbf4a),0xf3f7fb),0,-.1,0,G).castShadow=false;   // snow in winter, grass in summer
 plats.push({k:'c',x:0,z:0,r:28.5,top:0});
 const snowW=mat(0xffffff,{roughness:.9}),cobble=mat(0xb8b2a8,{roughness:.95}),cobDk=mat(0x8f877b,{roughness:.95}),
   ginger=mat(0xb8743c,{roughness:.8}),icing=mat(0xfdf6ee,{roughness:.6}),brick=mat(0xa4453a,{roughness:.85}),plaster=mat(0xf0e2c8,{roughness:.85}),

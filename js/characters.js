@@ -38,7 +38,7 @@ const R=buildRook(P);
 // scaled by k onto other heads, shifted by (oy, oz). skin colors the lids, hair the brows.
 function buildFace(head,{skin,hair,freck,noseC=0xd99a70,blushC=0xef9a85,k=1,oy=0,oz=0}){
   const S=(r,w=14,h=10)=>new THREE.SphereGeometry(r,w,h),sm=(c,o={})=>new THREE.MeshStandardMaterial({color:c,roughness:.6,...o});
-  const FACE={eyes:{},mouth:{},brows:{},freckles:[],blush:[],nose:[],whites:[],shine:[],pupils:[]},fg=new THREE.Group(),grp=(set,k)=>{const g=new THREE.Group();fg.add(g);set[k]=g;return g};
+  const FACE={eyes:{},mouth:{},brows:{},nshape:{},freckles:[],blush:[],nose:[],whites:[],shine:[],pupils:[]},fg=new THREE.Group(),grp=(set,k)=>{const g=new THREE.Group();fg.add(g);set[k]=g;return g};
   fg.scale.setScalar(k);fg.position.set(0,oy,oz);head.add(fg);
   const white=sm(0xffffff,{roughness:.3}),pupilM=sm(0x2a1a10,{roughness:.2}),glintM=sm(0xffffff),lidM=skin;
   const blinkOf={};   // style -> meshes that close on a blink (each remembers its open height in _by)
@@ -72,8 +72,14 @@ function buildFace(head,{skin,hair,freck,noseC=0xd99a70,blushC=0xef9a85,k=1,oy=0
   [-1,1].forEach(s=>{
     [[.0,0],[.05,.04],[.05,-.03]].forEach(([dx,dy])=>FACE.freckles.push(add(S(.015,5,4),freck,s*(.25+dx),-.12+dy,.37-dx*.4,fg)));
     FACE.blush.push(add(S(.05,8,6),sm(blushC,{roughness:.8,transparent:true,opacity:.55}),s*.27,-.14,.33,fg))});
-  FACE.nose.push(add(S(.075),sm(noseC),0,-.09,.45,fg));
-  for(const k of ['eyes','brows','mouth'])for(const st in FACE[k])FACE[k][st].visible=st===({eyes:'beady',brows:'none',mouth:'calm'})[k];
+  // nose shapes (Face → Nose): default button / big bulbous one (think plumber) / small / pointy. The Nose switch hides
+  // whichever is picked.
+  {const nc=new THREE.Group();fg.add(nc);FACE.nose.push(nc);const nm=sm(noseC),grpN=k=>{const g=new THREE.Group();nc.add(g);FACE.nshape[k]=g;return g};
+    add(S(.075),nm,0,-.09,.45,grpN('default'));
+    {const g=grpN('big');add(S(.125,18,14),nm,0,-.115,.48,g).scale.set(1.15,.85,1)}
+    add(S(.045),nm,0,-.08,.43,grpN('small'));
+    {const g=grpN('pointy');const c=add(new THREE.ConeGeometry(.05,.17,10),nm,0,-.08,.5,g);c.rotation.x=PI/2}}
+  for(const k of ['eyes','brows','mouth','nshape'])for(const st in FACE[k])FACE[k][st].visible=st===({eyes:'beady',brows:'none',mouth:'calm',nshape:'default'})[k];
   [...FACE.shine,...FACE.freckles,...FACE.blush].forEach(m=>{m.visible=false});
   return{FACE,blinkOf}}
 // Flip: pint-sized stunt pilot. Same rig interface (root > hp > limbs), chunky mascot proportions
@@ -182,7 +188,7 @@ function buildChibi(parent=P){
     const bolt=add(B(.04,.15,.04),gold,0,0,.012,g);bolt.rotation.z=.5;parts.emblem=[g];
     parts.belt=[T(.37,.045,gold,0,-.17,0,torso)];parts.belt[0].scale.set(1,.92,1)}
   const PART_EXTRAS=['hair','shades','calves','forearms','mask','emblem','belt'];PART_EXTRAS.forEach(k=>parts[k].forEach(m=>{m.visible=false}));
-  return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,scarf,face:FACE,blinkOf,parts,partExtras:PART_EXTRAS,pantsLegs,sleeves,gogG,torso,bootGs,hipY:.8,locks:parts.hair[0]._locks,native:{scarf:parts.scarf},natMain:{scarf:'scarf'},defAcc:{neck:'scarf'},jk:[...torso.children,...patch],
+  return{root,hp,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,eyes,scarf,face:FACE,blinkOf,parts,partExtras:PART_EXTRAS,pantsLegs,sleeves,gogG,torso,bootGs,hipY:.8,locks:parts.hair[0]._locks,native:{scarf:parts.scarf,aviator:capParts},natMain:{scarf:'scarf',aviator:'leather'},defAcc:{neck:'scarf',top:'aviator'},jk:[...torso.children,...patch],
     anc:{hr:.45,top:.56,eyeY:0,face:.5,nose:[0,-.09,.52],backY:.1,backZ:-.4,neckY:.46,neckR:.22,hood:{r:.42,y:.08,s:[1,.95,.9],neck:.45,arm:[0,-.27],sr:.15}},
     mats:{jacket,fleece,leather,pants,boot,sole,glove,scarf:scarfM,metal,lens,rib,hair,hairDark:dark}};
 }
@@ -491,7 +497,8 @@ function outfitParts(rig,o,cap,soles,gog){if(!rig||!rig.parts)return;const ex=ri
 // face options for the Customize Face tab (first = default). A look stores only the choices that differ: L.f.
 const FACE_OPTS={eyes:[['round','Round'],['relaxed','Relaxed'],['focused','Focused'],['happy','Happy'],['chill','Chill'],['beady','Beady']],
   brows:[['none','None'],['soft','Soft'],['bold','Bold'],['raised','Raised'],['worried','Worried']],
-  mouth:[['smile','Smile'],['calm','Calm'],['grin','Grin'],['smirk','Smirk'],['flat','Flat'],['o','Oh'],['none','None']]};
+  mouth:[['smile','Smile'],['calm','Calm'],['grin','Grin'],['smirk','Smirk'],['flat','Flat'],['o','Oh'],['none','None']],
+  nshape:[['default','Default'],['big','Big'],['small','Small'],['pointy','Pointy']]};
 const FACE_TOGGLES=[['whites','Eye whites'],['shine','Eye shine'],['nose','Nose'],['freckles','Freckles'],['blush','Blush']];
 // a face setting: yours, else the character's own default (rig.faceDef), else the first option / on
 // everyone's default face: beady eyes, no eye shine, calm mouth, no freckles or blush (a character's own faceDef can add to this)

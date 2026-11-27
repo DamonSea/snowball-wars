@@ -12,9 +12,9 @@ click('[data-s="neck"][data-a="off"]');ok('Neck: None takes the scarf off',!vis(
 click('[data-s="neck"][data-a="scarf"]');ok('...and back on',vis(F,'scarf'));
 click('[data-s="top"][data-a="beanie"]');ok('Winter hat on Flipper replaces his cap and hair, goggles stay on the brim',ids(F).includes('beanie')&&!vis(F,'cap')&&!vis(F,'hair')&&F.parts.goggles[1].visible);
 click('[data-s="back"][data-a="board"]');ok('Snowboard on Flipper',ids(F).includes('board'));
-click('[data-s="top"][data-a="flame"]');ok('Flaming head',ids(F).includes('flame')&&vis(F,'cap'));
+click('[data-s="top"][data-a="flame"]');ok('Flaming head (replaces the cap)',ids(F).includes('flame')&&!vis(F,'cap'));
 const fl=F.accA.find(i=>i.id==='flame'),s0=fl.f.map(t=>t.scale.y).join();__step(6);ok('The flames flicker and embers rise',fl.f.map(t=>t.scale.y).join()!==s0&&fl.e.some(e=>e.position.y>.2));
-CUST.tab='wear';renderCust();click('[data-gog="0"]');ok('Goggles off',!vis(F,'goggles')&&!vis(F,'gogStrap'));click('[data-gog="1"]');ok('Goggles back on head',vis(F,'goggles'));
+CUST.tab='wear';renderCust();click('[data-gog="0"]');ok('Goggles off',!vis(F,'goggles')&&!vis(F,'gogStrap'));click('[data-gog="1"]');ok('Goggles back on head',F.parts.goggles[1].visible);
 // hoodie
 click('[data-hood="reg"]');const hd=F.accA.find(i=>i.id==='hoodie');
 ok('Hoodie (regular): built over the jacket, jacket pieces hidden',!!hd&&!hd.big&&F.jk.every(m=>!m.visible)&&!!B('[data-hc]'));

@@ -3,6 +3,18 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.51.0] - 2026-11-26 — Noses, caps for everyone, landing marker
+### Added
+- **Nose shapes** (Face tab, Flipper and Parker): Default, **Big** (a bulbous plumber-style nose), Small and Pointy. The
+  Nose switch still hides whichever is picked.
+- **Aviator cap for everyone**: Flipper's cap, goggles and all, is now a Head accessory any character can wear, built
+  to fit their head. On Flipper it's his own cap and his Head-slot default, so other hats replace it rather than sit
+  on top (the Wear tab's cap switch moved there; old saves carry over).
+- **Landing marker**: in the air, a soft blue disc shows where you'll come down. It follows ledges and roofs and
+  allows for the speed you gain holding a direction; it fades out when you land (not shown for little hops).
+### Changed
+- **Summer grass in the Christmas Village**: its floor was snow all year; now it's grass in summer like every other map.
+
 ## [2.50.0] - 2026-11-26 — Elves, trees, day and night
 ### Added
 - **Day and night** (Settings → Time of day: Always day, Always night, or Day & night). Night darkens the sky and fog,

@@ -233,6 +233,7 @@ by files above it. Nothing is bundled.
 | 24 | `js/input/gamepad.js` | PS5 / standard controller support |
 | 25 | `js/loop.js` | The frame loop: update, animate, camera, render |
 | 26 | `js/seasons.js` | Snowfall, breath, Winter/Summer switching |
+| 15b | `js/landing.js` | Landing marker: where you'll come down while you're in the air |
 | 26b | `js/daynight.js` | Day and night: sky, moonlight, moon and stars, the cycle (Settings → Time of day) |
 | 27 | `js/net/p2p.js` | Multiplayer outside claude.ai: peer-to-peer stand-in for the room (Trystero) |
 | 28 | `js/multiplayer.js` | Trick Park multiplayer over the page's room capability (or the P2P stand-in) |

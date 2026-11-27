@@ -22,6 +22,17 @@ const ACC={
       for(let i=0;i<6;i++){const q=i/6*2*PI+.3;tongue(Math.sin(q)*r*.36,Math.cos(q)*r*.34,r*(1.2+(i%2)*.3),r*.32,1,[Math.cos(q)*.25,-Math.sin(q)*.25])}
       tongue(0,0,r*1.45,r*.3,2,[0,0]);tongue(.08*r,-.1*r,r*1.1,r*.26,2,[.1,.1]);
       it.e=Array.from({length:6},(_,i)=>{const e=add(new THREE.SphereGeometry(r*.045,5,4),flameM[i%2+1],0,0,0,g);e.castShadow=false;e.p=i/6;e.x=(Math.random()-.5)*r;e.z=(Math.random()-.5)*r;return e})}},
+    // Flipper's aviator cap with its goggles, sized to any head (on Flipper it's his own cap)
+    {id:'aviator',label:'Aviator cap',col:0x6b3f22,make(g,a,m){const k=a.hr/.45,b=-a.top,o=(x,y,z)=>[x*k,b+y*k,z*k],S_=(r,w,h)=>new THREE.SphereGeometry(r*k,w,h);m.roughness=.55;
+      const fl=accM(0xf1e4c6,{roughness:.95}),met=accM(0x7d858c,{roughness:.3,metalness:.6}),lens=accM(0x9fe3f0,{roughness:.1,emissive:0x1d5a66,emissiveIntensity:.5});
+      add(new THREE.SphereGeometry(.475*k,24,14,0,2*PI,0,PI/2.25),m,...o(0,.08,-.02),g);
+      const rim=add(new THREE.TorusGeometry(.462*k,.042*k,8,24),fl,...o(0,.165,-.02),g);rim.rotation.x=PI/2;
+      add(S_(.034,8,6),m,...o(0,.558,-.02),g);
+      [-1,1].forEach(s=>{const f=add(S_(1,14,10),m,...o(s*.455,-.04,-.02),g);f.scale.set(.05*k,.155*k,.115*k);f.rotation.z=s*.1;
+        const lin=add(S_(1,14,10),fl,...o(s*.43,-.04,-.02),g);lin.scale.set(.045*k,.17*k,.13*k);lin.rotation.z=s*.1;
+        const r=add(new THREE.TorusGeometry(.085*k,.03*k,8,16),met,...o(s*.125,.33,.37),g);r.rotation.x=-.55;r.rotation.y=s*.28;
+        const l=add(new THREE.CylinderGeometry(.075*k,.075*k,.03*k,14),lens,...o(s*.125,.33,.37),g);l.rotation.order='YXZ';l.rotation.set(PI/2-.55,s*.28,0)});
+      add(new THREE.BoxGeometry(.06*k,.028*k,.03*k),met,...o(0,.335,.395),g)}},
     {id:'beanie',label:'Winter hat',who:FP,col:0x2f4f8f,kind:'beanie',make(g,a,m,it){const k=a.hr/.4,b=-a.top;
       add(new THREE.SphereGeometry(.43*k,22,14,0,2*PI,0,PI/2.1),m,0,b+.06*k,-.01,g);
       const band=add(new THREE.TorusGeometry(.41*k,.065*k,8,24),m,0,b+.08*k,-.01,g);band.rotation.x=PI/2;
@@ -74,7 +85,7 @@ function cleanLook(L,ch){const o=blankLook();if(!L||typeof L!=='object')return o
   const okC=v=>Number.isInteger(v)&&v>=0&&v<=0xffffff;
   if(okC(L.ac))o.ac=L.ac;
   if(L.acs&&typeof L.acs==='object'){const a={};for(const[sl]of ACC_SLOTS)if(okC(L.acs[sl]))a[sl]=L.acs[sl];if(Object.keys(a).length)o.acs=a}
-  if(L.cap===0||L.cap===1)o.cap=L.cap;
+  if((L.cap===0||L.cap===1)&&!o.a.top&&chars[ch].rig&&chars[ch].rig.native&&chars[ch].rig.native.aviator)o.a.top=L.cap?'aviator':'off';   // from before the cap was a Head item
   if(L.soles===0)o.soles=0;
   if(L.body==='slender')o.body='slender';
   // face: only known styles, and toggles as 0 (off)
@@ -88,7 +99,10 @@ function applyLook(rig,ch,of,L){const list=chars[ch].outs;if(!list)return;applyO
   for(const k in L.c){const M=rig.mats[k];if(!M)continue;M.color.setHex(L.c[k]);if(k==='lens')M.emissive.setHex(L.c[k]).multiplyScalar(.35)}
   if(L.c.jacket!==undefined)rig.mats.rib.color.setHex(L.c.jacket).multiplyScalar(.78);
   if(L.c.hair!==undefined)setHair(rig.mats,L.c.hair);
-  rig._body=L.body;if(rig.parts)outfitParts(rig,list[of],L.cap,L.soles,L.gog);
+  rig._body=L.body;
+  // Flipper's own aviator cap is his Head-slot default: it's on when the Head slot picks it, off otherwise
+  const capOn=rig.native&&rig.native.aviator?((accPick(rig,L,list[of],'top')||{def:{}}).def.id==='aviator'?1:0):L.cap;
+  if(rig.parts)outfitParts(rig,list[of],capOn,L.soles,L.gog);
   applyFace(rig,L.f||{});
   buildAcc(rig,L,list[of]);buildHoodie(rig,L)}
 // which accessory a slot ends up with: your pick, nothing ('off'), or the outfit's (Super Flipper's cape, and each
@@ -96,7 +110,7 @@ function applyLook(rig,ch,of,L){const list=chars[ch].outs;if(!list)return;applyO
 function accPick(rig,L,o,slot){const v=L.a[slot];if(v==='off')return null;
   const own=ACC[slot].find(i=>i.id===v);if(own)return{def:own,own:true};
   const oa=o&&o.acc&&o.acc[slot];if(oa){const d=ACC[slot].find(i=>i.id===oa.id);if(d)return{def:d,col:oa.col}}
-  const da=rig.defAcc&&rig.defAcc[slot];if(da&&!((o&&o.hide)||[]).includes(da)){const d=ACC[slot].find(i=>i.id===da);if(d)return{def:d}}
+  const da=rig.defAcc&&rig.defAcc[slot];if(da&&!((o&&o.hide)||[]).includes(da==='aviator'?'cap':da)){const d=ACC[slot].find(i=>i.id===da);if(d)return{def:d}}
   return null}
 function buildAcc(rig,L,o){(rig.accA||[]).forEach(it=>{freeTree(it.g);_freeHood(it)});rig.accA=[];const a=rig.anc;if(!a)return;const nat=rig.native||{},on={};
   for(const[slot]of ACC_SLOTS){const pk=accPick(rig,L,o,slot);if(!pk)continue;const def=pk.def;on[def.id]=1;
@@ -114,7 +128,7 @@ function buildAcc(rig,L,o){(rig.accA||[]).forEach(it=>{freeTree(it.g);_freeHood(
     nat[id].forEach(n=>n.traverse(m=>{if(!m.material)return;if(m._om===undefined)m._om=m.material;
       if(c!==undefined&&c!==null&&m._om===main){if(!m._rc){m._rc=main.clone();}m._rc.color.setHex(c);m.material=m._rc}else m.material=m._om}))}
   for(const id in nat)nat[id].forEach(n=>{n.visible=!!on[id];if(id==='board')n.position.z=-.42-(L.hood?L.hood==='big'?.12:.07:0)});
-  if(rig.hairTop)rig.hairTop.visible=!on.beanie;
+  if(rig.hairTop)rig.hairTop.visible=!on.beanie&&!on.aviator;   // hats that cover the head tuck the top curls away
   // a winter hat on Flipper replaces his cap and covers his hair; the goggles sit on its brim
   if(on.beanie&&!nat.beanie&&rig.parts){['cap','hair','gogStrap'].forEach(k=>(rig.parts[k]||[]).forEach(n=>{n.visible=false}));if(rig.gogG){rig.gogG.scale.setScalar(1.05);rig.gogG.position.set(0,.02,.01)}}}
 // ---------- hoodie (Accessories tab): regular or oversized, over whatever they're wearing ----------
@@ -200,12 +214,12 @@ function renderCust(){const c=chars[ci],L=LOOKS[ci],list=c.outs;$('custName').te
   else if(CUST.tab==='color'){const base=list[OFI[ci]];
     h=(PARTS[c.name]||[]).map(([k,lab])=>{const cur=L.c[k]??base[k]??(k==='hair'?HAIR:undefined);return`<div class="crow"><span>${lab}${L.c[k]!==undefined?` <button class="cundo" data-u="${k}" title="Back to the outfit's color" aria-label="Reset ${lab}">↺</button>`:''}</span><div class="cpal">${(k==='hair'?HPAL:CPAL).map(v=>sw('data-c',v,v===cur,lab+' '+hexS(v))).join('').replace(/data-c=/g,`data-p="${k}" data-c=`)}</div></div>`}).join('')}
   else if(CUST.tab==='face'){const f=L.f||{};
-    h=[['eyes','Eyes'],['brows','Eyebrows'],['mouth','Mouth']].map(([k,lab])=>`<div class="crow"><span>${lab}</span><div class="copts">${FACE_OPTS[k].map(([v,n],i)=>`<button class="opt${faceVal(c.rig,f,k)===v?' on':''}" data-fk="${k}" data-fv="${v}">${n}</button>`).join('')}</div></div>`).join('')+
+    h=[['eyes','Eyes'],['brows','Eyebrows'],['mouth','Mouth'],['nshape','Nose shape']].map(([k,lab])=>`<div class="crow"><span>${lab}</span><div class="copts">${FACE_OPTS[k].map(([v,n],i)=>`<button class="opt${faceVal(c.rig,f,k)===v?' on':''}" data-fk="${k}" data-fv="${v}">${n}</button>`).join('')}</div></div>`).join('')+
       FACE_TOGGLES.map(([k,n])=>`<div class="crow"><span>${n}</span><div class="copts"><button class="opt${faceVal(c.rig,f,k)!==0?' on':''}" data-fs="${k}" data-fo="1">On</button><button class="opt${faceVal(c.rig,f,k)===0?' on':''}" data-fs="${k}" data-fo="0">Off</button></div></div>`).join('')}
-  else if(CUST.tab==='wear'){const o=list[OFI[ci]],P_=c.rig.parts||{},hatOn=(accPick(c.rig,L,o,'top')||{def:{}}).def.id==='beanie',
+  else if(CUST.tab==='wear'){const o=list[OFI[ci]],P_=c.rig.parts||{},
       row=(lab,btns)=>`<div class="crow"><span>${lab}</span><div class="copts">${btns.map(([attr,v,n,on])=>`<button class="opt${on?' on':''}" ${attr}="${v}">${n}</button>`).join('')}</div></div>`;
-    const capOn=L.cap!==undefined?!!L.cap:!(o.hide||[]).includes('cap'),gogOn=L.gog!==undefined?!!L.gog:!(o.hide||[]).includes('goggles');
-    h=(P_.cap&&!hatOn?row('Aviator cap',[['data-cap',1,'On',capOn],['data-cap',0,'Off',!capOn]]):'')+
+    const gogOn=L.gog!==undefined?!!L.gog:!(o.hide||[]).includes('goggles');
+    h=
       (c.rig.gogG?row('Goggles',[['data-gog',1,'On head',gogOn],['data-gog',0,'Off',!gogOn]]):'')+
       (P_.soles?row('Shoes',[['data-soles',1,'With soles',L.soles!==0],['data-soles',0,'Plain',L.soles===0]]):'')+
       (c.rig.anc&&c.rig.anc.hood?row('Hoodie',[['','None'],['reg','Regular fit'],['big','Oversized']].map(([v,n])=>['data-hood',v,n,(L.hood||'')===v]))+
