@@ -113,9 +113,14 @@ Build your own Trick Park maps: Trick Park → **More maps & builder** (or **Map
 
 ![Map settings, the spawn point, checkpoints and the finish flag](docs/media/map-settings.png)
 
-- **Asset library:** blocks, walls, raised decks, monkey bars, stairs, ramps, tire stacks, ice, slides, trampolines,
-  climbing poles, lamp posts, trees, rocks, orbs, snowman targets, rolling snowballs, the spawn point, the START pad,
-  and checkpoint and finish flags.
+- **Asset library:** tabs (Structures, Play, Objectives, Nature, Village, City) and a search box, with a picture of
+  every asset. Blocks, walls, raised decks, monkey bars, stairs, ramps, tire stacks, ice, slides, trampolines,
+  climbing poles, trees, rocks, orbs, snowman targets, rolling snowballs, the spawn point, the START pad, checkpoint and
+  finish flags, plus Christmas Village pieces (candy canes, Christmas trees, gift boxes, market stalls with bouncy
+  awnings, cottages with walkable roofs, big baubles) and city pieces (skyscrapers, flagpoles with flags that blow in
+  the wind, lamp posts). A see-through ghost of the asset follows the pointer before you place it.
+- **Camera:** Top, Angled and Low views (V cycles), Q/E or the arrow buttons turn the view, right-drag orbits,
+  F focuses on the selection.
 - **Edit:** click to place, drag to move, then resize, raise, recolor, rotate, duplicate or delete in the inspector.
   Undo/redo, keyboard shortcuts, and drafts that save as you go.
 - **Test:** play the map with the full moveset, then pause → Back to builder.
@@ -249,7 +254,7 @@ by files above it. Nothing is bundled.
 | 35 | `js/emotes.js` | Emote wheel (hold Ground pound standing): wave, cheer, dances, snow angel, yellow snow |
 | 36 | `js/cpu.js` | Computer player for Trick Park (Settings → Computer player) |
 | 37 | `js/builder/maps.js` | Map Builder asset library, map cleaning, and turning a saved map into a playable Trick Park map |
-| 38 | `js/builder/editor.js` | Map Builder editor: top-down camera, placing, selecting, dragging, inspector, undo, test play |
+| 38 | `js/builder/editor.js` | Map Builder editor: camera views, tabbed library with asset pictures, ghost preview, placing, selecting, dragging, inspector, undo, test play |
 | 39 | `js/builder/community.js` | Drafts, publishing to the shared map list, More maps panel, export and import |
 | 40 | `js/qol.js` | Hold to respawn / restart, Stop orb run, Moves list in the pause menu |
 | 41 | `js/main.js` | Startup |

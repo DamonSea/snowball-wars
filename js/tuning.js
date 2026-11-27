@@ -49,7 +49,7 @@ const T={
   // butt slide: crouch on a slope. accel = how hard the slope pulls (scaled by its steepness); friction on the slope and
   // on flat ground; steer = sideways control; stop = speed where you get up on flat ground
   butt:{accel:30,friction:.3,flatFriction:1.7,steer:5,max:17,stop:1.4,hopVy:11,minTrick:5},
-  bounce:{vy:17,poundVy:22},
+  bounce:{vy:17,poundVy:22,awning:13.5},   // awning: the striped market-stall roofs (Christmas Village and the map maker)
   angel:{time:2.6,life:45},
   roll:{r0:.35,rMax:1.5,grow:.045,push:4.2,friction:.55,iceFriction:.2,bounce:.4,bowl:1.8},
   snow:{speed:20,lift:4,gravity:18,life:2.5,ammo:6,regen:0,orbAmmo:2,cooldown:.3,hitKnock:9,hitLift:5,stun:.9,snowmanRespawn:8,snowmanAmmo:2,dropLife:15,chargeTime:1,chargeStun:1.6,chargeKnock:1.3},   // hold Throw chargeTime s for a charged snowball: double damage, longer stun, harder knock;

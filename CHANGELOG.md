@@ -3,6 +3,21 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.57.0] - 2026-11-26 — Map Maker pass
+### Added
+- **Camera views** in the Map Builder: Top, Angled (the old view) and Low, which sits close to the ground so you can
+  judge heights. V cycles the views, Q/E (or the ⟲ ⟳ buttons) turn the view 45°, right-drag orbits freely, and F
+  focuses on the selection. WASD and drag-panning follow the way the camera faces.
+- **Asset library rework:** tabs (Structures, Play, Objectives, Nature, Village, City), a search box, and a tile with
+  a rendered picture of every asset. The inspector shows the picture too, and a see-through ghost of the asset
+  follows the pointer before you place it.
+- **New assets.** Village: candy cane (climbable; Rotate turns the hook), Christmas tree (climbable), gift box, market
+  stall (bouncy striped awning), cottage (walkable pitched roof), big bauble. City: skyscraper (five Rooftops facades),
+  flagpole (climbable; the flag ripples in the wind, and Rotate changes the wind direction). Lamp posts moved to City.
+### Changed
+- **Christmas Village:** the striped market-stall awnings are bouncy, a little softer than a trampoline
+  (`T.bounce.awning`). Ground pound onto one for a super bounce.
+
 ## [2.56.0] - 2026-11-26 — Power-ups
 ### Added
 - **Power-ups in Snowball Wars.** A glowing gem with a light beam shows up about 12 seconds into a match, then again

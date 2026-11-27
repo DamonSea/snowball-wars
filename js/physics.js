@@ -129,7 +129,7 @@ function stepBody(dt,speed){
   const g=groundAt(P.position.x,P.position.z,prev);
   if(py<=g.h){const vin=vy;py=g.h;vy=0;grounded=true;stand=g.on;
     // trampolines: landing from the air bounces you; a ground pound onto one is a super bounce
-    if(stand&&stand.bounce&&(vin<-2||GP.st===2)){const sup=GP.st===2;vy=sup?T.bounce.poundVy:T.bounce.vy;grounded=false;stand=null;if(sup)GP.st=0,A.mode='normal';
+    if(stand&&stand.bounce&&(vin<-2||GP.st===2)){const sup=GP.st===2;vy=sup?T.bounce.poundVy:(stand.bvy||T.bounce.vy);grounded=false;stand=null;if(sup)GP.st=0,A.mode='normal';
       if(chars[ci].acro){A.mode=sup?'flip':'jump';A.jumpN=0;A.canDive=true;A.canCut=false;if(sup)startFlip('x',1)}
       SFX.boing(sup);burst(V(P.position.x,py+.1,P.position.z),0xffffff,sup?16:8);addTrick(sup?'Super Bounce':'Bounce')}}
   // going down a slope: stay on it instead of skipping into the air every frame

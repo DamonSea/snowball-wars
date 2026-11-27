@@ -71,8 +71,8 @@ function xmasTree(x,z,s){const g=new THREE.Group();g.position.set(x,0,z);g.scale
 // gift boxes: solid presents with a ribbon cross
 function gift(x,z,w,top,col,rib){box(x,z,w,w,top,col,col);add(B(w+.04,.06,.22),rib,x,top+.01,z,G);add(B(.22,.06,w+.04),rib,x,top+.01,z,G);
   add(B(w+.03,top,.2),rib,x,top/2,z,G);add(B(.2,top,w+.03),rib,x,top/2,z,G)}
-// a market stall: awning on four posts (walk underneath, hop along the tops)
-function stall(x,z,w,d,top,cA,cB){floatPlat(x,z,w,d,top,.3,cA,null);
+// a market stall: awning on four posts (walk underneath; the striped awning is bouncy, hop from stall to stall)
+function stall(x,z,w,d,top,cA,cB){const aw=floatPlat(x,z,w,d,top,.3,cA,null);aw.bounce=true;aw.bvy=T.bounce.awning;
   for(let i=0;i<Math.round(w/.6);i++)add(B(.6,.06,d+.06),i%2?cA:cB,x-w/2+.3+i*.6,top+.02,z,G);
   for(const[a,b]of[[-1,-1],[1,-1],[-1,1],[1,1]])add(new THREE.CylinderGeometry(.08,.08,top-.3,6),wood,x+a*(w/2-.15),(top-.3)/2,z+b*(d/2-.15),G);
   add(B(w-.4,.9,d-.6),wood,x,.45,z,G);plats.push({k:'b',x,z,w:w-.4,d:d-.6,top:.9})}

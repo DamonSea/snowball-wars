@@ -43,8 +43,10 @@ rep('Sky Sled without the dive falls short',r.y<.5,r);
 // 14 Ice Leap: pier -> island (9.5): long jump yes, running jump no
 fresh();__place(-2,13.5,1.2,E);__k({KeyD:true});__until(()=>P.position.x>4.1,120);keys.ShiftLeft=true;__step(1);jumpBuf=.15;keys.Space=true;__step(2);keys.Space=false;keys.ShiftLeft=false;r=land();rep('Ice Leap: pier -> island (long jump)',Math.abs(r.y-1.2)<.05&&r.x>14,r);
 fresh();__place(-2,13.5,1.2,E);__k({KeyD:true});__until(()=>P.position.x>4.1,120);jumpBuf=.15;keys.Space=true;r=land();rep('Ice Leap by running jump falls in (onto the ice)',r.y<.2,r);
-// 15 Awning Hop: one stall roof to the next (4.5 gap)
-fresh();__place(8,5.6,2,N);__k({KeyW:true});__until(()=>P.position.z<4.3,90);jumpBuf=.15;keys.Space=true;__step(4);__k({Space:true});r=pull(land());rep('Awning Hop: stall -> stall',Math.abs(r.y-2)<.05&&inBox(r,7,10,-2.6,-.4),r);
+// 15 Awning Hop: the striped stall awnings are bouncy now: run off one and you're launched toward the next
+fresh();__place(8,5.6,2,N);__k({KeyW:true});__until(()=>P.position.z<4.3,90);jumpBuf=.15;keys.Space=true;__step(4);__k({Space:true});{let up=0;for(let i=0;i<120&&!up;i++){__step(1);if(vy>12)up=vy}
+  r={y:+py.toFixed(2),x:+P.position.x.toFixed(1),z:+P.position.z.toFixed(1),t:[...TR.names].join(',')};__k({});rep('Awning Hop: stall awning bounces you',up>12&&TR.names.includes('Bounce'),r,'vy '+up.toFixed(1))}
+fresh();__place(-8.5,-1.5,5,N);vy=-3;grounded=false;{let up=0;for(let i=0;i<90&&!up;i++){__step(1);if(vy>12)up=vy}r={y:+py.toFixed(2),x:+P.position.x.toFixed(1),z:+P.position.z.toFixed(1),t:''};rep('Dropping onto an awning bounces you too',up>12,r)}
 // 16 butt slide down a roof
 fresh();__place(-10.25,-13.7,4.1,S);__step(3);__k({KeyS:true,ShiftLeft:true});let slid=false;for(let i=0;i<60;i++){__step(1);if(BS.on)slid=true}keys.ShiftLeft=false;__k({});__step(40);
 out.push((slid?'OK   ':'FAIL ')+'Butt slide down the Toy Shop roof (slid='+slid+')');
