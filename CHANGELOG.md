@@ -3,6 +3,17 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.56.0] - 2026-11-26 — Power-ups
+### Added
+- **Power-ups in Snowball Wars.** A glowing gem with a light beam shows up about 12 seconds into a match, then again
+  about 22 seconds after someone grabs one. If nobody takes it, it blinks out after 20 seconds.
+  - **Snowball Frenzy**: for 6 seconds, snowballs spray out in every direction without using any of yours.
+  - **Blitz**: works like a Super Star. For 8 seconds you're invincible and 30% faster, anyone you touch is knocked
+    out, and computer players run from you. You glow in shifting rainbow colours, and friends see the glow too.
+- **You're on Fire!**: get two KOs within 10 seconds and every snowball you throw is a charged one for 15 seconds.
+  More KOs top the timer up, and getting knocked out puts the fire out. Only KOs of players and computer players count.
+- A badge under the top bar shows what's active and how long it has left.
+
 ## [2.55.0] - 2026-11-26 — Dive Bomb
 ### Added
 - Diving or belly-sliding into a **snow goon** (the Winter Crew snowmen) knocks it out instead of hurting you, scoring a

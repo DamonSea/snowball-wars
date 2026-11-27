@@ -45,7 +45,7 @@ function tick(){
   water.position.y=-.8+Math.sin(tAll*.8)*.05;
   if(state==='play')updateRun(dt);
   if(state==='play'&&mode==='run')updateSnow(dt);
-  unstick(dt);holdFrame(dt);updateCpu(dt);warsUpdate(dt);raceUpdate(dt);tagUpdate(dt);poundFx(dt);updateYellow(dt);updateAngels(dt);updateEmotes(dt);updateRollers(dt);updateFlipArrow();
+  unstick(dt);holdFrame(dt);updateCpu(dt);warsUpdate(dt);pwrUpdate(dt);raceUpdate(dt);tagUpdate(dt);poundFx(dt);updateYellow(dt);updateAngels(dt);updateEmotes(dt);updateRollers(dt);updateFlipArrow();
   if(state==='play'){
     if(grounded&&!sndG&&sndAir>.15)SFX.land(-sndVy);
     if(!grounded){sndAir+=dt;sndVy=vy}else sndAir=0;

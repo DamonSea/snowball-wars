@@ -61,6 +61,7 @@ const T={
   // Tag: round length, the new It's count before it can tag, no-tag-back time, touch reach, computer players and
   // their chase / flee speeds, and how high they can hop after you
   tag:{time:120,count:1.5,noBack:2,reach:1.3,bots:3,hopMax:4.2},   // chase / flee speeds live in each personality (TAG_PERS in tag.js)
+  power:{first:12,every:22,life:20,frenzy:6,frenzyRate:.08,blitz:8,blitzSpeed:1.3,fireWindow:10,fire:15},   // Snowball Wars power-ups: first one after `first` s, then `every` s after a pickup
   wars:{time:180,hp:3,respawn:2.5,invuln:2.5,bots:3,packs:6,packSmall:2,packBig:4,regen:8},   // packs: snowball pickups on the map (small on the ground, big up high / mid-air)
   camera:{height:10.5,back:13,autoTurn:2.6}   // autoTurn: Free + auto's turn speed (rad/s) when running fully sideways
 };

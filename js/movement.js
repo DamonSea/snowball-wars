@@ -12,7 +12,7 @@ function move(dt,speed){
   let iz=kbAxisZ()+joy.z+pad.z;
   [ix,iz]=camInput(ix,iz);   // turning cameras: Up means away from the camera
   const im=Math.hypot(ix,iz);if(im>1){ix/=im;iz/=im}
-  speed*=chars[ci].speed;invuln=Math.max(0,invuln-dt);
+  speed*=chars[ci].speed*pwrSpeed();invuln=Math.max(0,invuln-dt);
   if(poundMove(dt))return;
   if(YS.spray||YS.t>0){yellowMove(dt,ix,iz);return}
   if(SA.t>0){angelMove(dt);return}

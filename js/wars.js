@@ -26,12 +26,12 @@ function startWars(o={}){if(!canWar()&&!WAR.on)return;if(WAR.on)warsStop(false);
   // clear the field: no orbs or enemies in a snowball fight
   if(!MP.client){orbs.forEach(q=>rmObj(q.g));orbs=[];runHz.forEach(h=>rmObj(h.g));runHz=[];runQ=[]}
   dropCombo();SB.ammo=T.snow.ammo;snowHud();score=0;
-  makePiles();freeUI();
+  makePiles();freeUI();pwrClear();
   const bots=o.bots!==undefined?o.bots:(warPeers().length?0:W.bots);WAR.bots=[];for(let k=0;k<bots;k++)WAR.bots.push(makeBot(k));
   $('warsBoard').classList.add('on');hint('');if(o.by)toast(`${o.by} started Snowball Wars!`);
   SFX.start();hud();warsBoard()}
 function warsStop(restore=true){if(!WAR.on)return;WAR.on=false;if(WAR.id)WAR.done.add(WAR.id);
-  WAR.bots.forEach(b=>freeTree(b.a.g));WAR.bots=[];WAR.piles.forEach(p=>freeTree(p.g));WAR.piles=[];
+  WAR.bots.forEach(b=>freeTree(b.a.g));WAR.bots=[];WAR.piles.forEach(p=>freeTree(p.g));WAR.piles=[];pwrClear();
   $('warsBoard').classList.remove('on');freeUI();SB.stun=0;score=0;lives=3;
   if(restore&&mode==='run'&&!MP.client&&!orbs.length){spawnCount=0;for(let i=0;i<T.run.orbsOnField;i++)spawnOrb()}   // enemies come back on their own (updateRun)
   hud()}
@@ -133,7 +133,7 @@ function botMove(b,dt){const a=b.a;
 // score a hit for `by` ('me' or 'botN') on the fighter that lost a heart; ko: that was their last heart
 // No points: KOs decide the match (hits break ties). Trick Shots are still called out.
 function award(by,ko,trick){
-  if(by==='me'){WAR.hits++;if(ko)WAR.kos++;popScore(ko?'KO!':trick?'Trick Shot!':'Hit!');if(ko)SFX.start();hud()}
+  if(by==='me'){WAR.hits++;if(ko){WAR.kos++;pwrKo()}popScore(ko?'KO!':trick?'Trick Shot!':'Hit!');if(ko)SFX.start();hud()}
   else if(by.startsWith('bot')){const b=WAR.bots[+by.slice(3)];if(b){b.hits++;if(ko)b.kos++}}}
 // a snowball (mine or a bot's) reached a bot?
 function botCatch(p,ball){if(!WAR.on)return false;
@@ -150,11 +150,11 @@ function botCatch(p,ball){if(!WAR.on)return false;
 // I got hit (called from hitMe). Returns true when that was my last heart.
 function warsHitMe(owner,dmg=1){WAR.hp=Math.max(0,WAR.hp-dmg);WAR.lastBy=owner;const ko=WAR.hp<=0;
   if(typeof owner==='string'&&owner.startsWith('bot'))award(owner,ko,false);
-  if(ko){WAR.out=T.wars.respawn;WAR.poof=false;WAR.downs++;SB.stun=T.wars.respawn;
+  if(ko){WAR.out=T.wars.respawn;WAR.poof=false;WAR.downs++;pwrDown();SB.stun=T.wars.respawn;
     const who=owner&&owner.startsWith('bot')?warName(owner):(warPeers().find(p=>p.peer===owner)?nameOf(warPeers().find(p=>p.peer===owner)):'someone');
     popScore('Snowed in!',true);toast(`Knocked out by ${who}`)}
   hud();return ko}
-const warsShielded=()=>WAR.on&&(WAR.out>0||WAR.inv>0||WAR.cd>0);
+const warsShielded=()=>WAR.on&&(WAR.out>0||WAR.inv>0||WAR.cd>0||pwrShield());
 // a friend reported my snowball hit them (h = [me, ballId, ko])
 function warsCreditRemote(h){if(!WAR.on)return;award('me',h[2]===1,SB.trickIds.has(h[1]))}
 // remember which of my throws were trick shots

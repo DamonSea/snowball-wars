@@ -119,7 +119,7 @@ function mpFrame(dt){
   const want=wantRoom();if(want!==MP.roomName&&!MP.joining&&now>MP.retryAt)switchRoom(want);
   electHost();updAvatars(dt);
   if(MP.room&&now-MP.lastSend>50){MP.lastSend=now;
-    const pr={nm:MP.myName||'Player',nmSet:savedName()?1:0,ch:ci,of:OFI[ci]??0,lk:LOOKS[ci]||null,p:[P.position.x,py,P.position.z,aimFace()].map(f2),q:poseOf(),sc:score,fr:runFree?1:0,t:[MP.tr.n,MP.tr.s],c:[MP.cl.n,MP.cl.o,MP.cl.k],sb:SB.sent,hb:SB.hits,yw:YS.spray?1:0,z:SB.stun>0?1:0,H:null,wm:WAR.on?[WAR.id,Math.round(WAR.t),WAR.out>0?0:WAR.hp,WAR.kos,WAR.hits]:null,or:raceLive()?[RACE.id,Math.round(time),orbN]:null,sp:RACE.sp.length?RACE.sp:null,tm:TAG.on?[TAG.id,Math.round(TAG.t),+(TAG.itT.me||0).toFixed(1),TAG.it==='me'?1:0,TAG.last]:null};
+    const pr={nm:MP.myName||'Player',nmSet:savedName()?1:0,ch:ci,of:OFI[ci]??0,lk:LOOKS[ci]||null,p:[P.position.x,py,P.position.z,aimFace()].map(f2),q:poseOf(),sc:score,fr:runFree?1:0,t:[MP.tr.n,MP.tr.s],c:[MP.cl.n,MP.cl.o,MP.cl.k],sb:SB.sent,hb:SB.hits,yw:YS.spray?1:0,z:SB.stun>0?1:0,bz:pwrShield()?1:0,H:null,wm:WAR.on?[WAR.id,Math.round(WAR.t),WAR.out>0?0:WAR.hp,WAR.kos,WAR.hits]:null,or:raceLive()?[RACE.id,Math.round(time),orbN]:null,sp:RACE.sp.length?RACE.sp:null,tm:TAG.on?[TAG.id,Math.round(TAG.t),+(TAG.itT.me||0).toFixed(1),TAG.it==='me'?1:0,TAG.last]:null};
     if(MP.host)pr.H={o:orbs.map(o=>[o.id,f2(o.g.position.x),f2(o.y),f2(o.g.position.z),o.gold?1:0,o.v,o.ring.visible?0:1,o.beam?1:0]),h:runHz.filter(h=>!h.dead).map(h=>[h.id,f2(h.g.position.x),f2(h.g.position.z),KINDS.indexOf(h.kind),Math.max(0,FSTATES.indexOf(h.st)),f2(h.face||0)]),g:FX.sent};
     MP.room.presence(pr).catch(()=>{})}
   if(now-MP.lastList>250){MP.lastList=now;mpList()}

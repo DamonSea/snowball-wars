@@ -342,3 +342,14 @@ body.setopen #moves{visibility:hidden}
 .ctab.hide{display:none}
 
 .parkme.hide{display:none}
+/* Snowball Wars power-ups: what's active, with a draining bar */
+.pwrbadge{position:fixed;left:50%;transform:translateX(-50%);top:132px;z-index:5;display:none;gap:6px;flex-direction:column;align-items:center;pointer-events:none}
+.pwrbadge.on{display:flex}
+.pwrbadge .pw{position:relative;min-width:190px;padding:5px 14px 9px;border-radius:12px;background:rgba(5,18,28,.8);color:#fff;font:800 15px "Inter",sans-serif;text-align:center;letter-spacing:.03em;overflow:hidden}
+.pwrbadge .pw i{position:absolute;left:0;bottom:0;height:4px;border-radius:0 2px 2px 0}
+.pwrbadge .frenzy b{color:#9fe6ff}.pwrbadge .frenzy i{background:#7fd8ff}
+.pwrbadge .fire b{color:#ffb347}.pwrbadge .fire i{background:linear-gradient(90deg,#ff4a1c,#ffd23a)}
+.pwrbadge .blitz b{background:linear-gradient(90deg,#ff5f6d,#ffd23a,#5fff9a,#5fc8ff,#c77dff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pwrbadge .blitz i{background:linear-gradient(90deg,#ff5f6d,#ffd23a,#5fff9a,#5fc8ff,#c77dff)}
+.pwrbadge .fire{animation:pwFire .5s ease-in-out infinite alternate}
+@keyframes pwFire{from{box-shadow:0 0 6px rgba(255,120,30,.5)}to{box-shadow:0 0 16px rgba(255,170,40,.9)}}

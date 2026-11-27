@@ -170,6 +170,8 @@ dawns). Night brings out a moon and twinkling stars, and the lamps glow.
   With the mouse, Flipper turns toward the cursor while you aim (and a click throws right at it), even while running
   another way.
 - **Snowball Wars mode**: pause in Trick Park and pick *Snowball Wars* for a 3-minute free-for-all. 3 hearts each, most KOs wins (no points), snowball pickups to grab (the high ones hold more). Solo you face three computer players; with friends on the map it's players only.
+  **Power-ups** show up during a match: **Snowball Frenzy** sprays snowballs in every direction, and **Blitz** makes you
+  invincible so anyone you touch goes down. Get two KOs within 10 seconds and **you're on Fire!**: every throw is charged.
 
   ![Snowball Wars match](media/snowball-wars-match.png)
 
@@ -239,6 +241,7 @@ by files above it. Nothing is bundled.
 | 28 | `js/multiplayer.js` | Trick Park multiplayer over the page's room capability (or the P2P stand-in) |
 | 29 | `js/snowballs.js` | Snowball fights: throwing, ammo (refilled by orbs), snowmen, hits on players (Trick Park only) |
 | 30 | `js/wars.js` | Snowball Wars mode: matches, hearts, scoring, snow piles, computer players |
+| 30b | `js/powerups.js` | Snowball Wars power-ups: Snowball Frenzy and Blitz pickups, You're on Fire! |
 | 31 | `js/orbrace.js` | Orb Race: shared runs with friends, knocked-loose orbs, computer rivals |
 | 32 | `js/tag.js` | Tag mode: It passing, no tag-backs, time-as-It scoring, computer players |
 | 33 | `js/yellowsnow.js` | Yellow snow: spray stream (from the emote wheel) that marks the snow, yellow snowballs (Settings → Yellow snow) |

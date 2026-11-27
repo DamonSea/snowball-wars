@@ -18,7 +18,7 @@ const canThrow=()=>!(mode!=='run'||state!=='play'||CL.on||SB.cool>0||SB.stun>0||
 function throwVec(f){const fx=Math.sin(f),fz=Math.cos(f),s=T.snow;
   return[P.position.x+fx*.5,py+1.45,P.position.z+fz*.5,fx*s.speed+vel.x*.5,s.lift+Math.max(0,vy)*.3,fz*s.speed+vel.z*.5].map(f2)}
 function throwSnow(ch=false){
-  if(!canThrow())return;
+  if(!canThrow())return;ch=ch||pwrCharged();
   if(SB.ammo<1){SFX.deny();if(!SB.told){SB.told=true;toast('Out of snowballs: grab orbs to refill')}snowFlash('empty');return}
   SB.ammo--;SB.cool=T.snow.cooldown;SB.anim=.3;snowHud();
   let f=face;
@@ -46,7 +46,7 @@ function solidAt(x,y,z){
 function treeSolid(c,d,y){const s=c.r/.65,h=(y-(c.y||0))/s,r=d/s;if(h<0||h>4.05||r>1.4)return false;
   if(h<.85)return r<.3;   // the lowest branches hang a little below where the cone starts
   const lo=h<=3.2?1.4*(3.2-Math.max(h,1))/2.2:0,hi=h>=2.35?(4.05-h)/1.7:0;return r<Math.max(lo,hi,.3)*.92}
-function hitMe(owner,id,bx,bz,yel,ch=false){
+function hitMe(owner,id,bx,bz,yel,ch=false,dmg=0){
   if(SB.hitCool>0||warsShielded())return;SB.hitCool=.5;SB.stun=T.snow.stun*(ch?T.snow.chargeStun:1);ATK.t=0;resetPound();
   const dx=P.position.x-bx,dz=P.position.z-bz,d=Math.hypot(dx,dz)||1,kn=T.snow.hitKnock*(ch?T.snow.chargeKnock:1);
   vel.x=dx/d*kn;vel.z=dz/d*kn;vy=Math.max(vy,T.snow.hitLift);grounded=false;stand=null;
@@ -54,7 +54,7 @@ function hitMe(owner,id,bx,bz,yel,ch=false){
   dropCombo();CL.on=false;CL.top=false;
   const f=$('frost');f.classList.remove('on','yellow');void f.offsetWidth;f.classList.add('on');if(yel){f.classList.add('yellow');toast('Ew. Yellow snowball.')}
   splat(V(P.position.x,py+1.4,P.position.z),true);rumble(160,.4,.8);
-  const ko=WAR.on&&warsHitMe(owner,ch?2:1);if(ko)face=Math.atan2(-dx,-dz);if(!WAR.on)raceHitMe(ch?2:1);   // turn to face the throw, so the fall goes away from it
+  const ko=WAR.on&&warsHitMe(owner,dmg||(ch?2:1));if(ko)face=Math.atan2(-dx,-dz);if(!WAR.on)raceHitMe(ch?2:1);   // turn to face the throw, so the fall goes away from it
 SB.hits.push(ko?[owner,id,1]:[owner,id]);if(SB.hits.length>6)SB.hits.shift();
 }
 function updateSnow(dt){
@@ -113,7 +113,7 @@ function gainSnow(gold){const was=SB.ammo;SB.ammo=gold?T.snow.ammo:Math.min(T.sn
 function snowFlash(c){const e=$('snowBox');if(!e)return;e.classList.remove('gain','empty');void e.offsetWidth;e.classList.add(c)}
 function snowHud(){const e=$('snowAmmo');if(e)e.innerHTML=Array.from({length:T.snow.ammo},(_,i)=>`<i class="${i<SB.ammo?'':'off'}"></i>`).join('')}
 // multiplayer: start remote throws we haven't seen, and credit our hits that others reported
-function snowFromPeer(peer,a){const pr=peer.presence||{};yellowFromPeer(pr,a);
+function snowFromPeer(peer,a){const pr=peer.presence||{};yellowFromPeer(pr,a);pwrFromPeer(peer,a,pr);
   if(!a.stars){a.stars=makeStars();a.g.add(a.stars)}a.stars.visible=!!pr.z;if(pr.z){a.stars.position.set(0,2.35,0);a.stars.rotation.y+=.12}
   if(!a.sbSeen){a.sbSeen=new Set();if(Array.isArray(pr.sb))pr.sb.forEach(s=>Array.isArray(s)&&a.sbSeen.add(s[0]));return}
   if(Array.isArray(pr.sb))for(const s of pr.sb){if(!Array.isArray(s)||s.length<7||a.sbSeen.has(s[0])||!s.slice(1).every(v=>Number.isFinite(v)))continue;
