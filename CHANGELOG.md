@@ -3,6 +3,11 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.54.1] - 2026-11-26 — Ground spot
+### Changed
+- The landing marker no longer predicts where you'll land: it's a spot on the ground **directly under you** while
+  you're in the air, a little wider the higher you are and darker as you get close.
+
 ## [2.54.0] - 2026-11-26 — New tracks that actually sound new
 ### Changed
 - The tracks added in 2.52 shared Classic's instruments (and all got the same winter sparkles), so they sounded like

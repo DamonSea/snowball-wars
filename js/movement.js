@@ -38,7 +38,7 @@ function landAcro(){
   else{if(A.mode==='long')A.spd*=T.flip.longJump.landKeep;if(A.spd<0)A.spd=0;A.landT=A.mode==='jump'?T.flip.chainWindow:0;if(A.mode==='jump'&&A.jumpN===2&&A.spd>T.flip.chainMinSpeed){readyRing();SFX.ready()}A.mode='normal';if(A.flipT<99)puff(4)}
   A.canDive=true;A.canCut=false;A.flipT=99;
 }
-function moveAcro(dt,max,ix,iz){A.maxNow=max;   // (the landing marker reads it)
+function moveAcro(dt,max,ix,iz){
   const im=Math.hypot(ix,iz),ang=Math.atan2(ix,iz);
   const ck=!!(held('crouch')||joy.crouch),edge=ck&&!A.prevC;A.prevC=ck;
   if(A.knock>0){A.knock-=dt;P.position.x+=vel.x*dt;P.position.z+=vel.z*dt;vel.multiplyScalar(Math.exp(-3*dt));A.spd=0;A.air=!grounded;return}

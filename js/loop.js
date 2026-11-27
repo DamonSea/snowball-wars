@@ -45,7 +45,7 @@ function tick(){
   water.position.y=-.8+Math.sin(tAll*.8)*.05;
   if(state==='play')updateRun(dt);
   if(state==='play'&&mode==='run')updateSnow(dt);
-  unstick(dt);holdFrame(dt);updateCpu(dt);warsUpdate(dt);raceUpdate(dt);tagUpdate(dt);poundFx(dt);updateYellow(dt);updateAngels(dt);updateEmotes(dt);updateRollers(dt);updateFlipArrow();updateLandMark(dt);
+  unstick(dt);holdFrame(dt);updateCpu(dt);warsUpdate(dt);raceUpdate(dt);tagUpdate(dt);poundFx(dt);updateYellow(dt);updateAngels(dt);updateEmotes(dt);updateRollers(dt);updateFlipArrow();
   if(state==='play'){
     if(grounded&&!sndG&&sndAir>.15)SFX.land(-sndVy);
     if(!grounded){sndAir+=dt;sndVy=vy}else sndAir=0;
@@ -59,6 +59,7 @@ function tick(){
   else if(state==='paused'&&tAll%7<dt&&!setOpen)wave=1.6;
 
   P.position.y=py;P.rotation.y=aimFace();
+  updateLandMark(dt);   // after this frame's movement, so the ground spot sits right under you
   const moving=Math.hypot(vel.x,vel.z)>.5&&state==='play';
   WIND.t.value=tAll;WIND.amp.value=GFX.mode==='low'||(GFX.mode==='auto'&&GFX.pr<=1)?0:1;   // trees sway, except on Low graphics
   if(state!=='play'&&(EM.hold||EM.wheel||EM.id)){closeWheel();stopEmote()}   // menus, pause, level changes
