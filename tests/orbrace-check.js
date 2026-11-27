@@ -19,7 +19,7 @@ SB.stun=0;__step(60);orbN=0;SB.hitCool=0;invuln=0;const c1b=orbs.length;hitMe('r
 const b=RACE.bots[0];b.n=3;b.stun=0;const c2=orbs.filter(q=>q.spill).length;launchSnowball([b.x,b.y+1.1,b.z,.01,0,0],true,null,++SB.seq);__step(2);
 ok('hit a rival with 3 orbs: it drops 2',b.n===1&&orbs.filter(q=>q.spill).length===c2+2);
 // rivals throw at you
-let thrown=0;const L0=launchSnowball;launchSnowball=(...a)=>{if(String(a[2]).startsWith('rb'))thrown++;return L0(...a)};__place(b.x+6,b.z,0,0);__step(600);launchSnowball=L0;ok('rivals throw at you ('+thrown+' in 10s)',thrown>=2);
+let thrown=0;const L0=launchSnowball;launchSnowball=(...a)=>{if(String(a[2]).startsWith('rb'))thrown++;return L0(...a)};for(let k=0;k<20;k++){__place(b.x+6,b.z,0,0);__step(30)}launchSnowball=L0;ok('rivals throw at you ('+thrown+' in 10s)',thrown>=2);
 // end of run: place in the banner, rivals gone
 orbN=999;time=.02;__step(3);ok('time up: banner shows your place',/You win the race!/.test($('hint').textContent));
 ok('rivals and board cleared, back in free roam',!RACE.on&&RACE.bots.length===0&&!$('warsBoard').classList.contains('on')&&runFree);

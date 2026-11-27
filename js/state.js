@@ -4,7 +4,7 @@
 let orbN=0;   // orbs collected in the current orb race (the race is a straight count, no points)
 let mode='run',state='menu',score=0,time=45,lives=3,invuln=0,shake=0,grounded=true,stand=null;
 let spawnCount=0,advT=0;   // advT: time in the current map (pad pulse, moving platforms)
-let best=0;const bestR={};try{['orbRunPlaza2','orbRunBest3','orbRunBest4','orbRunJungle'].forEach(k=>bestR[k]=+localStorage.getItem(k)||0)}catch(e){}
+let best=0;const bestR={};try{['orbRunPlaza2','orbRunBest3','orbRunWoods','orbRunJungle'].forEach(k=>bestR[k]=+localStorage.getItem(k)||0)}catch(e){}
 const vel=V(0,0,0);let vy=0,py=0,face=0,walk=0;
 const keys={},joy={x:0,z:0};
 const fmt=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;

@@ -123,7 +123,7 @@ function snowFromPeer(peer,a){const pr=peer.presence||{};yellowFromPeer(pr,a);pw
     const yel=YS.yIds.has(h[1]);if(WAR.on){warsCreditRemote(h);SFX.splat(true);toast(h[2]===1?`You knocked out ${nameOf(peer)}!`:`Direct hit on ${nameOf(peer)}!`);continue}addTrick(yel?'Yellow Snowball':'Direct Hit');toast(yel?`Yellow snowball on ${nameOf(peer)}!`:`Direct hit on ${nameOf(peer)}!`);SFX.splat(true)}
 }
 // ----- snowmen targets, per map -----
-const SNOWMEN_AT={Plaza:[[6,10],[-3,13],[9,-4],[-19,-4]],'Frozen Rink':[[-7,9],[7,9.5],[-9,-12],[17,10]],Rooftops:[[-6,9],[3,15],[-19,7],[14,7]],'Christmas Village':[[-12,2.5],[9.5,0.5],[-6.5,-9],[3.5,-13]],'Jungle Gym':[[-15,14],[17,13],[-17,-15],[19,-13]]};
+const SNOWMEN_AT={Plaza:[[6,10],[-3,13],[9,-4],[-19,-4]],'Frozen Rink':[[-7,9],[7,9.5],[-9,-12],[17,10]],'Woodsy Cabin':[[-6,-9],[4,9],[-15,0],[14,10]],'Christmas Village':[[-12,2.5],[9.5,0.5],[-6.5,-9],[3.5,-13]],'Jungle Gym':[[-15,14],[17,13],[-17,-15],[19,-13]]};
 function makeSnowman(grp,x,z,i){const g=new THREE.Group();g.position.set(x,0,z);grp.add(g);
   const coal=mat(0x1d1a18),carrot=mat(0xff8a3d),stick=mat(0x6b4226),scarfC=mat([0xd83a2e,0x2f6fd0,0x2bb3a8,0xffd84a][i%4]);
   add(new THREE.SphereGeometry(.72,14,10),snowM,0,.62,0,g);add(new THREE.SphereGeometry(.52,14,10),snowM,0,1.5,0,g);add(new THREE.SphereGeometry(.36,14,10),snowM,0,2.16,0,g);

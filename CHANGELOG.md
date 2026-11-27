@@ -3,6 +3,22 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.59.0] - 2026-11-27 — Woodsy Cabin
+### Added
+- **Woodsy Cabin**, a new Trick Park map that replaces Rooftops (same slot, map 3). It's an old log cabin in a clearing
+  ringed by thick climbable pine forest, with taller pines outside the edge. You start by a crackling campfire
+  (flickering flames, rising embers and a warm light that really shows at night), with log benches and marshmallow
+  sticks. Also: a woodpile, a porch roof and a pitched roof (ridge 5.0), a stone chimney that smokes, a treehouse with
+  a rope ladder, stump stairs up to a hunter's lookout, three bouncy tents, a frozen pond with a canoe, an outhouse,
+  a fallen log to balance along, and lantern posts. Named gaps: Treehouse Leap, Chimney Sweep, Chimney Drop, Porch
+  Climb, Woodpile Hop, Lookout Climb, Lookout Dive and Tent Hop. Its best score is saved separately (`orbRunWoods`).
+- Maps can have their own per-frame effects (`tick` on the map entry).
+### Removed
+- **Rooftops.** Its building facades live on as the Map Builder's skyscraper.
+### Tests
+- The rival-throws check in the orb race test now keeps you in range of the rival instead of relying on where it
+  happens to wander.
+
 ## [2.58.0] - 2026-11-26 — Tucker
 ### Changed
 - **Tuk is now Tucker**, with a polish pass. He has curled three-segment horns instead of spikes, a soft curl of fur

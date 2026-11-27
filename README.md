@@ -3,7 +3,7 @@
 ### [▶ Play Snowball Wars](https://damonsea.github.io/snowball-wars/)
 
 A 3D winter trick-platformer for the browser, starring Flipper the stunt pilot and Parker the snowboarder. Chain flips, dives and wall jumps
-into combos in Trick Park (Plaza, Frozen Rink, Rooftops, Jungle Gym), discover named gaps, have snowball fights, or build
+into combos in Trick Park (Plaza, Frozen Rink, Woodsy Cabin, Jungle Gym, Christmas Village), discover named gaps, have snowball fights, or build
 your own maps. Built with three.js; open `index.html` in a browser to play (multiplayer works only in the
 claude.ai version).
 
@@ -57,7 +57,9 @@ points (higher orbs are worth more there). Step on the PLAY pad to start a game:
 collect before time runs out?) is a straight count of orbs, **Snowball Wars** is hearts and KOs, and **Tag** is time spent It.
 - **Plaza:** a skatepark built around trick lines: tower and crown, runway, chimney, pillars, treehouse, fountain, and the Big Slide.
 - **Frozen Rink:** real ice physics: build speed, glide, drift and bounce off the boards.
-- **Rooftops:** a vertical city made for wall jumps, topped by a climbable antenna 18 m up.
+- **Woodsy Cabin:** an old log cabin in a clearing ringed by thick pine forest. Start by a crackling campfire, climb
+  the woodpile and porch onto the cabin roof and hop up the smoking chimney, leap from the treehouse onto the roof,
+  take the stump stairs up to the hunter's lookout, bounce on the tents, and skate the frozen pond.
 - **Jungle Gym:** one connected playground built to use every move: a two-level fort, tire run, fireman pole,
   monkey bars, Pound Peak, trampolines and a wall-jump canyon, with 12 named gaps.
 
@@ -225,7 +227,7 @@ by files above it. Nothing is bundled.
 | 6 | `js/audio/music.js` | Music tracks, ambience, spikeball rolling sound |
 | 7 | `js/enemies.js` | Enemies: snow goons, penguin sliders, holiday elves (AI, stomps, theft) and the Spikeballs toggle |
 | 8 | `js/levels/engine.js` | Map builders and collision queries (how to add maps is documented at the top) |
-| 10 | `js/maps/*.js` | Trick Park maps: Plaza, Frozen Rink, Rooftops, Jungle Gym |
+| 10 | `js/maps/*.js` | Trick Park maps: Plaza, Frozen Rink, Woodsy Cabin, Jungle Gym, Christmas Village |
 | 11 | `js/content-ready.js` | Picks the current map once all are registered |
 | 12 | `js/state.js` | Game state, HUD, menus, character select, pause |
 | 13 | `js/trickpark.js` | Trick Park: START pad, combos, orbs, spikeballs, timed runs |
@@ -280,7 +282,7 @@ named gaps fired. Use it whenever a map changes: each line should land, and each
 A Trick Park map can list `gaps` in its `RUNMAPS` entry: `{name, pts, from:[regions], to:[regions]}`,
 where a region is a box `{x,z,w,d,y}` at a surface height. Taking off from a `from` region and landing
 in a `to` region without touching anything in between awards the gap into the combo. First discoveries
-are saved per map and counted in the pause menu. Plaza has 13; Frozen Rink and Rooftops have none yet.
+are saved per map and counted in the pause menu. Plaza has 13; Frozen Rink has none yet.
 
 `procon-check.js` checks the Switch 2 Pro Controller layout, prompts and switching back to a DualSense. `snowballs-check.js`, `ammo-check.js`, `cpu-check.js`, `moves-check.js` and `nova-check.js` are quick checks of snowball hits, orb refills,
 the computer player, and ground pound / rebinding / pole climbing: pass a file's contents as the second argument,

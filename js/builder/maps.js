@@ -6,7 +6,12 @@ const PALETTE=[0x2bb3a8,0xff7a59,0xffd84a,0x4f8fe0,0x9a5fc4,0x3fb56a,0xd83a2e,0x
 // field ranges: [min, max, step]
 const FIELDS={w:['Width',.4,30,.5],d:['Depth',.4,30,.5],h:['Height',.2,20,.1],th:['Thickness',.15,1.5,.05],r:['Radius',.3,4,.05],
   s:['Size',.5,3,.1],steps:['Steps',2,12,1],y:['Height',0,20,.1],c:['Color',0,7,1],posts:['Posts',0,1,1],f:['Facade',0,4,1]};
-// skyscraper facades (the Rooftops buildings' colours)
+// skyscraper facades (the colours of the old Rooftops map's buildings): a canvas of windows, lit ones glow
+function facade(base){const W=128,cv=document.createElement('canvas'),ev=document.createElement('canvas');cv.width=ev.width=W;cv.height=ev.height=W;
+  const x=cv.getContext('2d'),e=ev.getContext('2d');x.fillStyle=base;x.fillRect(0,0,W,W);e.fillStyle='#000';e.fillRect(0,0,W,W);
+  for(let i=0;i<4;i++)for(let j=0;j<4;j++){const lit=Math.random()<.42;x.fillStyle=lit?'#ffd98a':'#2b3a4a';x.fillRect(5+i*32,6+j*32,22,20);
+    x.fillStyle='rgba(0,0,0,.25)';x.fillRect(5+i*32,26+j*32,22,3);if(lit){e.fillStyle='#ffb75e';e.fillRect(5+i*32,6+j*32,22,20)}}
+  const t=new THREE.CanvasTexture(cv),et=new THREE.CanvasTexture(ev);[t,et].forEach(q=>{q.wrapS=q.wrapT=THREE.RepeatWrapping});return{t,et}}
 const BLD_FAC=['#b85c48','#6f7f96','#c9a26b','#7e9a86','#a46a8c'];
 // the asset library: label, group, default fields, which fields the inspector shows, and how big its footprint is
 const ASSETS={

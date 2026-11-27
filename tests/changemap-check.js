@@ -4,8 +4,8 @@ const click=t=>{const b=['go','alt','alt2','alt3','alt4','alt5','alt6','alt7'].m
 pause();ok('Pause menu has Change map',btns().includes('Change map'),btns().join(' | '));
 click('Change map');ok('Opens the map picker',PARK.on&&!$('park').classList.contains('hide'));
 const ci0=ci;$('parkBack').click();ok('Back returns to the pause menu, same map',state==='paused'&&!PARK.on&&btns().includes('Resume')&&runL.name==='Plaza');
-click('Change map');parkTab('dev');PARK.i=devMaps().findIndex(M=>M.name==='Rooftops');renderPark();parkPlay();
-ok('Picking a map goes straight in, same character, no character select',state==='play'&&runL.name==='Rooftops'&&ci===ci0&&$('cs').classList.contains('hide'),runL.name+' '+state);
+click('Change map');parkTab('dev');PARK.i=devMaps().findIndex(M=>M.name==='Woodsy Cabin');renderPark();parkPlay();
+ok('Picking a map goes straight in, same character, no character select',state==='play'&&runL.name==='Woodsy Cabin'&&ci===ci0&&$('cs').classList.contains('hide'),runL.name+' '+state);
 setRivals(2);beginTimed();__step(3);pause();click('Change map');PARK.i=devMaps().findIndex(M=>M.name==='Plaza');renderPark();parkPlay();__step(3);
 ok('Changing map mid-Collectathon ends it',state==='play'&&runFree&&!RACE.on&&runL.name==='Plaza');
 pause();click('Change map');parkKey('Escape');ok('Esc also goes back to pause',state==='paused');resume();

@@ -34,8 +34,8 @@ def S():
   click('#go');f(2);click('#alt');f(5);click('#csGo');f(10);down('KeyW');f(80);snap('skate push');up('KeyW');f(60);snap('skate glide');down('KeyD');f(60);up('KeyD');snap('skate turn')
   down('KeyS');f(240);up('KeyS');f(30);snap('to the pine')
   tap('Escape');f(3);click('#alt2');f(10)
-  # Rooftops
-  click('#go');f(2);click('#alt2');f(5);click('#csGo');f(10);down('KeyW');f(100);up('KeyW');snap('rooftops street');down('KeyA');f(80);up('KeyA');tap('Space');f(40);snap('rooftops move')
+  # Woodsy Cabin
+  click('#go');f(2);click('#alt2');f(5);click('#csGo');f(10);down('KeyW');f(100);up('KeyW');snap('woods path');down('KeyA');f(80);up('KeyA');tap('Space');f(40);snap('woods move')
   tap('Escape');f(3);click('#alt2');f(10)
   # Run mode with Sunny, then Rook
   click('#go');f(2);click('#go');f(5);tap('ArrowRight');f(2);click('#csGo');f(10);down('KeyW');f(60);tap('Space');f(40);up('KeyW');snap('sunny')
