@@ -2,9 +2,11 @@
 // backflip, side flip, dive, triple jump, wall jump), plus hurt and jump.
 const angD=(a,b)=>{const d=a-b;return((d+PI)%(2*PI)+2*PI)%(2*PI)-PI};
 const clamp=(v,a)=>Math.max(-a,Math.min(a,v));
-// stride phase: cadence grows with the square root of speed, so going faster means longer strides rather than
-// frantic little steps (it used to grow in step with speed: ~10 steps a second at a sprint, like a wind-up toy)
-const gaitRate=sp=>1.6*Math.sqrt(Math.max(0,sp));
+// Run style (Settings): Classic (the original, default) steps in proportion to speed; Fluid grows cadence with the
+// square root of speed, so going faster means longer strides rather than quicker little steps
+let GAIT='classic';try{if(localStorage.getItem('orbRunGait')==='fluid')GAIT='fluid'}catch(e){}
+function setGait(g){GAIT=g;try{localStorage.setItem('orbRunGait',g)}catch(e){}}
+const gaitRate=sp=>GAIT==='fluid'?1.6*Math.sqrt(Math.max(0,sp)):Math.max(0,sp)*1.6;
 function move(dt,speed){
   let ix=kbAxisX()+joy.x+pad.x;
   let iz=kbAxisZ()+joy.z+pad.z;

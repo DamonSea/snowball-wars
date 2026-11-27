@@ -3,6 +3,11 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.53.1] - 2026-11-26 — Classic run is back
+### Changed
+- The original walk/run is the default again. The new one from 2.53.0 is a choice: Settings → **Run style**:
+  Classic / Fluid. Edge teeter and the mid-air pause stay on for both.
+
 ## [2.53.0] - 2026-11-26 — Running, teetering, and pausing mid-air
 ### Changed
 - **Walking and running, redone.** Step rate used to grow in step with speed (about 10 steps a second at a sprint,

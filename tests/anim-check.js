@@ -1,5 +1,8 @@
 (()=>{closePark();const out=[];const ok=(n,c,x='')=>out.push((c?'OK   ':'FAIL ')+n+(x!==''?' -> '+x:''));
 select('run',0);ci=2;showChar();confirmChar();__step(3);if(state==='paused')resume();const H=chars[2].rig;
+ok('Run style defaults to Classic (the original)',GAIT==='classic'&&Math.abs(gaitRate(9)-14.4)<.01);
+openSet();setTabTo('game');const gr=[...document.querySelectorAll('#setList .srow')].find(r=>r.textContent.includes('Run style'));ok('Settings: Run style Classic / Fluid',!!gr&&gr.textContent.includes('Fluid'));
+[...gr.querySelectorAll('.opt')].find(b=>b.textContent==='Fluid').click();closeSet();if(state==='paused')resume();ok('Fluid picked and saved',GAIT==='fluid'&&localStorage.getItem('orbRunGait')==='fluid');
 // 1. gait: fewer, longer strides at speed
 ok('Sprint cadence is a natural ~2.5-3.5 steps a second (was ~10)',(()=>{const r=gaitRate(9)*2.2/PI;return r>2.4&&r<3.6})(),(gaitRate(9)*2.2/PI).toFixed(2)+' steps/s');
 ok('Walking is calmer than sprinting, but not by as much as before',gaitRate(2)/gaitRate(9)>.4&&gaitRate(2)/gaitRate(9)<.6);
@@ -22,4 +25,5 @@ __step(60);ok('...then looks down at the drop',H.head.rotation.x>.4,H.head.rotat
 __step(80);let lo=9,hi=-9;for(let i=0;i<30;i++){__step(1);lo=Math.min(lo,H.legL.rotation.x);hi=Math.max(hi,H.legL.rotation.x)}ok('...then flails and pedals',hi-lo>.6,(hi-lo).toFixed(2));
 resume();__step(3);ok('Unpause: face back to normal, falling as before',shown()===faceVal(H,LOOKS[2].f||{},'mouth')&&!grounded);
 __step(90);pause();__step(30);ok('Paused on the ground: no mid-air reaction',PAIR.t===0&&shown()!=='o');resume();
+setGait('classic');__place(0,12,0,Math.PI);__k({KeyW:true});__step(60);__k({});ok('Classic: the original stride and pose',Math.abs(gaitRate(9)-14.4)<.01&&H.bootGs.every(b=>Math.abs(b.rotation.x)<.05));
 return out.join('\n')})()

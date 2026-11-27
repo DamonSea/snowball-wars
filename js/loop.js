@@ -114,7 +114,14 @@ function tick(){
     else if(run&&onIce){rate=10;const ia=Math.min(1,Math.hypot(vel.x,vel.z)/9),s=Math.sin(walk*1.15);
       pitch=.12+.3*ia;lx=-.2+s*.4*ia;lr=-.2-s*.4*ia;llz=-.32*Math.max(0,s)*ia;skz=.32*Math.max(0,-s)*ia;
       ax=ar=.25;zl=-.55-s*.45*ia;zr=.55-s*.45*ia;yaw=s*.14*ia;roll=s*.07*ia;yo=-.05;hx=-pitch*.6;hy=-yaw*.8;hz=-roll}
-    else if(run){rate=chibi?20:14;
+    else if(run&&GAIT!=='fluid'){rate=chibi?18:14;   // Classic run (the original)
+      const amp=chibi?Math.min(1.2,.45+sp*.075):.8,s=Math.sin(ph);
+      lx=s*amp;lr=-s*amp;ax=-s*amp*.95;ar=s*amp*.95;
+      zl=chibi?-.22-Math.abs(s)*.1:-.1;zr=-zl;
+      pitch=(chibi?Math.min(.32,sp*.028):.06)+Math.abs(Math.sin(ph*2))*.03;
+      yaw=s*(chibi?.16:.1);roll=s*.04;yo=Math.abs(Math.cos(ph))*(chibi?.1:.07);
+      hx=-pitch*.6;hy=-yaw*.8;hz=-roll}
+    else if(run){rate=chibi?20:14;   // Fluid run
       // walk -> jog -> sprint blend (g). Legs: a shaped swing that kicks up behind at speed (the forward swing is the
       // quicker one); arms lag the legs a touch so they feel loose; the body bobs twice a stride, dipping on each
       // footfall, sways over the planted foot, and leans in harder when speeding up (dvL.f) and back when braking
@@ -179,7 +186,7 @@ function tick(){
     // Tuk, standing around: head back, catching snowflakes
     if(H.yeti&&idleT>1.5&&!CL.on&&!LH.on){const k=Math.min(1,(idleT-1.5)*2);hx=-.5*k+Math.sin(tAll*1.3)*.08;hy=Math.sin(tAll*.7)*.25*k;ax=ar=-.25*k;zl=-.35*k;zr=.35*k;pitch=-.08*k}
     if(H.attitude&&idleT>.4&&!CL.on&&!LH.on){const k=Math.min(1,(idleT-.4)*3);rate=8;ax=-1.5*k;ar=-1.38*k;zl=.74*k;zr=-.7*k;lx=-.06;lr=.1;roll=.07*k;yo=0;pitch=-.04*k;hx=-.14*k;hy=.3*k+Math.sin(tAll*.6)*.05;hz=.13*k}
-    if(H.bootGs&&!run)H.bootGs.forEach(b=>{b.rotation.x*=1-Math.min(1,dt*12)});   // feet flat again
+    if(H.bootGs&&!(run&&GAIT==='fluid'))H.bootGs.forEach(b=>{b.rotation.x*=1-Math.min(1,dt*12)});   // feet flat again
     if(wave>0&&!air&&!moving&&!pa&&!tt){zr=2.5+Math.sin(wave*14)*.35;ar=0;hz=-.1}
     if(state==='select'&&!CUST.on)hy=Math.sin(tAll*1.3)*.25;
     roll+=bank;hz-=bank*.5;

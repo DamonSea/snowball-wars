@@ -9,6 +9,7 @@ const LOOK={season:{label:'Season',opts:['Winter','Summer'],get:()=>WIN?0:1,set:
   camera:{label:'Camera',opts:CAM_NAMES,get:()=>CAMS.indexOf(CAM.mode),set:i=>setCam(CAMS[i])},
   graphics:{label:'Graphics',opts:['Auto','High','Balanced','Low'],get:()=>['auto','high','balanced','low'].indexOf(GFX.mode),set:i=>setQual(['auto','high','balanced','low'][i])},
   perf:{label:'Performance stats',opts:['Off','On'],get:()=>PERF.on?1:0,set:i=>setPerf(i===1)},
+  gait:{label:'Run style',opts:['Classic','Fluid'],get:()=>GAIT==='fluid'?1:0,set:i=>setGait(i?'fluid':'classic')},
   sideFlip:{label:'Side flip style',opts:['Somersault','Classic'],get:()=>sideStyle==='classic'?1:0,set:i=>{sideStyle=i?'classic':'somersault';try{localStorage.setItem('orbRunSideFlip',sideStyle)}catch(e){}}},
   hang:{label:'Ledge hang',opts:['On','Off'],get:()=>LH.enabled?0:1,set:i=>{LH.enabled=i===0;if(!LH.enabled)LH.on=false;try{localStorage.setItem('orbRunHang',LH.enabled?'1':'0')}catch(e){}}},
   squash:{label:'Squash & stretch',slider:true,get:()=>TOON,set:v=>setToon(v)},
