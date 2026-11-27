@@ -114,13 +114,22 @@ function tick(){
     else if(run&&onIce){rate=10;const ia=Math.min(1,Math.hypot(vel.x,vel.z)/9),s=Math.sin(walk*1.15);
       pitch=.12+.3*ia;lx=-.2+s*.4*ia;lr=-.2-s*.4*ia;llz=-.32*Math.max(0,s)*ia;skz=.32*Math.max(0,-s)*ia;
       ax=ar=.25;zl=-.55-s*.45*ia;zr=.55-s*.45*ia;yaw=s*.14*ia;roll=s*.07*ia;yo=-.05;hx=-pitch*.6;hy=-yaw*.8;hz=-roll}
-    else if(run){rate=chibi?18:14;
-      const amp=chibi?Math.min(1.2,.45+sp*.075):.8,s=Math.sin(ph);
-      lx=s*amp;lr=-s*amp;ax=-s*amp*.95;ar=s*amp*.95;
-      zl=chibi?-.22-Math.abs(s)*.1:-.1;zr=-zl;
-      pitch=(chibi?Math.min(.32,sp*.028):.06)+Math.abs(Math.sin(ph*2))*.03;
-      yaw=s*(chibi?.16:.1);roll=s*.04;yo=Math.abs(Math.cos(ph))*(chibi?.1:.07);
-      hx=-pitch*.6;hy=-yaw*.8;hz=-roll}
+    else if(run){rate=chibi?20:14;
+      // walk -> jog -> sprint blend (g). Legs: a shaped swing that kicks up behind at speed (the forward swing is the
+      // quicker one); arms lag the legs a touch so they feel loose; the body bobs twice a stride, dipping on each
+      // footfall, sways over the planted foot, and leans in harder when speeding up (dvL.f) and back when braking
+      const g=Math.min(1,Math.max(0,(sp-1)/8)),s=Math.sin(ph),s2=Math.sin(ph*2),la=Math.sin(ph-.35);
+      const stride=chibi?.42+g*.8:.45+g*.4,kick=g*.28;
+      lx=s*stride+kick*Math.max(0,s)**2;lr=-s*stride+kick*Math.max(0,-s)**2;
+      ax=-la*stride*(.75+g*.35);ar=la*stride*(.75+g*.35);
+      zl=(chibi?-.18:-.1)-g*.12-Math.abs(la)*.08;zr=-zl;
+      const acc=clamp(dvL.f*1.5,.18);
+      pitch=(chibi?.04+g*.26:.04+g*.1)+acc+Math.max(0,-s2)*.025;
+      yaw=s*(chibi?.1+g*.06:.08);roll=s*(.05-g*.02);
+      const foot=Math.abs(Math.cos(ph));yo=(chibi?.025+g*.09:.03+g*.05)*Math.pow(foot,.7)-(1-foot)*g*.03;
+      hx=-pitch*.7+Math.max(0,s2)*.03;hy=-yaw*.85;hz=-roll*.8;
+      // feet roll heel to toe (Flipper's boots)
+      if(H.bootGs)H.bootGs.forEach((b,i)=>{const p=i?-s:s;b.rotation.x+=((p>0?-.35*p:.25*p)*(.4+g*.6)-b.rotation.x)*Math.min(1,dt*20)})}
     let lrz=skz;
     if(ATK.t>0){const p=1-ATK.t/ATK.dur,ext=p<.55?Math.sin(Math.min(1,p/.3)*PI/2):1-(p-.55)/.45,e=1-(1-p)*(1-p),st=ATK.step,kd=ATK.kind;rate=30;
       if(kd==='combo'&&st<3){const Rt=st===1;yaw=(Rt?-.5:.5)*ext;pitch=.14*ext;lx=Rt?-.35:.3;lr=Rt?.3:-.35;hy=-yaw*.6;
@@ -142,6 +151,24 @@ function tick(){
     else if(SB.anim>0&&!CL.on){const q=1-SB.anim/.3;rate=30;if(q<.4){ar=.9;zr=.25;yaw=.35;hy=-.2}else{ar=-2.5+(q-.4)*2.2;zr=.15;yaw=-.3;hy=.2}}
     // emotes: dances, wave and cheer (emotes.js)
     else if(EM.id&&!CL.on&&state==='play'){const o=emotePose({lx,lr,ax,ar,zl,zr,pitch,roll,yaw,yo,hx,hy,hz,llz,lrz,rate});({lx,lr,ax,ar,zl,zr,pitch,roll,yaw,yo,hx,hy,hz,llz,lrz,rate}=o)}
+    // standing still with part of you over a drop: teeter (lean over and back, arms windmilling, a leg up, eyes down)
+    const tt=edgeTeeter(dt,sp);
+    if(tt&&!CL.on&&!LH.on&&ATK.t<=0&&!GP.st&&!EM.id&&!BS.on&&!(SA.t>0)&&!YS.spray){const w=Math.sin(tAll*5.5),fwd=Math.cos(tt.rel),side=Math.sin(tt.rel),
+        lean=(.2+w*.17)*tt.k,c=tAll*11;rate=12;
+      pitch=fwd*lean;roll=-side*lean;yaw=0;
+      ax=(-1.7+Math.sin(c)*1.3)*tt.k;ar=(-1.7+Math.sin(c+PI)*1.3)*tt.k;zl=-.25-.85*tt.k;zr=.25+.85*tt.k;
+      lx=-fwd*.2*tt.k;lr=fwd*.9*tt.k*(.75+.25*Math.sin(tAll*3));llz=0;lrz=side*.4*tt.k;
+      hx=(fwd>0?.5:-.15)*tt.k;hy=side*.5*tt.k;hz=Math.sin(tAll*7)*.06*tt.k;yo=0}
+    // paused in mid-air: a cartoon beat. Freeze with an "oh!", look down at the drop, then flail and pedal, glancing at you
+    const pa=state==='paused'&&!grounded&&!CL.on&&!LH.on&&!(typeof WAR!=='undefined'&&WAR.on&&WAR.out>0);
+    PAIR.t=pa?PAIR.t+dt:0;
+    if(pa){const t=PAIR.t,flail=t>1.7,look=t>.55&&t<1.9;snap=false;snapY=false;rate=flail?16:9;roll=0;yaw=0;
+      pitch=flail?.12+Math.sin(tAll*6)*.06:.05;yo=Math.sin(tAll*2.2)*.03;
+      if(!flail){lx=-.55;lr=.25;ax=-2.2;ar=-2.4;zl=-.45;zr=.45;hx=look?.75:-.12;hy=look?.15:0}
+      else{const c=tAll*13;lx=Math.sin(c)*.9;lr=-Math.sin(c)*.9;ax=-1.6+Math.sin(c*.9)*1.4;ar=-1.6-Math.sin(c*.9)*1.4;zl=-.9;zr=.9;
+        hx=Math.sin(tAll*1.7)>.4?.6:-.1;hy=Math.sin(tAll*2.3)*.25}
+      hz=Math.sin(tAll*9)*.03}
+    pairFace(H,pa);
     if(CL.on&&state!=='menu'){snap=false;snapY=false;rate=12;yaw=0;roll=0;hy=0;hz=0;lrz=0;llz=0;
       if(CL.top){pitch=PI;ax=ar=-3.1;zl=-.15;zr=.15;lx=.4;lr=-.4;roll=Math.sin(tAll*3)*.07;yo=H.hsYo??(ci>=2?.32:.38);hx=-.3}
       else{const c=Math.sin(CL.h*3+CL.ang*2);pitch=-.12;ax=-2.75+c*.45;ar=-2.75-c*.45;zl=-.3;zr=.3;lx=-.95+c*.45;lr=-.95-c*.45;yo=0;hx=.35}}
@@ -152,7 +179,8 @@ function tick(){
     // Tuk, standing around: head back, catching snowflakes
     if(H.yeti&&idleT>1.5&&!CL.on&&!LH.on){const k=Math.min(1,(idleT-1.5)*2);hx=-.5*k+Math.sin(tAll*1.3)*.08;hy=Math.sin(tAll*.7)*.25*k;ax=ar=-.25*k;zl=-.35*k;zr=.35*k;pitch=-.08*k}
     if(H.attitude&&idleT>.4&&!CL.on&&!LH.on){const k=Math.min(1,(idleT-.4)*3);rate=8;ax=-1.5*k;ar=-1.38*k;zl=.74*k;zr=-.7*k;lx=-.06;lr=.1;roll=.07*k;yo=0;pitch=-.04*k;hx=-.14*k;hy=.3*k+Math.sin(tAll*.6)*.05;hz=.13*k}
-    if(wave>0&&!air&&!moving){zr=2.5+Math.sin(wave*14)*.35;ar=0;hz=-.1}
+    if(H.bootGs&&!run)H.bootGs.forEach(b=>{b.rotation.x*=1-Math.min(1,dt*12)});   // feet flat again
+    if(wave>0&&!air&&!moving&&!pa&&!tt){zr=2.5+Math.sin(wave*14)*.35;ar=0;hz=-.1}
     if(state==='select'&&!CUST.on)hy=Math.sin(tAll*1.3)*.25;
     roll+=bank;hz-=bank*.5;
     const k=snap?1:1-Math.exp(-rate*dt),kh=1-Math.exp(-8*dt),L=(o,p,v,q=k)=>o[p]+=(v-o[p])*q;

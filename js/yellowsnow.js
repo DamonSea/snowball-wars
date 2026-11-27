@@ -57,4 +57,4 @@ function yellowMove(dt,ix,iz){
   const im=Math.hypot(ix,iz),sp=YS.spray&&im>.2?T.yellow.walk*im:0,k=1-Math.exp(-10*dt);jumpBuf=0;
   if(im>.2)face+=angD(Math.atan2(ix,iz),face)*Math.min(1,dt*6);
   vel.x+=(Math.sin(face)*sp-vel.x)*k;vel.z+=(Math.cos(face)*sp-vel.z)*k;P.position.x+=vel.x*dt;P.position.z+=vel.z*dt;
-  walk+=Math.hypot(vel.x,vel.z)*dt*1.6;if(chars[ci].acro){A.spd=Math.hypot(vel.x,vel.z);A.mode='normal'}}
+  walk+=gaitRate(Math.hypot(vel.x,vel.z))*dt;if(chars[ci].acro){A.spd=Math.hypot(vel.x,vel.z);A.mode='normal'}}

@@ -3,6 +3,20 @@
 All notable changes to Snowball Wars (formerly Orb Run, then briefly Frosty Falls).
 Versions before 2.1.0 were numbered afterwards, when the project moved to GitHub; their dates weren't recorded.
 
+## [2.53.0] - 2026-11-26 — Running, teetering, and pausing mid-air
+### Changed
+- **Walking and running, redone.** Step rate used to grow in step with speed (about 10 steps a second at a sprint,
+  like a wind-up toy); it now grows with the square root of speed (about 3.4 a second), so faster means longer strides.
+  The pose blends from walk to sprint: legs kick up behind at speed, arms lag the legs a touch, the body bobs twice a
+  stride and dips on each footfall, leans in when you speed up and back when you brake, and the head stays steady.
+  Flipper's feet roll heel to toe. Footsteps, ice strokes and crouch-walks follow the new rhythm.
+### Added
+- **Edge teeter**: stand still with part of you over a drop (half a step out, a metre or more down) and you wobble:
+  leaning over and back, arms windmilling, a leg up for balance, eyes on the drop. Works facing toward, away from or
+  side-on to the edge.
+- **Paused in mid-air**: your character freezes with an "Oh!", looks down at the drop, then flails and pedals,
+  glancing back at you. The face goes back to normal when you resume.
+
 ## [2.52.0] - 2026-11-26 — Leap over things, more music, clearer name box
 ### Fixed
 - **Invisible walls above poles, trees and props.** Their collision went all the way up to the sky, so you couldn't

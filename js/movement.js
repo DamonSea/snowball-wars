@@ -2,6 +2,9 @@
 // backflip, side flip, dive, triple jump, wall jump), plus hurt and jump.
 const angD=(a,b)=>{const d=a-b;return((d+PI)%(2*PI)+2*PI)%(2*PI)-PI};
 const clamp=(v,a)=>Math.max(-a,Math.min(a,v));
+// stride phase: cadence grows with the square root of speed, so going faster means longer strides rather than
+// frantic little steps (it used to grow in step with speed: ~10 steps a second at a sprint, like a wind-up toy)
+const gaitRate=sp=>1.6*Math.sqrt(Math.max(0,sp));
 function move(dt,speed){
   let ix=kbAxisX()+joy.x+pad.x;
   let iz=kbAxisZ()+joy.z+pad.z;
@@ -20,7 +23,7 @@ function move(dt,speed){
   P.position.x+=vel.x*dt;P.position.z+=vel.z*dt;
   const sp=Math.hypot(vel.x,vel.z);
   if(sp>.5&&ATK.t<=0)face+=angD(Math.atan2(vel.x,vel.z),face)*Math.min(1,dt*T.turnRate);
-  walk+=sp*dt*1.6;
+  walk+=gaitRate(sp)*dt;
   if(jumpBuf>0){if(grounded)jump();jumpBuf=Math.max(0,jumpBuf-dt)}
 }
 function puff(n=1){for(let i=0;i<n;i++){if(n===1&&Math.random()<.4)continue;
@@ -79,7 +82,7 @@ function moveAcro(dt,max,ix,iz){A.maxNow=max;   // (the landing marker reads it)
   }
   const hd=head===null?face:head;vel.x=Math.sin(hd)*A.spd;vel.z=Math.cos(hd)*A.spd;
   P.position.x+=vel.x*dt;P.position.z+=vel.z*dt;
-  walk+=Math.abs(A.spd)*dt*1.6;
+  walk+=gaitRate(Math.abs(A.spd))*dt;
 }
 function hurt(x,z,kb){ATK.t=0;resetPound();CL.on=false;CL.top=false;rumble(220,.9,.5);if(!noLives())lives--;invuln=1.6;shake=.35;SFX.hurt();A.knock=chars[ci].acro?T.flip.knockTime:0;A.mode='normal';A.flipT=99;
   const dx=P.position.x-x,dz=P.position.z-z,d=Math.hypot(dx,dz)||1;vel.x=dx/d*kb;vel.z=dz/d*kb;vy=5;grounded=false;stand=null;hud()}

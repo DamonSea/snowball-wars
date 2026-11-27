@@ -147,3 +147,20 @@ function unstick(dt){if(state!=='play'||CL.on||LH.on){stuckT=0;return}const x=P.
   for(let r=.25;r<=3.01;r+=.25)for(let k=0;k<16;k++){const a=k/16*2*PI,nx=x+Math.sin(a)*r,nz=z+Math.cos(a)*r;
     if(!blocked(nx,nz,py)&&!bodyInSolid(nx,nz,py)){P.position.x=nx;P.position.z=nz;vel.set(0,0,0);if(chars[ci].acro)A.spd=0;return}}
   const g=groundAt(x,z,1e9);if(g.on){py=g.h;vy=0;grounded=true;stand=g.on}}
+
+// ---------- edge teeter (loop.js poses it): standing still with ground dropping away within half a step ----------
+const EDGE={k:0,rel:0,chk:0,hit:null,still:0};
+function edgeTeeter(dt,sp){const ok=state==='play'&&grounded&&ci!==0&&sp<.4&&!CL.on&&!LH.on&&!(SB.stun>0);
+  EDGE.still=ok?EDGE.still+dt:0;
+  if(ok&&EDGE.still>.25&&(EDGE.chk-=dt)<=0){EDGE.chk=.1;EDGE.hit=null;let best=0;const x=P.position.x,z=P.position.z;
+    for(let i=0;i<8;i++){const a=i/8*2*PI,sx=x+Math.sin(a)*.45,sz=z+Math.cos(a)*.45,h=groundAt(sx,sz,py+.2).h,drop=isFinite(h)?py-h:9;
+      if(drop>.9&&drop>best){best=drop;EDGE.hit=a}}}
+  if(!ok)EDGE.hit=null;
+  const want=EDGE.hit!==null&&EDGE.still>.25?1:0;EDGE.k+=(want-EDGE.k)*Math.min(1,dt*(want?5:8));
+  if(EDGE.hit!==null)EDGE.rel=angD(EDGE.hit,face);
+  return EDGE.k>.02?{k:EDGE.k,rel:EDGE.rel}:null}
+// paused in mid-air: the surprised "oh" mouth for characters with a face kit, put back when play resumes
+const PAIR={t:0};
+function pairFace(H,on){if(!H.face||!H.face.mouth)return;
+  if(on){if(!H._oh){H._oh=true;for(const st in H.face.mouth)H.face.mouth[st].visible=st==='o'}}
+  else if(H._oh){H._oh=false;applyFace(H,(typeof LOOKS!=='undefined'&&LOOKS[ci]&&LOOKS[ci].f)||{})}}
